@@ -8,17 +8,17 @@
 ]]
 
 
-<!-- xml reconstructed by Source 2 Viewer 20.0.0.0 - https://valveresourceformat.github.io -->
+<!-- xml reconstructed by Source 2 Viewer 20.1.0.0 - https://valveresourceformat.github.io -->
 <root>
 	<styles>
-		<include src="s2r://panorama/styles/dotastyles.vcss_c" />
-		<include src="s2r://panorama/layout/custom_game/ot3_demo/ot3_demo.vcss_c" />
+		<include src="s2r://panorama/styles/dotastyles.vcss" />
+		<include src="s2r://panorama/layout/custom_game/ot3_demo/ot3_demo.vcss" />
 	</styles>
 	<scripts>
-		<include src="s2r://panorama/layout/custom_game/scripts/utils.vjs_c" />
-		<include src="s2r://panorama/layout/custom_game/ot3_demo/ot3_demo.vjs_c" />
-		<include src="s2r://panorama/layout/custom_game/scripts/upgrades_shared.vjs_c" />
-		<include src="s2r://panorama/layout/custom_game/ot3_demo/demo_orb_upgrades.vjs_c" />
+		<include src="s2r://panorama/layout/custom_game/scripts/utils.vjs" />
+		<include src="s2r://panorama/layout/custom_game/ot3_demo/ot3_demo.vjs" />
+		<include src="s2r://panorama/layout/custom_game/scripts/upgrades_shared.vjs" />
+		<include src="s2r://panorama/layout/custom_game/ot3_demo/demo_orb_upgrades.vjs" />
 	</scripts>
 	<snippets>
 		<snippet name="DevAbilityConfig">

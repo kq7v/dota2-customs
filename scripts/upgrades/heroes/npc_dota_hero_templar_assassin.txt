@@ -110,7 +110,7 @@
 		}
 		"trap_radius"
 		{
-			"value" "30"
+			"value" "35"
 			"operator" "OP_ADD"
 			"max_count" "10"
 		}

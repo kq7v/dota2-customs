@@ -46,14 +46,14 @@ function ErrorTracking.Collect(stack)
 	return stack
 end
 
-local function handle_error(error)
-	local error_text = error:gsub(": at 0x%x+", ": at 0x")
+local function handle_error(_error)
+	local error_text = _error:gsub(": at 0x%x+", ": at 0x")
 	GameRules:GetGameModeEntity():SetContextThink(DoUniqueString("emitError"), function()
 		error(error_text, 0)
 	end, 0)
 	ErrorTracking.Process(error_text)
 
-	return error
+	return _error
 end
 
 local error_handler = ErrorTracking.traceback_enabled and debug.traceback or handle_error

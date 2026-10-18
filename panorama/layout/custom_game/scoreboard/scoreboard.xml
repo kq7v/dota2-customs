@@ -8,17 +8,17 @@
 ]]
 
 
-<!-- xml reconstructed by Source 2 Viewer 20.0.0.0 - https://valveresourceformat.github.io -->
+<!-- xml reconstructed by Source 2 Viewer 20.1.0.0 - https://valveresourceformat.github.io -->
 <root>
 	<styles>
-		<include src="s2r://panorama/styles/dotastyles.vcss_c" />
-		<include src="s2r://panorama/layout/custom_game/scoreboard/scoreboard.vcss_c" />
-		<include src="s2r://panorama/layout/custom_game/party_highlighter/party_highlighter.vcss_c" />
+		<include src="s2r://panorama/styles/dotastyles.vcss" />
+		<include src="s2r://panorama/layout/custom_game/scoreboard/scoreboard.vcss" />
+		<include src="s2r://panorama/layout/custom_game/party_highlighter/party_highlighter.vcss" />
 	</styles>
 	<scripts>
-		<include src="s2r://panorama/layout/custom_game/scripts/utils.vjs_c" />
-		<include src="s2r://panorama/layout/custom_game/party_highlighter/party_highlighter.vjs_c" />
-		<include src="s2r://panorama/layout/custom_game/scoreboard/scoreboard.vjs_c" />
+		<include src="s2r://panorama/layout/custom_game/scripts/utils.vjs" />
+		<include src="s2r://panorama/layout/custom_game/party_highlighter/party_highlighter.vjs" />
+		<include src="s2r://panorama/layout/custom_game/scoreboard/scoreboard.vjs" />
 	</scripts>
 	<snippets>
 		<snippet name="Scoreboard_Team">
@@ -46,7 +46,7 @@
 				<Image id="HeroImageRoot">
 					<Image id="HeroImage" class="FullSize" />
 					<Panel class="PlayerShadow FullSize" />
-					<Image id="DisconnectState" src="s2r://panorama/images/custom_game/icon_disconnect_png.vtex" />
+					<Image id="DisconnectState" src="s2r://panorama/images/custom_game/import_dota/icon_disconnect_png_png.vtex" />
 				</Image>
 				<Panel id="UltimateState" />
 				<Panel id="PlayerInfo">

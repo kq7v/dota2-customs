@@ -8,17 +8,17 @@
 ]]
 
 
-<!-- xml reconstructed by Source 2 Viewer 20.0.0.0 - https://valveresourceformat.github.io -->
+<!-- xml reconstructed by Source 2 Viewer 20.1.0.0 - https://valveresourceformat.github.io -->
 <root>
 	<styles>
-		<include src="s2r://panorama/styles/dotastyles.vcss_c" />
-		<include src="s2r://panorama/layout/custom_game/top_bar/top_bar.vcss_c" />
-		<include src="s2r://panorama/layout/custom_game/top_bar/orbs_progress.vcss_c" />
+		<include src="s2r://panorama/styles/dotastyles.vcss" />
+		<include src="s2r://panorama/layout/custom_game/top_bar/top_bar.vcss" />
+		<include src="s2r://panorama/layout/custom_game/top_bar/orbs_progress.vcss" />
 	</styles>
 	<scripts>
-		<include src="s2r://panorama/layout/custom_game/scripts/utils.vjs_c" />
-		<include src="s2r://panorama/layout/custom_game/top_bar/top_bar.vjs_c" />
-		<include src="s2r://panorama/layout/custom_game/top_bar/orbs_progress.vjs_c" />
+		<include src="s2r://panorama/layout/custom_game/scripts/utils.vjs" />
+		<include src="s2r://panorama/layout/custom_game/top_bar/top_bar.vjs" />
+		<include src="s2r://panorama/layout/custom_game/top_bar/orbs_progress.vjs" />
 	</scripts>
 	<snippets>
 		<snippet name="TopBar_Team">
@@ -85,7 +85,7 @@
 						<Image id="HeroImage" class="FullSize" />
 						<Panel class="PlayerShadow FullSize" />
 						<Panel class="DeadOverlay FullSize" />
-						<Image id="DisconnectState" src="s2r://panorama/images/custom_game/icon_disconnect_png.vtex" />
+						<Image id="DisconnectState" src="s2r://panorama/images/custom_game/import_dota/icon_disconnect_png_png.vtex" />
 					</Panel>
 					<Panel class="VerticalHeroSeparator" />
 				</Panel>

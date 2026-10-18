@@ -10,6 +10,18 @@
 
 "npc_dota_hero_juggernaut"
 {
+	"juggernaut_bladeform"
+	{
+		"agi_bonus_pct_per_stack"
+		{
+			"value" "0.8"
+			"operator" "OP_ADD"
+			"linked_special_values"
+			{
+				"movement_speed_pct_per_stack" "0.2"
+			}
+		}
+	}
 	"juggernaut_blade_fury"
 	{
 		"cooldown_and_manacost"
@@ -20,13 +32,13 @@
 		}
 		"blade_fury_radius"
 		{
-			"value" "30"
+			"value" "35"
 			"operator" "OP_ADD"
 			"max_count" "10"
 		}
 		"blade_fury_damage"
 		{
-			"value" "25"
+			"value" "30"
 			"operator" "OP_ADD"
 		}
 	}
@@ -39,8 +51,9 @@
 		}
 		"healing_ward_heal_amount"
 		{
-			"value" "0.6"
+			"value" "0.5"
 			"operator" "OP_ADD"
+			"max_count" "10"
 		}
 		"healing_ward_aura_radius"
 		{

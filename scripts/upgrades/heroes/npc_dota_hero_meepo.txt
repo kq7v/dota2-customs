@@ -14,12 +14,24 @@
 	{
 		"tree_regen"
 		{
-			"value" "2"
+			"value" "4"
 			"operator" "OP_ADD"
 			"linked_special_values"
 			{
-				"dirt_move_speed" "1"
+				"tree_radius"
+				{
+					"value" "30"
+					"operator" "OP_MULTIPLY"
+
+					"multiplicative_target"	"850"
+					"multiplicative_base_value"	"250"
+				}
 			}
+		}
+		"dirt_move_speed"
+		{
+			"value" "1.5"
+			"operator" "OP_ADD"
 		}
 	}
 	"meepo_earthbind"
@@ -62,7 +74,7 @@
 		}
 		"poof_damage"
 		{
-			"value" "30"
+			"value" "40"
 			"operator" "OP_ADD"
 		}
 	}
@@ -70,12 +82,8 @@
 	{
 		"health_steal_heroes"
 		{
-			"value" "20"
+			"value" "25"
 			"operator" "OP_ADD"
-			"linked_special_values"
-			{
-				"health_steal_creeps" "10"
-			}
 		}
 	}
 	"meepo_petrify"

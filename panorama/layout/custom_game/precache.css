@@ -8,7 +8,7 @@
 ]]
 
 
-/* Prettified by Source 2 Viewer 20.0.0.0 - https://valveresourceformat.github.io */
+/* Prettified by Source 2 Viewer 20.1.0.0 - https://valveresourceformat.github.io */
 
 #CustomPrecache
 {
@@ -130,7 +130,6 @@
 	background-image: url("s2r://panorama/images/custom_game/maps/ot3_gardens_duo_png.vtex");
 	background-image: url("s2r://panorama/images/custom_game/maps/ot3_jungle_quintet_png.vtex");
 	background-image: url("s2r://panorama/images/custom_game/minimap_overlay_black_png.vtex");
-	background-image: url("s2r://");
 	background-image: url("s2r://panorama/images/custom_game/minimap_side_container_bg_png.vtex");
 	background-image: url("s2r://panorama/images/custom_game/no_user_png.vtex");
 	background-image: url("s2r://panorama/images/custom_game/orb_png.vtex");
@@ -204,45 +203,26 @@
 	background-image: url("s2r://panorama/images/custom_game/upgrades/generics/common_stat_boost_png.vtex");
 	background-image: url("s2r://panorama/images/custom_game/upgrades/generics/damage_png.vtex");
 	background-image: url("s2r://panorama/images/custom_game/upgrades/generics/damage_shield_png.vtex");
-	background-image: url("s2r://");
 	background-image: url("s2r://panorama/images/custom_game/upgrades/generics/evasion_png.vtex");
 	background-image: url("s2r://panorama/images/custom_game/upgrades/generics/extra_common_choice_png.vtex");
 	background-image: url("s2r://panorama/images/custom_game/upgrades/generics/gpm_png.vtex");
-	background-image: url("s2r://");
-	background-image: url("s2r://");
-	background-image: url("s2r://");
-	background-image: url("s2r://");
 	background-image: url("s2r://panorama/images/custom_game/upgrades/generics/health_percentage_png.vtex");
 	background-image: url("s2r://panorama/images/custom_game/upgrades/generics/health_regen_png.vtex");
 	background-image: url("s2r://panorama/images/custom_game/upgrades/generics/heal_amp_png.vtex");
 	background-image: url("s2r://panorama/images/custom_game/upgrades/generics/item_cdr_png.vtex");
 	background-image: url("s2r://panorama/images/custom_game/upgrades/generics/lifesteal_png.vtex");
-	background-image: url("s2r://");
 	background-image: url("s2r://panorama/images/custom_game/upgrades/generics/magic_resistance_png.vtex");
 	background-image: url("s2r://panorama/images/custom_game/upgrades/generics/mana_regen_png.vtex");
 	background-image: url("s2r://panorama/images/custom_game/upgrades/generics/movement_speed_png.vtex");
 	background-image: url("s2r://panorama/images/custom_game/upgrades/generics/neutral_item_stats_png.vtex");
-	background-image: url("s2r://");
-	background-image: url("s2r://");
-	background-image: url("s2r://");
-	background-image: url("s2r://");
-	background-image: url("s2r://");
 	background-image: url("s2r://panorama/images/custom_game/upgrades/generics/primary_attribute_png.vtex");
 	background-image: url("s2r://panorama/images/custom_game/upgrades/generics/primary_attribute_per_level_png.vtex");
 	background-image: url("s2r://panorama/images/custom_game/upgrades/generics/rare_stat_boost_png.vtex");
-	background-image: url("s2r://");
-	background-image: url("s2r://");
-	background-image: url("s2r://");
 	background-image: url("s2r://panorama/images/custom_game/upgrades/generics/secondary_attributes_png.vtex");
 	background-image: url("s2r://panorama/images/custom_game/upgrades/generics/secondary_attributes_per_level_png.vtex");
 	background-image: url("s2r://panorama/images/custom_game/upgrades/generics/spell_amp_png.vtex");
 	background-image: url("s2r://panorama/images/custom_game/upgrades/generics/spell_lifesteal_png.vtex");
 	background-image: url("s2r://panorama/images/custom_game/upgrades/generics/status_resistance_png.vtex");
-	background-image: url("s2r://");
-	background-image: url("s2r://");
-	background-image: url("s2r://");
-	background-image: url("s2r://");
-	background-image: url("s2r://");
 	background-image: url("s2r://panorama/images/custom_game/upgrades/generics/manaburn_png.vtex");
 	background-image: url("s2r://panorama/images/custom_game/upgrades/generics/magic_attack_damage_png.vtex");
 	background-image: url("s2r://panorama/images/custom_game/upgrades/generics/vision_radius_png.vtex");
@@ -356,7 +336,6 @@
 	background-image: url("s2r://panorama/images/custom_game/hero_challenges_icon_mini_png.vtex");
 	background-image: url("s2r://panorama/images/custom_game/loading_screen/banner_peakonline_1_png.vtex");
 	background-image: url("s2r://panorama/images/custom_game/scoreboard/icon_mute_voice_mini_png.vtex");
-	background-image: url("s2r://");
 	background-image: url("s2r://panorama/images/custom_game/collection/currency_icon_19_png.vtex");
 	background-image: url("s2r://panorama/images/custom_game/upgrades/favorite_star_8_19px_png.vtex");
 }

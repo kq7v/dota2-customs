@@ -96,10 +96,6 @@
 		{
 			"value" "8"
 			"operator" "OP_MULTIPLY"
-			"linked_special_values"
-			{
-				"scepter_spawn_duration" "1"
-			}
 		}
 		"attack_speed"
 		{

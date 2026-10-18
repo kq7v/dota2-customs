@@ -8,24 +8,23 @@
 ]]
 
 
-<!-- xml reconstructed by Source 2 Viewer 20.0.0.0 - https://valveresourceformat.github.io -->
+<!-- xml reconstructed by Source 2 Viewer 20.1.0.0 - https://valveresourceformat.github.io -->
 <root>
 	<scripts>
-		<include src="s2r://panorama/layout/custom_game/scripts/utils.vjs_c" />
-		<include src="s2r://panorama/layout/custom_game/scripts/innates_auto_generated.vjs_c" />
-		<include src="s2r://panorama/layout/custom_game/tooltip_extender/tooltip_extender_pregen.vjs_c" />
-		<include src="s2r://panorama/layout/custom_game/tooltip_extender/tooltip_extender_const.vjs_c" />
-		<include src="s2r://panorama/layout/custom_game/tooltip_extender/tooltip_extender.vjs_c" />
+		<include src="s2r://panorama/layout/custom_game/scripts/utils.vjs" />
+		<include src="s2r://panorama/layout/custom_game/scripts/innates_auto_generated.vjs" />
+		<include src="s2r://panorama/layout/custom_game/tooltip_extender/tooltip_extender_pregen.vjs" />
+		<include src="s2r://panorama/layout/custom_game/tooltip_extender/tooltip_extender_const.vjs" />
+		<include src="s2r://panorama/layout/custom_game/tooltip_extender/tooltip_extender.vjs" />
 	</scripts>
 	<styles>
-		<include src="s2r://panorama/layout/custom_game/tooltip_extender/tooltip_extender.vcss_c" />
+		<include src="s2r://panorama/layout/custom_game/tooltip_extender/tooltip_extender.vcss" />
 	</styles>
 	<snippets>
 		<snippet name="TEB_AbilityHint">
 			<Panel class="TEB_AbilityHint TooltipExtenderBlock">
 				<Panel class="TEB_HeaderContainer">
 					<Image class="TEB_Header_DefaultIcon" src="s2r://panorama/images/custom_game/tooltip_extender/info_icon_png.vtex" />
-					<Image class="TEB_Header_SkullIcon" src="s2r://" />
 					<Label text="{s:te_header}" />
 					<Label class="TEB_CustomGameName" text="#addon_game_name" />
 				</Panel>

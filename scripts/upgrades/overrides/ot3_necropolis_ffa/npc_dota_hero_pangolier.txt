@@ -38,17 +38,17 @@
 	{
 		"cooldown_and_manacost"
 		{
-			"value" "14"
+			"value" "12"
 			"operator" "OP_MULTIPLY"
 			"max_count" "5"
 		}
 		"damage"
 		{
-			"value" "55"
+			"value" "45"
 			"operator" "OP_ADD"
 			"linked_special_values"
 			{
-				"hero_shield" "55"
+				"hero_shield" "45"
 			}
 		}
 		"radius"

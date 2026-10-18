@@ -10,6 +10,20 @@
 
 "npc_dota_hero_brewmaster"
 {
+	"brewmaster_liquid_courage"
+	{
+		"min_health_threshold"
+		{
+			"value" "5"
+			"operator" "OP_ADD"
+			"max_count" "10"
+			"linked_special_values"
+			{
+				"status_resist" "3"
+				"max_speed" "5"
+			}
+		}
+	}
 	"brewmaster_thunder_clap"
 	{
 		"cooldown_and_manacost"

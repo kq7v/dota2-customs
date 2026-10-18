@@ -34,35 +34,26 @@
 		}
 		"radius"
 		{
-			"value" "20"
+			"value" "25"
 			"operator" "OP_ADD"
 			"max_count" "10"
 		}
 		"bonus_armor"
 		{
-			"value" "3"
+			"value" "4"
 			"operator" "OP_ADD"
-
-			"linked_abilities"
-			{
-				"axe_battle_hunger"
-				{
-					"scepter_armor_change" "0.5"
-				}
-			}
 		}
 	}
 	"axe_battle_hunger"
 	{
 		"cooldown_and_manacost"
 		{
-			"value" "8"
+			"value" "10"
 			"operator" "OP_MULTIPLY"
-			"max_count" "10"
 		}
 		"damage_per_second"
 		{
-			"value" "5"
+			"value" "6"
 			"operator" "OP_ADD"
 		}
 	}
@@ -70,7 +61,7 @@
 	{
 		"damage"
 		{
-			"value" "20"
+			"value" "25"
 			"operator" "OP_ADD"
 		}
 		"radius"
@@ -89,7 +80,7 @@
 		}
 		"damage"
 		{
-			"value" "25"
+			"value" "30"
 			"operator" "OP_ADD"
 		}
 		"speed_bonus"

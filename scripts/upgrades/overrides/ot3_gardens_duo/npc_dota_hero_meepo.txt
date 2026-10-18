@@ -12,15 +12,9 @@
 {
 	"meepo_poof"
 	{
-		"radius"
-		{
-			"value" "30"
-			"operator" "OP_ADD"
-			"max_count" "10"
-		}
 		"poof_damage"
 		{
-			"value" "20"
+			"value" "25"
 			"operator" "OP_ADD"
 		}
 	}
@@ -28,17 +22,8 @@
 	{
 		"health_steal_heroes"
 		{
-			"value" "8"
+			"value" "9"
 			"operator" "OP_ADD"
-		}
-	}
-	"meepo_petrify"
-	{
-		"hp_restore"
-		{
-			"value" "12.5"
-			"operator" "OP_ADD"
-			"max_count" "6"
 		}
 	}
 }

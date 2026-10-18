@@ -8,6 +8,7 @@
 ]]
 
 
+-- disabled (was not used anyway)
 -- Fired when hero loses item from inventory
 function Events:OnInventoryItemChange(event)
 	local item = EntIndexToHScript(event.item_entindex) ---@type CDOTA_Item

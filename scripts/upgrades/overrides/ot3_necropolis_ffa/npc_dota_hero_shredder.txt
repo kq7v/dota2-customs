@@ -45,17 +45,17 @@
 		}
 		"whirling_damage"
 		{
-			"value" "15"
+			"value" "12"
 			"operator" "OP_ADD"
 			"linked_special_values"
 			{
-				"tree_damage_scale" "2"
+				"tree_damage_scale" "3"
 			}
 			"linked_abilities"
 			{
 				"shredder_flamethrower"
 				{
-					"damage_per_second" "5"
+					"damage_per_second" "3.5"
 				}
 			}
 		}
@@ -69,12 +69,12 @@
 		}
 		"radius"
 		{
-			"value" "35"
+			"value" "30"
 			"operator" "OP_ADD"
 			"max_count" "10"
 			"linked_special_values"
 			{
-				"chain_radius" "35"
+				"chain_radius" "30"
 			}
 		}
 		"damage"
@@ -130,6 +130,10 @@
 		{
 			"value" "8"
 			"operator" "OP_MULTIPLY"
+			"linked_special_values"
+			{
+				"speed" "20"
+			}
 		}
 		"radius"
 		{
@@ -144,7 +148,6 @@
 			"linked_special_values"
 			{
 				"damage_per_second" "3"
-				"speed" "20"
 			}
 		}
 	}

@@ -10,4 +10,109 @@
 
 "npc_dota_hero_templar_assassin"
 {
+	"templar_assassin_inner_peace"
+	{
+		"max_hp_regen"
+		{
+			"value" "21"
+			"operator" "OP_ADD"
+			"linked_special_values"
+			{
+				"max_mana_regen" "14"
+			}
+		}
+	}
+	"templar_assassin_refraction"
+	{
+		"cooldown_and_manacost"
+		{
+			"value" "8"
+			"operator" "OP_MULTIPLY"
+			"max_count" "5"
+		}
+		"instances"
+		{
+			"value" "0.5"
+			"operator" "OP_ADD"
+			"min_rarity" "rare"
+		}
+		"bonus_damage"
+		{
+			"value" "15"
+			"operator" "OP_ADD"
+		}
+	}
+	"templar_assassin_meld"
+	{
+		"cooldown_and_manacost"
+		{
+			"value" "8"
+			"operator" "OP_MULTIPLY"
+		}
+		"bonus_damage"
+		{
+			"value" "40"
+			"operator" "OP_ADD"
+		}
+		"bonus_armor"
+		{
+			"value" "-1"
+			"operator" "OP_ADD"
+			"min_rarity" "rare"
+		}
+	}
+	"templar_assassin_psi_blades"
+	{
+		"attack_spill_pct"
+		{
+			"value" "10"
+			"operator" "OP_ADD"
+			"max_count" "10"
+		}
+		"attack_spill_width"
+		{
+			"value" "10"
+			"operator" "OP_ADD"
+			"max_count" "10"
+			"linked_special_values"
+			{
+				"attack_spill_range" "35"
+			}
+		}
+	}
+	"templar_assassin_psionic_trap"
+	{
+		"cooldown_and_manacost"
+		{
+			"value" "8"
+			"operator" "OP_MULTIPLY"
+			"max_count" "5"
+			"linked_special_values"
+			{
+				"trap_max_charge_duration" "-0.5"
+			}
+			"linked_abilities"
+			{
+				"templar_assassin_trap_teleport"
+				{
+					"cooldown_and_manacost"
+					{
+						"value" "8"
+						"operator" "OP_MULTIPLY"
+					}
+				}
+			}
+		}
+		"trap_bonus_damage"
+		{
+			"value" "100"
+			"operator" "OP_ADD"
+		}
+		"trap_radius"
+		{
+			"value" "30"
+			"operator" "OP_ADD"
+			"max_count" "10"
+		}
+	}
 }

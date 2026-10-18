@@ -8,15 +8,15 @@
 ]]
 
 
-<!-- xml reconstructed by Source 2 Viewer 20.0.0.0 - https://valveresourceformat.github.io -->
+<!-- xml reconstructed by Source 2 Viewer 20.1.0.0 - https://valveresourceformat.github.io -->
 <root>
 	<styles>
-		<include src="s2r://panorama/styles/dotastyles.vcss_c" />
-		<include src="s2r://panorama/layout/custom_game/pick_screen/pick_locker/pick_locker.vcss_c" />
+		<include src="s2r://panorama/styles/dotastyles.vcss" />
+		<include src="s2r://panorama/layout/custom_game/pick_screen/pick_locker/pick_locker.vcss" />
 	</styles>
 	<scripts>
-		<include src="s2r://panorama/layout/custom_game/scripts/utils.vjs_c" />
-		<include src="s2r://panorama/layout/custom_game/pick_screen/pick_locker/pick_locker.vjs_c" />
+		<include src="s2r://panorama/layout/custom_game/scripts/utils.vjs" />
+		<include src="s2r://panorama/layout/custom_game/pick_screen/pick_locker/pick_locker.vjs" />
 	</scripts>
 	<Panel hittest="false">
 		<Button id="CustomRandomButton" class="PickButton" onactivate="PickRandomHero()" onmouseout="UIHideTextTooltip();" onmouseover="UIShowTextTooltip( #DOTA_Hud_Pregame_Random_Tooltip );">

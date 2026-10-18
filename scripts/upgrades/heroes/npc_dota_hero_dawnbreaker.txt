@@ -25,6 +25,14 @@
 			"value" "8"
 			"operator" "OP_MULTIPLY"
 			"max_count" "5"
+			"linked_special_values"
+			{
+				"shard_movement_penalty"
+				{
+					"value" "-7"
+					"operator" "OP_ADD"
+				}
+			}
 		}
 		"swipe_radius"
 		{
@@ -116,7 +124,9 @@
 			"max_count" "10"
 			"linked_special_values"
 			{
-				"airtime_scepter_movement_speed" "40"
+				"AbilityChannelTime" "-0.15"
+				"scepter_channel_time" "-0.15"
+				"scepter_aura_duration" "0.15"
 			}
 		}
 		"radius"
@@ -127,7 +137,6 @@
 			"linked_special_values"
 			{
 				"max_offset_distance" "50"
-				"miss_rate" "5"
 			}
 		}
 		"base_damage"

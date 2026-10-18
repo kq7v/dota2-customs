@@ -251,6 +251,19 @@ TEAMS_LAYOUTS = {
 			[8] = 5,
 		},
 
+		laggy_heroes = {
+			npc_dota_hero_phantom_lancer = true,
+			-- npc_dota_hero_venomancer = true,
+			npc_dota_hero_chaos_knight = true,
+			npc_dota_hero_shadow_shaman = true,
+			npc_dota_hero_spectre = true,
+			npc_dota_hero_undying = true,
+			npc_dota_hero_dark_seer = true,
+			npc_dota_hero_terrorblade = true,
+			npc_dota_hero_meepo = true,
+		},
+		laggy_heroes_max_count = 1,
+
 		min_connected_players = 4,
 	},
 	["ot3_desert_octet"] = {
@@ -301,7 +314,6 @@ TEAMS_LAYOUTS = {
 			[8] = 5,
 		},
 
-		--[[
 		laggy_heroes = {
 			npc_dota_hero_phantom_lancer = true,
 			npc_dota_hero_venomancer = true,
@@ -311,9 +323,9 @@ TEAMS_LAYOUTS = {
 			npc_dota_hero_undying = true,
 			npc_dota_hero_dark_seer = true,
 			npc_dota_hero_terrorblade = true,
+			npc_dota_hero_meepo = true,
 		},
-		laggy_heroes_max_count = 2,
-		]]
+		laggy_heroes_max_count = 1,
 
 		stalemate_game_time_limit = 180,
 
@@ -389,8 +401,8 @@ DEV_ORB_DROP_PINGS = false
 RATING_MULTIPLIER = 0.0125
 RATING_CHANGE_CAP = 20
 
--- 10 minutes for simulated end game, makes sure we won't hog dedicated servers with neverending games
-SIMULATED_END_GAME_DELAY = 600
+-- 3 minutes for simulated end game, makes sure we won't hog dedicated servers with neverending games
+SIMULATED_END_GAME_DELAY = 180
 
 DEVELOPERS = {
 	["76561198132422587"] = true, -- Sanctus Animus

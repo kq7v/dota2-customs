@@ -20,9 +20,13 @@
 		}
 		"debuff_radius"
 		{
-			"value" "35"
+			"value" "15"
 			"operator" "OP_ADD"
 			"max_count" "10"
+			"linked_special_values"
+			{
+				"mres_reduce" "2"
+			}
 		}
 		"impact_damage"
 		{

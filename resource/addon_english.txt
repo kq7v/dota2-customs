@@ -2073,6 +2073,21 @@ If you do not send us your steam URL or steamID we wont be adle to grant you ben
 		"upgrade_DOTA_Tooltip_ability_tinker_deploy_turrets_drop_aoe_radius"			"IMPACT RADIUS"
 		"upgrade_DOTA_Tooltip_ability_shadow_demon_shadow_poison_bonus_stack_damage"			"ADDITIONAL STACK DAMAGE"
 		"upgrade_DOTA_Tooltip_ability_tidehunter_anchor_smash_additional_range"			"BONUS RADIUS"
+		"upgrade_DOTA_Tooltip_ability_venomancer_venomous_gale_tick_interval"			"DOT INTERVAL"
+		"upgrade_DOTA_Tooltip_ability_dawnbreaker_fire_wreath_shard_movement_penalty"			"%SHARD MOVESPEED SLOW"
+		"upgrade_DOTA_Tooltip_ability_dawnbreaker_solar_guardian_AbilityChannelTime"			"CHANNEL TIME"
+		"upgrade_DOTA_Tooltip_ability_dawnbreaker_solar_guardian_scepter_aura_duration"			"SCEPTER AURA DURATION"
+		"upgrade_DOTA_Tooltip_ability_muerta_the_calling_lua_speed_max"			"REVENANT ROTATION SPEED"
+		"upgrade_DOTA_Tooltip_ability_meepo_geomancy_tree_radius"			"TREE RADIUS"
+		"upgrade_DOTA_Tooltip_ability_brewmaster_liquid_courage_min_health_threshold"			"%HEALTH THRESHOLD FOR MIN BONUS"
+		"upgrade_DOTA_Tooltip_ability_ringmaster_funhouse_mirror_images_do_damage_percent_ranged"			"%ILLUSION DAMAGE DEALT"
+		"upgrade_DOTA_Tooltip_ability_ringmaster_funhouse_mirror_images_take_damage_percent"			"%ILLUSION DAMAGE TAKEN"
+		"upgrade_DOTA_Tooltip_ability_ringmaster_strongman_tonic_strength_bonus_base"			"STRENGTH"
+		"upgrade_DOTA_Tooltip_ability_ringmaster_whoopee_cushion_leap_distance"			"JUMP DISTANCE"
+		"upgrade_DOTA_Tooltip_ability_ringmaster_whoopee_cushion_fart_cloud_radius"			"CLOUD RADIUS"
+		"upgrade_DOTA_Tooltip_ability_ringmaster_summon_unicycle_damage_grace_period"			"GRACE PERIOD DURATION"
+		"upgrade_DOTA_Tooltip_ability_ringmaster_summon_unicycle_turn_rate_min"			"TURN RATE"
+		"upgrade_DOTA_Tooltip_ability_ringmaster_summon_unicycle_max_speed"			"MAX SPEED"
 
 
 

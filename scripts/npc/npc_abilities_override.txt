@@ -338,7 +338,7 @@
 	{
 		"AbilityValues"
 		{
-			"AbilityCooldown"				
+			"AbilityCooldown"
 			{
 				"value"			"95"
 				"special_bonus_unique_juggernaut_omnislash_cooldown"			"-12"
@@ -483,7 +483,7 @@
 			"min_range"				"400"
 		}
 	}
-	
+
 	"luna_eclipse"
 	{
 		"AbilityValues"
@@ -863,7 +863,7 @@
 			}
 		}
 	}
-	
+
 	"phantom_lancer_illusory_armaments"
 	{
 		"AbilityValues"
@@ -871,7 +871,7 @@
 			"outgoing_floor"
 			{
 				"value"			"30"
-				"hero_levelup"	"2"	
+				"hero_levelup"	"2"
 				"levelup_interval" "3"
 			}
 		}
@@ -1117,7 +1117,7 @@
 	//		"exp_per_orb"		"50"
 	//	}
 	//}
-	
+
 	"item_eldwurms_edda"
 	{
 		"AbilityCooldown"				"150"
@@ -1316,6 +1316,30 @@
 			"scepter_debuff_duration"
 			{
 				"special_bonus_scepter" "=10"
+			}
+		}
+	}
+
+	"shadow_shaman_fowl_play"
+	{
+		"AbilityValues"
+		{
+			"total_chickens"
+			{
+				"value"				"2"
+				"hero_levelup"				""
+				"levelup_interval"			""
+			}
+		}
+	}
+
+	"monkey_king_wukongs_command"
+	{
+		"AbilityValues"
+		{
+			"scepter_spawn_interval"
+			{
+				"special_bonus_scepter"			"8"
 			}
 		}
 	}

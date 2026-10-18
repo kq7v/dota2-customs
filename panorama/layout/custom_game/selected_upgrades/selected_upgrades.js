@@ -548,7 +548,7 @@ function ShowFavoriteBuildsHint() {
 		FillBasicUpgrades();
 		$.Schedule(1, () => {
 			UpdatePosForUpgradesOnce();
-			HUD.CONTEXT.AddClass("BShowBuildsHint");
+			// HUD.CONTEXT.AddClass("BShowBuildsHint");
 		});
 	});
 }

@@ -10,6 +10,14 @@
 
 "npc_dota_hero_tusk"
 {
+	"tusk_bitter_chill"
+	{
+		"attack_speed_slow"
+		{
+			"value" "15"
+			"operator" "OP_ADD"
+		}
+	}
 	"tusk_tag_team"
 	{
 		"bonus_damage"
@@ -22,13 +30,13 @@
 	{
 		"crit_multiplier"
 		{
-			"value" "15"
+			"value" "10"
 			"operator" "OP_ADD"
 			"linked_abilities"
 			{
 				"tusk_walrus_kick"
 				{
-					"damage" "30"
+					"damage" "20"
 				}
 			}
 		}

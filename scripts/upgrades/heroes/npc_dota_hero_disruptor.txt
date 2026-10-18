@@ -77,23 +77,47 @@
 	{
 		"cooldown_and_manacost"
 		{
-			"value" "12"
+			"value" "8"
 			"operator" "OP_MULTIPLY"
-			"max_count" "5"
+			"max_count" "8"
+			
+			"linked_abilities"
+			{
+				"disruptor_kinetic_fence"
+				{
+					"cooldown_and_manacost"
+					{
+						"value" "8"
+						"operator" "OP_MULTIPLY"
+					}
+				}
+			}
 		}
 		"formation_time"
 		{
 			"value" "-0.1"
 			"operator" "OP_ADD"
 			"max_count" "5"
+			
+			"linked_abilities"
+			{
+				"disruptor_kinetic_fence"
+				{
+					"formation_time"
+					{
+						"value" "-0.1"
+						"operator" "OP_ADD"
+					}
+				}
+			}
 		}
 	}
 	"disruptor_kinetic_fence"
 	{
-		"cooldown_and_manacost"
+		"wall_width"
 		{
-			"value" "12"
-			"operator" "OP_MULTIPLY"
+			"value" "200"
+			"operator" "OP_ADD"
 			"max_count" "5"
 		}
 	}

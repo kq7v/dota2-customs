@@ -8,17 +8,17 @@
 ]]
 
 
-<!-- xml reconstructed by Source 2 Viewer 20.0.0.0 - https://valveresourceformat.github.io -->
+<!-- xml reconstructed by Source 2 Viewer 20.1.0.0 - https://valveresourceformat.github.io -->
 <root>
 	<styles>
-		<include src="s2r://panorama/styles/dotastyles.vcss_c" />
-		<include src="s2r://panorama/layout/custom_game/chat_wheel/chat_wheel.vcss_c" />
-		<include src="s2r://panorama/layout/custom_game/collection/chat_wheel/chat_wheel_colors_style.vcss_c" />
+		<include src="s2r://panorama/styles/dotastyles.vcss" />
+		<include src="s2r://panorama/layout/custom_game/chat_wheel/chat_wheel.vcss" />
+		<include src="s2r://panorama/layout/custom_game/collection/chat_wheel/chat_wheel_colors_style.vcss" />
 	</styles>
 	<scripts>
-		<include src="s2r://panorama/layout/custom_game/scripts/utils.vjs_c" />
-		<include src="s2r://panorama/layout/custom_game/chat_wheel/chat_wheel_const.vjs_c" />
-		<include src="s2r://panorama/layout/custom_game/chat_wheel/chat_wheel.vjs_c" />
+		<include src="s2r://panorama/layout/custom_game/scripts/utils.vjs" />
+		<include src="s2r://panorama/layout/custom_game/chat_wheel/chat_wheel_const.vjs" />
+		<include src="s2r://panorama/layout/custom_game/chat_wheel/chat_wheel.vjs" />
 	</scripts>
 	<snippets>
 		<snippet name="CW_Phrase">

@@ -10,6 +10,15 @@
 
 "npc_dota_hero_muerta"
 {
+	"muerta_supernatural"
+	{
+		"max_stacks"
+		{
+			"value" "6"
+			"operator" "OP_ADD"
+			"max_count" "5"
+		}
+	}
 	"muerta_dead_shot"
 	{
 		"cooldown_and_manacost"
@@ -39,6 +48,12 @@
 			"multiplicative_target" "-60"
 			"multiplicative_base_value" "-20"
 		}
+		"speed_max"
+		{
+			"value" "0.1"
+			"operator" "OP_ADD"
+			"max_count" "10"
+		}
 	}
 	"muerta_gunslinger"
 	{
@@ -53,6 +68,24 @@
 			"value" "25"
 			"operator" "OP_ADD"
 			"max_count" "10"
+		}
+	}
+	"muerta_spectral_slug"
+	{
+		"cooldown_and_manacost"
+		{
+			"value" "8"
+			"operator" "OP_MULTIPLY"
+			"max_count" "10"
+		}
+		"damage"
+		{
+			"value" "45"
+			"operator" "OP_ADD"
+			"linked_special_values"
+			{
+				"bonus_spell_damage_pct" "-2"
+			}
 		}
 	}
 	"muerta_pierce_the_veil"

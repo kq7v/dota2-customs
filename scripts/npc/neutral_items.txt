@@ -265,7 +265,7 @@
 				"item_demonicon"					"1"
 				"item_minotaur_horn"				"1"
 				"item_spider_legs"					"1"
-				"item_riftshadow_prism"				"1"
+				// "item_riftshadow_prism"				"1"
 				"item_dezun_bloodrite"				"1"
 				"item_divine_regalia"				"1"
 				"item_harmonizer"					"1"

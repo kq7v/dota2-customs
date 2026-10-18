@@ -63,7 +63,7 @@ function ApplyOrbBonuses(winrateOrbs) {
 
 		const orbIconImage =
 			bonusOrbBackground.FindChild("BonusOrbIcon") || $.CreatePanel("Panel", bonusOrbBackground, "BonusOrbIcon");
-		orbIconImage.style.backgroundImage = `url("file://{resources}/images/custom_game/upgrades/orb_common_bonus_2.png")`;
+		orbIconImage.style.backgroundImage = `url("file://{images}/custom_game/upgrades/orb_common_bonus_2.png")`;
 		orbIconImage.style.backgroundRepeat = "no-repeat";
 		orbIconImage.style.backgroundSize = "51px 31px";
 		orbIconImage.style.backgroundPosition = "-32px 0px";

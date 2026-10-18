@@ -47,7 +47,7 @@
 			"operator" "OP_ADD"
 			"talents"
 			{
-				"special_bonus_unique_wisp"		"x1.5"
+				"special_bonus_unique_wisp"		"x1.4"
 			}
 			"linked_special_values"
 			{
@@ -57,7 +57,7 @@
 					"operator" "OP_ADD"
 					"talents"
 					{
-						"special_bonus_unique_wisp"		"x1.5"
+						"special_bonus_unique_wisp"		"x1.4"
 					}
 				}
 			}

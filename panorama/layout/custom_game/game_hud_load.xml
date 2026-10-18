@@ -8,12 +8,12 @@
 ]]
 
 
-<!-- xml reconstructed by Source 2 Viewer 20.0.0.0 - https://valveresourceformat.github.io -->
+<!-- xml reconstructed by Source 2 Viewer 20.1.0.0 - https://valveresourceformat.github.io -->
 <root>
 	<scripts>
-		<include src="s2r://panorama/layout/custom_game/scripts/utils.vjs_c" />
-		<include src="s2r://panorama/layout/custom_game/scripts/override_dota_ui.vjs_c" />
-		<include src="s2r://panorama/layout/custom_game/scripts/ping_modifiers_fix.vjs_c" />
+		<include src="s2r://panorama/layout/custom_game/scripts/utils.vjs" />
+		<include src="s2r://panorama/layout/custom_game/scripts/override_dota_ui.vjs" />
+		<include src="s2r://panorama/layout/custom_game/scripts/ping_modifiers_fix.vjs" />
 	</scripts>
 	<Panel style="visibility: collapse;" hittest="false" />
 </root>

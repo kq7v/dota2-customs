@@ -150,12 +150,8 @@
 		}
 		"damage_per_second"
 		{
-			"value" "20"
+			"value" "25"
 			"operator" "OP_ADD"
-			"talents"
-			{
-				"special_bonus_unique_earth_spirit_8"		"x1.25"
-			}
 		}
 	}
 }

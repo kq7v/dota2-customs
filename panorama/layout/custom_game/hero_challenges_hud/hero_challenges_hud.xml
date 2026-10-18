@@ -8,16 +8,16 @@
 ]]
 
 
-<!-- xml reconstructed by Source 2 Viewer 20.0.0.0 - https://valveresourceformat.github.io -->
+<!-- xml reconstructed by Source 2 Viewer 20.1.0.0 - https://valveresourceformat.github.io -->
 <root>
 	<styles>
-		<include src="s2r://panorama/styles/dotastyles.vcss_c" />
-		<include src="s2r://panorama/layout/custom_game/hero_challenges_hud/hero_challenges_hud.vcss_c" />
+		<include src="s2r://panorama/styles/dotastyles.vcss" />
+		<include src="s2r://panorama/layout/custom_game/hero_challenges_hud/hero_challenges_hud.vcss" />
 	</styles>
 	<scripts>
-		<include src="s2r://panorama/layout/custom_game/scripts/utils.vjs_c" />
-		<include src="s2r://panorama/layout/custom_game/pick_screen/hero_challenges/hero_challenges_const.vjs_c" />
-		<include src="s2r://panorama/layout/custom_game/hero_challenges_hud/hero_challenges_hud.vjs_c" />
+		<include src="s2r://panorama/layout/custom_game/scripts/utils.vjs" />
+		<include src="s2r://panorama/layout/custom_game/pick_screen/hero_challenges/hero_challenges_const.vjs" />
+		<include src="s2r://panorama/layout/custom_game/hero_challenges_hud/hero_challenges_hud.vjs" />
 	</scripts>
 	<Panel class="CustomChallenge_HudRoot" hittest="true" onactivate="PingChallengeProgress()">
 		<Button class="CC_H_SlideButton" onactivate="ToggleMinimizeChallenge()">

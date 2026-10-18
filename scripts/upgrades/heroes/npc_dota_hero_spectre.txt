@@ -28,9 +28,8 @@
 	{
 		"cooldown_and_manacost"
 		{
-			"value" "8"
+			"value" "10"
 			"operator" "OP_MULTIPLY"
-			"max_count" "8"
 			"linked_special_values"
 			{
 				"speed" "80"
@@ -38,7 +37,7 @@
 		}
 		"damage"
 		{
-			"value" "30"
+			"value" "40"
 			"operator" "OP_ADD"
 		}
 		"dagger_radius"
@@ -86,7 +85,7 @@
 	{
 		"max_radius"
 		{
-			"value" "30"
+			"value" "35"
 			"operator" "OP_ADD"
 			"max_count" "10"
 		}

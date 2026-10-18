@@ -40,8 +40,8 @@
 				"illusion_incoming_damage_total_tooltip"
 				{
 					"value" "-22.5"
-				
 					"operator" "OP_MULTIPLY"
+					
 					"multiplicative_target" "50"
 					"multiplicative_base_value"	"250"
 				}

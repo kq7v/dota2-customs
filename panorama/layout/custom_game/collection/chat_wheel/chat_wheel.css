@@ -8,7 +8,7 @@
 ]]
 
 
-/* Prettified by Source 2 Viewer 20.0.0.0 - https://valveresourceformat.github.io */
+/* Prettified by Source 2 Viewer 20.1.0.0 - https://valveresourceformat.github.io */
 
 .Collection_ChatWheel_Root
 {
@@ -319,7 +319,7 @@
 
 #CW_AC_B_Emojies:hover Label
 {
-	background-image: url("s2r://panorama/images/custom_game/collection/chat_wheel/emoji_hover_png.vtex"), url("s2r://");
+	background-image: url("s2r://panorama/images/custom_game/collection/chat_wheel/emoji_hover_png.vtex"), url("s2r://panorama/images/custom_game/collection/chat_wheel/emoji_png.vtex");
 }
 
 #CW_AC_B_Emojies:selected Label
@@ -802,7 +802,6 @@
 	wash-color: #aabbe1;
 	text-shadow: black 0 0px 1px 2;
 	padding-left: 20px;
-	background-image: url("s2r://");
 	background-size: 15px;
 	background-repeat: no-repeat;
 	background-position: 0% 50%;

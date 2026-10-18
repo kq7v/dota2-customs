@@ -50,14 +50,8 @@ function venomancer_plague_ward_custom:OnSpellStart(keys)
 	ParticleManager:ReleaseParticleIndex(spawn_fx)
 
 	local multiplier = caster.venomous_gale_shard_flag and shard_multiplier or 1
-	local plague_ward = CreateUnitByName(
-		"npc_dota_venomancer_plague_ward_" .. math.min(self:GetLevel(), 4),
-		position,
-		true,
-		caster,
-		caster,
-		caster:GetTeamNumber()
-	)
+	local plague_ward =
+		CreateUnitByName("npc_dota_venomancer_plague_ward", position, true, caster, caster, caster:GetTeamNumber())
 	plague_ward:EmitSound("Hero_Venomancer.Plague_Ward")
 
 	local ward_duration = self:GetSpecialValueFor("duration")

@@ -10,13 +10,26 @@
 
 "npc_dota_hero_spectre"
 {
+	"spectre_desolate"
+	{
+		"bonus_damage"
+		{
+			"value" "5"
+			"operator" "OP_ADD"
+		}
+		"radius"
+		{
+			"value" "-35"
+			"operator" "OP_ADD"
+			"max_count" "10"
+		}
+	}
 	"spectre_spectral_dagger"
 	{
 		"cooldown_and_manacost"
 		{
-			"value" "8"
+			"value" "10"
 			"operator" "OP_MULTIPLY"
-			"max_count" "8"
 			"linked_special_values"
 			{
 				"speed" "80"
@@ -24,7 +37,7 @@
 		}
 		"damage"
 		{
-			"value" "25"
+			"value" "35"
 			"operator" "OP_ADD"
 		}
 		"dagger_radius"
@@ -34,29 +47,11 @@
 			"max_count" "10"
 		}
 	}
-	"spectre_desolate"
-	{
-		"bonus_damage"
-		{
-			"value" "5"
-			"operator" "OP_ADD"
-			"facets"
-			{
-				"1" "10"
-			}
-		}
-		"radius"
-		{
-			"value" "-35"
-			"operator" "OP_ADD"
-			"max_count" "10"
-		}
-	}
 	"spectre_dispersion"
 	{
 		"max_radius"
 		{
-			"value" "25"
+			"value" "30"
 			"operator" "OP_ADD"
 			"max_count" "10"
 		}

@@ -8,18 +8,18 @@
 ]]
 
 
-<!-- xml reconstructed by Source 2 Viewer 20.0.0.0 - https://valveresourceformat.github.io -->
+<!-- xml reconstructed by Source 2 Viewer 20.1.0.0 - https://valveresourceformat.github.io -->
 <root>
 	<styles>
-		<include src="s2r://panorama/styles/dotastyles.vcss_c" />
-		<include src="s2r://panorama/layout/custom_game/collection/profile/profile.vcss_c" />
+		<include src="s2r://panorama/styles/dotastyles.vcss" />
+		<include src="s2r://panorama/layout/custom_game/collection/profile/profile.vcss" />
 	</styles>
 	<scripts>
-		<include src="s2r://panorama/layout/custom_game/scripts/utils.vjs_c" />
-		<include src="s2r://panorama/layout/custom_game/scripts/backend_cache.vjs_c" />
-		<include src="s2r://panorama/layout/custom_game/collection/const.vjs_c" />
-		<include src="s2r://panorama/layout/custom_game/leaderboard/leaderboard_const.vjs_c" />
-		<include src="s2r://panorama/layout/custom_game/collection/profile/profile.vjs_c" />
+		<include src="s2r://panorama/layout/custom_game/scripts/utils.vjs" />
+		<include src="s2r://panorama/layout/custom_game/scripts/backend_cache.vjs" />
+		<include src="s2r://panorama/layout/custom_game/collection/const.vjs" />
+		<include src="s2r://panorama/layout/custom_game/leaderboard/leaderboard_const.vjs" />
+		<include src="s2r://panorama/layout/custom_game/collection/profile/profile.vjs" />
 	</scripts>
 	<snippets>
 		<snippet name="C_Profile_Button">

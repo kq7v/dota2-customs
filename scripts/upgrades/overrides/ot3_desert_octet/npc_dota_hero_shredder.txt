@@ -45,11 +45,11 @@
 		}
 		"whirling_damage"
 		{
-			"value" "21"
+			"value" "24"
 			"operator" "OP_ADD"
 			"linked_special_values"
 			{
-				"tree_damage_scale" "3"
+				"tree_damage_scale" "6"
 			}
 			"linked_abilities"
 			{
@@ -69,17 +69,17 @@
 		}
 		"radius"
 		{
-			"value" "40"
+			"value" "60"
 			"operator" "OP_ADD"
-			"max_count" "10"
+			"max_count" "5"
 			"linked_special_values"
 			{
-				"chain_radius" "40"
+				"chain_radius" "60"
 			}
 		}
 		"damage"
 		{
-			"value" "30"
+			"value" "40"
 			"operator" "OP_ADD"
 		}
 	}
@@ -101,7 +101,7 @@
 		}
 		"bonus_hp_regen"
 		{
-			"value" "0.2"
+			"value" "0.25"
 			"operator" "OP_ADD"
 			"linked_special_values"
 			{
@@ -128,8 +128,12 @@
 	{
 		"cooldown_and_manacost"
 		{
-			"value" "11"
+			"value" "10"
 			"operator" "OP_MULTIPLY"
+			"linked_special_values"
+			{
+				"speed" "25"
+			}
 		}
 		"radius"
 		{
@@ -139,12 +143,11 @@
 		}
 		"pass_damage"
 		{
-			"value" "8"
+			"value" "10"
 			"operator" "OP_ADD"
 			"linked_special_values"
 			{
-				"damage_per_second" "4"
-				"speed" "25"
+				"damage_per_second" "5"
 			}
 		}
 	}

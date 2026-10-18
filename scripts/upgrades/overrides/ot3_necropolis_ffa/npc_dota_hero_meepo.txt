@@ -12,11 +12,6 @@
 {
 	"meepo_poof"
 	{
-		"cooldown_and_manacost"
-		{
-			"value" "8"
-			"operator" "OP_MULTIPLY"
-		}
 		"poof_damage"
 		{
 			"value" "20"

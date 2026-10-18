@@ -210,4 +210,9 @@
 	{
 		//"Ability16"		"special_bonus_unique_techies_ot3"
 	}
+
+	"npc_dota_hero_monkey_king"
+	{
+		"Ability17"		"special_bonus_agility_40"
+	}
 }

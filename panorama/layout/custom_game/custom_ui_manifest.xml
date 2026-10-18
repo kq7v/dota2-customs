@@ -8,64 +8,64 @@
 ]]
 
 
-<!-- xml reconstructed by Source 2 Viewer 20.0.0.0 - https://valveresourceformat.github.io -->
+<!-- xml reconstructed by Source 2 Viewer 20.1.0.0 - https://valveresourceformat.github.io -->
 <root>
 	<styles>
-		<include src="s2r://panorama/layout/custom_game/precache.vcss_c" />
+		<include src="s2r://panorama/layout/custom_game/precache.vcss" />
 	</styles>
 	<scripts>
-		<include src="s2r://panorama/layout/custom_game/scripts/config.vjs_c" />
-		<include src="s2r://panorama/layout/custom_game/scripts/vector.vjs_c" />
-		<include src="s2r://panorama/layout/custom_game/scripts/protected_events.vjs_c" />
-		<include src="s2r://panorama/layout/custom_game/scripts/utils.vjs_c" />
-		<include src="s2r://panorama/layout/custom_game/scripts/keybinds_handler.vjs_c" />
-		<include src="s2r://panorama/layout/custom_game/scripts/collection_generated.vjs_c" />
-		<include src="s2r://panorama/layout/custom_game/scripts/inventory.vjs_c" />
-		<include src="s2r://panorama/layout/custom_game/scripts/player.vjs_c" />
-		<include src="s2r://panorama/layout/custom_game/scripts/events.vjs_c" />
-		<include src="s2r://panorama/layout/custom_game/scripts/display_custom_error.vjs_c" />
-		<include src="s2r://panorama/layout/custom_game/scripts/upgrades.vjs_c" />
-		<include src="s2r://panorama/layout/custom_game/scripts/fountain_range.vjs_c" />
-		<include src="s2r://panorama/layout/custom_game/scripts/fix_dota_shop.vjs_c" />
+		<include src="s2r://panorama/layout/custom_game/scripts/config.vjs" />
+		<include src="s2r://panorama/layout/custom_game/scripts/vector.vjs" />
+		<include src="s2r://panorama/layout/custom_game/scripts/protected_events.vjs" />
+		<include src="s2r://panorama/layout/custom_game/scripts/utils.vjs" />
+		<include src="s2r://panorama/layout/custom_game/scripts/keybinds_handler.vjs" />
+		<include src="s2r://panorama/layout/custom_game/scripts/collection_generated.vjs" />
+		<include src="s2r://panorama/layout/custom_game/scripts/inventory.vjs" />
+		<include src="s2r://panorama/layout/custom_game/scripts/player.vjs" />
+		<include src="s2r://panorama/layout/custom_game/scripts/events.vjs" />
+		<include src="s2r://panorama/layout/custom_game/scripts/display_custom_error.vjs" />
+		<include src="s2r://panorama/layout/custom_game/scripts/upgrades.vjs" />
+		<include src="s2r://panorama/layout/custom_game/scripts/fountain_range.vjs" />
+		<include src="s2r://panorama/layout/custom_game/scripts/fix_dota_shop.vjs" />
 	</scripts>
 	<Panel>
-		<CustomUIElement type="GameSetup" layoutfile="s2r://panorama/layout/custom_game/team_selection/team_selection.vxml_c" />
-		<CustomUIElement type="HeroSelection" layoutfile="s2r://panorama/layout/custom_game/pick_screen/multiteam_topbar/multiteam_hero_select_overlay.vxml_c" />
-		<CustomUIElement type="HeroSelection" layoutfile="s2r://panorama/layout/custom_game/pick_screen/pick_locker/pick_locker.vxml_c" />
-		<CustomUIElement type="HeroSelection" layoutfile="s2r://panorama/layout/custom_game/pick_screen/winrate_orbs/winrate_orbs.vxml_c" />
-		<CustomUIElement type="HeroSelection" layoutfile="s2r://panorama/layout/custom_game/pick_screen/loadout_promo/loadout_promo.vxml_c" />
-		<CustomUIElement type="HeroSelection" layoutfile="s2r://panorama/layout/custom_game/pick_screen/hero_challenges/hero_challenges.vxml_c" />
-		<CustomUIElement type="HeroSelection" layoutfile="s2r://panorama/layout/custom_game/tooltip_extender/tooltip_extender.vxml_c" />
-		<CustomUIElement type="HeroSelection" layoutfile="s2r://panorama/layout/custom_game/custom_chat/custom_chat_hero_selection.vxml_c" />
-		<CustomUIElement type="PreGameStrategy" layoutfile="s2r://panorama/layout/custom_game/pick_screen/multiteam_topbar/multiteam_hero_select_overlay.vxml_c" />
-		<CustomUIElement type="HudTopBar" layoutfile="s2r://panorama/layout/custom_game/top_bar/top_bar.vxml_c" />
-		<CustomUIElement type="FlyoutScoreboard" layoutfile="s2r://panorama/layout/custom_game/scoreboard/scoreboard.vxml_c" />
-		<CustomUIElement type="Hud" layoutfile="s2r://panorama/layout/custom_game/hero_challenges_hud/hero_challenges_hud.vxml_c" />
-		<CustomUIElement type="Hud" layoutfile="s2r://panorama/layout/custom_game/top_menu/top_menu.vxml_c" />
-		<CustomUIElement type="Hud" layoutfile="s2r://panorama/layout/custom_game/ot3_demo/ot3_demo.vxml_c" />
-		<CustomUIElement type="Hud" layoutfile="s2r://panorama/layout/custom_game/minimap_overlay/minimap_overlay.vxml_c" />
-		<CustomUIElement type="Hud" layoutfile="s2r://panorama/layout/custom_game/game_hud_load.vxml_c" />
-		<CustomUIElement type="Hud" layoutfile="s2r://panorama/layout/custom_game/chat_wheel/chat_wheel.vxml_c" />
-		<CustomUIElement type="Hud" layoutfile="s2r://panorama/layout/custom_game/notifications/notifications.vxml_c" />
-		<CustomUIElement type="Hud" layoutfile="s2r://panorama/layout/custom_game/cosmetic_abilities/cosmetic_abilities.vxml_c" />
-		<CustomUIElement type="Hud" layoutfile="s2r://panorama/layout/custom_game/mail/mail.vxml_c" />
-		<CustomUIElement type="Hud" layoutfile="s2r://panorama/layout/custom_game/early_consumables_menu/early_consumables_menu.vxml_c" />
-		<CustomUIElement type="Hud" layoutfile="s2r://panorama/layout/custom_game/leaderboard/leaderboard.vxml_c" />
-		<CustomUIElement type="Hud" layoutfile="s2r://panorama/layout/custom_game/settings/settings.vxml_c" />
-		<CustomUIElement type="Hud" layoutfile="s2r://panorama/layout/custom_game/kick_voting/kick_voting.vxml_c" />
-		<CustomUIElement type="Hud" layoutfile="s2r://panorama/layout/custom_game/custom_hud_message/custom_hud_message.vxml_c" />
-		<CustomUIElement type="Hud" layoutfile="s2r://panorama/layout/custom_game/season_reset_notification/season_reset_notification.vxml_c" />
-		<CustomUIElement type="Hud" layoutfile="s2r://panorama/layout/custom_game/end_screen/end_screen.vxml_c" />
-		<CustomUIElement type="Hud" layoutfile="s2r://panorama/layout/custom_game/feedback/feedback.vxml_c" />
-		<CustomUIElement type="FlyoutScoreboard" layoutfile="s2r://panorama/layout/custom_game/selected_upgrades/selected_upgrades.vxml_c" />
-		<CustomUIElement type="Hud" layoutfile="s2r://panorama/layout/custom_game/collection/collection.vxml_c" />
-		<CustomUIElement type="Hud" layoutfile="s2r://panorama/layout/custom_game/pregame_notification/pregame_notification.vxml_c" />
-		<CustomUIElement type="Hud" layoutfile="s2r://panorama/layout/custom_game/toasts/toasts.vxml_c" />
-		<CustomUIElement type="Hud" layoutfile="s2r://panorama/layout/custom_game/payments/payments.vxml_c" />
-		<CustomUIElement type="Hud" layoutfile="s2r://panorama/layout/custom_game/upgrades_panel/upgrades_panel.vxml_c" />
-		<CustomUIElement type="Hud" layoutfile="s2r://panorama/layout/custom_game/promo_events/promo_events.vxml_c" />
-		<CustomUIElement type="Hud" layoutfile="s2r://panorama/layout/custom_game/custom_chat/custom_chat.vxml_c" />
-		<Panel layoutfile="s2r://panorama/layout/custom_game/collection/item_tooltip/item_tooltip.vxml_c" />
-		<Panel layoutfile="s2r://panorama/layout/custom_game/leaderboard/rewards_tooltip/rewards_tooltip.vxml_c" />
+		<CustomUIElement type="GameSetup" layoutfile="s2r://panorama/layout/custom_game/team_selection/team_selection.vxml" />
+		<CustomUIElement type="HeroSelection" layoutfile="s2r://panorama/layout/custom_game/pick_screen/multiteam_topbar/multiteam_hero_select_overlay.vxml" />
+		<CustomUIElement type="HeroSelection" layoutfile="s2r://panorama/layout/custom_game/pick_screen/pick_locker/pick_locker.vxml" />
+		<CustomUIElement type="HeroSelection" layoutfile="s2r://panorama/layout/custom_game/pick_screen/winrate_orbs/winrate_orbs.vxml" />
+		<CustomUIElement type="HeroSelection" layoutfile="s2r://panorama/layout/custom_game/pick_screen/loadout_promo/loadout_promo.vxml" />
+		<CustomUIElement type="HeroSelection" layoutfile="s2r://panorama/layout/custom_game/pick_screen/hero_challenges/hero_challenges.vxml" />
+		<CustomUIElement type="HeroSelection" layoutfile="s2r://panorama/layout/custom_game/tooltip_extender/tooltip_extender.vxml" />
+		<CustomUIElement type="HeroSelection" layoutfile="s2r://panorama/layout/custom_game/custom_chat/custom_chat_hero_selection.vxml" />
+		<CustomUIElement type="PreGameStrategy" layoutfile="s2r://panorama/layout/custom_game/pick_screen/multiteam_topbar/multiteam_hero_select_overlay.vxml" />
+		<CustomUIElement type="HudTopBar" layoutfile="s2r://panorama/layout/custom_game/top_bar/top_bar.vxml" />
+		<CustomUIElement type="FlyoutScoreboard" layoutfile="s2r://panorama/layout/custom_game/scoreboard/scoreboard.vxml" />
+		<CustomUIElement type="Hud" layoutfile="s2r://panorama/layout/custom_game/hero_challenges_hud/hero_challenges_hud.vxml" />
+		<CustomUIElement type="Hud" layoutfile="s2r://panorama/layout/custom_game/top_menu/top_menu.vxml" />
+		<CustomUIElement type="Hud" layoutfile="s2r://panorama/layout/custom_game/ot3_demo/ot3_demo.vxml" />
+		<CustomUIElement type="Hud" layoutfile="s2r://panorama/layout/custom_game/minimap_overlay/minimap_overlay.vxml" />
+		<CustomUIElement type="Hud" layoutfile="s2r://panorama/layout/custom_game/game_hud_load.vxml" />
+		<CustomUIElement type="Hud" layoutfile="s2r://panorama/layout/custom_game/chat_wheel/chat_wheel.vxml" />
+		<CustomUIElement type="Hud" layoutfile="s2r://panorama/layout/custom_game/notifications/notifications.vxml" />
+		<CustomUIElement type="Hud" layoutfile="s2r://panorama/layout/custom_game/cosmetic_abilities/cosmetic_abilities.vxml" />
+		<CustomUIElement type="Hud" layoutfile="s2r://panorama/layout/custom_game/mail/mail.vxml" />
+		<CustomUIElement type="Hud" layoutfile="s2r://panorama/layout/custom_game/early_consumables_menu/early_consumables_menu.vxml" />
+		<CustomUIElement type="Hud" layoutfile="s2r://panorama/layout/custom_game/leaderboard/leaderboard.vxml" />
+		<CustomUIElement type="Hud" layoutfile="s2r://panorama/layout/custom_game/settings/settings.vxml" />
+		<CustomUIElement type="Hud" layoutfile="s2r://panorama/layout/custom_game/kick_voting/kick_voting.vxml" />
+		<CustomUIElement type="Hud" layoutfile="s2r://panorama/layout/custom_game/custom_hud_message/custom_hud_message.vxml" />
+		<CustomUIElement type="Hud" layoutfile="s2r://panorama/layout/custom_game/season_reset_notification/season_reset_notification.vxml" />
+		<CustomUIElement type="Hud" layoutfile="s2r://panorama/layout/custom_game/end_screen/end_screen.vxml" />
+		<CustomUIElement type="Hud" layoutfile="s2r://panorama/layout/custom_game/feedback/feedback.vxml" />
+		<CustomUIElement type="FlyoutScoreboard" layoutfile="s2r://panorama/layout/custom_game/selected_upgrades/selected_upgrades.vxml" />
+		<CustomUIElement type="Hud" layoutfile="s2r://panorama/layout/custom_game/collection/collection.vxml" />
+		<CustomUIElement type="Hud" layoutfile="s2r://panorama/layout/custom_game/pregame_notification/pregame_notification.vxml" />
+		<CustomUIElement type="Hud" layoutfile="s2r://panorama/layout/custom_game/toasts/toasts.vxml" />
+		<CustomUIElement type="Hud" layoutfile="s2r://panorama/layout/custom_game/payments/payments.vxml" />
+		<CustomUIElement type="Hud" layoutfile="s2r://panorama/layout/custom_game/upgrades_panel/upgrades_panel.vxml" />
+		<CustomUIElement type="Hud" layoutfile="s2r://panorama/layout/custom_game/promo_events/promo_events.vxml" />
+		<CustomUIElement type="Hud" layoutfile="s2r://panorama/layout/custom_game/custom_chat/custom_chat.vxml" />
+		<Panel layoutfile="s2r://panorama/layout/custom_game/collection/item_tooltip/item_tooltip.vxml" />
+		<Panel layoutfile="s2r://panorama/layout/custom_game/leaderboard/rewards_tooltip/rewards_tooltip.vxml" />
 	</Panel>
 </root>

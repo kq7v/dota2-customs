@@ -22,9 +22,19 @@
 	{
 		"cooldown_and_manacost"
 		{
-			"value" "10"
+			"value" "5"
 			"operator" "OP_MULTIPLY"
-			"max_count" "10"
+			"linked_special_values"
+			{
+				"tick_interval"
+				{
+					"value" "-0.18"
+					"operator" "OP_MULTIPLY"
+
+					"multiplicative_target"	"0.3"
+					"multiplicative_base_value"	"3"
+				}
+			}
 		}
 		"strike_damage"
 		{
@@ -103,9 +113,13 @@
 		}
 		"debuff_radius"
 		{
-			"value" "40"
+			"value" "20"
 			"operator" "OP_ADD"
 			"max_count" "10"
+			"linked_special_values"
+			{
+				"mres_reduce" "2"
+			}
 		}
 		"impact_damage"
 		{

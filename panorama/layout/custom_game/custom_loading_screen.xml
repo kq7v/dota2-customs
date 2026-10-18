@@ -8,16 +8,16 @@
 ]]
 
 
-<!-- xml reconstructed by Source 2 Viewer 20.0.0.0 - https://valveresourceformat.github.io -->
+<!-- xml reconstructed by Source 2 Viewer 20.1.0.0 - https://valveresourceformat.github.io -->
 <root>
 	<styles>
-		<include src="s2r://panorama/styles/dotastyles.vcss_c" />
-		<include src="s2r://panorama/layout/custom_game/styles/custom_loading_screen.vcss_c" />
-		<include src="s2r://panorama/layout/custom_game/custom_loading_screen/custom_loading_screen.vcss_c" />
+		<include src="s2r://panorama/styles/dotastyles.vcss" />
+		<include src="s2r://panorama/layout/custom_game/styles/custom_loading_screen.vcss" />
+		<include src="s2r://panorama/layout/custom_game/custom_loading_screen/custom_loading_screen.vcss" />
 	</styles>
 	<scripts>
-		<include src="s2r://panorama/layout/custom_game/custom_loading_screen/custom_loading_screen_utils.vjs_c" />
-		<include src="s2r://panorama/layout/custom_game/custom_loading_screen/custom_loading_screen.vjs_c" />
+		<include src="s2r://panorama/layout/custom_game/custom_loading_screen/custom_loading_screen_utils.vjs" />
+		<include src="s2r://panorama/layout/custom_game/custom_loading_screen/custom_loading_screen.vjs" />
 	</scripts>
 	<snippets>
 		<snippet name="LS_Player">

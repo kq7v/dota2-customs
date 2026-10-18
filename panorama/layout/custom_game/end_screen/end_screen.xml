@@ -8,22 +8,22 @@
 ]]
 
 
-<!-- xml reconstructed by Source 2 Viewer 20.0.0.0 - https://valveresourceformat.github.io -->
+<!-- xml reconstructed by Source 2 Viewer 20.1.0.0 - https://valveresourceformat.github.io -->
 <root>
 	<styles>
-		<include src="s2r://panorama/styles/dotastyles.vcss_c" />
-		<include src="s2r://panorama/layout/custom_game/end_screen/end_screen.vcss_c" />
-		<include src="s2r://panorama/layout/custom_game/party_highlighter/party_highlighter.vcss_c" />
-		<include src="s2r://panorama/layout/custom_game/collection/cosmetics/cosmetics_rarities.vcss_c" />
+		<include src="s2r://panorama/styles/dotastyles.vcss" />
+		<include src="s2r://panorama/layout/custom_game/end_screen/end_screen.vcss" />
+		<include src="s2r://panorama/layout/custom_game/party_highlighter/party_highlighter.vcss" />
+		<include src="s2r://panorama/layout/custom_game/collection/cosmetics/cosmetics_rarities.vcss" />
 	</styles>
 	<scripts>
-		<include src="s2r://panorama/layout/custom_game/scripts/utils.vjs_c" />
-		<include src="s2r://panorama/layout/custom_game/party_highlighter/party_highlighter.vjs_c" />
-		<include src="s2r://panorama/layout/custom_game/scripts/sequence.vjs_c" />
-		<include src="s2r://panorama/layout/custom_game/scripts/sequence_skippable.vjs_c" />
-		<include src="s2r://panorama/layout/custom_game/pick_screen/hero_challenges/hero_challenges_const.vjs_c" />
-		<include src="s2r://panorama/layout/custom_game/end_screen/end_screen_const.vjs_c" />
-		<include src="s2r://panorama/layout/custom_game/end_screen/end_screen.vjs_c" />
+		<include src="s2r://panorama/layout/custom_game/scripts/utils.vjs" />
+		<include src="s2r://panorama/layout/custom_game/party_highlighter/party_highlighter.vjs" />
+		<include src="s2r://panorama/layout/custom_game/scripts/sequence.vjs" />
+		<include src="s2r://panorama/layout/custom_game/scripts/sequence_skippable.vjs" />
+		<include src="s2r://panorama/layout/custom_game/pick_screen/hero_challenges/hero_challenges_const.vjs" />
+		<include src="s2r://panorama/layout/custom_game/end_screen/end_screen_const.vjs" />
+		<include src="s2r://panorama/layout/custom_game/end_screen/end_screen.vjs" />
 	</scripts>
 	<snippets>
 		<snippet name="MVP_Badge">

@@ -12,11 +12,87 @@
 {
 	"axe_one_man_army"
 	{
+		//"armor_pct_as_strength" // doesn't work
+		//{
+		//	"value" "15"
+		//	"operator" "OP_ADD"
+		//}
 		"radius"
 		{
 			"value" "-175"
 			"operator" "OP_ADD"
 			"max_count" "0"
+		}
+	}
+	"axe_berserkers_call"
+	{
+		"cooldown_and_manacost"
+		{
+			"value" "8"
+			"operator" "OP_MULTIPLY"
+			"max_count" "5"
+		}
+		"radius"
+		{
+			"value" "20"
+			"operator" "OP_ADD"
+			"max_count" "10"
+		}
+		"bonus_armor"
+		{
+			"value" "4"
+			"operator" "OP_ADD"
+		}
+	}
+	"axe_battle_hunger"
+	{
+		"cooldown_and_manacost"
+		{
+			"value" "8"
+			"operator" "OP_MULTIPLY"
+		}
+		"damage_per_second"
+		{
+			"value" "5"
+			"operator" "OP_ADD"
+		}
+	}
+	"axe_counter_helix"
+	{
+		"damage"
+		{
+			"value" "20"
+			"operator" "OP_ADD"
+		}
+		"radius"
+		{
+			"value" "30"
+			"operator" "OP_ADD"
+			"max_count" "10"
+		}
+	}
+	"axe_culling_blade"
+	{
+		"cooldown_and_manacost"
+		{
+			"value" "10"
+			"operator" "OP_MULTIPLY"
+		}
+		"damage"
+		{
+			"value" "25"
+			"operator" "OP_ADD"
+		}
+		"speed_bonus"
+		{
+			"value" "6"
+			"operator" "OP_ADD"
+			"max_count" "5"
+			"linked_special_values"
+			{
+				"armor_bonus" "4"
+				"speed_aoe" "180"
+			}
 		}
 	}
 }

@@ -8,7 +8,7 @@
 ]]
 
 
-/* Prettified by Source 2 Viewer 20.0.0.0 - https://valveresourceformat.github.io */
+/* Prettified by Source 2 Viewer 20.1.0.0 - https://valveresourceformat.github.io */
 
 .collection_precache
 {
@@ -24,6 +24,5 @@
 	background-image: url("s2r://panorama/images/custom_game/collection/currency_shop/currency_bundle_4_v2_png.vtex");
 	background-image: url("s2r://panorama/images/custom_game/collection/currency_shop/currency_bundle_5_v2_png.vtex");
 	background-image: url("s2r://panorama/images/custom_game/collection/currency_shop/currency_bundle_6_v2_png.vtex");
-	background-image: url("s2r://");
 	background-image: url("s2r://panorama/images/custom_game/collection/currency_shop/daily_fortune_png.vtex");
 }

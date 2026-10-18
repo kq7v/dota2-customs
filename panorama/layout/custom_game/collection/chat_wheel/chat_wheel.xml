@@ -8,26 +8,26 @@
 ]]
 
 
-<!-- xml reconstructed by Source 2 Viewer 20.0.0.0 - https://valveresourceformat.github.io -->
+<!-- xml reconstructed by Source 2 Viewer 20.1.0.0 - https://valveresourceformat.github.io -->
 <root>
 	<styles>
-		<include src="s2r://panorama/styles/dotastyles.vcss_c" />
-		<include src="s2r://panorama/layout/custom_game/collection/chat_wheel/chat_wheel_precache.vcss_c" />
-		<include src="s2r://panorama/layout/custom_game/collection/chat_wheel/chat_wheel.vcss_c" />
-		<include src="s2r://panorama/layout/custom_game/collection/chat_wheel/chat_wheel_colors_style.vcss_c" />
-		<include src="s2r://panorama/layout/custom_game/collection/collection.vcss_c" />
+		<include src="s2r://panorama/styles/dotastyles.vcss" />
+		<include src="s2r://panorama/layout/custom_game/collection/chat_wheel/chat_wheel_precache.vcss" />
+		<include src="s2r://panorama/layout/custom_game/collection/chat_wheel/chat_wheel.vcss" />
+		<include src="s2r://panorama/layout/custom_game/collection/chat_wheel/chat_wheel_colors_style.vcss" />
+		<include src="s2r://panorama/layout/custom_game/collection/collection.vcss" />
 	</styles>
 	<scripts>
-		<include src="s2r://panorama/layout/custom_game/scripts/utils.vjs_c" />
-		<include src="s2r://panorama/layout/custom_game/collection/const.vjs_c" />
-		<include src="s2r://panorama/layout/custom_game/collection/chat_wheel/chat_wheel_const.vjs_c" />
-		<include src="s2r://panorama/layout/custom_game/collection/chat_wheel/components/chat_wheel_dnd.vjs_c" />
-		<include src="s2r://panorama/layout/custom_game/collection/chat_wheel/components/chat_wheel_phrase.vjs_c" />
-		<include src="s2r://panorama/layout/custom_game/collection/chat_wheel/components/chat_wheel_favorite.vjs_c" />
-		<include src="s2r://panorama/layout/custom_game/collection/chat_wheel/components/chat_wheel_color.vjs_c" />
-		<include src="s2r://panorama/layout/custom_game/collection/chat_wheel/components/chat_wheel_emoji.vjs_c" />
-		<include src="s2r://panorama/layout/custom_game/collection/chat_wheel/components/chat_wheel_remove_zone.vjs_c" />
-		<include src="s2r://panorama/layout/custom_game/collection/chat_wheel/chat_wheel.vjs_c" />
+		<include src="s2r://panorama/layout/custom_game/scripts/utils.vjs" />
+		<include src="s2r://panorama/layout/custom_game/collection/const.vjs" />
+		<include src="s2r://panorama/layout/custom_game/collection/chat_wheel/chat_wheel_const.vjs" />
+		<include src="s2r://panorama/layout/custom_game/collection/chat_wheel/components/chat_wheel_dnd.vjs" />
+		<include src="s2r://panorama/layout/custom_game/collection/chat_wheel/components/chat_wheel_phrase.vjs" />
+		<include src="s2r://panorama/layout/custom_game/collection/chat_wheel/components/chat_wheel_favorite.vjs" />
+		<include src="s2r://panorama/layout/custom_game/collection/chat_wheel/components/chat_wheel_color.vjs" />
+		<include src="s2r://panorama/layout/custom_game/collection/chat_wheel/components/chat_wheel_emoji.vjs" />
+		<include src="s2r://panorama/layout/custom_game/collection/chat_wheel/components/chat_wheel_remove_zone.vjs" />
+		<include src="s2r://panorama/layout/custom_game/collection/chat_wheel/chat_wheel.vjs" />
 	</scripts>
 	<snippets>
 		<snippet name="CW_SoundsGroup">
