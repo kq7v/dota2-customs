@@ -24,7 +24,7 @@ var WODA_CONNECT_STATE_KEYS = {
 };
 var g_WodaStatusTime = null;
 var g_WodaRegion = { serial: null, selected: null, deadline: 0, mode: null, newConfirm: false, sessionSerial: null, confirmArmedAt: 0 };
-var g_WodaSearch = { selected: null, picked: false, leader: false, status: null, startedAt: 0, cards: {} };
+var g_WodaSearch = { selected: null, picked: false, leader: false, status: null, startedAt: 0, cards: {}, counts: {}, countLabels: {}, regions: {}, region: null, regionPicked: false, lastRegion: "", regionCards: {}, regionLabels: {} };
 var g_WodaBan = { entries: [], receivedAt: 0, partner: null };
 
 function WodaLocalizeOr(key, fallback)
@@ -62,10 +62,16 @@ function WodaModeName(mode)
 
 function WodaSelectMode(mode)
 {
+	var changed = g_WodaSearch.selected !== mode;
 	g_WodaSearch.selected = mode;
 	for (var key in g_WodaSearch.cards)
 	{
 		g_WodaSearch.cards[key].SetHasClass("Selected", key === mode);
+	}
+	if (changed)
+	{
+		WodaRenderSearchRegions();
+		WodaUpdateSearchCounts();
 	}
 }
 
@@ -75,10 +81,110 @@ function WodaStartSearch(mode)
 	{
 		return;
 	}
-	WodaSendRegionChoice("search", "", mode);
+	WodaSendRegionChoice("search", WodaSearchRegionFor(mode), mode);
 }
 
-function WodaBuildModeCard(parent, mode, info)
+function WodaSplitList(text)
+{
+	return String(text || "").split(",").filter(function(x) { return x !== ""; });
+}
+
+function WodaSearchModeRegions(mode)
+{
+	return WodaSplitList((g_WodaSearch.counts[mode] || {}).regions);
+}
+
+function WodaSearchRegionFor(mode)
+{
+	var ids = WodaSearchModeRegions(mode);
+	if (ids.length < 2)
+	{
+		return "";
+	}
+	var wanted = g_WodaSearch.regionPicked ? g_WodaSearch.region : g_WodaSearch.lastRegion;
+	if (wanted && ids.indexOf(wanted) >= 0)
+	{
+		return wanted;
+	}
+	var recommended = String((g_WodaSearch.counts[mode] || {}).recommended || "");
+	return ids.indexOf(recommended) >= 0 ? recommended : ids[0];
+}
+
+function WodaSearchCountText(label, info, region)
+{
+	if (!info || Number(info.known) <= 0)
+	{
+		label.text = "";
+		label.SetHasClass("HasPlayers", false);
+		return;
+	}
+	var searching = Number(info.searching) || 0;
+	if (region && info.by_region)
+	{
+		searching = Number(info.by_region[region]) || 0;
+	}
+	label.SetDialogVariableInt("count", searching);
+	label.SetDialogVariableInt("needed", Number(info.needed) || 0);
+	label.text = $.Localize("#woda_search_in_queue", label);
+	label.SetHasClass("HasPlayers", searching > 0);
+}
+
+function WodaUpdateSearchCounts()
+{
+	for (var mode in g_WodaSearch.countLabels)
+	{
+		WodaSearchCountText(g_WodaSearch.countLabels[mode], g_WodaSearch.counts[mode], WodaSearchRegionFor(mode));
+	}
+	var info = g_WodaSearch.counts[g_WodaSearch.selected];
+	for (var id in g_WodaSearch.regionLabels)
+	{
+		WodaSearchCountText(g_WodaSearch.regionLabels[id], info, id);
+	}
+}
+
+function WodaMarkSearchRegion()
+{
+	var selected = WodaSearchRegionFor(g_WodaSearch.selected);
+	for (var id in g_WodaSearch.regionCards)
+	{
+		g_WodaSearch.regionCards[id].SetHasClass("Selected", id === selected);
+	}
+}
+
+function WodaSelectSearchRegion(id)
+{
+	g_WodaSearch.regionPicked = true;
+	g_WodaSearch.region = id;
+	WodaMarkSearchRegion();
+	WodaUpdateSearchCounts();
+}
+
+function WodaRenderSearchRegions()
+{
+	var list = $("#WodaSearchRegionList");
+	if (!list)
+	{
+		return;
+	}
+	list.RemoveAndDeleteChildren();
+	g_WodaSearch.regionCards = {};
+	g_WodaSearch.regionLabels = {};
+	var mode = g_WodaSearch.selected;
+	var ids = WodaSearchModeRegions(mode);
+	list.visible = ids.length > 1;
+	if (ids.length < 2)
+	{
+		return;
+	}
+	var recommended = String((g_WodaSearch.counts[mode] || {}).recommended || "");
+	for (var i = 0; i < ids.length; i++)
+	{
+		WodaBuildRegionCard(list, ids[i], g_WodaSearch.regions[ids[i]] || {}, recommended, true);
+	}
+	WodaMarkSearchRegion();
+}
+
+function WodaBuildModeCard(parent, mode)
 {
 	var card = $.CreatePanel("Panel", parent, "WodaModeCard_" + mode);
 	card.AddClass("WodaRegionCard");
@@ -91,18 +197,7 @@ function WodaBuildModeCard(parent, mode, info)
 
 	var count = $.CreatePanel("Label", card, "");
 	count.AddClass("WodaModeCount");
-	if (info && Number(info.known) > 0)
-	{
-		var searching = Number(info.searching) || 0;
-		count.SetDialogVariableInt("count", searching);
-		count.SetDialogVariableInt("needed", Number(info.needed) || 0);
-		count.text = $.Localize("#woda_search_in_queue", count);
-		count.SetHasClass("HasPlayers", searching > 0);
-	}
-	else
-	{
-		count.text = "";
-	}
+	g_WodaSearch.countLabels[mode] = count;
 
 	card.SetPanelEvent("onactivate", function() { if (g_WodaSearch.leader) { g_WodaSearch.picked = true; WodaSelectMode(mode); } });
 	card.SetPanelEvent("ondblclick", function() { if (g_WodaSearch.leader) { g_WodaSearch.picked = true; WodaSelectMode(mode); WodaStartSearch(mode); } });
@@ -118,10 +213,13 @@ function WodaRenderSearchChoice(status)
 		return;
 	}
 	g_WodaSearch.leader = Number(status.leader) > 0;
+	g_WodaSearch.counts = status.counts || {};
+	g_WodaSearch.regions = status.regions || {};
+	g_WodaSearch.lastRegion = String(status.region || "");
 	list.RemoveAndDeleteChildren();
 	g_WodaSearch.cards = {};
+	g_WodaSearch.countLabels = {};
 	var modes = String(status.modes || "").split(",").filter(function(x) { return x !== ""; });
-	var counts = status.counts || {};
 	var preferred = String(status.preferred || "");
 	if (!g_WodaSearch.picked || !g_WodaSearch.selected || modes.indexOf(g_WodaSearch.selected) < 0)
 	{
@@ -135,11 +233,15 @@ function WodaRenderSearchChoice(status)
 			row = $.CreatePanel("Panel", list, "");
 			row.AddClass("WodaModeRow");
 		}
-		g_WodaSearch.cards[modes[i]] = WodaBuildModeCard(row, modes[i], counts[modes[i]]);
+		g_WodaSearch.cards[modes[i]] = WodaBuildModeCard(row, modes[i]);
 	}
 	WodaSelectMode(g_WodaSearch.selected);
+	WodaRenderSearchRegions();
+	WodaUpdateSearchCounts();
+	var note = $("#WodaSearchLeaderNote");
+	note.text = $.Localize(WodaSplitList(status.region_order).length > 1 ? "#woda_search_leader_region" : "#woda_search_leader");
 	$("#WodaSearchStart").visible = g_WodaSearch.leader;
-	$("#WodaSearchLeaderNote").visible = !g_WodaSearch.leader;
+	note.visible = !g_WodaSearch.leader;
 	picker.SetHasClass("Visible", true);
 }
 
@@ -330,9 +432,9 @@ function WodaSelectRegion(id)
 	}
 }
 
-function WodaBuildRegionCard(parent, id, info, recommended)
+function WodaBuildRegionCard(parent, id, info, recommended, search)
 {
-	var card = $.CreatePanel("Panel", parent, "WodaRegionCard_" + id);
+	var card = $.CreatePanel("Panel", parent, (search ? "WodaSearchRegionCard_" : "WodaRegionCard_") + id);
 	card.AddClass("WodaRegionCard");
 
 	var chip = $.CreatePanel("Label", card, "");
@@ -365,6 +467,14 @@ function WodaBuildRegionCard(parent, id, info, recommended)
 
 	var free = $.CreatePanel("Label", card, "");
 	free.AddClass("WodaRegionFree");
+	if (search)
+	{
+		g_WodaSearch.regionCards[id] = card;
+		g_WodaSearch.regionLabels[id] = free;
+		card.SetPanelEvent("onactivate", function() { if (g_WodaSearch.leader) { WodaSelectSearchRegion(id); } });
+		card.SetPanelEvent("ondblclick", function() { if (g_WodaSearch.leader) { WodaSelectSearchRegion(id); WodaStartSearch(g_WodaSearch.selected); } });
+		return card;
+	}
 	var freeCount = Number(info.free) || 0;
 	if (freeCount > 0)
 	{
@@ -523,6 +633,10 @@ function WodaUpdateStatusText(state, status)
 	}
 	label.SetDialogVariableInt("position", Number(status.position) || 0);
 	var key = WODA_CONNECT_STATE_KEYS[state] || WODA_CONNECT_STATE_KEYS.waiting;
+	if (state === "search_choose" && WodaSplitList(status.region_order).length > 1)
+	{
+		key = "#woda_connect_search_choose_region";
+	}
 	var text = $.Localize(key, label);
 	if (state === "session" && (!text || text === key || text === key.substring(1)))
 	{
@@ -536,7 +650,7 @@ function WodaUpdateStatusText(state, status)
 	{
 		text = $.Localize("#woda_region_party") + " " + WodaRegionName(status.party_region) + "\n" + text;
 	}
-	else if (status.region && (state === "requesting" || state === "queued" || state === "ready"))
+	else if (status.region && (state === "requesting" || state === "queued" || state === "ready" || state === "searching" || state === "search_found"))
 	{
 		text += "\n" + WodaRegionName(status.region);
 	}

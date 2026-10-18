@@ -44,6 +44,7 @@
 			</Panel>
 			<Panel id="WodaSearchPicker" class="WodaRegionPicker">
 				<Panel id="WodaModeList" class="WodaModeList" />
+				<Panel id="WodaSearchRegionList" class="WodaRegionList WodaSearchRegionList" />
 				<Label id="WodaSearchLeaderNote" class="WodaRegionCountdown" text="#woda_search_leader" />
 				<Panel class="WodaConnectButtons">
 					<Panel id="WodaSearchStart" class="WodaConnectButton Active">

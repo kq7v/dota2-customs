@@ -217,6 +217,11 @@ function Player_Loaded()
 
 function WaitForHeroDataAndStart(attempt)
 {
+	if (Game.GetState() >= DOTA_GameState.DOTA_GAMERULES_STATE_GAME_IN_PROGRESS)
+	{
+		end_pick()
+		return
+	}
 	const pick_state = Game.GetCustomTable("custom_pick", "pick_state")
 
 	if (!pick_state || pick_state.in_progress)
@@ -334,7 +339,21 @@ function end_pick()
 {
 	ResetHeroSearch()
 	$.DispatchEvent("DropInputFocus")
+	if (Game.GetState() >= DOTA_GameState.DOTA_GAMERULES_STATE_GAME_IN_PROGRESS)
+	{
+		ClosePickInRunningGame()
+		return
+	}
 	ShowPickLoadingScreen()
+}
+
+function ClosePickInRunningGame()
+{
+	if (pick_loading_active) { return }
+	pick_loading_active = true
+	$.GetContextPanel().AddClass("PickLoading")
+	$.GetContextPanel().style.opacity = "0"
+	$.GetContextPanel().DeleteAsync(0)
 }
 
 function CreatePickLoadingCurtain()

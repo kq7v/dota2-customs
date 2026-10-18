@@ -250,6 +250,16 @@
 	color: #ff8a7a;
 }
 
+.WodaRegionFree.HasPlayers
+{
+	color: #87d695;
+}
+
+.WodaSearchRegionList
+{
+	margin-top: 6px;
+}
+
 .WodaSessionBox
 {
 	width: 100%;

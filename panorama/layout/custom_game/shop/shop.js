@@ -2691,7 +2691,7 @@ function UpdateQuestPanelState(quest)
     var claimed = HasItemInventory(quest[0])
     panel.SetHasClass("QuestClaimed", claimed)
     refs.bar.style.width = (progress.value / progress.required) * 100 + "%"
-    refs.label.text = progress.value + "/" + progress.required
+    refs.label.text = GetQuestProgressText(quest, progress)
     var claim = refs.claim
     var claim_label = refs.claim_label
     claim_label.text = claimed ? $.Localize("#woda_quest_claim_reward_sucess") : $.Localize("#woda_quest_claim_reward")
@@ -2868,6 +2868,7 @@ var ACHIEVEMENT_FILTERS =
     ["AgilityQuests", "#DOTA_Tooltip_Ability_item_power_treads_agi"],
     ["IntellectQuests", "#DOTA_Tooltip_Ability_item_power_treads_int"],
     ["UniversalQuests", "#woda_universal"],
+    ["ShopSpendQuests", "#achievements_filter_cashback"],
 ]
 
 function GetAllQuestsList()
@@ -2966,6 +2967,15 @@ function GetQuestProgress(quest)
         value = Number(PLAYER_DATA.quest_data[quest[3]]) || 0
     }
     return {value: Math.min(value, required), required: required}
+}
+
+function GetQuestProgressText(quest, progress)
+{
+    if (quest[5] && quest[5].type == "shop_spend")
+    {
+        return FormatShopSpendProgress(progress.value, quest[5].usd)
+    }
+    return progress.value + "/" + progress.required
 }
 
 function GetQuestState(quest)
@@ -3078,6 +3088,11 @@ function SetQuestDescription(label, quest)
         label.SetDialogVariableInt("count", meta.count)
         label.text = $.Localize("#quest_arena_difficulty_complete_times", label)
     }
+    else if (meta && meta.type == "shop_spend")
+    {
+        label.SetDialogVariable("amount", FormatShopSpendAmount(meta.usd))
+        label.text = $.Localize("#quest_shop_spend", label)
+    }
     else if (meta && meta.type == "boss_kills")
     {
         label.SetDialogVariableInt("count", meta.count)
@@ -3143,7 +3158,7 @@ function CreateQuestPanel(parent, table)
 
     var quest_progress_label = $.CreatePanel("Label", quest_progress_line, "QuestProgressLabel_" + table[3])
     quest_progress_label.AddClass("quest_progress_label")
-    quest_progress_label.text = progress.value + "/" + progress.required
+    quest_progress_label.text = GetQuestProgressText(table, progress)
 
     var quest_button_claim = $.CreatePanel("Panel", quest_progress_with_button_claim, "QuestClaim_" + table[3])
     quest_button_claim.AddClass("quest_button_claim")

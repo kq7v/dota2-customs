@@ -46,7 +46,7 @@ function RoomChoiceOpen(data)
 		var room = data.rooms[keys[i]]
 		if (room && room.id !== undefined)
 		{
-			room_choice_rooms.push({ id: Number(room.id), name: room.name, image: room.image, bonus: room.bonus })
+			room_choice_rooms.push({ id: Number(room.id), name: room.name, image: room.image, bonus: room.bonus, boss: room.boss })
 		}
 	}
 	if (room_choice_rooms.length <= 0) { return }
@@ -98,6 +98,19 @@ function RoomChoiceCreateCard(parent, room)
 	name.AddClass("RoomCardName")
 	name.text = $.Localize("#" + room.name)
 
+	if (room.boss)
+	{
+		var boss = $.CreatePanel("Panel", body, "")
+		boss.AddClass("RoomCardBoss")
+		var boss_icon = $.CreatePanel("Panel", boss, "")
+		boss_icon.AddClass("RoomCardBossIcon")
+		boss_icon.style.backgroundImage = 'url("' + RoomChoiceGetBossIcon(room.boss) + '")'
+		boss_icon.style.backgroundSize = "100%"
+		var boss_name = $.CreatePanel("Label", boss, "")
+		boss_name.AddClass("RoomCardBossName")
+		boss_name.text = $.Localize("#" + room.boss)
+	}
+
 	var bonus = $.CreatePanel("Label", body, "")
 	bonus.AddClass("RoomCardBonus")
 	bonus.text = $.Localize("#" + room.bonus)
@@ -112,6 +125,16 @@ function RoomChoiceCreateCard(parent, room)
 		var label = $.CreatePanel("Label", button, "")
 		label.text = $.Localize("#arena_room_choice_go")
 	}
+}
+
+function RoomChoiceGetBossIcon(unit_name)
+{
+	var get_icon = GameUI.CustomUIConfig().GetBossHealthBarIcon
+	if (typeof get_icon == "function")
+	{
+		return get_icon(unit_name)
+	}
+	return "file://{images}/custom_game/talents/" + unit_name + ".png"
 }
 
 function RoomChoiceVote(room_id)

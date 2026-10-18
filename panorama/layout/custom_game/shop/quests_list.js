@@ -228,6 +228,124 @@ for (var boss_quest = 1; boss_quest <= ARENA_BOSS_KILL_QUEST_COUNT; boss_quest++
     QUEST_LIST_INFO.BossKillQuests.push([ARENA_BOSS_KILL_QUEST_REWARD_BASE + boss_quest, "reward_boss_souls_name", "boss_soul_big", ARENA_BOSS_KILL_QUEST_FIRST_ID + boss_quest - 1, null, {type: "boss_kills", count: ARENA_BOSS_KILL_QUEST_STEP * boss_quest, required: ARENA_BOSS_KILL_QUEST_STEP * boss_quest}])
 }
 
+var QUEST_REWARD_ID_BASE = 38579000
+
+var ARENA_DIFFICULTY_REPEAT_QUEST_EXTRA_TIMES = [20, 30, 40, 50, 60, 70, 80, 90, 100]
+for (var repeat_times_index = 0; repeat_times_index < ARENA_DIFFICULTY_REPEAT_QUEST_EXTRA_TIMES.length; repeat_times_index++)
+{
+    var repeat_extra_times = ARENA_DIFFICULTY_REPEAT_QUEST_EXTRA_TIMES[repeat_times_index]
+    for (var repeat_extra_difficulty = 1; repeat_extra_difficulty <= ARENA_DIFFICULTY_QUESTS_COUNT; repeat_extra_difficulty++)
+    {
+        var repeat_extra_id = ARENA_DIFFICULTY_REPEAT_QUEST_FIRST_ID + (repeat_times_index + 1) * ARENA_DIFFICULTY_QUESTS_COUNT + repeat_extra_difficulty - 1
+        QUEST_LIST_INFO.DifficultyQuests.push([QUEST_REWARD_ID_BASE + repeat_extra_id, "rune_chest_item", "rune_chest", repeat_extra_id, null, {type: "difficulty_repeat", difficulty: repeat_extra_difficulty, count: repeat_extra_times, required: repeat_extra_times}])
+    }
+}
+
+var ARENA_BOSS_KILL_QUEST_EXTRA_FIRST_ID = 411
+var ARENA_BOSS_KILL_QUEST_SOULS = 3
+var ARENA_BOSS_KILL_QUEST_BIG_SOULS = 15
+var ARENA_BOSS_KILL_QUEST_EXTRA = []
+for (var boss_extra_count = 50; boss_extra_count <= 950; boss_extra_count += 100)
+{
+    ARENA_BOSS_KILL_QUEST_EXTRA.push([boss_extra_count, ARENA_BOSS_KILL_QUEST_SOULS])
+}
+for (var boss_big_count = 1500; boss_big_count <= 10000; boss_big_count += 500)
+{
+    ARENA_BOSS_KILL_QUEST_EXTRA.push([boss_big_count, ARENA_BOSS_KILL_QUEST_BIG_SOULS])
+}
+for (var boss_extra_index = 0; boss_extra_index < ARENA_BOSS_KILL_QUEST_EXTRA.length; boss_extra_index++)
+{
+    var boss_extra_id = ARENA_BOSS_KILL_QUEST_EXTRA_FIRST_ID + boss_extra_index
+    var boss_extra_info = ARENA_BOSS_KILL_QUEST_EXTRA[boss_extra_index]
+    var boss_extra_name = boss_extra_info[1] == ARENA_BOSS_KILL_QUEST_BIG_SOULS ? "reward_boss_souls_15_name" : "reward_boss_souls_name"
+    QUEST_LIST_INFO.BossKillQuests.push([QUEST_REWARD_ID_BASE + boss_extra_id, boss_extra_name, "boss_soul_big", boss_extra_id, null, {type: "boss_kills", count: boss_extra_info[0], required: boss_extra_info[0]}])
+}
+QUEST_LIST_INFO.BossKillQuests.sort(function(a, b) { return a[5].count - b[5].count })
+
+var SHOP_SPEND_QUEST_FIRST_ID = 501
+var SHOP_SPEND_QUESTS = []
+for (var shop_spend_small = 10; shop_spend_small <= 90; shop_spend_small += 10)
+{
+    SHOP_SPEND_QUESTS.push([shop_spend_small, 15])
+}
+for (var shop_spend_medium = 100; shop_spend_medium <= 900; shop_spend_medium += 100)
+{
+    SHOP_SPEND_QUESTS.push([shop_spend_medium, 150])
+}
+for (var shop_spend_big = 1000; shop_spend_big <= 9000; shop_spend_big += 1000)
+{
+    SHOP_SPEND_QUESTS.push([shop_spend_big, 1500])
+}
+QUEST_LIST_INFO.ShopSpendQuests = []
+for (var shop_spend_index = 0; shop_spend_index < SHOP_SPEND_QUESTS.length; shop_spend_index++)
+{
+    var shop_spend_id = SHOP_SPEND_QUEST_FIRST_ID + shop_spend_index
+    var shop_spend_info = SHOP_SPEND_QUESTS[shop_spend_index]
+    QUEST_LIST_INFO.ShopSpendQuests.push([QUEST_REWARD_ID_BASE + shop_spend_id, "reward_crystals_" + shop_spend_info[1] + "_name", "wodacrystal_big", shop_spend_id, null, {type: "shop_spend", usd: shop_spend_info[0], required: shop_spend_info[0]}])
+}
+
+function IsShopSpendQuestId(quest_id)
+{
+    var id = Number(quest_id)
+    return id >= SHOP_SPEND_QUEST_FIRST_ID && id < SHOP_SPEND_QUEST_FIRST_ID + SHOP_SPEND_QUESTS.length
+}
+
+function GetShopSpendLocalizedSetting(key, fallback)
+{
+    var value = $.Localize("#" + key)
+    return value.charAt(0) == "#" ? fallback : value
+}
+
+var SHOP_SPEND_PRICE_UNIT_USD = 10
+
+function GetShopSpendUnitCents()
+{
+    var price = parseFloat(GetShopSpendLocalizedSetting("quest_shop_spend_price_10", String(SHOP_SPEND_PRICE_UNIT_USD)))
+    return Math.round((isFinite(price) && price > 0 ? price : SHOP_SPEND_PRICE_UNIT_USD) * 100)
+}
+
+function FormatShopSpendCents(cents, with_fraction)
+{
+    var separator = GetShopSpendLocalizedSetting("quest_shop_spend_group", ",")
+    var text = String(Math.floor(cents / 100))
+    var result = ""
+    while (text.length > 3)
+    {
+        result = separator + text.substring(text.length - 3) + result
+        text = text.substring(0, text.length - 3)
+    }
+    text = text + result
+    if (with_fraction)
+    {
+        var fraction = cents % 100
+        text = text + GetShopSpendLocalizedSetting("quest_shop_spend_decimal", ".") + (fraction < 10 ? "0" : "") + fraction
+    }
+    return text
+}
+
+function GetShopSpendRequiredCents(quest_usd)
+{
+    return Math.round(quest_usd / SHOP_SPEND_PRICE_UNIT_USD) * GetShopSpendUnitCents()
+}
+
+function FormatShopSpendAmount(quest_usd)
+{
+    var cents = GetShopSpendRequiredCents(quest_usd)
+    return FormatShopSpendCents(cents, cents % 100 != 0)
+}
+
+function FormatShopSpendProgress(value_usd, quest_usd)
+{
+    var required_cents = GetShopSpendRequiredCents(quest_usd)
+    var value_cents = value_usd >= quest_usd ? required_cents : Math.floor(Math.max(0, value_usd) / quest_usd * required_cents)
+    var with_fraction = required_cents % 100 != 0
+    if (!with_fraction)
+    {
+        value_cents = Math.floor(value_cents / 100) * 100
+    }
+    return FormatShopSpendCents(value_cents, with_fraction) + "/" + FormatShopSpendCents(required_cents, with_fraction)
+}
+
 var ARENA_HERO_DIFFICULTY_QUEST_MULTIPLIER = 100
 var ARENA_HERO_DIFFICULTY_QUEST_REWARD_BASE = 38580000
 var ARENA_HERO_QUEST_TABS = ["StrengthQuests", "AgilityQuests", "IntellectQuests", "UniversalQuests"]
@@ -281,12 +399,16 @@ var QUEST_ICON_WITHOUT_OPEN = {wodacoin_big: true, wodacrystal_big: true}
 var QUEST_ICON_NO_TOOLTIP = {wodacoin_big: true, wodacrystal_big: true, boss_soul_big: true}
 
 var QUEST_MODE_ARENA_OFFSETS = [6, 7, 8]
-var QUEST_MODE_RATING_OFFSETS = [1, 2, 3, 4, 5, 9, 10, 11, 12, 13, 14, 15, 16]
+var QUEST_MODE_RATING_OFFSETS = [1, 2, 3, 4, 5, 9, 10, 11, 12, 13, 14]
 var QUEST_HERO_WIN_FIRST_ID = 89
 
 function GetQuestMode(quest_id)
 {
     var id = Number(quest_id)
+    if (IsShopSpendQuestId(id))
+    {
+        return "general"
+    }
     if (id >= ARENA_DIFFICULTY_QUEST_FIRST_ID)
     {
         return "arena"

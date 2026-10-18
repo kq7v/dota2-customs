@@ -3068,7 +3068,8 @@
 			}
             "punch_bonus_movespeed"			"7.5"
             "punch_attack_range"			"250"
-            "punch_bonus_damage_base"		
+            "punch_kill_damage_pct"			"10"
+            "punch_bonus_damage_base"
 			{
 				"value"							"20 30 40"
 				"CalculateSpellDamageTooltip"	"0"
@@ -18923,6 +18924,18 @@
 		"ScriptFile"				"neutrals/woda_arena_trap_dart"
 		"AbilityBehavior"			"DOTA_ABILITY_BEHAVIOR_PASSIVE | DOTA_ABILITY_BEHAVIOR_HIDDEN"
 		"AbilityTextureName"		"techies_stasis_trap"
+		"MaxLevel"					"1"
+	}
+	"woda_arena_hazard_source_ability"
+	{
+		"BaseClass"					"ability_datadriven"
+		"AbilityBehavior"			"DOTA_ABILITY_BEHAVIOR_PASSIVE | DOTA_ABILITY_BEHAVIOR_HIDDEN"
+		"AbilityTextureName"		"techies_stasis_trap"
+		"AbilityUnitTargetTeam"		"DOTA_UNIT_TARGET_TEAM_ENEMY"
+		"AbilityUnitTargetType"		"DOTA_UNIT_TARGET_HERO | DOTA_UNIT_TARGET_BASIC"
+		"AbilityUnitTargetFlags"	"DOTA_UNIT_TARGET_FLAG_MAGIC_IMMUNE_ENEMIES"
+		"SpellImmunityType"			"SPELL_IMMUNITY_ENEMIES_YES"
+		"SpellDispellableType"		"SPELL_DISPELLABLE_NO"
 		"MaxLevel"					"1"
 	}
 	"boss_primal_beast_onslaught"

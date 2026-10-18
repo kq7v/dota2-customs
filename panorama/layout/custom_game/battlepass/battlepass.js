@@ -607,27 +607,27 @@ var bp_rewards_2026 =
     [["30001", "xsolla_packs/coins_1", "bp_coins_25"]], //5
     [], //6
     [["30002", "dp1", "bp_woda_plus"]], //7
-    [], //8
+    [["30237", "coal", "bp_coal_1"]], //8
     [], //9
     [["30003", "xsolla_packs/coins_1", "bp_coins_25"], ["1016", "five_14", "five_14"]], //10
     [], //11
     [["30004", "double_token", "bp_double_token"]], //12
-    [], //13
+    [["30238", "coal", "bp_coal_1"]], //13
     [], //14
     [["30005", "xsolla_packs/coins_1", "bp_coins_25"], ["30227", "boss_soul_big", "bp_boss_souls_3"]], //15
     [], //16
     [["30006", "dp1", "bp_woda_plus"]], //17
-    [], //18
+    [["30239", "coal", "bp_coal_1"]], //18
     [], //19
     [["30007", "xsolla_packs/coins_1", "bp_coins_25"], ["1048", "emblem_117", "emblem_117"]], //20
     [], //21
     [["30008", "double_token", "bp_double_token"]], //22
-    [], //23
+    [["30240", "coal", "bp_coal_1"]], //23
     [], //24
     [["1030", "background_115", "background_115"]], //25
     [], //26
     [["30009", "dp1", "bp_woda_plus"]], //27
-    [], //28
+    [["30241", "coal", "bp_coal_1"]], //28
     [], //29
     [["30010", "xsolla_packs/coins_1", "bp_coins_25"]], //30
     [], //31
@@ -637,62 +637,62 @@ var bp_rewards_2026 =
     [["30012", "xsolla_packs/coins_1", "bp_coins_25"], ["30207", "rune_chest", "rune_chest_item"]], //35
     [], //36
     [["30013", "dp1", "bp_woda_plus"]], //37
-    [], //38
+    [["30242", "coal", "bp_coal_1"]], //38
     [], //39
     [["30014", "xsolla_packs/coins_1", "bp_coins_25"], ["1072", "emblem_121", "emblem_121"]], //40
     [], //41
     [["30015", "double_token", "bp_double_token"]], //42
-    [], //43
+    [["30243", "coal", "bp_coal_1"]], //43
     [], //44
     [["30016", "xsolla_packs/coins_1", "bp_coins_25"]], //45
     [], //46
     [["30017", "dp1", "bp_woda_plus"]], //47
-    [], //48
+    [["30244", "coal", "bp_coal_1"]], //48
     [], //49
     [["30018", "double_token", "bp_double_token"], ["30019", "double_token", "bp_double_token"], ["30020", "double_token", "bp_double_token"], ["30021", "double_token", "bp_double_token"], ["30022", "double_token", "bp_double_token"], ["1018", "tip", "tipped_1018"]], //50
     [], //51
     [["30023", "double_token", "bp_double_token"]], //52
-    [], //53
+    [["30245", "coal", "bp_coal_1"]], //53
     [], //54
     [["30024", "xsolla_packs/coins_1", "bp_coins_25"]], //55
     [], //56
     [["30025", "dp1", "bp_woda_plus"]], //57
-    [], //58
+    [["30246", "coal", "bp_coal_1"]], //58
     [], //59
     [["30026", "xsolla_packs/coins_1", "bp_coins_25"], ["1041", "background_126", "background_126"]], //60
     [], //61
     [["30027", "double_token", "bp_double_token"]], //62
-    [], //63
+    [["30247", "coal", "bp_coal_1"]], //63
     [], //64
     [["30028", "xsolla_packs/coins_1", "bp_coins_25"], ["30228", "boss_soul_big", "bp_boss_souls_3"]], //65
     [["30213", "xsolla_packs/crystals_1", "bp_crystals_5"]], //66
     [["30029", "dp1", "bp_woda_plus"]], //67
-    [], //68
+    [["30248", "coal", "bp_coal_1"]], //68
     [], //69
     [["30030", "xsolla_packs/coins_1", "bp_coins_25"]], //70
     [], //71
     [["30031", "double_token", "bp_double_token"]], //72
-    [], //73
+    [["30249", "coal", "bp_coal_1"]], //73
     [], //74
     [["1031", "background_116", "background_116"], ["1092", "tip", "tipped_1092"], ["1093", "tip", "tipped_1093"], ["1094", "tip", "tipped_1094"], ["1095", "tip", "tipped_1095"]], //75
     [], //76
     [["30032", "dp1", "bp_woda_plus"]], //77
-    [], //78
+    [["30250", "coal", "bp_coal_1"]], //78
     [], //79
     [["30033", "xsolla_packs/coins_1", "bp_coins_25"]], //80
     [], //81
     [["30034", "double_token", "bp_double_token"]], //82
-    [], //83
+    [["30251", "coal", "bp_coal_1"]], //83
     [], //84
     [["30035", "xsolla_packs/coins_1", "bp_coins_25"]], //85
     [], //86
     [["30036", "dp1", "bp_woda_plus"]], //87
-    [], //88
+    [["30252", "coal", "bp_coal_1"]], //88
     [], //89
     [["30037", "xsolla_packs/coins_1", "bp_coins_25"]], //90
     [], //91
     [["30038", "double_token", "bp_double_token"]], //92
-    [], //93
+    [["30253", "coal", "bp_coal_1"]], //93
     [], //94
     [["30039", "xsolla_packs/coins_1", "bp_coins_25"]], //95
     [], //96
@@ -702,97 +702,97 @@ var bp_rewards_2026 =
     [["1019", "tip", "tipped_1019"], ["1045", "emblem_114", "emblem_114"], ["1014", "five_12", "five_12"]], //100
     [], //101
     [["30041", "double_token", "bp_double_token"]], //102
-    [], //103
+    [["30254", "coal", "bp_coal_1"]], //103
     [], //104
     [["30042", "xsolla_packs/coins_1", "bp_coins_25"]], //105
     [], //106
     [["30043", "dp1", "bp_woda_plus"]], //107
-    [], //108
+    [["30255", "coal", "bp_coal_1"]], //108
     [], //109
     [["30044", "xsolla_packs/coins_1", "bp_coins_25"]], //110
     [], //111
     [["30045", "double_token", "bp_double_token"]], //112
-    [], //113
+    [["30256", "coal", "bp_coal_1"]], //113
     [], //114
     [["30046", "xsolla_packs/coins_1", "bp_coins_25"], ["30229", "boss_soul_big", "bp_boss_souls_3"]], //115
     [], //116
     [["30047", "dp1", "bp_woda_plus"]], //117
-    [], //118
+    [["30257", "coal", "bp_coal_1"]], //118
     [], //119
     [["30048", "xsolla_packs/coins_1", "bp_coins_25"]], //120
     [], //121
     [["30049", "double_token", "bp_double_token"]], //122
-    [], //123
+    [["30258", "coal", "bp_coal_1"]], //123
     [], //124
     [["1032", "background_117", "background_117"], ["1007", "1007", "pet_182"]], //125
     [], //126
     [["30050", "dp1", "bp_woda_plus"]], //127
-    [], //128
+    [["30259", "coal", "bp_coal_1"]], //128
     [], //129
     [["30051", "xsolla_packs/coins_1", "bp_coins_25"]], //130
     [], //131
     [["30052", "double_token", "bp_double_token"], ["30215", "xsolla_packs/crystals_1", "bp_crystals_5"]], //132
-    [], //133
+    [["30260", "coal", "bp_coal_1"]], //133
     [], //134
     [["30053", "xsolla_packs/coins_1", "bp_coins_25"], ["30208", "rune_chest", "rune_chest_item"]], //135
     [], //136
     [["30054", "dp1", "bp_woda_plus"]], //137
-    [], //138
+    [["30261", "coal", "bp_coal_1"]], //138
     [], //139
     [["30055", "xsolla_packs/coins_1", "bp_coins_25"]], //140
     [], //141
     [["30056", "double_token", "bp_double_token"]], //142
-    [], //143
+    [["30262", "coal", "bp_coal_1"]], //143
     [], //144
     [["30057", "xsolla_packs/coins_1", "bp_coins_25"]], //145
     [], //146
     [["30058", "dp1", "bp_woda_plus"]], //147
-    [], //148
+    [["30263", "coal", "bp_coal_1"]], //148
     [], //149
     [["30059", "double_token", "bp_double_token"], ["30060", "double_token", "bp_double_token"], ["30061", "double_token", "bp_double_token"], ["30062", "double_token", "bp_double_token"], ["30063", "double_token", "bp_double_token"], ["1021", "tip", "tipped_1021"]], //150
     [], //151
     [["30064", "double_token", "bp_double_token"]], //152
-    [], //153
+    [["30264", "coal", "bp_coal_1"]], //153
     [], //154
     [["30065", "xsolla_packs/coins_1", "bp_coins_25"]], //155
     [], //156
     [["30066", "dp1", "bp_woda_plus"]], //157
-    [], //158
+    [["30265", "coal", "bp_coal_1"]], //158
     [], //159
     [["30067", "xsolla_packs/coins_1", "bp_coins_25"], ["1042", "background_127", "background_127"]], //160
     [], //161
     [["30068", "double_token", "bp_double_token"]], //162
-    [], //163
+    [["30266", "coal", "bp_coal_1"]], //163
     [], //164
     [["30069", "xsolla_packs/coins_1", "bp_coins_25"], ["30216", "xsolla_packs/crystals_1", "bp_crystals_5"], ["30230", "boss_soul_big", "bp_boss_souls_3"]], //165
     [], //166
     [["30070", "dp1", "bp_woda_plus"]], //167
-    [], //168
+    [["30267", "coal", "bp_coal_1"]], //168
     [], //169
     [["30071", "xsolla_packs/coins_1", "bp_coins_25"]], //170
     [], //171
     [["30072", "double_token", "bp_double_token"]], //172
-    [], //173
+    [["30268", "coal", "bp_coal_1"]], //173
     [], //174
     [["1033", "background_118", "background_118"]], //175
     [], //176
     [["30073", "dp1", "bp_woda_plus"]], //177
-    [], //178
+    [["30269", "coal", "bp_coal_1"]], //178
     [], //179
     [["30074", "xsolla_packs/coins_1", "bp_coins_25"]], //180
     [], //181
     [["30075", "double_token", "bp_double_token"]], //182
-    [], //183
+    [["30270", "coal", "bp_coal_1"]], //183
     [], //184
     [["30076", "xsolla_packs/coins_1", "bp_coins_25"]], //185
     [], //186
     [["30077", "dp1", "bp_woda_plus"]], //187
-    [], //188
+    [["30271", "coal", "bp_coal_1"]], //188
     [], //189
     [["30078", "xsolla_packs/coins_1", "bp_coins_25"]], //190
     [], //191
     [["30079", "double_token", "bp_double_token"]], //192
-    [], //193
+    [["30272", "coal", "bp_coal_1"]], //193
     [], //194
     [["30080", "xsolla_packs/coins_1", "bp_coins_25"]], //195
     [], //196
@@ -802,62 +802,62 @@ var bp_rewards_2026 =
     [["1022", "tip", "tipped_1022"], ["1046", "emblem_115", "emblem_115"]], //200
     [], //201
     [["30082", "double_token", "bp_double_token"]], //202
-    [], //203
+    [["30273", "coal", "bp_coal_1"]], //203
     [], //204
     [["30083", "xsolla_packs/coins_1", "bp_coins_25"]], //205
     [], //206
     [["30084", "dp1", "bp_woda_plus"]], //207
-    [], //208
+    [["30274", "coal", "bp_coal_1"]], //208
     [], //209
     [["30085", "xsolla_packs/coins_1", "bp_coins_25"]], //210
     [], //211
     [["30086", "double_token", "bp_double_token"]], //212
-    [], //213
+    [["30275", "coal", "bp_coal_1"]], //213
     [], //214
     [["30087", "xsolla_packs/coins_1", "bp_coins_25"], ["30231", "boss_soul_big", "bp_boss_souls_3"]], //215
     [], //216
     [["30088", "dp1", "bp_woda_plus"]], //217
-    [], //218
+    [["30276", "coal", "bp_coal_1"]], //218
     [], //219
     [["30089", "xsolla_packs/coins_1", "bp_coins_25"]], //220
     [], //221
     [["30090", "double_token", "bp_double_token"]], //222
-    [], //223
+    [["30277", "coal", "bp_coal_1"]], //223
     [], //224
     [["1034", "background_119", "background_119"], ["1008", "1008", "pet_183"]], //225
     [], //226
     [["30091", "dp1", "bp_woda_plus"]], //227
-    [], //228
+    [["30278", "coal", "bp_coal_1"]], //228
     [], //229
     [["30092", "xsolla_packs/coins_1", "bp_coins_25"]], //230
     [["30218", "xsolla_packs/crystals_1", "bp_crystals_5"]], //231
     [["30093", "double_token", "bp_double_token"]], //232
-    [], //233
+    [["30279", "coal", "bp_coal_1"]], //233
     [], //234
     [["30094", "xsolla_packs/coins_1", "bp_coins_25"], ["30209", "rune_chest", "rune_chest_item"]], //235
     [], //236
     [["30095", "dp1", "bp_woda_plus"]], //237
-    [], //238
+    [["30280", "coal", "bp_coal_1"]], //238
     [], //239
     [["30096", "xsolla_packs/coins_1", "bp_coins_25"]], //240
     [], //241
     [["30097", "double_token", "bp_double_token"]], //242
-    [], //243
+    [["30281", "coal", "bp_coal_1"]], //243
     [], //244
     [["30098", "xsolla_packs/coins_1", "bp_coins_25"]], //245
     [], //246
     [["30099", "dp1", "bp_woda_plus"]], //247
-    [], //248
+    [["30282", "coal", "bp_coal_1"]], //248
     [], //249
     [["30100", "double_token", "bp_double_token"], ["30101", "double_token", "bp_double_token"], ["30102", "double_token", "bp_double_token"], ["30103", "double_token", "bp_double_token"], ["30104", "double_token", "bp_double_token"], ["1023", "tip", "tipped_1023"]], //250
     [], //251
     [["30105", "double_token", "bp_double_token"]], //252
-    [], //253
+    [["30283", "coal", "bp_coal_1"]], //253
     [], //254
     [["30106", "xsolla_packs/coins_1", "bp_coins_25"]], //255
     [], //256
     [["30107", "dp1", "bp_woda_plus"]], //257
-    [], //258
+    [["30284", "coal", "bp_coal_1"]], //258
     [], //259
     [["30108", "xsolla_packs/coins_1", "bp_coins_25"], ["1043", "background_128", "background_128"]], //260
     [], //261
@@ -867,97 +867,97 @@ var bp_rewards_2026 =
     [["30110", "xsolla_packs/coins_1", "bp_coins_25"], ["30232", "boss_soul_big", "bp_boss_souls_3"]], //265
     [], //266
     [["30111", "dp1", "bp_woda_plus"]], //267
-    [], //268
+    [["30285", "coal", "bp_coal_1"]], //268
     [], //269
     [["30112", "xsolla_packs/coins_1", "bp_coins_25"]], //270
     [], //271
     [["30113", "double_token", "bp_double_token"]], //272
-    [], //273
+    [["30286", "coal", "bp_coal_1"]], //273
     [], //274
     [["1035", "background_120", "background_120"]], //275
     [], //276
     [["30114", "dp1", "bp_woda_plus"]], //277
-    [], //278
+    [["30287", "coal", "bp_coal_1"]], //278
     [], //279
     [["30115", "xsolla_packs/coins_1", "bp_coins_25"]], //280
     [], //281
     [["30116", "double_token", "bp_double_token"]], //282
-    [], //283
+    [["30288", "coal", "bp_coal_1"]], //283
     [], //284
     [["30117", "xsolla_packs/coins_1", "bp_coins_25"]], //285
     [], //286
     [["30118", "dp1", "bp_woda_plus"]], //287
-    [], //288
+    [["30289", "coal", "bp_coal_1"]], //288
     [], //289
     [["30119", "xsolla_packs/coins_1", "bp_coins_25"]], //290
     [], //291
     [["30120", "double_token", "bp_double_token"]], //292
-    [], //293
+    [["30290", "coal", "bp_coal_1"]], //293
     [], //294
     [["30121", "xsolla_packs/coins_1", "bp_coins_25"]], //295
     [], //296
     [["30122", "dp1", "bp_woda_plus"], ["30220", "xsolla_packs/crystals_1", "bp_crystals_5"]], //297
-    [], //298
+    [["30291", "coal", "bp_coal_1"]], //298
     [], //299
     [["1024", "tip", "tipped_1024"], ["1047", "emblem_116", "emblem_116"], ["1013", "five_11", "five_11"]], //300
     [], //301
     [["30123", "double_token", "bp_double_token"]], //302
-    [], //303
+    [["30292", "coal", "bp_coal_1"]], //303
     [], //304
     [["30124", "xsolla_packs/coins_1", "bp_coins_25"]], //305
     [], //306
     [["30125", "dp1", "bp_woda_plus"]], //307
-    [], //308
+    [["30293", "coal", "bp_coal_1"]], //308
     [], //309
     [["30126", "xsolla_packs/coins_1", "bp_coins_25"]], //310
     [], //311
     [["30127", "double_token", "bp_double_token"]], //312
-    [], //313
+    [["30294", "coal", "bp_coal_1"]], //313
     [], //314
     [["30128", "xsolla_packs/coins_1", "bp_coins_25"], ["30233", "boss_soul_big", "bp_boss_souls_3"]], //315
     [], //316
     [["30129", "dp1", "bp_woda_plus"]], //317
-    [], //318
+    [["30295", "coal", "bp_coal_1"]], //318
     [], //319
     [["30130", "xsolla_packs/coins_1", "bp_coins_25"]], //320
     [], //321
     [["30131", "double_token", "bp_double_token"]], //322
-    [], //323
+    [["30296", "coal", "bp_coal_1"]], //323
     [], //324
     [["1036", "background_121", "background_121"], ["1009", "1009", "pet_184"]], //325
     [], //326
     [["30132", "dp1", "bp_woda_plus"]], //327
-    [], //328
+    [["30297", "coal", "bp_coal_1"]], //328
     [], //329
     [["30133", "xsolla_packs/coins_1", "bp_coins_25"], ["30221", "xsolla_packs/crystals_1", "bp_crystals_5"]], //330
     [], //331
     [["30134", "double_token", "bp_double_token"]], //332
-    [], //333
+    [["30298", "coal", "bp_coal_1"]], //333
     [], //334
     [["30135", "xsolla_packs/coins_1", "bp_coins_25"], ["30210", "rune_chest", "rune_chest_item"]], //335
     [], //336
     [["30136", "dp1", "bp_woda_plus"]], //337
-    [], //338
+    [["30299", "coal", "bp_coal_1"]], //338
     [], //339
     [["30137", "xsolla_packs/coins_1", "bp_coins_25"]], //340
     [], //341
     [["30138", "double_token", "bp_double_token"]], //342
-    [], //343
+    [["30300", "coal", "bp_coal_1"]], //343
     [], //344
     [["30139", "xsolla_packs/coins_1", "bp_coins_25"]], //345
     [], //346
     [["30140", "dp1", "bp_woda_plus"]], //347
-    [], //348
+    [["30301", "coal", "bp_coal_1"]], //348
     [], //349
     [["30141", "double_token", "bp_double_token"], ["30142", "double_token", "bp_double_token"], ["30143", "double_token", "bp_double_token"], ["30144", "double_token", "bp_double_token"], ["30145", "double_token", "bp_double_token"], ["1025", "tip", "tipped_1025"]], //350
     [], //351
     [["30146", "double_token", "bp_double_token"]], //352
-    [], //353
+    [["30302", "coal", "bp_coal_1"]], //353
     [], //354
     [["30147", "xsolla_packs/coins_1", "bp_coins_25"]], //355
     [], //356
     [["30148", "dp1", "bp_woda_plus"]], //357
-    [], //358
+    [["30303", "coal", "bp_coal_1"]], //358
     [], //359
     [["30149", "xsolla_packs/coins_1", "bp_coins_25"], ["1044", "background_129", "background_129"]], //360
     [], //361
@@ -967,62 +967,62 @@ var bp_rewards_2026 =
     [["30151", "xsolla_packs/coins_1", "bp_coins_25"], ["30234", "boss_soul_big", "bp_boss_souls_3"]], //365
     [], //366
     [["30152", "dp1", "bp_woda_plus"]], //367
-    [], //368
+    [["30304", "coal", "bp_coal_1"]], //368
     [], //369
     [["30153", "xsolla_packs/coins_1", "bp_coins_25"]], //370
     [], //371
     [["30154", "double_token", "bp_double_token"]], //372
-    [], //373
+    [["30305", "coal", "bp_coal_1"]], //373
     [], //374
     [["1037", "background_122", "background_122"]], //375
     [], //376
     [["30155", "dp1", "bp_woda_plus"]], //377
-    [], //378
+    [["30306", "coal", "bp_coal_1"]], //378
     [], //379
     [["30156", "xsolla_packs/coins_1", "bp_coins_25"]], //380
     [], //381
     [["30157", "double_token", "bp_double_token"]], //382
-    [], //383
+    [["30307", "coal", "bp_coal_1"]], //383
     [], //384
     [["30158", "xsolla_packs/coins_1", "bp_coins_25"]], //385
     [], //386
     [["30159", "dp1", "bp_woda_plus"]], //387
-    [], //388
+    [["30308", "coal", "bp_coal_1"]], //388
     [], //389
     [["30160", "xsolla_packs/coins_1", "bp_coins_25"]], //390
     [], //391
     [["30161", "double_token", "bp_double_token"]], //392
-    [], //393
+    [["30309", "coal", "bp_coal_1"]], //393
     [], //394
     [["30162", "xsolla_packs/coins_1", "bp_coins_25"]], //395
     [["30223", "xsolla_packs/crystals_1", "bp_crystals_5"]], //396
     [["30163", "dp1", "bp_woda_plus"]], //397
-    [], //398
+    [["30310", "coal", "bp_coal_1"]], //398
     [], //399
     [["1026", "tip", "tipped_1026"], ["1015", "five_13", "five_13"]], //400
     [], //401
     [["30164", "double_token", "bp_double_token"]], //402
-    [], //403
+    [["30311", "coal", "bp_coal_1"]], //403
     [], //404
     [["30165", "xsolla_packs/coins_1", "bp_coins_25"]], //405
     [], //406
     [["30166", "dp1", "bp_woda_plus"]], //407
-    [], //408
+    [["30312", "coal", "bp_coal_1"]], //408
     [], //409
     [["30167", "xsolla_packs/coins_1", "bp_coins_25"]], //410
     [], //411
     [["30168", "double_token", "bp_double_token"]], //412
-    [], //413
+    [["30313", "coal", "bp_coal_1"]], //413
     [], //414
     [["30169", "xsolla_packs/coins_1", "bp_coins_25"], ["30235", "boss_soul_big", "bp_boss_souls_3"]], //415
     [], //416
     [["30170", "dp1", "bp_woda_plus"]], //417
-    [], //418
+    [["30314", "coal", "bp_coal_1"]], //418
     [], //419
     [["30171", "xsolla_packs/coins_1", "bp_coins_25"]], //420
     [], //421
     [["30172", "double_token", "bp_double_token"]], //422
-    [], //423
+    [["30315", "coal", "bp_coal_1"]], //423
     [], //424
     [["1038", "background_123", "background_123"], ["1010", "1010", "pet_185"]], //425
     [], //426
@@ -1032,72 +1032,72 @@ var bp_rewards_2026 =
     [["30174", "xsolla_packs/coins_1", "bp_coins_25"]], //430
     [], //431
     [["30175", "double_token", "bp_double_token"]], //432
-    [], //433
+    [["30316", "coal", "bp_coal_1"]], //433
     [], //434
     [["30176", "xsolla_packs/coins_1", "bp_coins_25"], ["30211", "rune_chest", "rune_chest_item"]], //435
     [], //436
     [["30177", "dp1", "bp_woda_plus"]], //437
-    [], //438
+    [["30317", "coal", "bp_coal_1"]], //438
     [], //439
     [["30178", "xsolla_packs/coins_1", "bp_coins_25"]], //440
     [], //441
     [["30179", "double_token", "bp_double_token"]], //442
-    [], //443
+    [["30318", "coal", "bp_coal_1"]], //443
     [], //444
     [["30180", "xsolla_packs/coins_1", "bp_coins_25"]], //445
     [], //446
     [["30181", "dp1", "bp_woda_plus"]], //447
-    [], //448
+    [["30319", "coal", "bp_coal_1"]], //448
     [], //449
     [["30182", "double_token", "bp_double_token"], ["30183", "double_token", "bp_double_token"], ["30184", "double_token", "bp_double_token"], ["30185", "double_token", "bp_double_token"], ["30186", "double_token", "bp_double_token"], ["1027", "tip", "tipped_1027"]], //450
     [], //451
     [["30187", "double_token", "bp_double_token"]], //452
-    [], //453
+    [["30320", "coal", "bp_coal_1"]], //453
     [], //454
     [["30188", "xsolla_packs/coins_1", "bp_coins_25"]], //455
     [], //456
     [["30189", "dp1", "bp_woda_plus"]], //457
-    [], //458
+    [["30321", "coal", "bp_coal_1"]], //458
     [], //459
     [["30190", "xsolla_packs/coins_1", "bp_coins_25"], ["1071", "emblem_120", "emblem_120"]], //460
     [], //461
     [["30191", "double_token", "bp_double_token"], ["30225", "xsolla_packs/crystals_1", "bp_crystals_5"]], //462
-    [], //463
+    [["30322", "coal", "bp_coal_1"]], //463
     [], //464
     [["30192", "xsolla_packs/coins_1", "bp_coins_25"], ["30236", "boss_soul_big", "bp_boss_souls_3"]], //465
     [], //466
     [["30193", "dp1", "bp_woda_plus"]], //467
-    [], //468
+    [["30323", "coal", "bp_coal_1"]], //468
     [], //469
     [["30194", "xsolla_packs/coins_1", "bp_coins_25"]], //470
     [], //471
     [["30195", "double_token", "bp_double_token"]], //472
-    [], //473
+    [["30324", "coal", "bp_coal_1"]], //473
     [], //474
     [["1039", "background_124", "background_124"]], //475
     [], //476
     [["30196", "dp1", "bp_woda_plus"]], //477
-    [], //478
+    [["30325", "coal", "bp_coal_1"]], //478
     [], //479
     [["30197", "xsolla_packs/coins_1", "bp_coins_25"]], //480
     [], //481
     [["30198", "double_token", "bp_double_token"]], //482
-    [], //483
+    [["30326", "coal", "bp_coal_1"]], //483
     [], //484
     [["30199", "xsolla_packs/coins_1", "bp_coins_25"]], //485
     [], //486
     [["30200", "dp1", "bp_woda_plus"]], //487
-    [], //488
+    [["30327", "coal", "bp_coal_1"]], //488
     [], //489
     [["30201", "xsolla_packs/coins_1", "bp_coins_25"]], //490
     [], //491
     [["30202", "double_token", "bp_double_token"]], //492
-    [], //493
+    [["30328", "coal", "bp_coal_1"]], //493
     [], //494
     [["30203", "xsolla_packs/coins_1", "bp_coins_25"], ["30226", "xsolla_packs/crystals_1", "bp_crystals_5"]], //495
     [], //496
     [["30204", "dp1", "bp_woda_plus"]], //497
-    [], //498
+    [["30329", "coal", "bp_coal_1"]], //498
     [], //499
     [["30205", "xsolla_packs/coins_1", "bp_coins_500"], ["1028", "tip", "tipped_1028"], ["1049", "emblem_118", "emblem_118"], ["1040", "background_125", "background_125"], ["1006", "1006", "pet_181"], ["1012", "tp_effect_12", "tp_effect_12"]] //500
 ];

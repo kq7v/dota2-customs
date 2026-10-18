@@ -56,6 +56,8 @@ function GetBossHealthBarIcon(unit_name)
 	return "file://{images}/custom_game/talents/" + unit_name + ".png"
 }
 
+GameUI.CustomUIConfig().GetBossHealthBarIcon = GetBossHealthBarIcon
+
 function BossHealthBarStart(data)
 {
 	$("#BossIcon").style.backgroundImage = 'url("' + GetBossHealthBarIcon(data.unit_name) + '")'
