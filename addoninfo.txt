@@ -16,13 +16,13 @@
 	]
 	IsPlayable = 1
 	HeroGuidesSupported = 1
-	PenaltiesEnabled = true
+	PenaltiesEnabled = false
 	EnablePickRules = 1
 	CheckAFKPlayers = 0
 	map_options =
 	[
 		{
-			MaxPlayers = 22
+			MaxPlayers = 1
 			map = "dota"
 			TeamCount = 2
 		},

@@ -2574,5 +2574,10 @@
 		"ctb_disconnect_confirm"				"Disconnect"
 		"ctb_disconnect_cancel"					"Cancel"
 		"ctb_disconnect_error"					"Cannot disconnect before game starts"
+
+		"ls_ndc_header"			"COULD NOT CONNECT TO THE SERVER"
+		"ls_ndc_description"	"In order to play Dota 12v12, exit this match and click on green button in the dota 2 arcade. You can also find lobby in Arcade (lobby list)"
+		"ls_ndc_description_2"	"This match is safe to leave. You will not lose MMR or be punished for disconnecting."
+		"ls_ndc_game_name"		"Dota 12v12 SERVERS +"
 	}
 }

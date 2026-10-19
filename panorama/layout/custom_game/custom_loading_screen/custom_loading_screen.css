@@ -1024,3 +1024,107 @@ Button.SocialLink:active .SocialImage
 	background-color: rgba(173, 255, 160, 0.05);
 	visibility: collapse;
 }
+
+.LS_NoDediConnection
+{
+	width: 100%;
+	height: 100%;
+	background-color: rgb(12, 11, 25), gradient( linear, 0% 0%, 0% 100%, from(black), color-stop(0.3, black), color-stop(0.35, #1a1a36), color-stop(0.65, rgba(0, 0, 0, 0.8)), color-stop(0.3, black), to(black) ), gradient( linear, 0% 0%, 100% 0%, from(rgb(5, 7, 8)), color-stop(0.1, rgba(12, 13, 21, 0.8)), color-stop(0.9, rgba(12, 13, 21, 0.8)), to(rgb(5, 7, 8)) );
+	visibility: collapse;
+}
+
+.BLobby_Local:not(.BToolsMode) .LS_NoDediConnection
+{
+	visibility: visible;
+}
+
+.LS_NoDediConnection > Panel
+{
+	align: center center;
+	flow-children: down;
+}
+
+.LS_NDC_HeaderContainer
+{
+	flow-children: right;
+	wash-color: #cae4ef;
+	horizontal-align: center;
+}
+
+.LS_NDC_HeaderContainer Image
+{
+	width: 40px;
+	height: 40px;
+	vertical-align: center;
+}
+
+.LS_NDC_HeaderContainer Label
+{
+	font-family: titleFont;
+	font-size: 30px;
+	text-transform: uppercase;
+	letter-spacing: 1px;
+	font-weight: semi-bold;
+	vertical-align: center;
+	margin-left: 12px;
+	color: white;
+}
+
+.LS_NDC_Description
+{
+	margin-top: 5px;
+	font-size: 20px;
+	font-weight: lighter;
+	horizontal-align: center;
+	text-align: center;
+}
+
+.LS_NDC_Description.SemiDesc
+{
+	font-size: 16px;
+	opacity: 0.1;
+}
+
+.LS_NDC_ButtonContainer
+{
+	horizontal-align: center;
+	margin: 20px 0;
+}
+
+.LS_NDC_Button
+{
+	width: 320px;
+	min-height: 50px;
+	max-height: 120px;
+	border-radius: 0px;
+	horizontal-align: center;
+	background-color: gradient(linear, 0% 0%, 0% 100%, from(#5aa15e), to(#87d69533));
+	background-image: url("s2r://panorama/images/backgrounds/background_play_button_large_2x_png.vtex");
+	background-size: 320px 120px;
+	box-shadow: fill #00000066 0px 0px 8px 0px;
+	border-top: 1px solid #ffffff44;
+	border-right: 1px solid #00000088;
+	border-left: 1px solid #ffffff44;
+	border-bottom: 1px solid #00000088;
+	transition-property: box-shadow, background-color, opacity, transform;
+	transition-delay: 0s;
+	transition-duration: 0.2s;
+	transition-timing-function: ease-in-out;
+}
+
+.LS_NDC_Button Label
+{
+	color: white;
+	max-width: 318px;
+	text-align: center;
+	text-transform: uppercase;
+	text-overflow: ellipsis;
+	margin-top: 2px;
+	horizontal-align: center;
+	vertical-align: center;
+	font-size: 28px;
+	font-weight: bold;
+	letter-spacing: 3px;
+	padding-left: 8px;
+	padding-right: 8px;
+}

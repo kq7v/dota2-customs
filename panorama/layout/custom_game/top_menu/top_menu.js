@@ -40,7 +40,7 @@ function OpenMail() {
 }
 
 function ToggleDisconnectWarning() {
-	if (Game.GameStateIsBefore(DOTA_GameState.DOTA_GAMERULES_STATE_GAME_IN_PROGRESS)) {
+	if (Game.GameStateIsBefore(DOTA_GameState.DOTA_GAMERULES_STATE_GAME_IN_PROGRESS) && !Game.IsInToolsMode()) {
 		GameEvents.SendEventClientSide("dota_hud_error_message", {
 			splitscreenplayer: 0,
 			reason: 80,

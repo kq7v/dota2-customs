@@ -99,5 +99,19 @@
 				</Panel>
 			</Panel>
 		</Panel>
+		<Panel class="LS_NoDediConnection" hittest="true">
+			<Panel>
+				<Panel class="LS_NDC_HeaderContainer">
+					<Image src="s2r://panorama/images/custom_game/loading_screen/server_icon_png.vtex" />
+					<Label text="#ls_ndc_header" html="true" />
+				</Panel>
+				<Label class="LS_NDC_Description" text="#ls_ndc_description" html="true" />
+				<Panel class="LS_NDC_ButtonContainer">
+					<TextButton class="LS_NDC_Button" text="#DOTA_Custom_Game_Play" />
+				</Panel>
+				<Label class="LS_NDC_Description SemiDesc" text="#ls_ndc_description_2" />
+				<TextButton class="LS_NDC_Disconnect" />
+			</Panel>
+		</Panel>
 	</Panel>
 </root>

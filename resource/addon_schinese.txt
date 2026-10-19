@@ -2259,5 +2259,10 @@
 		"ctb_disconnect_confirm"				"断开连接"
 		"ctb_disconnect_cancel"					"取消"
 		"ctb_disconnect_error"					"比赛开始前无法断开连接。"
+
+		"ls_ndc_header"							"无法连接到服务器"
+        "ls_ndc_description"					"要游玩 Dota 12v12，请退出本场比赛，然后点击 Dota 2 游廊中的绿色按钮。您也可以在游廊的房间列表中找到房间。"
+        "ls_ndc_description_2"					"您可以安全离开本场比赛。断开连接不会扣除天梯积分，也不会受到惩罚。"
+        "ls_ndc_game_name"						"Dota 12v12服务器+"
 	}
 }

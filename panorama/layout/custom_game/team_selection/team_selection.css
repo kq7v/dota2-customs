@@ -16,6 +16,14 @@
 	height: 100%;
 }
 
+.BLocalLobby:not(.BToolsMode) .TS_Base,.BLocalLobby:not(.BToolsMode) #UnassignedPlayerPanel
+{
+	visibility: collapse;
+	opacity: 0;
+	width: 0px;
+	height: 0px;
+}
+
 .TS_Base
 {
 	height: 100%;

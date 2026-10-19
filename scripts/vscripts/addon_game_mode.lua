@@ -8,6 +8,9 @@
 ]]
 
 
+if not IsDedicatedServer() and not IsInToolsMode() then
+	return
+end
 _G.GameMode = GameMode or {}
 
 require("core_declarations")

@@ -145,6 +145,8 @@ function CreateLoadingPlayersPanel() {
 }
 
 function InitLoadingScreenByLoadingState() {
+	HUD.CONTEXT.SetDialogVariableLocString("game_mode_name", "ls_ndc_game_name");
+
 	const player_info = Game.GetPlayerInfo(Game.GetLocalPlayerID());
 	// MAP_NAME from utils cannot be used, because map info doesnt collected
 	const map_name = Game.GetMapInfo().map_display_name;
@@ -175,11 +177,20 @@ GameUI.GetOption = (option_name) => {
 function CheckLocalLobbyStateLS() {
 	if (Game.GameStateIsAfter(DOTA_GameState.DOTA_GAMERULES_STATE_CUSTOM_GAME_SETUP)) return;
 
-	let dedicated_state = CustomNetTables.GetTableValue("game_options", "dedicated")?.state;
-	if (dedicated_state != undefined)
-		HUD.CONTEXT.SwitchClass("local-lobby-state", `BLobby_${dedicated_state === 0 ? "Local" : "Dedicated"}`);
+	let dedicated_state = CustomNetTables.GetTableValue("game_options", "dedicated")?.state || 0;
 
+	HUD.CONTEXT.SetHasClass("BToolsMode", Game.IsInToolsMode());
+	HUD.CONTEXT.SwitchClass("local-lobby-state", `BLobby_${dedicated_state === 0 ? "Local" : "Dedicated"}`);
+
+	UpdateChatState(dedicated_state);
 	$.Schedule(0, CheckLocalLobbyStateLS);
+}
+
+function UpdateChatState(dedicated_state = 0) {
+	const chat = FindDotaHudElementInLS("LoadingScreenChat");
+	if (!chat) return;
+
+	chat.visible = !!dedicated_state;
 }
 
 (() => {

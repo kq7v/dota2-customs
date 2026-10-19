@@ -177,6 +177,11 @@ function CheckPrivileges() {
 }
 function UpdateSchedule() {
 	HUD.CONTEXT.SetHasClass("BTeamsLocked", Game.GetTeamSelectionLocked());
+	HUD.CONTEXT.SetHasClass(
+		"BLocalLobby",
+		(CustomNetTables.GetTableValue("game_options", "dedicated")?.state || 0) == 0,
+	);
+	HUD.CONTEXT.SetHasClass("BToolsMode", Game.IsInToolsMode());
 
 	if (Game.GameStateIsAfter(DOTA_GameState.DOTA_GAMERULES_STATE_CUSTOM_GAME_SETUP)) return;
 	$.Schedule(0.1, UpdateSchedule);
@@ -253,4 +258,4 @@ function AllowTeamSelection() {
 
 	// HUD.CONTEXT.SetHasClass("InstaLoading", MAP_NAME == "dota");
 	HUD.CONTEXT.SetHasClass("InstaLoading", false);
-})();
+})();
