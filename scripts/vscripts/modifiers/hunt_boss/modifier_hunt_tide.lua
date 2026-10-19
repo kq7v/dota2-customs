@@ -16,19 +16,18 @@ local e = b.__TS__StringSplit
 local f = b.__TS__ArrayFilter
 local g = b.__TS__ArrayMap
 local h = b.__TS__ArrayIncludes
-local i = b.__TS__NumberToFixed
-local j = b.__TS__DecorateLegacy
-local k = {}
-local l = require("modifiers.eom_modifier.eom_modifier")
-local m = l.EOMModifier
-local n = l.registerEOMModifier
-local o = "particles/warning/linear.vpcf"
-local p = "particles/units/heroes/hero_kunkka/kunkka_shard_tidal_wave.vpcf"
-local q = c()
-q.name = "modifier_hunt_tide"
-d(q, m)
-function q.prototype.____constructor(self, ...)
-	m.prototype.____constructor(self, ...)
+local i = b.__TS__DecorateLegacy
+local j = {}
+local k = require("modifiers.eom_modifier.eom_modifier")
+local l = k.EOMModifier
+local m = k.registerEOMModifier
+local n = "particles/warning/linear.vpcf"
+local o = "particles/units/heroes/hero_kunkka/kunkka_shard_tidal_wave.vpcf"
+local p = c()
+p.name = "modifier_hunt_tide"
+d(p, l)
+function p.prototype.____constructor(self, ...)
+	l.prototype.____constructor(self, ...)
 	self.lanes = {}
 	self.gapIndices = {}
 	self.spacing = 0
@@ -47,123 +46,75 @@ function q.prototype.____constructor(self, ...)
 	self.bullets = {}
 	self.hitHeroes = {}
 end
-function q.prototype.OnCreated(self, r)
+function p.prototype.OnCreated(self, q)
 	if not IsServer() then
 		return
 	end
 	self.direction = RandomVector(1)
-	self.spacing = r.lane_width
-	self.radius = r.wave_radius
-	self.speed = r.speed
-	self.remaining = r.warning_time
-	self.damagePct = r.damage_pct
+	self.spacing = q.lane_width
+	self.radius = q.wave_radius
+	self.speed = q.speed
+	self.remaining = q.warning_time
+	self.damagePct = q.damage_pct
 	self.heroIndices = g(
-		f(e(r.hero_entindices, ","), function(s, t)
-			return t ~= ""
+		f(e(q.hero_entindices, ","), function(r, s)
+			return s ~= ""
 		end),
-		function(s, t)
-			return toFiniteNumber(t, -1)
+		function(r, s)
+			return toFiniteNumber(s, -1)
 		end
 	)
-	local u = self:GetParent():GetAbsOrigin()
-	local v = self.direction
-	local w = math.abs(v.x) * r.field_half_width + math.abs(v.y) * r.field_half_height
-	local x = math.abs(v.y) * r.field_half_width + math.abs(v.x) * r.field_half_height
-	self.distance = math.max(r.distance, 2 * (w + self.radius))
-	local y = math.max(r.lane_count, math.ceil(2 * x / self.spacing) + 1)
+	local t = self:GetParent():GetAbsOrigin()
+	local u = self.direction
+	local v = math.abs(u.x) * q.field_half_width + math.abs(u.y) * q.field_half_height
+	local w = math.abs(u.y) * q.field_half_width + math.abs(u.x) * q.field_half_height
+	self.distance = math.max(q.distance, 2 * (v + self.radius))
+	local x = math.max(q.lane_count, math.ceil(2 * w / self.spacing) + 1)
 	do
-		local t = 0
-		while t < y do
-			local z = (t - (y - 1) / 2) * self.spacing
-			local A = u + Vector(-v.y * z, v.x * z, 0)
-			local B = self.lanes
-			B[#B + 1] = {
-				start = A + Vector(-v.x * self.distance / 2, -v.y * self.distance / 2, 0),
-				["end"] = A + Vector(v.x * self.distance / 2, v.y * self.distance / 2, 0),
+		local s = 0
+		while s < x do
+			local y = (s - (x - 1) / 2) * self.spacing
+			local z = t + Vector(-u.y * y, u.x * y, 0)
+			local A = self.lanes
+			A[#A + 1] = {
+				start = z + Vector(-u.x * self.distance / 2, -u.y * self.distance / 2, 0),
+				["end"] = z + Vector(u.x * self.distance / 2, u.y * self.distance / 2, 0),
 			}
-			t = t + 1
+			s = s + 1
 		end
 	end
-	local C = f(
-		g(self.lanes, function(s, D, t)
-			return t
+	local B = f(
+		g(self.lanes, function(r, C, s)
+			return s
 		end),
-		function(s, t)
-			return t > 0 and t < y - 1
+		function(r, s)
+			return s > 0 and s < x - 1
 		end
 	)
-	local E = GetRandomElement(C)
-	local F = GetRandomElement(f(C, function(s, t)
-		return math.abs(t - E) > 1
+	local D = GetRandomElement(B)
+	local E = GetRandomElement(f(B, function(r, s)
+		return math.abs(s - D) > 1
 	end))
-	self.gapIndices = { E, F }
-	self:Trace(
-		(
-			(
-				(
-					(
-						(
-							(
-								(
-									(
-										(
-											(
-												(
-													(
-														(
-															(
-																(
-																	(
-																		(
-																			(
-																				"plan waves="
-																				.. tostring(
-																					#self.lanes - #self.gapIndices
-																				)
-																			) .. " lanes="
-																		) .. tostring(#self.lanes)
-																	) .. " gaps="
-																)
-																.. table.concat(
-																	g(self.gapIndices, function(s, t)
-																		return t + 1
-																	end),
-																	","
-																)
-															) .. " center="
-														) .. VectorToString(u)
-													) .. " gapWidth="
-												) .. tostring(2 * self.spacing - 2 * self.radius)
-											) .. " spacing="
-										) .. tostring(self.spacing)
-									) .. " radius="
-								) .. tostring(self.radius)
-							) .. " distance="
-						) .. tostring(self.distance)
-					) .. " direction="
-				) .. VectorToString(self.direction)
-			) .. " particle="
-		) .. p
-	)
+	self.gapIndices = { D, E }
 	self:SetStackCount(1)
 	self.active = true
 	self:ShowWaves()
 	self:StartIntervalThink(0.1)
 end
-function q.prototype.OnRefresh(self, r)
+function p.prototype.OnRefresh(self, q)
 	if not IsServer() or self.ended then
 		return
 	end
 	self.heroIndices = g(
-		f(e(r.hero_entindices, ","), function(s, t)
-			return t ~= ""
+		f(e(q.hero_entindices, ","), function(r, s)
+			return s ~= ""
 		end),
-		function(s, t)
-			return toFiniteNumber(t, -1)
+		function(r, s)
+			return toFiniteNumber(s, -1)
 		end
 	)
 end
-function q.prototype.OnStackCountChanged(self)
+function p.prototype.OnStackCountChanged(self)
 	if not IsServer() or self.ended then
 		return
 	end
@@ -173,7 +124,7 @@ function q.prototype.OnStackCountChanged(self)
 		self:StopBullets()
 	end
 end
-function q.prototype.OnIntervalThink(self)
+function p.prototype.OnIntervalThink(self)
 	if not IsServer() or self.ended or self:GetStackCount() == 0 then
 		return
 	end
@@ -190,28 +141,28 @@ function q.prototype.OnIntervalThink(self)
 	end
 	self:ShowWaves()
 end
-function q.prototype.ShowWaves(self)
+function p.prototype.ShowWaves(self)
 	if self.phase == "warning" then
 		if #self.warnings > 0 then
 			return
 		end
 		do
-			local t = 0
-			while t < #self.lanes do
+			local s = 0
+			while s < #self.lanes do
 				do
-					if h(self.gapIndices, t) then
-						goto G
+					if h(self.gapIndices, s) then
+						goto F
 					end
-					local H = self.lanes[t + 1]
-					local I = ParticleManager:CreateParticle(o, PATTACH_WORLDORIGIN, self:GetParent())
-					ParticleManager:SetParticleControl(I, 0, H.start)
-					ParticleManager:SetParticleControl(I, 1, H["end"])
-					ParticleManager:SetParticleControl(I, 2, Vector(self.radius, self.remaining, 0))
-					local J = self.warnings
-					J[#J + 1] = I
+					local G = self.lanes[s + 1]
+					local H = ParticleManager:CreateParticle(n, PATTACH_WORLDORIGIN, self:GetParent())
+					ParticleManager:SetParticleControl(H, 0, G.start)
+					ParticleManager:SetParticleControl(H, 1, G["end"])
+					ParticleManager:SetParticleControl(H, 2, Vector(self.radius, self.remaining, 0))
+					local I = self.warnings
+					I[#I + 1] = H
 				end
-				::G::
-				t = t + 1
+				::F::
+				s = s + 1
 			end
 		end
 		return
@@ -219,135 +170,46 @@ function q.prototype.ShowWaves(self)
 	if #self.bullets > 0 then
 		return
 	end
-	local K = self.generation
-	local v = self.direction
-	local L = math.min(self.distance, self.remaining * self.actualSpeed)
+	local J = self.generation
+	local u = self.direction
+	local K = math.min(self.distance, self.remaining * self.actualSpeed)
 	do
-		local t = 0
-		while t < #self.lanes do
+		local s = 0
+		while s < #self.lanes do
 			do
-				if h(self.gapIndices, t) then
-					goto M
+				if h(self.gapIndices, s) then
+					goto L
 				end
-				local H = self.lanes[t + 1]
-				local N = H["end"] + Vector(-v.x * L, -v.y * L, 0)
-				local O = false
-				local P = Bullet:CreateLinearBullet({
+				local G = self.lanes[s + 1]
+				local M = G["end"] + Vector(-u.x * K, -u.y * K, 0)
+				local N = Bullet:CreateLinearBullet({
 					caster = self:GetParent(),
-					spawnOrigin = N,
-					direction = v,
-					distance = L,
+					spawnOrigin = M,
+					direction = u,
+					distance = K,
 					moveSpeed = self.actualSpeed / math.max(0.01, Bullet.slowFactor),
 					radius = self.radius,
 					ignoreBlock = true,
-					effectName = p,
+					effectName = o,
 					teamFilter = DOTA_UNIT_TARGET_TEAM_ENEMY,
 					typeFilter = DOTA_UNIT_TARGET_HERO,
-					OnBulletCreated = function(Q)
-						return self:Trace(
-							(
-								(
-									(
-										(
-											(
-												(
-													(
-														(
-															(
-																(
-																	(
-																		(
-																			(
-																				("created lane=" .. tostring(t + 1))
-																				.. " bullet="
-																			)
-																			.. tostring(Q.__projIndex)
-																		) .. " start="
-																	) .. VectorToString(N)
-																) .. " end="
-															) .. VectorToString(H["end"])
-														) .. " distance="
-													) .. i(L, 1)
-												) .. " speed="
-											) .. tostring(Q.moveSpeed)
-										) .. " lifetime="
-									) .. tostring(Q.__lifeTime)
-								) .. " particle="
-							) .. tostring(Q.__particleID)
-						)
-					end,
-					OnBulletThink = function(R, Q)
-						if O or self:Distance(N, R) < L / 2 then
-							return
-						end
-						O = true
-						self:Trace(
-							(
-								(
-									(
-										(
-											(
-												(
-													(("moving lane=" .. tostring(t + 1)) .. " bullet=")
-													.. tostring(Q.__projIndex)
-												) .. " position="
-											) .. VectorToString(R)
-										) .. " travelled="
-									) .. tostring(self:Distance(N, R))
-								) .. " remainingTime="
-							) .. tostring(Q.__lifeTimeRemaining)
-						)
-					end,
-					OnBulletDestroy = function(Q)
-						return self:Trace(
-							(
-								(
-									(
-										(
-											(
-												(
-													(
-														(
-															(
-																(
-																	(
-																		(
-																			(
-																				("destroyed lane=" .. tostring(t + 1))
-																				.. " bullet="
-																			)
-																			.. tostring(Q.__projIndex)
-																		) .. " position="
-																	) .. VectorToString(Q.__position)
-																) .. " travelled="
-															) .. tostring(self:Distance(N, Q.__position))
-														) .. " expected="
-													) .. tostring(L)
-												) .. " remainingTime="
-											) .. tostring(Q.__lifeTimeRemaining)
-										) .. " active="
-									) .. tostring(self.active)
-								) .. " ended="
-							) .. tostring(self.ended)
-						)
-					end,
-					OnBulletHit = function(S)
+					OnBulletHit = function(O)
 						if
 							self.ended
 							or not self.active
-							or K ~= self.generation
-							or not IsValid(S)
-							or not S:IsAlive()
-							or not h(self.heroIndices, S:entindex())
-							or self.hitHeroes[S:entindex()]
+							or J ~= self.generation
+							or not IsValid(O)
+							or not O:IsAlive()
+							or not h(self.heroIndices, O:entindex())
+							or self.hitHeroes[O:entindex()]
 						then
 							return
 						end
-						self.hitHeroes[S:entindex()] = true
+						self.hitHeroes[O:entindex()] = true
 						self:GetParent():DealDamage(
-							S,
+							O,
 							nil,
-							S:GetMaxHealth() * self.damagePct * 0.01,
+							O:GetMaxHealth() * self.damagePct * 0.01,
 							EOM_DAMAGE_TYPES.DAMAGE_TYPE_PURE,
 							EOM_DAMAGE_FLAGS.NO_CRIT
 								+ EOM_DAMAGE_FLAGS.NO_DAMAGE_AMPLIFY
@@ -357,19 +219,17 @@ function q.prototype.ShowWaves(self)
 						)
 					end,
 				})
-				if P ~= nil then
-					local T = self.bullets
-					T[#T + 1] = P
-				else
-					self:Trace("create failed lane=" .. tostring(t + 1))
+				if N ~= nil then
+					local P = self.bullets
+					P[#P + 1] = N
 				end
 			end
-			::M::
-			t = t + 1
+			::L::
+			s = s + 1
 		end
 	end
 end
-function q.prototype.OnDestroy(self)
+function p.prototype.OnDestroy(self)
 	if not IsServer() or self.ended then
 		return
 	end
@@ -378,48 +238,42 @@ function q.prototype.OnDestroy(self)
 	self:StopBullets()
 	self.active = false
 	self.heroIndices = {}
-	local U = self:GetParent()
-	if IsValid(U) then
+	local Q = self:GetParent()
+	if IsValid(Q) then
 		Timer:Timer(0, function()
-			if IsValid(U) then
-				UTIL_Remove(U)
+			if IsValid(Q) then
+				UTIL_Remove(Q)
 			end
 		end)
 	end
 end
-function q.prototype.Trace(self, V)
-	print("[HuntTide] " .. V)
-end
-function q.prototype.Distance(self, W, X)
-	return math.sqrt((W.x - X.x) ^ 2 + (W.y - X.y) ^ 2)
-end
-function q.prototype.ClearWarnings(self)
-	for s, I in ipairs(self.warnings) do
-		ParticleManager:DestroyParticle(I, true)
-		ParticleManager:ReleaseParticleIndex(I)
+function p.prototype.ClearWarnings(self)
+	for r, H in ipairs(self.warnings) do
+		ParticleManager:DestroyParticle(H, true)
+		ParticleManager:ReleaseParticleIndex(H)
 	end
 	self.warnings = {}
 end
-function q.prototype.StopBullets(self)
+function p.prototype.StopBullets(self)
 	self.generation = self.generation + 1
-	local Y = self.bullets
+	local R = self.bullets
 	self.bullets = {}
-	for s, P in ipairs(Y) do
-		Bullet:DestroyBulletByID(P)
+	for r, N in ipairs(R) do
+		Bullet:DestroyBulletByID(N)
 	end
 end
-function q.prototype.CheckState(self)
+function p.prototype.CheckState(self)
 	return {
 		[MODIFIER_STATE_INVULNERABLE] = true,
 		[MODIFIER_STATE_UNSELECTABLE] = true,
 		[MODIFIER_STATE_NO_UNIT_COLLISION] = true,
 	}
 end
-q = j(
-	{ n(
+p = i(
+	{ m(
 		a,
 		{ IsHidden = true, IsDebuff = false, IsPurgable = false, IsPurgeException = false, AllowIllusionDuplicate = false }
 	) },
-	q
+	p
 )
-return k
+return j

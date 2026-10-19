@@ -4822,6 +4822,21 @@
 	flow-children: down;
 }
 
+#DiffSelection #HuntBossSelection #HuntBossSaveSelectorOverlay #HuntBossSaveSelector #HuntBossSaveList.HuntBossSaveListEmpty
+{
+	height: fill-parent-flow(1);
+	flow-children: none;
+}
+
+#DiffSelection #HuntBossSelection #HuntBossSaveSelectorOverlay #HuntBossSaveSelector #HuntBossSaveEmptyHint
+{
+	horizontal-align: center;
+	vertical-align: center;
+	font-size: 20px;
+	color: #e6d4a4;
+	text-align: center;
+}
+
 #DiffSelection #HuntBossSelection #HuntBossSaveSelectorOverlay #HuntBossSaveSelector .HuntBossSaveRow
 {
 	width: 1278px;

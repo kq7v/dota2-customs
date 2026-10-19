@@ -2046,7 +2046,7 @@ function getHuntFieldBuffs() {
 const BOSS_PREVIEW_IMAGES = ["boss_axe.png", "boss_bloodseeker.png", "boss_earthshaker.png", "boss_grimstroke.png", "boss_lion.png", "boss_queenofpain.png", "boss_shredder.png", "boss_skeleton_king.png"];
 const HUNT_BOSS_SAVE_LIMIT = 5;
 const HUNT_INTELLIGENCE_TOKEN_ID = "110025";
-const HUNT_INTELLIGENCE_MAX = 300;
+const HUNT_INTELLIGENCE_MAX = solid_utils.parseTokenCosts(KeyValues.hunt_common?.intelligence_max?.value).find(item => item.name === HUNT_INTELLIGENCE_TOKEN_ID)?.value || 300;
 const deserializeSave = save => {
   const snapshot = JSON.parseSafe(save.data);
   if (snapshot?.hero_name === undefined) return undefined;
@@ -2673,19 +2673,19 @@ const HuntBossSelection = () => {
             }
           }), _el$65);
           libs.effect(_p$ => {
-            const _v$21 = {
+            const _v$22 = {
                 NoSave: !isSaveReady()
               },
-              _v$22 = Players.GetPlayerName(id),
-              _v$23 = isSaveReady();
-            _v$21 !== _p$._v$21 && (_p$._v$21 = libs.setProp(_el$64, "classList", _v$21, _p$._v$21));
-            _v$22 !== _p$._v$22 && (_p$._v$22 = libs.setProp(_el$64, "tooltip_text", _v$22, _p$._v$22));
-            _v$23 !== _p$._v$23 && (_p$._v$23 = libs.setProp(_el$65, "visible", _v$23, _p$._v$23));
+              _v$23 = Players.GetPlayerName(id),
+              _v$24 = isSaveReady();
+            _v$22 !== _p$._v$22 && (_p$._v$22 = libs.setProp(_el$64, "classList", _v$22, _p$._v$22));
+            _v$23 !== _p$._v$23 && (_p$._v$23 = libs.setProp(_el$64, "tooltip_text", _v$23, _p$._v$23));
+            _v$24 !== _p$._v$24 && (_p$._v$24 = libs.setProp(_el$65, "visible", _v$24, _p$._v$24));
             return _p$;
           }, {
-            _v$21: undefined,
             _v$22: undefined,
-            _v$23: undefined
+            _v$23: undefined,
+            _v$24: undefined
           });
           return _el$64;
         })();
@@ -2745,14 +2745,14 @@ const HuntBossSelection = () => {
                   hittest: false
                 }), _el$67);
                 libs.effect(_p$ => {
-                  const _v$24 = hunt_buff_icon.GetHuntEffectName(buff.id, buff.level),
-                    _v$25 = hunt_buff_icon.GetHuntEffectDescription(buff.id, buff.level);
-                  _v$24 !== _p$._v$24 && (_p$._v$24 = libs.setProp(_el$68, "text", _v$24, _p$._v$24));
-                  _v$25 !== _p$._v$25 && (_p$._v$25 = libs.setProp(_el$69, "text", _v$25, _p$._v$25));
+                  const _v$25 = hunt_buff_icon.GetHuntEffectName(buff.id, buff.level),
+                    _v$26 = hunt_buff_icon.GetHuntEffectDescription(buff.id, buff.level);
+                  _v$25 !== _p$._v$25 && (_p$._v$25 = libs.setProp(_el$68, "text", _v$25, _p$._v$25));
+                  _v$26 !== _p$._v$26 && (_p$._v$26 = libs.setProp(_el$69, "text", _v$26, _p$._v$26));
                   return _p$;
                 }, {
-                  _v$24: undefined,
-                  _v$25: undefined
+                  _v$25: undefined,
+                  _v$26: undefined
                 });
                 return _el$66;
               })()
@@ -2845,6 +2845,19 @@ const HuntBossSelection = () => {
               get each() {
                 return huntSaveRecords();
               },
+              get fallback() {
+                return (() => {
+                  const _el$70 = libs.createElement("Label", {
+                    id: "HuntBossSaveEmptyHint",
+                    get text() {
+                      return GetLocalization("#HuntBossDiffSelection_SaveEmptyHint");
+                    },
+                    hittest: false
+                  }, null);
+                  libs.effect(_$p => libs.setProp(_el$70, "text", GetLocalization("#HuntBossDiffSelection_SaveEmptyHint"), _$p));
+                  return _el$70;
+                })();
+              },
               children: record => {
                 const meetsDifficulty = () => record.difficulty >= requiredSaveDifficulty();
                 const matchesHero = () => record.hero === selectedHeroName();
@@ -2856,47 +2869,47 @@ const HuntBossSelection = () => {
                   onactivate: () => selectSave(record),
                   get children() {
                     return [(() => {
-                      const _el$70 = libs.createElement("Label", {
+                      const _el$71 = libs.createElement("Label", {
                         "class": "HuntBossSaveCol HuntBossSaveTime",
                         get text() {
                           return record.time;
                         }
                       }, null);
-                      libs.effect(_$p => libs.setProp(_el$70, "text", record.time, _$p));
-                      return _el$70;
+                      libs.effect(_$p => libs.setProp(_el$71, "text", record.time, _$p));
+                      return _el$71;
                     })(), (() => {
-                      const _el$71 = libs.createElement("Panel", {
+                      const _el$72 = libs.createElement("Panel", {
                         "class": "HuntBossSaveCol HuntBossSaveHero HuntBossSaveStatusCell"
                       }, null);
-                      libs.insert(_el$71, libs.createComponent(EOM_HeroImage.EOM_HeroImage, {
+                      libs.insert(_el$72, libs.createComponent(EOM_HeroImage.EOM_HeroImage, {
                         get heroname() {
                           return record.hero;
                         },
                         heroimagestyle: "icon",
                         hittest: false
                       }), null);
-                      libs.insert(_el$71, libs.createComponent(libs.Show, {
+                      libs.insert(_el$72, libs.createComponent(libs.Show, {
                         get when() {
                           return !matchesHero();
                         },
                         get children() {
-                          const _el$72 = libs.createElement("Label", {
+                          const _el$73 = libs.createElement("Label", {
                             "class": "HuntBossSaveWarning",
                             get text() {
                               return GetLocalization("#HuntBossDiffSelection_SaveHeroMismatch");
                             },
                             hittest: false
                           }, null);
-                          libs.effect(_$p => libs.setProp(_el$72, "text", GetLocalization("#HuntBossDiffSelection_SaveHeroMismatch"), _$p));
-                          return _el$72;
+                          libs.effect(_$p => libs.setProp(_el$73, "text", GetLocalization("#HuntBossDiffSelection_SaveHeroMismatch"), _$p));
+                          return _el$73;
                         }
                       }), null);
-                      return _el$71;
+                      return _el$72;
                     })(), (() => {
-                      const _el$73 = libs.createElement("Panel", {
+                      const _el$74 = libs.createElement("Panel", {
                           "class": "HuntBossSaveCol HuntBossSaveDifficulty HuntBossSaveStatusCell"
                         }, null),
-                        _el$74 = libs.createElement("Label", {
+                        _el$75 = libs.createElement("Label", {
                           "class": "HuntBossSaveDifficultyValue",
                           get text() {
                             return LocalizeWithVars("#HuntBossDiffSelection_SaveDifficulty", {
@@ -2905,57 +2918,57 @@ const HuntBossSelection = () => {
                             });
                           },
                           hittest: false
-                        }, _el$73);
-                      libs.insert(_el$73, libs.createComponent(libs.Show, {
+                        }, _el$74);
+                      libs.insert(_el$74, libs.createComponent(libs.Show, {
                         get when() {
                           return !meetsDifficulty();
                         },
                         get children() {
-                          const _el$75 = libs.createElement("Label", {
+                          const _el$76 = libs.createElement("Label", {
                             "class": "HuntBossSaveWarning",
                             get text() {
                               return GetLocalization("#HuntBossDiffSelection_SaveDifficultyTooLow");
                             },
                             hittest: false
                           }, null);
-                          libs.effect(_$p => libs.setProp(_el$75, "text", GetLocalization("#HuntBossDiffSelection_SaveDifficultyTooLow"), _$p));
-                          return _el$75;
+                          libs.effect(_$p => libs.setProp(_el$76, "text", GetLocalization("#HuntBossDiffSelection_SaveDifficultyTooLow"), _$p));
+                          return _el$76;
                         }
                       }), null);
-                      libs.effect(_$p => libs.setProp(_el$74, "text", LocalizeWithVars("#HuntBossDiffSelection_SaveDifficulty", {
+                      libs.effect(_$p => libs.setProp(_el$75, "text", LocalizeWithVars("#HuntBossDiffSelection_SaveDifficulty", {
                         difficulty: record.difficulty,
                         strength: record.strength
                       }), _$p));
-                      return _el$73;
+                      return _el$74;
                     })(), (() => {
-                      const _el$76 = libs.createElement("Label", {
+                      const _el$77 = libs.createElement("Label", {
                         "class": "HuntBossSaveCol HuntBossSaveDamage",
                         get text() {
                           return FormatNumber(record.damage);
                         }
                       }, null);
-                      libs.effect(_$p => libs.setProp(_el$76, "text", FormatNumber(record.damage), _$p));
-                      return _el$76;
+                      libs.effect(_$p => libs.setProp(_el$77, "text", FormatNumber(record.damage), _$p));
+                      return _el$77;
                     })(), (() => {
-                      const _el$77 = libs.createElement("Panel", {
+                      const _el$78 = libs.createElement("Panel", {
                         "class": "HuntBossSaveCol HuntBossSaveBlessing HuntBossSaveItemCell"
                       }, null);
-                      libs.insert(_el$77, libs.createComponent(HuntBossSaveItems, {
+                      libs.insert(_el$78, libs.createComponent(HuntBossSaveItems, {
                         get items() {
                           return record.blessings;
                         }
                       }));
-                      return _el$77;
+                      return _el$78;
                     })(), (() => {
-                      const _el$78 = libs.createElement("Panel", {
+                      const _el$79 = libs.createElement("Panel", {
                         "class": "HuntBossSaveCol HuntBossSaveArtifact HuntBossSaveItemCell"
                       }, null);
-                      libs.insert(_el$78, libs.createComponent(HuntBossSaveItems, {
+                      libs.insert(_el$79, libs.createComponent(HuntBossSaveItems, {
                         get items() {
                           return record.artifacts;
                         }
                       }));
-                      return _el$78;
+                      return _el$79;
                     })()];
                   }
                 });
@@ -2971,7 +2984,10 @@ const HuntBossSelection = () => {
                 _v$6 = GetLocalization("#HuntBossDiffSelection_SaveDifficultyTitle"),
                 _v$7 = GetLocalization("#HuntBossDiffSelection_SaveDamage"),
                 _v$8 = GetLocalization("#HuntBossDiffSelection_SaveBlessing"),
-                _v$9 = GetLocalization("#HuntBossDiffSelection_SaveArtifact");
+                _v$9 = GetLocalization("#HuntBossDiffSelection_SaveArtifact"),
+                _v$0 = {
+                  HuntBossSaveListEmpty: huntSaveRecords().length === 0
+                };
               _v$3 !== _p$._v$3 && (_p$._v$3 = libs.setProp(_el$50, "text", _v$3, _p$._v$3));
               _v$4 !== _p$._v$4 && (_p$._v$4 = libs.setProp(_el$52, "text", _v$4, _p$._v$4));
               _v$5 !== _p$._v$5 && (_p$._v$5 = libs.setProp(_el$53, "text", _v$5, _p$._v$5));
@@ -2979,6 +2995,7 @@ const HuntBossSelection = () => {
               _v$7 !== _p$._v$7 && (_p$._v$7 = libs.setProp(_el$55, "text", _v$7, _p$._v$7));
               _v$8 !== _p$._v$8 && (_p$._v$8 = libs.setProp(_el$56, "text", _v$8, _p$._v$8));
               _v$9 !== _p$._v$9 && (_p$._v$9 = libs.setProp(_el$57, "text", _v$9, _p$._v$9));
+              _v$0 !== _p$._v$0 && (_p$._v$0 = libs.setProp(_el$59, "classList", _v$0, _p$._v$0));
               return _p$;
             }, {
               _v$3: undefined,
@@ -2987,7 +3004,8 @@ const HuntBossSelection = () => {
               _v$6: undefined,
               _v$7: undefined,
               _v$8: undefined,
-              _v$9: undefined
+              _v$9: undefined,
+              _v$0: undefined
             });
             return _el$49;
           }
@@ -2996,42 +3014,41 @@ const HuntBossSelection = () => {
       }
     }), null);
     libs.effect(_p$ => {
-      const _v$0 = GetLocalization("#HuntBossDiffSelection_ModeTitle"),
-        _v$1 = GetLocalization("#HuntBossDiffSelection_Info"),
-        _v$10 = bossPreviewImage(),
-        _v$11 = GetLocalization("#HuntBossDiffSelection_ScopeTitle"),
-        _v$12 = GetLocalization(`#HuntBossDiffSelection_${difficulty()}_Description`),
-        _v$13 = GetLocalization("#HuntBossDiffSelection_FieldEffectsTitle"),
-        _v$14 = GetLocalization("#HuntBossDiffSelection_IntelligenceTitle"),
-        _v$15 = GetLocalization("#HuntBossDiffSelection_SaveTitle"),
-        _v$16 = difficultySelection()?.state === "pending",
-        _v$17 = LocalizeWithVars("#HuntBossDiffSelection_Difficulty", {
+      const _v$1 = GetLocalization("#HuntBossDiffSelection_ModeTitle"),
+        _v$10 = GetLocalization("#HuntBossDiffSelection_Info"),
+        _v$11 = bossPreviewImage(),
+        _v$12 = GetLocalization("#HuntBossDiffSelection_ScopeTitle"),
+        _v$13 = GetLocalization(`#HuntBossDiffSelection_${difficulty()}_Description`),
+        _v$14 = GetLocalization("#HuntBossDiffSelection_FieldEffectsTitle"),
+        _v$15 = GetLocalization("#HuntBossDiffSelection_IntelligenceTitle"),
+        _v$16 = GetLocalization("#HuntBossDiffSelection_SaveTitle"),
+        _v$17 = difficultySelection()?.state === "pending",
+        _v$18 = LocalizeWithVars("#HuntBossDiffSelection_Difficulty", {
           difficulty: teamDifficulty()
         }),
-        _v$18 = LocalizeWithVars("#DiffSelection_StartCountdown", {
+        _v$19 = LocalizeWithVars("#DiffSelection_StartCountdown", {
           value: countdown()
         }),
-        _v$19 = Number.isFinite(requiredSaveDifficulty()),
-        _v$20 = {
+        _v$20 = Number.isFinite(requiredSaveDifficulty()),
+        _v$21 = {
           diff: Math.max(teamDifficulty(), difficulty()),
           value: requiredSaveDifficulty()
         };
-      _v$0 !== _p$._v$0 && (_p$._v$0 = libs.setProp(_el$4, "text", _v$0, _p$._v$0));
-      _v$1 !== _p$._v$1 && (_p$._v$1 = libs.setProp(_el$5, "tooltip_text", _v$1, _p$._v$1));
-      _v$10 !== _p$._v$10 && (_p$._v$10 = libs.setProp(_el$6, "src", _v$10, _p$._v$10));
-      _v$11 !== _p$._v$11 && (_p$._v$11 = libs.setProp(_el$11, "text", _v$11, _p$._v$11));
-      _v$12 !== _p$._v$12 && (_p$._v$12 = libs.setProp(_el$14, "text", _v$12, _p$._v$12));
-      _v$13 !== _p$._v$13 && (_p$._v$13 = libs.setProp(_el$21, "text", _v$13, _p$._v$13));
-      _v$14 !== _p$._v$14 && (_p$._v$14 = libs.setProp(_el$26, "text", _v$14, _p$._v$14));
-      _v$15 !== _p$._v$15 && (_p$._v$15 = libs.setProp(_el$31, "text", _v$15, _p$._v$15));
-      _v$16 !== _p$._v$16 && (_p$._v$16 = libs.setProp(_el$38, "visible", _v$16, _p$._v$16));
-      _v$17 !== _p$._v$17 && (_p$._v$17 = libs.setProp(_el$40, "text", _v$17, _p$._v$17));
-      _v$18 !== _p$._v$18 && (_p$._v$18 = libs.setProp(_el$41, "text", _v$18, _p$._v$18));
-      _v$19 !== _p$._v$19 && (_p$._v$19 = libs.setProp(_el$43, "visible", _v$19, _p$._v$19));
-      _v$20 !== _p$._v$20 && (_p$._v$20 = libs.setProp(_el$43, "vars", _v$20, _p$._v$20));
+      _v$1 !== _p$._v$1 && (_p$._v$1 = libs.setProp(_el$4, "text", _v$1, _p$._v$1));
+      _v$10 !== _p$._v$10 && (_p$._v$10 = libs.setProp(_el$5, "tooltip_text", _v$10, _p$._v$10));
+      _v$11 !== _p$._v$11 && (_p$._v$11 = libs.setProp(_el$6, "src", _v$11, _p$._v$11));
+      _v$12 !== _p$._v$12 && (_p$._v$12 = libs.setProp(_el$11, "text", _v$12, _p$._v$12));
+      _v$13 !== _p$._v$13 && (_p$._v$13 = libs.setProp(_el$14, "text", _v$13, _p$._v$13));
+      _v$14 !== _p$._v$14 && (_p$._v$14 = libs.setProp(_el$21, "text", _v$14, _p$._v$14));
+      _v$15 !== _p$._v$15 && (_p$._v$15 = libs.setProp(_el$26, "text", _v$15, _p$._v$15));
+      _v$16 !== _p$._v$16 && (_p$._v$16 = libs.setProp(_el$31, "text", _v$16, _p$._v$16));
+      _v$17 !== _p$._v$17 && (_p$._v$17 = libs.setProp(_el$38, "visible", _v$17, _p$._v$17));
+      _v$18 !== _p$._v$18 && (_p$._v$18 = libs.setProp(_el$40, "text", _v$18, _p$._v$18));
+      _v$19 !== _p$._v$19 && (_p$._v$19 = libs.setProp(_el$41, "text", _v$19, _p$._v$19));
+      _v$20 !== _p$._v$20 && (_p$._v$20 = libs.setProp(_el$43, "visible", _v$20, _p$._v$20));
+      _v$21 !== _p$._v$21 && (_p$._v$21 = libs.setProp(_el$43, "vars", _v$21, _p$._v$21));
       return _p$;
     }, {
-      _v$0: undefined,
       _v$1: undefined,
       _v$10: undefined,
       _v$11: undefined,
@@ -3043,7 +3060,8 @@ const HuntBossSelection = () => {
       _v$17: undefined,
       _v$18: undefined,
       _v$19: undefined,
-      _v$20: undefined
+      _v$20: undefined,
+      _v$21: undefined
     });
     return _el$;
   })();

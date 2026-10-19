@@ -505,9 +505,6 @@ const BlessSelection = () => {
     isGamepad: 0
   });
   const isGamepad = libs.createMemo(() => inputMode().isGamepad == 1);
-  libs.createEffect(() => {
-    print(isGamepad());
-  });
   libs.createEffect(libs.on(selection, () => {
     const totalCount = selection().free_refresh_count + selection().pay_refresh_count;
     if (totalCount > maxRefreshCount()) {
@@ -4597,6 +4594,15 @@ const UpgradeSelectionAll = () => {
 };
 
 function HudMain() {
+  const errorMessageListener = GameEvents.Subscribe("error_message", ({
+    message,
+    sound = "General.CastFail_Custom",
+    vars
+  }) => {
+    const text = vars ? LocalizeWithVars(message, vars) : GetLocalization(message);
+    GameUI.SendCustomHUDError(text, sound);
+  });
+  libs.onCleanup(() => GameEvents.Unsubscribe(errorMessageListener));
   ReportPing();
   const dungeon_loading = solid_utils.createPlayerNetDataSignal("common", "dungeon_loading", {
     state: false

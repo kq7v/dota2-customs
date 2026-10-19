@@ -70,4 +70,4 @@ const FeatureTagList = props => {
   })();
 };
 
-exports.FeatureTagList = FeatureTagList;
+exports.FeatureTagList = FeatureTagList;

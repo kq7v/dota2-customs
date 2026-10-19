@@ -23,6 +23,6 @@ GameUI.CustomUIConfig().huntloot_common_setting = {
 	},
 	fail_pct: {
 		key: "fail_pct",
-		value: "20"
+		value: "40"
 	}
 };

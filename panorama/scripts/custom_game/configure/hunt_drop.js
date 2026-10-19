@@ -14,7 +14,7 @@ GameUI.CustomUIConfig().hunt_drop = {
 		difficulty: 1,
 		layers: 1,
 		number: "1:10|2:1",
-		part: "1:100|2:0",
+		part: "1:100|2:50",
 		rarity: "1:3526|2:1443|3:1107|4:1056|5:1006|6:956|7:906",
 		roll_min: 0
 	},
@@ -23,7 +23,7 @@ GameUI.CustomUIConfig().hunt_drop = {
 		difficulty: 1,
 		layers: 2,
 		number: "1:10|2:2",
-		part: "1:100|2:0",
+		part: "1:100|2:50",
 		rarity: "1:3526|2:1443|3:1107|4:1056|5:1006|6:956|7:906",
 		roll_min: 5
 	},
@@ -32,7 +32,7 @@ GameUI.CustomUIConfig().hunt_drop = {
 		difficulty: 1,
 		layers: 3,
 		number: "1:10|2:3",
-		part: "1:100|2:0",
+		part: "1:100|2:50",
 		rarity: "1:3526|2:1443|3:1107|4:1056|5:1006|6:956|7:906",
 		roll_min: 10
 	},
@@ -41,7 +41,7 @@ GameUI.CustomUIConfig().hunt_drop = {
 		difficulty: 1,
 		layers: 4,
 		number: "1:10|2:4",
-		part: "1:100|2:0",
+		part: "1:100|2:50",
 		rarity: "1:3526|2:1443|3:1107|4:1056|5:1006|6:956|7:906",
 		roll_min: 15
 	},
@@ -50,7 +50,7 @@ GameUI.CustomUIConfig().hunt_drop = {
 		difficulty: 2,
 		layers: 1,
 		number: "1:10|2:2",
-		part: "1:100|2:0",
+		part: "1:100|2:100",
 		rarity: "1:0|2:3302|3:2126|4:1275|5:1149|6:1099|7:1049",
 		roll_min: 0
 	},
@@ -59,7 +59,7 @@ GameUI.CustomUIConfig().hunt_drop = {
 		difficulty: 2,
 		layers: 2,
 		number: "1:10|2:3",
-		part: "1:100|2:0",
+		part: "1:100|2:100",
 		rarity: "1:0|2:3302|3:2126|4:1275|5:1149|6:1099|7:1049",
 		roll_min: 5
 	},
@@ -68,7 +68,7 @@ GameUI.CustomUIConfig().hunt_drop = {
 		difficulty: 2,
 		layers: 3,
 		number: "1:10|2:4",
-		part: "1:100|2:0",
+		part: "1:100|2:100",
 		rarity: "1:0|2:3302|3:2126|4:1275|5:1149|6:1099|7:1049",
 		roll_min: 10
 	},
@@ -77,7 +77,7 @@ GameUI.CustomUIConfig().hunt_drop = {
 		difficulty: 2,
 		layers: 4,
 		number: "1:10|2:5",
-		part: "1:100|2:0",
+		part: "1:100|2:100",
 		rarity: "1:0|2:3302|3:2126|4:1275|5:1149|6:1099|7:1049",
 		roll_min: 15
 	},
@@ -86,7 +86,7 @@ GameUI.CustomUIConfig().hunt_drop = {
 		difficulty: 2,
 		layers: 5,
 		number: "1:10|2:6",
-		part: "1:100|2:0",
+		part: "1:100|2:100",
 		rarity: "1:0|2:3302|3:2126|4:1275|5:1149|6:1099|7:1049",
 		roll_min: 20
 	},
@@ -95,7 +95,7 @@ GameUI.CustomUIConfig().hunt_drop = {
 		difficulty: 2,
 		layers: 6,
 		number: "1:10|2:7",
-		part: "1:100|2:0",
+		part: "1:100|2:100",
 		rarity: "1:0|2:3302|3:2126|4:1275|5:1149|6:1099|7:1049",
 		roll_min: 25
 	},
@@ -104,7 +104,7 @@ GameUI.CustomUIConfig().hunt_drop = {
 		difficulty: 3,
 		layers: 1,
 		number: "1:10|2:5",
-		part: "1:100|2:100|3:0",
+		part: "1:100|2:100|3:25",
 		rarity: "1:0|2:0|3:3555|4:2370|5:1409|6:1358|7:1308",
 		roll_min: 0
 	},
@@ -113,7 +113,7 @@ GameUI.CustomUIConfig().hunt_drop = {
 		difficulty: 3,
 		layers: 2,
 		number: "1:10|2:6",
-		part: "1:100|2:100|3:0",
+		part: "1:100|2:100|3:25",
 		rarity: "1:0|2:0|3:3555|4:2370|5:1409|6:1358|7:1308",
 		roll_min: 5
 	},
@@ -122,7 +122,7 @@ GameUI.CustomUIConfig().hunt_drop = {
 		difficulty: 3,
 		layers: 3,
 		number: "1:10|2:7",
-		part: "1:100|2:100|3:0",
+		part: "1:100|2:100|3:25",
 		rarity: "1:0|2:0|3:3555|4:2370|5:1409|6:1358|7:1308",
 		roll_min: 10
 	},
@@ -131,7 +131,7 @@ GameUI.CustomUIConfig().hunt_drop = {
 		difficulty: 3,
 		layers: 4,
 		number: "1:10|2:8",
-		part: "1:100|2:100|3:0",
+		part: "1:100|2:100|3:25",
 		rarity: "1:0|2:0|3:3555|4:2370|5:1409|6:1358|7:1308",
 		roll_min: 15
 	},
@@ -140,7 +140,7 @@ GameUI.CustomUIConfig().hunt_drop = {
 		difficulty: 3,
 		layers: 5,
 		number: "1:10|2:9",
-		part: "1:100|2:100|3:0",
+		part: "1:100|2:100|3:25",
 		rarity: "1:0|2:0|3:3555|4:2370|5:1409|6:1358|7:1308",
 		roll_min: 20
 	},
@@ -149,7 +149,7 @@ GameUI.CustomUIConfig().hunt_drop = {
 		difficulty: 3,
 		layers: 6,
 		number: "1:10|2:10",
-		part: "1:100|2:100|3:0",
+		part: "1:100|2:100|3:25",
 		rarity: "1:0|2:0|3:3555|4:2370|5:1409|6:1358|7:1308",
 		roll_min: 25
 	},
@@ -158,7 +158,7 @@ GameUI.CustomUIConfig().hunt_drop = {
 		difficulty: 3,
 		layers: 7,
 		number: "1:10|2:11",
-		part: "1:100|2:100|3:0",
+		part: "1:100|2:100|3:25",
 		rarity: "1:0|2:0|3:3555|4:2370|5:1409|6:1358|7:1308",
 		roll_min: 30
 	},
@@ -167,7 +167,7 @@ GameUI.CustomUIConfig().hunt_drop = {
 		difficulty: 3,
 		layers: 8,
 		number: "1:10|2:12",
-		part: "1:100|2:100|3:0",
+		part: "1:100|2:100|3:25",
 		rarity: "1:0|2:0|3:3555|4:2370|5:1409|6:1358|7:1308",
 		roll_min: 40
 	},

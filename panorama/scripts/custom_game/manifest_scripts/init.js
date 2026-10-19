@@ -61,10 +61,6 @@ function EmitSoundForPlayer(tData) {
 	Game.EmitSound(tData.soundname);
 }
 
-function OnErrorMessage({ message, sound = "General.CastFail_Custom" }) {
-	GameUI.SendCustomHUDError(message, sound);
-}
-
 function OnSelectUnits({ units }) {
 	let b = false;
 	let a = units.split(",");
@@ -190,7 +186,6 @@ GameUI.CustomUIConfig().GetServerTimeStamp = () => {
 	}
 
 	Update();
-	GameEvents.Subscribe("error_message", OnErrorMessage);
 	GameEvents.Subscribe("emit_sound_for_player", EmitSoundForPlayer);
 	GameEvents.Subscribe("select_units", OnSelectUnits);
 	GameEvents.Subscribe("lua_server_to_client", OnLuaServerToClient);

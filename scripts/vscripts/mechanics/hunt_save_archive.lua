@@ -11,24 +11,26 @@
 local a = "mechanics/hunt_save_archive"
 local b = require("lualib_bundle")
 local c = b.Set
-local d = b.__TS__SparseArrayNew
-local e = b.__TS__SparseArrayPush
-local f = b.__TS__SparseArraySpread
-local g = b.__TS__New
+local d = b.__TS__New
+local e = b.__TS__SparseArrayNew
+local f = b.__TS__SparseArrayPush
+local g = b.__TS__SparseArraySpread
 local h = b.__TS__Class
 local i = b.__TS__ClassExtends
 local j = b.__TS__NumberIsFinite
 local k = b.__TS__ObjectAssign
-local l = b.__TS__Delete
-local m = b.__TS__ObjectRest
-local n = b.__TS__DecorateLegacy
-local o = {}
-local p = require("lib.tstl-utils")
-local q = p.reloadable
-local r = c
-local s = d(unpack(TAVERN_ITEMS))
-e(
-	s,
+local l = b.__TS__ArrayMap
+local m = b.__TS__Delete
+local n = b.__TS__ObjectRest
+local o = b.__TS__DecorateLegacy
+local p = {}
+local q = require("lib.tstl-utils")
+local r = q.reloadable
+local s = d(c, { "item_poison_potion", "item_artifact_ghost_scepter", "item_dragon_egg", "item_dragon_baby" })
+local t = c
+local u = e(unpack(TAVERN_ITEMS))
+f(
+	u,
 	"item_tome_of_prop_single",
 	"item_ball_attack_single",
 	"item_ball_health_single",
@@ -43,25 +45,25 @@ e(
 	"privilege_weapon_047",
 	"privilege_weapon_049"
 )
-local t = g(r, { f(s) })
-local u = h()
-u.name = "CHuntSaveArchive"
-i(u, CModule)
-function u.prototype.____constructor(self, ...)
+local v = d(t, { g(u) })
+local w = h()
+w.name = "CHuntSaveArchive"
+i(w, CModule)
+function w.prototype.____constructor(self, ...)
 	CModule.prototype.____constructor(self, ...)
 	self.playerStates = {}
 	self.preparedSaves = {}
 	self.playerAttributes = {}
 	self.restoredSaves = {}
 end
-function u.prototype.init(self, v)
+function w.prototype.init(self, x)
 	if self.playerAttributes == nil then
 		self.playerAttributes = {}
 	end
 	if self.restoredSaves == nil then
 		self.restoredSaves = {}
 	end
-	if not v then
+	if not x then
 		self.playerStates = {}
 		self.preparedSaves = {}
 	end
@@ -69,252 +71,291 @@ function u.prototype.init(self, v)
 		Event:Unregister(self.propertyAddedEventID)
 	end
 	self.propertyAddedEventID = Event:Register("property_added", self.OnPropertyAdded, self)
-	CustomUIEvent("hunt_save_archive_save", function(w, x)
-		self:SaveSnapshot(x.PlayerID, x.slot_id)
+	CustomUIEvent("hunt_save_archive_save", function(y, z)
+		self:SaveSnapshot(z.PlayerID, z.slot_id)
 	end, self)
 end
-function u.prototype.OnPropertyAdded(self, y)
-	local z
-	local A
+function w.prototype.OnPropertyAdded(self, A)
 	local B
 	local C
-	C = y.unit
-	B = y.property
-	A = y.value
-	z = y.source
-	if not t:has(z) or not IsValid(C) or not j(A) then
+	local D
+	local E
+	E = A.unit
+	D = A.property
+	C = A.value
+	B = A.source
+	if not v:has(B) or not IsValid(E) or not j(C) then
 		return
 	end
-	local D = PROPERTY_MAP_REVERSE[B]
-	local E = C:GetPlayerOwnerID()
-	if D == nil or PropertySystem:GetScopeOfProperty(D) ~= PropertyScope.UNIT or Player:GetHero(E) ~= C then
+	local F = PROPERTY_MAP_REVERSE[D]
+	local G = E:GetPlayerOwnerID()
+	if F == nil or PropertySystem:GetScopeOfProperty(F) ~= PropertyScope.UNIT or Player:GetHero(G) ~= E then
 		return
 	end
 	if self.playerAttributes == nil then
 		self.playerAttributes = {}
 	end
-	local F, G = self.playerAttributes, E
-	if F[G] == nil then
-		F[G] = { attributes = {} }
+	local H, I = self.playerAttributes, G
+	if H[I] == nil then
+		H[I] = { attributes = {} }
 	end
-	local H = self.playerAttributes[E]
-	local I = H.attributes[D]
-	H.attributes[D] = I == nil and A or PropertySystem:AggregatePropertyValues(D, I, A)
+	local J = self.playerAttributes[G]
+	local K = J.attributes[F]
+	J.attributes[F] = K == nil and C or PropertySystem:AggregatePropertyValues(F, K, C)
+	self:print(
+		(
+			(
+				(
+					(
+						(
+							(
+								(("[HuntSaveArchive] recorded permanent property player=" .. tostring(G)) .. " source=")
+								.. B
+							) .. " property="
+						) .. F
+					) .. " gain="
+				) .. tostring(C)
+			) .. " total="
+		) .. tostring(J.attributes[F])
+	)
 end
-function u.prototype.GetAttributes(self, E)
-	local J = self.playerAttributes
-	local H = J and J[E]
-	return H == nil and {} or k({}, H.attributes)
+function w.prototype.GetAttributes(self, G)
+	local L = self.playerAttributes
+	local J = L and L[G]
+	return J == nil and {} or k({}, J.attributes)
 end
-function u.prototype.CreateSnapshot(self, E, C)
-	if self.playerStates[E] ~= nil then
-		self:Sync(E)
+function w.prototype.CreateSnapshot(self, G, E)
+	if self.playerStates[G] ~= nil then
+		self:Sync(G)
 		return
 	end
-	local K = {}
-	for w, L in ipairs(C:GetAllItems()) do
+	local M = {}
+	for y, N in ipairs(E:GetAllItems()) do
 		do
-			if not IsValid(L) or KeyValues.artifact[L:GetAbilityName()] == nil then
-				goto M
+			if not IsValid(N) or KeyValues.artifact[N:GetAbilityName()] == nil then
+				goto O
 			end
-			K[#K + 1] = { item_name = L:GetAbilityName(), level = L:GetLevel() }
+			M[#M + 1] = { item_name = N:GetAbilityName(), level = N:GetLevel(), run_state = {
+				stack_count = N:GetStackCount(),
+			} }
 		end
-		::M::
+		::O::
 	end
-	local N = {}
-	for w, O in ipairs(AbilityUpgrade:GetAbilityUpgrades(C)) do
-		if not AbilityUpgrade:IsServiceUpgrade(O.name) then
-			N[#N + 1] = { name = O.name, level = O.level }
+	local P = l(Bless:GetPlayerBlessDetails(G), function(y, Q)
+		local N = E:GetItemByName(Q.name)
+		return k({}, Q, { run_state = IsValid(N) and { stack_count = N:GetStackCount() } or nil })
+	end)
+	local R = {}
+	for y, S in ipairs(AbilityUpgrade:GetAbilityUpgrades(E)) do
+		if not AbilityUpgrade:IsServiceUpgrade(S.name) then
+			R[#R + 1] = { name = S.name, level = S.level }
 		end
 	end
-	self.playerStates[E] = { hasSaved = false }
-	local P = self.Sync
-	local Q = E
-	local R = math.floor(Login:GetServiceTimestamp())
-	local S = CustomNetTables:GetNetData("common", "difficulty_key")
-	local T = S and S.key_data
-	local U = T and T.intensity
-	local V = C:GetUnitName()
-	local W = math.floor
-	local X = DamageCounter:GetPlayerDamageCount(E)
-	P(
+	self.playerStates[G] = { hasSaved = false }
+	local T = self.Sync
+	local U = G
+	local V = math.floor(Login:GetServiceTimestamp())
+	local W = CustomNetTables:GetNetData("common", "difficulty_key")
+	local X = W and W.key_data
+	local Y = X and X.intensity
+	local Z = E:GetUnitName()
+	local _ = math.floor
+	local a0 = DamageCounter:GetPlayerDamageCount(G)
+	T(
 		self,
-		Q,
+		U,
 		{
-			time = R,
-			strength = U,
-			hero_name = V,
-			total_damage = W(X and X.totalDamage or 0),
-			blessings = Bless:GetPlayerBlessDetails(E),
-			artifacts = K,
-			ability_upgrades = N,
-			attributes = self:GetAttributes(E),
+			time = V,
+			strength = Y,
+			hero_name = Z,
+			total_damage = _(a0 and a0.totalDamage or 0),
+			blessings = P,
+			artifacts = M,
+			ability_upgrades = R,
+			attributes = self:GetAttributes(G),
 		}
 	)
 end
-function u.prototype.GetAutoSelectSlotID(self, E, Y)
-	local C = Player:GetHero(E)
-	if not IsValid(C) then
+function w.prototype.GetAutoSelectSlotID(self, G, a1)
+	local E = Player:GetHero(G)
+	if not IsValid(E) then
 		return nil
 	end
-	local Z = toFiniteNumber
-	local _ = KeyValues.hunt_intelligence
-	local a0 = _ and _[tostring(Y)]
-	if a0 ~= nil then
-		a0 = a0.dungeon_diff
+	local a2 = toFiniteNumber
+	local a3 = KeyValues.hunt_intelligence
+	local a4 = a3 and a3[tostring(a1)]
+	if a4 ~= nil then
+		a4 = a4.dungeon_diff
 	end
-	local a1 = Z(a0, 0)
-	if a1 < 1 then
+	local a5 = a2(a4, 0)
+	if a5 < 1 then
 		return nil
 	end
-	local a2 = CommonService:GetPlayerServiceNetTable(E, "player_hunt_save_datas") or {}
-	local a3
-	local a4 = -1
-	for a5, a6 in pairs(a2) do
+	local a6 = CommonService:GetPlayerServiceNetTable(G, "player_hunt_save_datas") or {}
+	local a7
+	local a8 = -1
+	for a9, aa in pairs(a6) do
 		do
-			if a6.diff < a1 or a6.data == "" then
-				goto a7
+			if aa.diff < a5 or aa.data == "" then
+				goto ab
 			end
-			local a8 = json.decode(a6.data)
-			local a9 = a8
-			if (a9 and a9.hero_name) ~= C:GetUnitName() then
-				goto a7
+			local ac = json.decode(aa.data)
+			local ad = ac
+			if (ad and ad.hero_name) ~= E:GetUnitName() then
+				goto ab
 			end
-			local aa = toFiniteNumber(a9.total_damage, 0)
-			if a3 == nil or aa > a4 or aa == a4 and a6.slot_id < a3 then
-				a3 = a6.slot_id
-				a4 = aa
+			local ae = toFiniteNumber(ad.total_damage, 0)
+			if a7 == nil or ae > a8 or ae == a8 and aa.slot_id < a7 then
+				a7 = aa.slot_id
+				a8 = ae
 			end
 		end
-		::a7::
+		::ab::
 	end
-	return a3
+	return a7
 end
-function u.prototype.PrepareSelectedSave(self, E, ab, ac)
-	local ad = CommonService:GetPlayerServiceNetTable(E, "player_hunt_save_datas")
-	local a6 = ad and ad[tostring(ab)]
-	if a6 == nil or a6.diff <= 0 or a6.data == "" then
+function w.prototype.PrepareSelectedSave(self, G, af, ag)
+	local ah = CommonService:GetPlayerServiceNetTable(G, "player_hunt_save_datas")
+	local aa = ah and ah[tostring(af)]
+	if aa == nil or aa.diff <= 0 or aa.data == "" then
 		self:print(
 			(
 				(
-					((("[HuntSaveArchive] prepare failed player=" .. tostring(E)) .. " slot=") .. tostring(ab))
+					((("[HuntSaveArchive] prepare failed player=" .. tostring(G)) .. " slot=") .. tostring(af))
 					.. " match="
-				) .. tostring(ac)
+				) .. tostring(ag)
 			) .. " save missing"
 		)
 		return false
 	end
-	self.preparedSaves[E] = { matchID = ac, slotID = ab, save = k({}, a6) }
+	self.preparedSaves[G] = { matchID = ag, slotID = af, save = k({}, aa) }
 	return true
 end
-function u.prototype.GetSelectedSave(self, E, ab)
-	local ae = self.preparedSaves[E]
-	if (ae and ae.matchID) == Match:GetMatchID() and ae.slotID == ab then
-		return ae.save
+function w.prototype.GetSelectedSave(self, G, af)
+	local ai = self.preparedSaves[G]
+	if (ai and ai.matchID) == Match:GetMatchID() and ai.slotID == af then
+		return ai.save
 	end
-	local af = CommonService:GetPlayerServiceNetTable(E, "player_hunt_save_datas")
-	return af and af[tostring(ab)]
+	local aj = CommonService:GetPlayerServiceNetTable(G, "player_hunt_save_datas")
+	return aj and aj[tostring(af)]
 end
-function u.prototype.ClearPreparedSaves(self, ac)
-	for E, ae in pairs(self.preparedSaves) do
-		if (ae and ae.matchID) == ac then
-			l(self.preparedSaves, E)
+function w.prototype.ClearPreparedSaves(self, ag)
+	for G, ai in pairs(self.preparedSaves) do
+		if (ai and ai.matchID) == ag then
+			m(self.preparedSaves, G)
 		end
 	end
 end
-function u.prototype.reset(self)
+function w.prototype.reset(self)
 	self.playerStates = {}
 	self.preparedSaves = {}
 	self.playerAttributes = {}
 	self.restoredSaves = {}
-	Game:EachPlayer(function(w, E)
-		CustomNetTables:SetNetData("player_data", "hunt_save_snapshot", nil, E)
+	Game:EachPlayer(function(y, G)
+		CustomNetTables:SetNetData("player_data", "hunt_save_snapshot", nil, G)
 	end)
 end
-function u.prototype.ApplySelectedSave(self, E, C, ab)
-	if not IsValid(C) then
+function w.prototype.ApplySelectedSave(self, G, E, af)
+	if not IsValid(E) then
 		return false
 	end
 	if self.restoredSaves == nil then
 		self.restoredSaves = {}
 	end
-	local ag = self.restoredSaves[E]
-	if (ag and ag.hero) == C and ag.matchID == Match:GetMatchID() then
-		return ag.slotID == ab
+	local ak = self.restoredSaves[G]
+	if (ak and ak.hero) == E and ak.matchID == Match:GetMatchID() then
+		return ak.slotID == af
 	end
-	local ah = self:GetSelectedSave(E, ab)
-	if ah == nil or ah.data == "" then
+	local al = self:GetSelectedSave(G, af)
+	if al == nil or al.data == "" then
 		self:print(
-			((("[HuntSaveArchive] restore skipped player=" .. tostring(E)) .. " slot=") .. tostring(ab))
+			((("[HuntSaveArchive] restore skipped player=" .. tostring(G)) .. " slot=") .. tostring(af))
 				.. " save missing"
 		)
 		return false
 	end
-	local ai = json.decode(ah.data)
-	local a9 = ai
-	if a9 == nil or a9.hero_name ~= C:GetUnitName() then
+	local am = json.decode(al.data)
+	local ad = am
+	if ad == nil or ad.hero_name ~= E:GetUnitName() then
 		self:print(
 			(
 				(
 					(
-						((("[HuntSaveArchive] restore skipped player=" .. tostring(E)) .. " slot=") .. tostring(ab))
+						((("[HuntSaveArchive] restore skipped player=" .. tostring(G)) .. " slot=") .. tostring(af))
 						.. " savedHero="
-					) .. (a9 and a9.hero_name or "")
+					) .. (ad and ad.hero_name or "")
 				) .. " currentHero="
-			) .. C:GetUnitName()
+			) .. E:GetUnitName()
 		)
 		return false
 	end
-	local aj = 0
-	for w, ak in ipairs(a9.blessings or {}) do
+	local an = 0
+	for y, Q in ipairs(ad.blessings or {}) do
 		do
-			if ak.name == "" or ak.rarity <= 0 then
-				goto al
-			end
-			if Bless:AddBless(C, { name = ak.name, rarity = math.floor(ak.rarity) }) ~= nil then
-				aj = aj + 1
-			end
-		end
-		::al::
-	end
-	local am = 0
-	for w, an in ipairs(a9.artifacts or {}) do
-		do
-			if an.item_name == "" or an.level <= 0 or KeyValues.artifact[an.item_name] == nil then
+			if Q.name == "" or Q.rarity <= 0 then
 				goto ao
 			end
-			local L = C:AddItemByName(an.item_name, math.floor(an.level), false)
-			if L ~= nil and IsValid(L) then
-				am = am + 1
+			local N = Bless:AddBless(E, { name = Q.name, rarity = math.floor(Q.rarity) })
+			if N ~= nil and IsValid(N) then
+				self:RestoreItemStackCount(N, Q.run_state)
+				an = an + 1
 			end
 		end
 		::ao::
 	end
 	local ap = 0
-	for w, O in ipairs(a9.ability_upgrades or {}) do
+	for y, aq in ipairs(ad.artifacts or {}) do
 		do
-			if O.name == "" or O.level <= 0 then
-				goto aq
+			if aq.item_name == "" or aq.level <= 0 or KeyValues.artifact[aq.item_name] == nil then
+				goto ar
 			end
-			AbilityUpgrade:AddAbilityUpgrade(C, O.name, math.floor(O.level), "hunt_save_archive")
-			ap = ap + 1
-		end
-		::aq::
-	end
-	local ar = 0
-	for D, A in pairs(a9.attributes or {}) do
-		do
-			if PropertySystem:GetScopeOfProperty(D) ~= PropertyScope.UNIT or not j(A) then
-				goto as
-			end
-			if PropertySystem:AddStaticProperty(C:entindex(), D, "hunt_save_archive_gain", A) then
-				ar = ar + 1
+			local N = E:AddItemByName(aq.item_name, math.floor(aq.level), false)
+			if N ~= nil and IsValid(N) then
+				self:RestoreItemStackCount(N, aq.run_state)
+				ap = ap + 1
 			end
 		end
-		::as::
+		::ar::
 	end
-	self.restoredSaves[E] = { hero = C, matchID = Match:GetMatchID(), slotID = ab }
-	C:UpdateAbilityNetData()
+	local as = 0
+	for y, S in ipairs(ad.ability_upgrades or {}) do
+		do
+			if S.name == "" or S.level <= 0 then
+				goto at
+			end
+			AbilityUpgrade:AddAbilityUpgrade(E, S.name, math.floor(S.level), "hunt_save_archive")
+			as = as + 1
+		end
+		::at::
+	end
+	local au = 0
+	for F, C in pairs(ad.attributes or {}) do
+		do
+			if PropertySystem:GetScopeOfProperty(F) ~= PropertyScope.UNIT or not j(C) then
+				goto av
+			end
+			if PropertySystem:AddStaticProperty(E:entindex(), F, "hunt_save_archive_gain", C) then
+				au = au + 1
+				self:print(
+					(
+						(
+							(
+								(
+									(
+										("[HuntSaveArchive] restored permanent property player=" .. tostring(G))
+										.. " slot="
+									) .. tostring(af)
+								) .. " property="
+							) .. F
+						) .. " value="
+					) .. tostring(C)
+				)
+			end
+		end
+		::av::
+	end
+	self.restoredSaves[G] = { hero = E, matchID = Match:GetMatchID(), slotID = af }
+	E:UpdateAbilityNetData()
 	self:print(
 		(
 			(
@@ -324,59 +365,90 @@ function u.prototype.ApplySelectedSave(self, E, C, ab)
 							(
 								(
 									(
-										(("[HuntSaveArchive] restored player=" .. tostring(E)) .. " slot=")
-										.. tostring(ab)
+										(("[HuntSaveArchive] restored player=" .. tostring(G)) .. " slot=")
+										.. tostring(af)
 									) .. " blessings="
-								) .. tostring(aj)
+								) .. tostring(an)
 							) .. " artifacts="
-						) .. tostring(am)
+						) .. tostring(ap)
 					) .. " upgrades="
-				) .. tostring(ap)
+				) .. tostring(as)
 			) .. " propertyGains="
-		) .. tostring(ar)
+		) .. tostring(au)
 	)
 	return true
 end
-function u.prototype.SaveSnapshot(self, E, ab)
-	local at = self.playerStates[E]
-	local a9 = self:GetSnapshot(E)
-	if at == nil or at.hasSaved or a9 == nil then
+function w.prototype.RestoreItemStackCount(self, N, aw)
+	if not s:has(N:GetAbilityName()) or aw == nil or type(aw) ~= "table" then
 		return
 	end
-	a9.time = math.floor(Login:GetServiceTimestamp())
-	at.hasSaved = true
-	self:Sync(E, a9)
+	local ax = aw.stack_count
+	if type(ax) ~= "number" or not j(ax) or ax < 0 or math.floor(ax) ~= ax then
+		return
+	end
+	local ay = N:GetStackCount()
+	N:SetStackCount(ax)
+	self:print(
+		(
+			(
+				(
+					(
+						(
+							(
+								(
+									(
+										"[HuntSaveArchive] restored item stack player="
+										.. tostring(N:GetCaster():GetPlayerOwnerID())
+									) .. " item="
+								) .. N:GetAbilityName()
+							) .. " entity="
+						) .. tostring(N:entindex())
+					) .. " before="
+				) .. tostring(ay)
+			) .. " after="
+		) .. tostring(N:GetStackCount())
+	)
+end
+function w.prototype.SaveSnapshot(self, G, af)
+	local aw = self.playerStates[G]
+	local ad = self:GetSnapshot(G)
+	if aw == nil or aw.hasSaved or ad == nil then
+		return
+	end
+	ad.time = math.floor(Login:GetServiceTimestamp())
+	aw.hasSaved = true
+	self:Sync(G, ad)
 	CommonService:CallAction(
 		"/v1/hunt/save_data",
-		E,
-		{ match_id = Match:GetMatchID(), slot_id = ab, data = json.encode(a9) },
-		function(w, au, av)
-			CommonService:CommonCallback(E, av, false)
+		G,
+		{ match_id = Match:GetMatchID(), slot_id = af, data = json.encode(ad) },
+		function(y, az, aA)
+			CommonService:CommonCallback(G, aA, false)
 		end,
 		false
 	)
 end
-function u.prototype.GetSnapshot(self, E)
-	local aw = CustomNetTables:GetNetData("player_data", "hunt_save_snapshot", E)
-	if aw == nil then
+function w.prototype.GetSnapshot(self, G)
+	local aB = CustomNetTables:GetNetData("player_data", "hunt_save_snapshot", G)
+	if aB == nil then
 		return nil
 	end
-	local ax = aw.has_saved
-	local a9 = m(aw, { has_saved = true })
-	return a9
+	local aC = aB.has_saved
+	local ad = n(aB, { has_saved = true })
+	return ad
 end
-function u.prototype.Sync(self, E, a9)
-	if a9 == nil then
-		a9 = self:GetSnapshot(E)
+function w.prototype.Sync(self, G, ad)
+	if ad == nil then
+		ad = self:GetSnapshot(G)
 	end
-	local at = self.playerStates[E]
-	if at == nil or a9 == nil then
+	local aw = self.playerStates[G]
+	if aw == nil or ad == nil then
 		return
 	end
-	CustomNetTables:SetNetData("player_data", "hunt_save_snapshot", k({}, a9, { has_saved = at.hasSaved }), E)
+	CustomNetTables:SetNetData("player_data", "hunt_save_snapshot", k({}, ad, { has_saved = aw.hasSaved }), G)
 end
-u = n({ q }, u)
+w = o({ r }, w)
 if HuntSaveArchive == nil then
-	HuntSaveArchive = g(u)
+	HuntSaveArchive = d(w)
 end
-return o
+return p

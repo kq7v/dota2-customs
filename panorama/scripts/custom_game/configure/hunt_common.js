@@ -15,6 +15,6 @@ GameUI.CustomUIConfig().hunt_common = {
 	},
 	intelligence_max: {
 		key: "intelligence_max",
-		value: "110025:300"
+		value: "110025:500"
 	}
 };

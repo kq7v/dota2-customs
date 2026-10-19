@@ -27,7 +27,7 @@ const INTELLIGENCE_CARDS = {
     title: "#HuntIntelligence_Legendary"
   }
 };
-const INTELLIGENCE_LIMIT = 300;
+const INTELLIGENCE_LIMIT = solid_utils.parseTokenCosts(KeyValues.hunt_common?.intelligence_max?.value).find(item => item.name === "110025")?.value || 300;
 const HuntIntelligenceHud = () => {
   const intelligence = solid_utils.createPlayerNetDataSignal("hunt_boss", "intelligence");
   const [dismissed, setDismissed] = libs.createSignal(false);
