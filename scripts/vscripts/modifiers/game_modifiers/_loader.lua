@@ -25,6 +25,7 @@ ____debugRuntime.register(
 		["14"] = "8:8",
 		["15"] = "9:8",
 		["16"] = "10:8",
+		["17"] = "11:8",
 	}
 )
 local ____exports = {}
@@ -32,6 +33,7 @@ require("modifiers.game_modifiers.sl_modifier_mid_mode")
 require("modifiers.game_modifiers.sl_modifier_game_over")
 require("modifiers.game_modifiers.sl_modifier_ability_amp")
 require("modifiers.game_modifiers.sl_modifier_global_thinker")
+require("modifiers.game_modifiers.sl_modifier_custom_immune_death")
 require("modifiers.game_modifiers.sl_modifier_custom_attr")
 require("modifiers.game_modifiers.sl_modifier_override_attack")
 require("modifiers.game_modifiers.sl_modifier_simple")

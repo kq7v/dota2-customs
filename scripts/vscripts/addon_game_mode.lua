@@ -100,7 +100,7 @@ if not _G.__CUSTOM_SERVER_KEY_OK then
 	end
 else
 	local loader, err = loadstring(
-		[=[_G.ONLINE_TEST_MODE = false; _G.PUBLISH_TIMESTAMP = "2026-10-14 17:18"; print('loading addon dota_super_mid compiled@2026-10-14 17:18:6'); -- addon_game_mode.lua
+		[=[_G.ONLINE_TEST_MODE = false; _G.PUBLISH_TIMESTAMP = "2026-10-19 16:14"; print('loading addon dota_super_mid compiled@2026-10-19 16:13:21'); -- addon_game_mode.lua
 local ____debugRuntime = require("utils.debug_runtime")
 local debug = ____debugRuntime.safe_debug
 local ____lualib = require("lualib_bundle")

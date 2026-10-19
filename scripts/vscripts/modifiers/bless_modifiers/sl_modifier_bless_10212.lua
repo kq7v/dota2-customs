@@ -391,7 +391,7 @@ function sl_modifier_bless_10212_mark.prototype.IsDebuff(self)
 	return true
 end
 function sl_modifier_bless_10212_mark.prototype.RemoveOnDeath(self)
-	return true
+	return false
 end
 function sl_modifier_bless_10212_mark.prototype.GetTexture(self)
 	return "buff/bless/10212"
