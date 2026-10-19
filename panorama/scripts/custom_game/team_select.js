@@ -34,14 +34,21 @@ function OnLockAndStartPressed() {
 	if (Game.GetUnassignedPlayerIDs().length > 0)
 		return;
 
-	// Lock the team selection so that no more team changes can be made
-	Game.SetTeamSelectionLocked(true);
+	// 引擎只认主机的客户端调用，所以有主机权限的玩家保留原来的调用
+	var localPlayerInfo = Game.GetLocalPlayerInfo();
+	if (localPlayerInfo && localPlayerInfo.player_has_host_privileges) {
+		// Lock the team selection so that no more team changes can be made
+		Game.SetTeamSelectionLocked(true);
 
-	// Disable the auto start count down
-	Game.SetAutoLaunchEnabled(false);
+		// Disable the auto start count down
+		Game.SetAutoLaunchEnabled(false);
 
-	// Set the remaining time before the game starts
-	Game.SetRemainingSetupTime(4);
+		// Set the remaining time before the game starts
+		Game.SetRemainingSetupTime(4);
+	}
+
+	// 任何玩家点击都通知服务器，由服务器统一锁队伍并开始倒计时
+	GameEvents.SendCustomGameEventToServer("request_start_game", {});
 }
 
 
@@ -49,11 +56,17 @@ function OnLockAndStartPressed() {
 // Handler for when the Cancel and Unlock button is pressed
 //--------------------------------------------------------------------------------------------------
 function OnCancelAndUnlockPressed() {
-	// Unlock the team selection, allowing the players to change teams again
-	Game.SetTeamSelectionLocked(false);
+	var localPlayerInfo = Game.GetLocalPlayerInfo();
+	if (localPlayerInfo && localPlayerInfo.player_has_host_privileges) {
+		// Unlock the team selection, allowing the players to change teams again
+		Game.SetTeamSelectionLocked(false);
 
-	// Stop the countdown timer
-	Game.SetRemainingSetupTime(-1);
+		// Stop the countdown timer
+		Game.SetRemainingSetupTime(-1);
+	}
+
+	// 任何玩家点击都通知服务器取消开始
+	GameEvents.SendCustomGameEventToServer("request_cancel_start", {});
 }
 
 

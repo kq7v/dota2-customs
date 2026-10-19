@@ -2697,11 +2697,11 @@ Panel
 #ice_storage_panel
 {
 	height:45px;
-	width:675px;
-	horizontal-align:left;
+	width:610px;
+	horizontal-align:right;
 	margin-top:30px;
 	flow-children:right;
-	margin-left:40px;
+	margin-right:50px;
 }
 
 .unavailable
@@ -2863,4 +2863,221 @@ Panel
 #store_link_img:hover
 {
 	brightness: 1;
+}
+
+#store_qr_popup
+{
+	width: 352px;
+	horizontal-align: right;
+	vertical-align: top;
+	margin-top: 290px;
+	margin-right: 380px;
+	flow-children: down;
+	padding-top: 26px;
+	padding-left: 26px;
+	padding-right: 26px;
+	padding-bottom: 15px;
+	background-color: gradient( linear, 0% 0%, 0% 100%, from( #8dc0f288 ), color-stop( 0.00, #0e1318dd), to( #0e1318ff ) );
+	background-size: 100% 100%;
+	border: 1px solid #5e6869;
+	box-shadow: fill #00000066 0px 0px 8px 0px;
+	z-index: 29000;
+}
+
+#store_qr_popup_header
+{
+	width: 100%;
+	height: 40px;
+	flow-children: right;
+}
+
+#store_qr_popup_title
+{
+	flow-children: right;
+	horizontal-align: left;
+	vertical-align: center;
+}
+
+#store_qr_popup_title Label
+{
+	font-size: 22px;
+	color: #ffffff;
+	vertical-align: center;
+}
+
+#store_qr_popup_title #store_qr_popup_title_box
+{
+	background-color: #00a0e1;
+	border-radius: 5px;
+	padding-top: 5px;
+	padding-bottom: 3px;
+	padding-left: 9px;
+	padding-right: 9px;
+	margin-left: 5px;
+	margin-right: 5px;
+	vertical-align: center;
+	flow-children: down;
+}
+
+#store_qr_popup_title #store_qr_popup_title_2
+{
+	font-size: 26px;
+	line-height: 30px;
+	color: #ffffff;
+	font-weight: bold;
+	text-align: center;
+	horizontal-align: center;
+	vertical-align: center;
+}
+
+#store_qr_popup_close
+{
+	width: 30px;
+	height: 30px;
+	horizontal-align: right;
+	vertical-align: center;
+	transition-property: transform;
+	transition-duration: 0.2s;
+}
+
+#store_qr_popup_close:hover
+{
+	transform: scale3d( 1.3, 1.3, 1.3 );
+}
+
+#store_qr_popup_image_box
+{
+	width: 100%;
+	height: 300px;
+	margin-top: 14px;
+	transform-origin: 50% 0%;
+	transform: scale3d( 1, 0.05, 1 );
+	opacity: 0;
+	transition-property: transform, opacity;
+	transition-duration: 0.26s;
+}
+
+#store_qr_popup_image_box.qr_show
+{
+	transform: scale3d( 1, 1, 1 );
+	opacity: 1;
+}
+
+#store_qr_popup_image
+{
+	width: 300px;
+	height: 300px;
+	horizontal-align: center;
+	background-color: #ffffff;
+}
+
+#store_qr_popup_open
+{
+	width: 100%;
+	height: 46px;
+	margin-top: 16px;
+	background-color: gradient( linear, 0% 0%, 0% 100%, from( #1e4a6bdd ), to( #0e2a3edd ) );
+	border: 1px solid #5e6869;
+	transform-origin: 50% 0%;
+	transform: scale3d( 1, 0.05, 1 );
+	opacity: 0;
+	transition-property: transform, opacity;
+	transition-duration: 0.26s;
+	transition-delay: 0.06s;
+}
+
+#store_qr_popup_open.qr_show
+{
+	transform: scale3d( 1, 1, 1 );
+	opacity: 1;
+}
+
+#store_qr_popup_open:hover
+{
+	brightness: 1.35;
+}
+
+#store_qr_popup_open_text
+{
+	horizontal-align: center;
+	vertical-align: center;
+	text-align: center;
+	font-size: 22px;
+	color: #ffffff;
+}
+
+#store_qr_popup_open_inner,#store_qr_popup_refresh_inner
+{
+	horizontal-align: center;
+	vertical-align: center;
+	flow-children: right;
+}
+
+#store_qr_popup_open_icon,#store_qr_popup_refresh_icon
+{
+	width: 22px;
+	height: 22px;
+	margin-right: 8px;
+	vertical-align: center;
+}
+
+#store_qr_popup_refresh
+{
+	width: 100%;
+	height: 46px;
+	margin-top: 10px;
+	transform-origin: 50% 0%;
+	transform: scale3d( 1, 0.05, 1 );
+	opacity: 0;
+	transition-property: transform, opacity;
+	transition-duration: 0.26s;
+	transition-delay: 0.12s;
+}
+
+#store_qr_popup_refresh.qr_show
+{
+	transform: scale3d( 1, 1, 1 );
+	opacity: 1;
+}
+
+#store_qr_popup_refresh.unavailable
+{
+	saturation: 0;
+	brightness: 0.6;
+}
+
+#store_qr_popup_refresh_text
+{
+	horizontal-align: center;
+	vertical-align: center;
+	text-align: center;
+	font-size: 22px;
+	color: #ffffff;
+}
+
+#store_qr_popup_tips
+{
+	horizontal-align: center;
+	vertical-align: center;
+	text-align: center;
+	max-width: 100%;
+	font-size: 20px;
+	color: #d0d0d0;
+	margin-top: 6px;
+}
+
+#store_link.store_link_disabled
+{
+	saturation: 0;
+	brightness: 0.45;
+	opacity: 0.6;
+}
+
+#ice_storage_panel .text_title_money
+{
+	font-family: titleFont;
+	font-size: 32px;
+	font-weight: bold;
+	text-shadow: 2px 2px 2px #330000;
+	z-index: 100;
 }

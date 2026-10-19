@@ -350,6 +350,149 @@ function StoreLink(){
     $.DispatchEvent("ExternalBrowserGoToURL", STORE_LINK);
 }
 
+// ===== 贝壳商店：store_link_img 的二维码弹窗（逻辑照搬 dac 商城的 store_qr_popup）=====
+// 流程：点图标 -> 告诉服务器(request_qr_code) -> 服务器用 当前玩家steamid+时间戳 拼 base64 链接
+//       -> 服务器回 show_qr_code {url=二维码图片, text=链接} -> 这里显示二维码 + 跳转按钮
+var STORE_QR_WAITING = false;
+var STORE_QR_TEXT = '';
+
+function HideStoreQRPopup() {
+    STORE_QR_WAITING = false;
+    $('#store_qr_popup').SetHasClass('invisible', true);
+    //弹窗关掉后，商店图标恢复原色、可以再次点击
+    $('#store_link').SetHasClass('store_link_disabled', false);
+}
+
+// 弹窗底部的提示行：没内容时整行收起，避免按钮下面多一块空白
+function SetStoreQRPopupTips(text) {
+    var el = $('#store_qr_popup_tips');
+    if (!el) {
+        return;
+    }
+    el.text = text || '';
+    el.SetHasClass('invisible', !text);
+}
+
+// 二维码 + 跳转按钮 + 刷新按钮：reveal=false 收起（不占位），true 时向下展开
+// 标题只做显示/隐藏（二维码出来后才显示，避免加载中还挂着“支付宝扫码”）
+function SetStoreQRContentState(reveal) {
+    if ($('#store_qr_popup_title')) {
+        $('#store_qr_popup_title').SetHasClass('invisible', !reveal);
+    }
+    var ids = ['store_qr_popup_image_box', 'store_qr_popup_open', 'store_qr_popup_refresh'];
+    for (var i = 0; i < ids.length; i++) {
+        var el = $('#' + ids[i]);
+        if (!el) {
+            continue;
+        }
+        //先复位：收起状态 + 不可见
+        el.SetHasClass('qr_show', false);
+        el.SetHasClass('invisible', true);
+    }
+    if (!reveal) {
+        return;
+    }
+    $('#store_qr_popup_image_box').SetHasClass('invisible', false);
+    $('#store_qr_popup_open').SetHasClass('invisible', !STORE_QR_TEXT);
+    $('#store_qr_popup_refresh').SetHasClass('invisible', false);
+    //等一帧再加 qr_show，transition 才会真的跑起来
+    $.Schedule(0.02, function () {
+        for (var j = 0; j < ids.length; j++) {
+            var e2 = $('#' + ids[j]);
+            if (!e2) {
+                continue;
+            }
+            if (ids[j] == 'store_qr_popup_open' && !STORE_QR_TEXT) {
+                continue;
+            }
+            e2.SetHasClass('qr_show', true);
+        }
+    });
+}
+
+// 在外部（系统默认）浏览器打开二维码里的链接
+function OpenStoreQRLink() {
+    if (!STORE_QR_TEXT) {
+        return;
+    }
+    $.Msg('[QR] open external browser: ' + STORE_QR_TEXT);
+    $.DispatchEvent("ExternalBrowserGoToURL", STORE_QR_TEXT);
+}
+
+// 点击商店图标：弹窗先进入"请求中"，再交给服务器生成二维码
+function OnClickStoreQRButton() {
+    //弹窗已经打开时图标是灰的，不能重复点
+    if ($('#store_link').BHasClass('store_link_disabled')) {
+        return;
+    }
+    $('#store_link').SetHasClass('store_link_disabled', true);
+    STORE_QR_WAITING = true;
+    STORE_QR_TEXT = '';
+    $('#store_qr_popup').SetHasClass('invisible', false);
+    $('#store_qr_popup_image').SetImage('');
+    //先收起二维码和按钮（等回包后再向下展开）
+    SetStoreQRContentState(false);
+    SetStoreQRPopupTips($.Localize('#text_store_qr_popup_loading'));
+    // 服务器迟迟没回，提示超时
+    $.Schedule(12, function () {
+        if (STORE_QR_WAITING) {
+            STORE_QR_WAITING = false;
+            SetStoreQRPopupTips($.Localize('#text_store_qr_popup_timeout'));
+        }
+    });
+    GameEvents.SendCustomGameEventToServer('request_qr_code', {});
+}
+
+// 充值后刷新账户信息：关掉弹窗，重新拉账户信息（贝壳/冰块/糖果）和商店列表
+function OnClickStoreQRRefresh() {
+    if ($('#store_qr_popup_refresh').BHasClass('unavailable')) {
+        return;
+    }
+    //2秒内不可重复点，避免连点刷接口
+    $('#store_qr_popup_refresh').SetHasClass('unavailable', true);
+    $.Schedule(2, function () {
+        $('#store_qr_popup_refresh').SetHasClass('unavailable', false);
+    });
+    HideStoreQRPopup();
+    //刷新成功后弹一个提示（show_msg 是工程里现成的居中提示框，z-index 40000，在商店之上）
+    refresh_hero_sea(function () {
+        show_msg('text_store_qr_refresh_ok');
+    });
+}
+
+// 服务器 http 回调：keys = {url, text, status_code}
+function OnShowStoreQRCode(keys) {
+    if (!keys || !keys.url) {
+        return;
+    }
+    STORE_QR_WAITING = false;
+    $('#store_qr_popup').SetHasClass('invisible', false);
+    // panorama 不能把 lua 拿到的二进制字节直接当纹理，这里用同一个地址让客户端自己加载这张 png
+    $('#store_qr_popup_image').SetImage(keys.url);
+    // 按钮跳转的就是二维码里的链接（站点地址 + base64）
+    STORE_QR_TEXT = keys.text || '';
+    // 二维码和按钮一起向下展开（CSS 里带 transition-delay 形成依次展开）
+    SetStoreQRContentState(true);
+    // 只有失败时才给一句提示
+    var code = keys.status_code || 0;
+    SetStoreQRPopupTips((code == 200) ? '' : $.Localize('#text_store_qr_popup_failed'));
+    $.Msg('[QR] popup image url = ' + keys.url);
+}
+
+GameEvents.Subscribe("show_qr_code", OnShowStoreQRCode);
+
+// 商店货币图标的 hover 说明（标题 + 文本）。
+// 两个坑：1) XML 的 onmouseover 只支持“函数名 + 字面量参数”，写 DOTAShowTitleTextTooltip($.Localize('...'))
+//          会把整串表达式当纯文本传给 tooltip；
+//        2) DOTAShowTitleTextTooltip 的签名是 (panel, title, text)，不给 panel 就没有锚点，tooltip 会跑到屏幕左上角。
+function ShowStoreCurrencyTips(panel_id, title_key, text_key) {
+    var panel = $('#' + panel_id);
+    if (!panel) {
+        return;
+    }
+    $.DispatchEvent("DOTAShowTitleTextTooltip", panel, $.Localize('#' + title_key), $.Localize('#' + text_key));
+}
+
 function refresh_store() {
     // 商店商品
     var store_url = 'http://gemtd.ppbizon.com/gemtd/201803/goods/list/@' + local_id + '?hehe=' + Math.random();
@@ -2252,6 +2395,8 @@ function click_map_to_share(m) {
 function close_store() {
     hide_store_panel();
     is_store_board_open = false;
+    //商城关掉时二维码弹窗一起关掉，避免弹窗藏在已关闭的商店后面
+    HideStoreQRPopup();
 }
 
 function confirm_buy() {
@@ -2443,7 +2588,7 @@ function OnMouseOutManila() {
 var my_player_info_object;
 var my_hero_cards_pages;
 var my_hero_cards_curr_page;
-function refresh_hero_sea() {
+function refresh_hero_sea(cb) {
     for (var i = 0; i < 10; i++) {
         if (Players.GetPlayerHeroEntityIndex(i)) {
             heroindex2id[Players.GetPlayerHeroEntityIndex(i)] = i;
@@ -2529,6 +2674,10 @@ function refresh_hero_sea() {
         my_player_info_object = object;
         // 根据object.hero_sea填写车库面板
         fill_hero_cards();
+        // 可选回调：调用方需要知道"拉取成功"时用（比如二维码弹窗里的刷新按钮）
+        if (cb) {
+            cb();
+        }
     });
 }
 function set_hero_sea(object) {

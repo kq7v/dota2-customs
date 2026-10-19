@@ -429,7 +429,7 @@
 	opacity: 0.1;
 }
 
-.player_has_host_privileges #LockAndStartButton
+#LockAndStartButton
 {
 	visibility: visible;
 }
@@ -495,7 +495,7 @@
 	sound: "ui_team_select_cancel_and_lock";
 }
 
-.player_has_host_privileges.teams_locked #CancelAndUnlockButton
+.teams_locked #CancelAndUnlockButton
 {
 	visibility: visible;
 }

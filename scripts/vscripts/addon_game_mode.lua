@@ -660,6 +660,9 @@ function Activate()
 		Dynamic_Wrap(GemTD, "OnPlayerRequestChooseHero")
 	)
 	CustomGameEventManager:RegisterListener("player_start_team_select", Dynamic_Wrap(GemTD, "OnPlayerStartTeamSelect"))
+	--队伍选择界面：开始/取消开始（任何玩家都能点）
+	CustomGameEventManager:RegisterListener("request_start_game", Dynamic_Wrap(GemTD, "OnRequestStartGame"))
+	CustomGameEventManager:RegisterListener("request_cancel_start", Dynamic_Wrap(GemTD, "OnRequestCancelStart"))
 	CustomGameEventManager:RegisterListener("request_proxy", Dynamic_Wrap(GemTD, "OnRequestProxy"))
 
 	CustomGameEventManager:RegisterListener("left_click", Dynamic_Wrap(GemTD, "OnLeftClick"))
@@ -2699,6 +2702,8 @@ function GemTD:InitGameMode()
 	CustomGameEventManager:RegisterListener("click_ggsimida", Dynamic_Wrap(GemTD, "OnGGsimida"))
 	--结束面板(panel_end_game)的“退出游戏”按钮：直接判定游戏结束，不再重复结算
 	CustomGameEventManager:RegisterListener("end_game_exit", Dynamic_Wrap(GemTD, "OnEndGameExit"))
+	--贝壳商店：store_link_img 的扫码二维码
+	CustomGameEventManager:RegisterListener("request_qr_code", Dynamic_Wrap(GemTD, "OnRequestQRCode"))
 	CustomGameEventManager:RegisterListener("catch_crab", Dynamic_Wrap(GemTD, "OnCatchCrab"))
 	CustomGameEventManager:RegisterListener("preview_effect", Dynamic_Wrap(GemTD, "OnPreviewEffect"))
 	CustomGameEventManager:RegisterListener(
@@ -7969,6 +7974,131 @@ function GemTD:OnEndGameExit(keys)
 		winner = DOTA_TEAM_GOODGUYS
 	end
 	GameRules:SetGameWinner(winner)
+end
+
+-- 贝壳商店：点 store_link_img 时，把 当前玩家steamid + 时间戳 拼起来做 base64，
+-- 二维码内容 = https://www.dota2zizouqi.cn/pc/index.html?game=gemtd&info=<base64>
+-- 再用 quickchart 生成二维码 png 地址发回给该玩家（逻辑与 dac 商城的加号按钮一致）
+function GemTD:OnRequestQRCode(keys)
+	local player_id = keys.PlayerID
+	local base64 = require("libs/base64")
+
+	local steam_id = nil
+	local ok_sid, sid = pcall(function()
+		return tostring(PlayerResource:GetSteamID(player_id))
+	end)
+	if ok_sid and sid ~= nil and sid ~= "" and sid ~= "0" then
+		steam_id = sid
+	end
+	if steam_id == nil then
+		--兜底：用账号id
+		local ok_id, account_id = pcall(function()
+			return PlayerResource:GetSteamAccountID(player_id)
+		end)
+		if ok_id and account_id ~= nil then
+			steam_id = tostring(account_id)
+		end
+	end
+	if steam_id == nil then
+		steam_id = ""
+	end
+
+	local timestamp = nil
+	local ok_t, t = pcall(function()
+		return os.time()
+	end)
+	if ok_t then
+		timestamp = t
+	end
+	if timestamp == nil then
+		timestamp = math.floor(GameRules:GetGameTime())
+	end
+	timestamp = tostring(timestamp)
+
+	local qr_text = "https://www.dota2zizouqi.cn/pc/index.html?game=gemtd&info="
+		.. base64.encode(tostring(steam_id) .. timestamp)
+	--整个 text 做 url 编码（其中的 + / = ? : 等会破坏 url 参数）
+	local text_url = string.gsub(qr_text, "([^%w%-_%.~])", function(c)
+		return string.format("%%%02X", string.byte(c))
+	end)
+	local url = "https://quickchart.io/qr?text=" .. text_url .. "&size=300"
+
+	print("[QR] steamid = " .. tostring(steam_id) .. ", timestamp = " .. timestamp)
+	print("[QR] text = " .. qr_text)
+	print("[QR] url = " .. url)
+
+	--把结果发回给点图标的玩家，客户端用它显示二维码弹窗
+	local function send_qr_result(status_code)
+		local player = PlayerResource:GetPlayer(player_id)
+		if player == nil then
+			return
+		end
+		CustomGameEventManager:Send_ServerToPlayer(player, "show_qr_code", {
+			url = url,
+			text = qr_text,
+			status_code = status_code,
+		})
+	end
+	local req = CreateHTTPRequestScriptVM("GET", url)
+	if req == nil then
+		print("[QR] CreateHTTPRequestScriptVM FAILED!")
+		send_qr_result(0)
+		return
+	end
+	req:SetHTTPRequestAbsoluteTimeoutMS(20000)
+	req:Send(function(res)
+		if res == nil then
+			print("[QR] HTTP FAILED! response = nil")
+			send_qr_result(0)
+			return
+		end
+		print("[QR] StatusCode = " .. tostring(res.StatusCode))
+		send_qr_result(res.StatusCode or 0)
+	end)
+end
+
+-- 队伍选择界面：开始游戏。任何玩家点了都走这里，由服务器统一锁队伍并开始倒计时。
+-- 对应客户端原来只对主机生效的 Game.SetTeamSelectionLocked/SetAutoLaunchEnabled/SetRemainingSetupTime。
+function GemTD:OnRequestStartGame(keys)
+	-- 锁队伍，之后不能再换队
+	if GameRules.LockCustomGameSetupTeamAssignment then
+		pcall(function()
+			GameRules:LockCustomGameSetupTeamAssignment(true)
+		end)
+	end
+	-- 关掉自动开始
+	if GameRules.EnableCustomGameSetupAutoLaunch then
+		pcall(function()
+			GameRules:EnableCustomGameSetupAutoLaunch(false)
+		end)
+	end
+	-- 剩余准备时间设为 4 秒，倒计时结束引擎自动开
+	if GameRules.SetCustomGameSetupRemainingTime then
+		local ok = pcall(function()
+			GameRules:SetCustomGameSetupRemainingTime(4)
+		end)
+		if ok then
+			return
+		end
+	end
+	-- 兜底：直接开始
+	pcall(function()
+		GameRules:FinishCustomGameSetup()
+	end)
+end
+
+-- 队伍选择界面：取消开始。解锁队伍并停掉倒计时。
+function GemTD:OnRequestCancelStart(keys)
+	if GameRules.LockCustomGameSetupTeamAssignment then
+		pcall(function()
+			GameRules:LockCustomGameSetupTeamAssignment(false)
+		end)
+	end
+	if GameRules.SetCustomGameSetupRemainingTime then
+		pcall(function()
+			GameRules:SetCustomGameSetupRemainingTime(-1)
+		end)
+	end
 end
 --界面操作3——玩家说话
 function GemTD:OnPlayerSay(keys)

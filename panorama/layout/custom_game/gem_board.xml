@@ -129,25 +129,25 @@
 			</Panel>
 			<Panel style="height:90px;width:100%;">
 				<Panel id="ice_storage_panel">
-					<Panel style="width:40px;height:45px;">
+					<Panel id="store_shell_icon" style="width:40px;height:45px;tooltip-position: top;" onmouseover="ShowStoreCurrencyTips(&apos;store_shell_icon&apos;, &apos;award_name_shell_&apos;, &apos;text_store_shell_tips&apos;)" onmouseout="DOTAHideTextTooltip()">
 						<Image src="s2r://panorama/images/custom_game/shell_png.vtex" style="height:35px;width:40px;" />
 					</Panel>
 					<Panel style="width:150px;height:45px;flow-children:right;">
-						<Label id="store_shell_count" text="× 0" class="text_large" style="horizontal-align:left;margin-left:10px;" />
+						<Label id="store_shell_count" text="× 0" class="text_large text_title_money" style="horizontal-align:left;margin-left:10px;" />
 					</Panel>
-					<Panel style="width:40px;height:45px;">
+					<Panel id="store_ice_icon" style="width:40px;height:45px;tooltip-position: top;" onmouseover="ShowStoreCurrencyTips(&apos;store_ice_icon&apos;, &apos;award_name_ice_&apos;, &apos;text_store_ice_tips&apos;)" onmouseout="DOTAHideTextTooltip()">
 						<Image src="s2r://panorama/images/custom_game/award_ice_png.vtex" style="height:30px;width:35px;margin-top:4px;margin-left:4px;" />
 					</Panel>
 					<Panel style="width:150px;height:45px;flow-children:right;">
-						<Label id="store_ice_count" text="× 0" class="text_large" style="horizontal-align:left;margin-left:10px;" />
+						<Label id="store_ice_count" text="× 0" class="text_large text_title_money" style="horizontal-align:left;margin-left:10px;" />
 					</Panel>
-					<Panel style="width:40px;height:45px;">
+					<Panel id="store_candy_icon" style="width:40px;height:45px;tooltip-position: top;" onmouseover="ShowStoreCurrencyTips(&apos;store_candy_icon&apos;, &apos;award_name_candy_&apos;, &apos;text_store_candy_tips&apos;)" onmouseout="DOTAHideTextTooltip()">
 						<Image src="s2r://panorama/images/custom_game/award_candy_png.vtex" style="height:35px;width:40px;margin-top:2px;margin-left:2px;" />
 					</Panel>
 					<Panel style="width:150px;height:45px;flow-children:right;">
-						<Label id="store_candy_count" text="× 0" class="text_large" style="horizontal-align:left;margin-left:10px;" />
+						<Label id="store_candy_count" text="× 0" class="text_large text_title_money" style="horizontal-align:left;margin-left:10px;" />
 					</Panel>
-					<Panel id="store_link" style="width:40px;height:40px;flow-children:right;" onactivate="StoreLink()">
+					<Panel id="store_link" style="width:40px;height:40px;flow-children:right;" onactivate="OnClickStoreQRButton()">
 						<Image id="store_link_img" src="s2r://panorama/images/dota_plus/dotaplus_logo_small_png.vtex" style="height:40px;width:40px;" />
 					</Panel>
 				</Panel>
@@ -405,6 +405,34 @@
 			<Label id="award3" text="get_award_sm3" hittest="false" style="z-index:2;font-size:44px;font-family:FZLanTingHei-R-GBK;font-weight:bold;width:350px;color:#8888ff;margin-left:10px;margin-top:75px;text-align:center;" />
 			<Image id="gift" src="http://101.200.189.65:2009/pic/show?file_name=308.png" style="width:146px;height:196px;z-index:2;margin-left:369px;" />
 			<Image src="s2r://panorama/images/custom_game/award_bg_sm_jpg.vtex" style="z-index:1;" />
+		</Panel>
+		<Panel id="store_qr_popup" class="invisible" hittest="true">
+			<Panel id="store_qr_popup_header">
+				<Panel id="store_qr_popup_title" class="invisible">
+					<Label id="store_qr_popup_title_1" text="#text_store_qr_popup_title1" />
+					<Panel id="store_qr_popup_title_box">
+						<Label id="store_qr_popup_title_2" text="#text_store_qr_popup_title2" />
+					</Panel>
+					<Label id="store_qr_popup_title_3" text="#text_store_qr_popup_title3" />
+				</Panel>
+				<Image id="store_qr_popup_close" src="s2r://panorama/images/custom_game/cross_png.vtex" onactivate="HideStoreQRPopup();" />
+			</Panel>
+			<Panel id="store_qr_popup_image_box" class="invisible">
+				<Image id="store_qr_popup_image" src="" />
+			</Panel>
+			<Panel id="store_qr_popup_open" onactivate="OpenStoreQRLink();">
+				<Panel id="store_qr_popup_open_inner">
+					<Image id="store_qr_popup_open_icon" src="s2r://panorama/images/custom_game/icon_jump_png.vtex" />
+					<Label id="store_qr_popup_open_text" text="#text_store_qr_popup_desc" />
+				</Panel>
+			</Panel>
+			<Panel id="store_qr_popup_refresh" class="dota_button" onactivate="OnClickStoreQRRefresh();">
+				<Panel id="store_qr_popup_refresh_inner">
+					<Image id="store_qr_popup_refresh_icon" src="s2r://panorama/images/custom_game/icon_refresh_png.vtex" />
+					<Label id="store_qr_popup_refresh_text" text="#text_store_qr_popup_refresh" />
+				</Panel>
+			</Panel>
+			<Label id="store_qr_popup_tips" text="" />
 		</Panel>
 		<Panel id="right_panel" class="right_panel invisible">
 			<Panel id="panel_hero_cards_left" class="panel_hero_cards_border_arrow" onactivate="last_page()">

@@ -171,6 +171,8 @@
 	font-family: Radiance,FZLanTingHei-R-GBK,TH Sarabun New,YDYGO 540,Gulim,MingLiU;
 	color:#ffffff;
 	text-align:center;
+	horizontal-align:center;
+	vertical-align:center;
 	font-size:25px;
 	line-height: 30px;
 }
