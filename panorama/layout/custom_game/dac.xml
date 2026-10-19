@@ -1348,16 +1348,48 @@
 				</Panel>
 				<Panel id="candy_storage_panel">
 					<Panel id="money_panel_container">
-						<Image id="image_biscuit_storage" style="width:40px;height:40px;z-index:40;margin-top:10px;margin-right:10px;" src="s2r://panorama/images/custom_game/award_biscuit_png.vtex" />
+						<Image id="image_biscuit_storage" style="width:40px;height:40px;z-index:40;margin-top:10px;margin-right:10px;tooltip-position:bottom;" src="s2r://panorama/images/custom_game/award_biscuit_png.vtex" onmouseover="ShowStoreIconTitleTip(&apos;image_biscuit_storage&apos;, &apos;#text_store_tips_biscuit_title&apos;, &apos;#text_store_tips_biscuit&apos;);" onmouseout="OnOutStoreIconTip();" />
 						<Label id="text_store_v5_biscuit" class="text_large text_title_money" text="× ?" />
-						<Image id="image_ice_storage" style="width:40px;height:40px;z-index:40;margin-top:10px;margin-right:10px;" src="s2r://panorama/images/custom_game/award_candy_png.vtex" onactivate="DebugLink();" />
+						<Image id="image_ice_storage" style="width:40px;height:40px;z-index:40;margin-top:10px;margin-right:10px;tooltip-position:bottom;" src="s2r://panorama/images/custom_game/award_candy_png.vtex" onactivate="DebugLink();" onmouseover="ShowStoreIconTitleTip(&apos;image_ice_storage&apos;, &apos;#text_store_tips_candy_title&apos;, &apos;#text_store_tips_candy&apos;);" onmouseout="OnOutStoreIconTip();" />
 						<Label id="text_store_v5_candy" class="text_large text_title_money" text="× ?" onactivate="DebugLink();" />
+						<Image id="image_pass_storage" class="store_pass_locked" hittest="true" style="tooltip-position:bottom;" src="s2r://panorama/images/custom_game/vip/player_board_04_png.vtex" onmouseover="OnHoverStorePassIcon();" onmouseout="OnOutStoreIconTip();" />
 						<Panel id="store_link" style="width:40px;height:40px;flow-children:right;vertical-align:center;margin-right:30px;margin-top:5px;" class="invisible" onactivate="DebugLink();">
 							<Image id="store_link_img" src="" style="height:40px;width:40px;" />
 						</Panel>
 					</Panel>
 				</Panel>
+				<Panel id="btn_plus_store_title" hittest="true" style="tooltip-position:bottom;" onactivate="OnClickStoreV5PlusButton();" onmouseover="ShowStoreIconTitleTip(&apos;btn_plus_store_title&apos;, &apos;#text_store_qr_button_title&apos;, &apos;#text_store_qr_button_tips&apos;);" onmouseout="OnOutStoreIconTip();">
+					<Image src="s2r://panorama/images/custom_game/plus_gold_png.vtex" hittest="false" />
+				</Panel>
 				<Image id="image_close_panel_store" src="s2r://panorama/images/custom_game/cross_png.vtex" onactivate="ShowStoreV5();" />
+			</Panel>
+			<Panel id="store_qr_popup" class="invisible">
+				<Panel id="store_qr_popup_header">
+					<Panel id="store_qr_popup_title" class="invisible">
+						<Label id="store_qr_popup_title_1" text="#text_store_qr_popup_title1" />
+						<Panel id="store_qr_popup_title_box">
+							<Label id="store_qr_popup_title_2" text="#text_store_qr_popup_title2" />
+						</Panel>
+						<Label id="store_qr_popup_title_3" text="#text_store_qr_popup_title3" />
+					</Panel>
+					<Image id="store_qr_popup_close" src="s2r://panorama/images/custom_game/cross_png.vtex" onactivate="HideStoreQRPopup();" />
+				</Panel>
+				<Panel id="store_qr_popup_image_box" class="invisible">
+					<Image id="store_qr_popup_image" src="" />
+				</Panel>
+				<Panel id="store_qr_popup_open" class="dac_button invisible" onactivate="OpenStoreQRLink();">
+					<Panel id="store_qr_popup_open_inner">
+						<Image id="store_qr_popup_open_icon" src="s2r://panorama/images/custom_game/icon_jump_png.vtex" />
+						<Label id="store_qr_popup_open_text" text="#text_store_qr_popup_desc" />
+					</Panel>
+				</Panel>
+				<Panel id="store_qr_popup_refresh" class="dac_button invisible" onactivate="OnClickStoreQRRefresh();">
+					<Panel id="store_qr_popup_refresh_inner">
+						<Image id="store_qr_popup_refresh_icon" src="s2r://panorama/images/custom_game/icon_refresh_png.vtex" />
+						<Label id="store_qr_popup_refresh_text" text="#text_store_qr_popup_refresh" />
+					</Panel>
+				</Panel>
+				<Label id="store_qr_popup_tips" text="" />
 			</Panel>
 			<Panel id="store_panel_v5_inner">
 				<Panel id="store_panel_v5_goods_empty" class="">

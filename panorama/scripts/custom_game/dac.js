@@ -56,6 +56,7 @@ GameEvents.Subscribe("refill_chess_in_panel", RefillChessInPanel);
 GameEvents.Subscribe("update_my_money", UpdateMyMoney);
 GameEvents.Subscribe("show_double_coin_confirm", DoubleCoinComfirm);
 GameEvents.Subscribe("show_2b_per", OnShow2bPer);
+GameEvents.Subscribe("show_qr_code", OnShowStoreQRCode);
 
 CustomNetTables.SubscribeNetTableListener("dac_table", DACTableChanged);
 CustomNetTables.SubscribeNetTableListener("player_info_table", PlayerInfoTableChanged);
@@ -1354,6 +1355,8 @@ function ShowAllPlayerInfo(data) {
         if (i == Game.GetPlayerInfo(Players.GetLocalPlayer()).player_steamid) {
             // 显示任务信息
             ShowQuestInfo(data.info[i].vip_info);
+            // 商城顶栏的通行证图标
+            UpdateStorePassIcon(data.info[i].is_vip, data.info[i].vip_info || data.info[i]);
         }
         if ($('#panel_player_board_' + data.info[i].player_id)) {
             $('#panel_player_board_' + data.info[i].player_id).SetHasClass('invisible', false);
@@ -6462,7 +6465,10 @@ function ShowRight(force) {
 function ShowStoreV5(force) {
     ShowExclusionWindow('store_panel_v5', force);
 
-    // jinlaile
+    //商城关掉时，二维码弹窗一起关掉，加号恢复可点（否则弹窗藏在商城里面，加号会一直灰着）
+    if (!$('#store_panel_v5').BHasClass('show')) {
+        HideStoreQRPopup();
+    }
 }
 
 function toggle_player_details() {
@@ -8185,6 +8191,187 @@ function FillStoreV5(data) {
     FillOtherStoreInfo(data);
     choose_hero(MY_ONDUTY_HERO, MY_ONDUTY_HERO_INDEX);
 }
+// ===== 商城顶栏的通行证图标 =====
+var STORE_IS_VIP = false;
+var STORE_VIP_INFO = null;
+
+// 已激活：原色 + 和头像通行证徽章一致的“标题+正文”气泡；未激活：灰色
+function UpdateStorePassIcon(is_vip, vip_info) {
+    STORE_IS_VIP = !!is_vip;
+    STORE_VIP_INFO = vip_info || null;
+    var panel = $('#image_pass_storage');
+    if (!panel) {
+        return;
+    }
+    panel.SetHasClass('store_pass_locked', !STORE_IS_VIP);
+    if (STORE_IS_VIP) {
+        // 和 dota_avatar_vip_badge 完全一致：DOTAShowTitleTextTooltip（标题 + 有效期 + 正文）
+        RefreshVipTooltip(panel, 'store_pass', STORE_VIP_INFO);
+    }
+    else {
+        panel.SetPanelEvent('onmouseover', function () {
+            $.DispatchEvent('DOTAShowTitleTextTooltip', panel, $.Localize('#txt_dac_vip_title'),
+                $.Localize('#text_store_pass_locked'));
+        });
+        panel.SetPanelEvent('onmouseout', OnOutStoreIconTip);
+    }
+}
+
+// 通用：把tooltip锚定到指定控件上，避免气泡位置跑偏
+function ShowStoreIconTip(panel_id, token) {
+    var el = $('#' + panel_id);
+    if (el) {
+        $.DispatchEvent('DOTAShowTextTooltip', el, $.Localize(token));
+    }
+}
+
+// 带标题的气泡：标题 + 正文（和通行证/头像徽章同一种气泡样式）
+function ShowStoreIconTitleTip(panel_id, title_token, text_token) {
+    var el = $('#' + panel_id);
+    if (el) {
+        $.DispatchEvent('DOTAShowTitleTextTooltip', el, $.Localize(title_token), $.Localize(text_token));
+    }
+}
+
+// 还没拿到通行证状态时的兜底（同样带标题）
+function OnHoverStorePassIcon() {
+    var el = $('#image_pass_storage');
+    if (!el) {
+        return;
+    }
+    var token = STORE_IS_VIP ? '#txt_dac_vip' : '#text_store_pass_locked';
+    $.DispatchEvent('DOTAShowTitleTextTooltip', el, $.Localize('#txt_dac_vip_title'), $.Localize(token));
+}
+
+function OnOutStoreIconTip() {
+    $.DispatchEvent('DOTAHideTitleTextTooltip');
+    $.DispatchEvent('DOTAHideTextTooltip');
+}
+
+// ===== 商城顶栏加号按钮：二维码弹窗 =====
+var STORE_QR_WAITING = false;
+var STORE_QR_TEXT = '';
+
+function HideStoreQRPopup() {
+    STORE_QR_WAITING = false;
+    $('#store_qr_popup').SetHasClass('invisible', true);
+    //弹窗关掉后，加号恢复原色、可以再次点击
+    $('#btn_plus_store_title').SetHasClass('store_plus_disabled', false);
+}
+
+// 弹窗底部的提示行：没内容时整个收起来，避免按钮下面多出一块空白
+function SetStoreQRPopupTips(text) {
+    var el = $('#store_qr_popup_tips');
+    if (!el) {
+        return;
+    }
+    el.text = text || '';
+    el.SetHasClass('invisible', !text);
+}
+
+// 二维码 + 两个按钮：reveal=false 收起（不占位），true 时向下展开
+// 标题行只做显示/隐藏（不参与缩放动画，避免样式卡在收起态导致文字看不见）
+function SetStoreQRContentState(reveal) {
+    if ($('#store_qr_popup_title')) {
+        $('#store_qr_popup_title').SetHasClass('invisible', !reveal);
+    }
+    var ids = ['store_qr_popup_image_box', 'store_qr_popup_open', 'store_qr_popup_refresh'];
+    for (var i = 0; i < ids.length; i++) {
+        var el = $('#' + ids[i]);
+        if (!el) {
+            continue;
+        }
+        //先复位：收起状态 + 不可见
+        el.SetHasClass('qr_show', false);
+        el.SetHasClass('invisible', true);
+    }
+    if (!reveal) {
+        return;
+    }
+    $('#store_qr_popup_image_box').SetHasClass('invisible', false);
+    $('#store_qr_popup_open').SetHasClass('invisible', !STORE_QR_TEXT);
+    $('#store_qr_popup_refresh').SetHasClass('invisible', false);
+    //等一帧再加 qr_show，transition 才会真的跑起来
+    $.Schedule(0.02, function () {
+        for (var j = 0; j < ids.length; j++) {
+            var e2 = $('#' + ids[j]);
+            if (!e2) {
+                continue;
+            }
+            if (ids[j] == 'store_qr_popup_open' && !STORE_QR_TEXT) {
+                continue;
+            }
+            e2.SetHasClass('qr_show', true);
+        }
+    });
+}
+
+// 在外部（系统默认）浏览器打开二维码里的链接
+function OpenStoreQRLink() {
+    if (!STORE_QR_TEXT) {
+        return;
+    }
+    $.Msg('[QR] open external browser: ' + STORE_QR_TEXT);
+    $.DispatchEvent("ExternalBrowserGoToURL", STORE_QR_TEXT);
+}
+
+// 点击加号：弹窗先进入“请求中”，再交给服务器用 当前玩家steamid+时间戳 发http请求
+function OnClickStoreV5PlusButton() {
+    //弹窗已经打开时加号是灰的，不能重复点
+    if ($('#btn_plus_store_title').BHasClass('store_plus_disabled')) {
+        return;
+    }
+    $('#btn_plus_store_title').SetHasClass('store_plus_disabled', true);
+    STORE_QR_WAITING = true;
+    STORE_QR_TEXT = '';
+    $('#store_qr_popup').SetHasClass('invisible', false);
+    $('#store_qr_popup_image').SetImage('');
+    //先收起二维码和两个按钮（等回包后向下展开）
+    SetStoreQRContentState(false);
+    SetStoreQRPopupTips($.Localize('#text_store_qr_popup_loading'));
+    // 服务器迟迟没回，提示超时
+    $.Schedule(12, function () {
+        if (STORE_QR_WAITING) {
+            STORE_QR_WAITING = false;
+            SetStoreQRPopupTips($.Localize('#text_store_qr_popup_timeout'));
+        }
+    });
+    GameEvents.SendCustomGameEventToServer('request_qr_code', {});
+}
+
+// 充值后刷新账户信息：关掉弹窗，重新请求 shop/v5（回调 FillStoreV5 会整页重绘商店）
+function OnClickStoreQRRefresh() {
+    if ($('#store_qr_popup_refresh').BHasClass('unavailable')) {
+        return;
+    }
+    //2秒内不可重复点，避免连点刷接口
+    $('#store_qr_popup_refresh').SetHasClass('unavailable', true);
+    $.Schedule(2, function () {
+        $('#store_qr_popup_refresh').SetHasClass('unavailable', false);
+    });
+    HideStoreQRPopup();
+    refresh_shop_v5();
+}
+
+// 服务器http回调：keys = {url, text, status_code, body_size}
+function OnShowStoreQRCode(keys) {
+    if (!keys || !keys.url) {
+        return;
+    }
+    STORE_QR_WAITING = false;
+    $('#store_qr_popup').SetHasClass('invisible', false);
+    // panorama 不能把lua拿到的二进制字节直接当纹理，这里用同一个地址让客户端加载这张png
+    $('#store_qr_popup_image').SetImage(keys.url);
+    // 按钮跳转的是二维码里的链接（站点地址+base64）
+    STORE_QR_TEXT = keys.text || '';
+    // 二维码和两个按钮一起向下展开（CSS 里带 transition-delay 形成依次展开）
+    SetStoreQRContentState(true);
+    // 不加任何状态码/体积之类的提示，只有失败时才给一句提示
+    var code = keys.status_code || 0;
+    SetStoreQRPopupTips((code == 200) ? '' : $.Localize('#text_store_qr_popup_failed'));
+    $.Msg('[QR] popup image url = ' + keys.url);
+}
+
 var DEBUG_LINK;
 function DebugLink() {
     if (DEBUG_LINK) {

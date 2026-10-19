@@ -11,43 +11,19 @@
 <!-- xml reconstructed by Source 2 Viewer 20.1.0.0 - https://valveresourceformat.github.io -->
 <root>
 	<styles>
-		<include src="s2r://panorama/styles/custom_game/dac.vcss_c" />
+		<include src="s2r://panorama/styles/custom_game/dac.vcss" />
 	</styles>
-	<script><![CDATA[
-		if (Game.GetMapInfo().map_display_name == 'casual_1x8_ob' || Game.GetMapInfo().map_display_name == 'casual_2x4_ob'){
-			GameUI.CustomUIConfig().team_select = {};
-			GameUI.CustomUIConfig().team_select.bShowSpectatorTeam = true;
-		}
-		GameUI.SetDefaultUIEnabled( DotaDefaultUIElement_t.DOTA_DEFAULT_UI_TOP_TIMEOFDAY, false );
-		GameUI.SetDefaultUIEnabled( DotaDefaultUIElement_t.DOTA_DEFAULT_UI_TOP_HEROES, false );
-		GameUI.SetDefaultUIEnabled( DotaDefaultUIElement_t.DOTA_DEFAULT_UI_FLYOUT_SCOREBOARD, false );
-
-		GameUI.SetDefaultUIEnabled( DotaDefaultUIElement_t.DOTA_DEFAULT_UI_HERO_SELECTION_TEAMS, false );
-		GameUI.SetDefaultUIEnabled( DotaDefaultUIElement_t.DOTA_DEFAULT_UI_HERO_SELECTION_GAME_NAME, false )
-		GameUI.SetDefaultUIEnabled( DotaDefaultUIElement_t.DOTA_DEFAULT_UI_HERO_SELECTION_CLOCK, false );
-
-		GameUI.SetDefaultUIEnabled( DotaDefaultUIElement_t.DOTA_DEFAULT_UI_INVENTORY_SHOP, true );
-		GameUI.SetDefaultUIEnabled( DotaDefaultUIElement_t.DOTA_DEFAULT_UI_INVENTORY_QUICKBUY, false );
-		GameUI.SetDefaultUIEnabled( DotaDefaultUIElement_t.DOTA_DEFAULT_UI_INVENTORY_COURIER, false );
-		GameUI.SetDefaultUIEnabled( DotaDefaultUIElement_t.DOTA_DEFAULT_UI_INVENTORY_PROTECT, false );
-		GameUI.SetDefaultUIEnabled( DotaDefaultUIElement_t.DOTA_DEFAULT_UI_INVENTORY_ITEMS, true );
-		GameUI.SetDefaultUIEnabled( DotaDefaultUIElement_t.DOTA_DEFAULT_UI_INVENTORY_GOLD, true );
-		GameUI.SetDefaultUIEnabled( DotaDefaultUIElement_t.DOTA_DEFAULT_UI_SHOP_SUGGESTEDITEMS, false );
-
-		GameUI.SetDefaultUIEnabled( DotaDefaultUIElement_t.DOTA_DEFAULT_UI_ACTION_MINIMAP, true );
-		GameUI.SetDefaultUIEnabled( DotaDefaultUIElement_t.DOTA_DEFAULT_UI_ACTION_PANEL, true );
-		GameUI.SetDefaultUIEnabled( DotaDefaultUIElement_t.DOTA_DEFAULT_UI_INVENTORY_PANEL, true );
-
-		GameUI.SetDefaultUIEnabled( DotaDefaultUIElement_t.DOTA_DEFAULT_UI_ENDGAME, false ); 
-	]]></script>
+	<scripts>
+		<include src="s2r://panorama/scripts/custom_game/ui.vjs" />
+	</scripts>
 	<Panel style="width: 100%;height: 100%;">
-		<CustomUIElement type="Hud" layoutfile="s2r://panorama/layout/custom_game/config.vxml_c" />
-		<CustomUIElement type="Hud" layoutfile="s2r://panorama/layout/custom_game/tester_box.vxml_c" />
-		<CustomUIElement type="Hud" layoutfile="s2r://panorama/layout/custom_game/hp_bar.vxml_c" />
-		<CustomUIElement type="Hud" layoutfile="s2r://panorama/layout/custom_game/bullet.vxml_c" />
-		<CustomUIElement type="Hud" layoutfile="s2r://panorama/layout/custom_game/dac.vxml_c" />
-		<CustomUIElement type="Hud" layoutfile="s2r://panorama/layout/custom_game/event_ti.vxml_c" />
-		<CustomUIElement type="Hud" layoutfile="s2r://panorama/layout/custom_game/popup_box.vxml_c" />
-		<CustomUIElement type="EndScreen" layoutfile="s2r://panorama/layout/custom_game/end.vxml_c" />
+		<CustomUIElement type="Hud" layoutfile="s2r://panorama/layout/custom_game/config.vxml" />
+		<CustomUIElement type="Hud" layoutfile="s2r://panorama/layout/custom_game/tester_box.vxml" />
+		<CustomUIElement type="Hud" layoutfile="s2r://panorama/layout/custom_game/hp_bar.vxml" />
+		<CustomUIElement type="Hud" layoutfile="s2r://panorama/layout/custom_game/bullet.vxml" />
+		<CustomUIElement type="Hud" layoutfile="s2r://panorama/layout/custom_game/dac.vxml" />
+		<CustomUIElement type="Hud" layoutfile="s2r://panorama/layout/custom_game/event_ti.vxml" />
+		<CustomUIElement type="Hud" layoutfile="s2r://panorama/layout/custom_game/popup_box.vxml" />
+		<CustomUIElement type="EndScreen" layoutfile="s2r://panorama/layout/custom_game/end.vxml" />
 	</Panel>
 </root>

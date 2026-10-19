@@ -314,7 +314,7 @@ function DAC:InitGameMode()
 	if config.IsAutochessServer == 1 then
 		--服务器主机
 		CustomNetTables:SetTableValue("game_info", "game_host_type", { game_host_type = 'server' })
-	elseif config.IsAutochessServer == 2 then
+	elseif config.IsAutochessServer == 2 and IsInToolsMode() == false then
 		--跳转游廊平台
 		CustomNetTables:SetTableValue("game_info", "game_host_type", { game_host_type = 'arcade_platform' })
 	else
@@ -322,6 +322,29 @@ function DAC:InitGameMode()
 	end
 
 	GameRules:SetCustomGameSetupAutoLaunchDelay(120)
+	--ToolsMode 测试用：缩短自动开始倒计时，并恢复大厅里的"开始游戏"按钮
+	if IsInToolsMode() == true then
+		--兜底：即使不点按钮，30 秒后也会自动开局（正式流程是 120 秒）
+		--想更快可以改成 8；想先测试按钮就调大
+		GameRules:SetCustomGameSetupAutoLaunchDelay(30)
+		--大厅 UI（team_select.vjs 的 ServerLockWait）只有在收到 server_lock_wait
+		--且地图是 casual 系时才会把 #LockAndStartButton 的 opacity0 去掉，
+		--而 IsAutochessServer=2 时没有任何分支会发这个事件，这里由服务器补发
+		Timers:CreateTimer(1, function()
+			--离开大厅（进入选人/对局）后就不再发，避免刷客户端报错
+			if _G.is_game_started == true or GameRules:State_Get() >= DOTA_GAMERULES_STATE_HERO_SELECTION then
+				return nil
+			end
+			CustomGameEventManager:Send_ServerToAllClients("server_lock_wait", {
+				hehe = RandomInt(1, 100000),
+				max_player_count = 1,
+				curr_player_count = 1,
+				map_name = "casual_1x8",
+				is_autochess_server = false,
+			})
+			return 1
+		end)
+	end
 
 	GameRules:SetCustomGameTeamMaxPlayers(DOTA_TEAM_GOODGUYS, 0)
 	GameRules:SetCustomGameTeamMaxPlayers(DOTA_TEAM_BADGUYS, 0)
@@ -433,6 +456,7 @@ function DAC:InitGameMode()
 	CustomGameEventManager:RegisterListener("lineup", Dynamic_Wrap(DAC, "OnLineup"))
 	CustomGameEventManager:RegisterListener("request_damage_stat", Dynamic_Wrap(DAC, "OnRequestDamageStat"))
 	CustomGameEventManager:RegisterListener("item_double_coin", Dynamic_Wrap(DAC, "ItemDoubleCoin"))
+	CustomGameEventManager:RegisterListener("request_qr_code", Dynamic_Wrap(DAC, "OnRequestQRCode"))
 	-- CustomGameEventManager:RegisterListener("collect_host", Dynamic_Wrap(DAC, "OnCollectHost"))
 	-- CustomGameEventManager:RegisterListener("connect_server", Dynamic_Wrap(DAC, "OnConnectServer"))
 
@@ -441,8 +465,8 @@ function DAC:InitGameMode()
 	-- 		DAC:OnConnectServerRequest(eventSourceIndex, keys)
 	-- 	end
 	-- )
-	_G.timer_count = {}
-	_G.precache_count = {}
+	_G.timer_count = {}   --按回合数key统计timer的数量（暂时废弃）
+	_G.precache_count = {}  --按回合数key统计precache的数量（暂时废弃）
 	_G.is_server_game_started = false
 	_G.connect_full_player_count = 0
 	_G.game_id = ''
@@ -4520,6 +4544,87 @@ function RestoreARound(teamid)
 	CheckZombieChess()
 end
 
+--二维码弹窗保护：商城二维码弹窗打开期间，先不下发 show_draw_card，
+--因为客户端收到它就会 open_panel_draw_card()，把商城页面顶掉；
+--等玩家点了弹窗里的“刷新我的账户信息”（客户端会发 refresh_shop_v5）或者超过保护时间，再补发
+QR_HOLD_SECONDS = 180
+_G.qr_hold = _G.qr_hold or {}
+
+--弹窗打开：登记/续期保护窗口，并启动 1 秒一次的检查定时器
+function SetQrPopupHold(player_id)
+	local st = _G.qr_hold[player_id] or {}
+	st.expire_at = GameRules:GetGameTime() + QR_HOLD_SECONDS
+	_G.qr_hold[player_id] = st
+	if _G.qr_hold_timer_started ~= true then
+		_G.qr_hold_timer_started = true
+		Timers:CreateTimer(1, function()
+			local now = GameRules:GetGameTime()
+			for pid, one in pairs(_G.qr_hold) do
+				if one.expire_at == nil or now >= one.expire_at then
+					FlushQrHold(pid)
+				end
+			end
+			return 1
+		end)
+	end
+end
+
+--缩短保护窗口（只会变短）：玩家已经关掉弹窗时用
+function ShortenQrHold(player_id, seconds)
+	local st = _G.qr_hold[player_id]
+	if st == nil then
+		return
+	end
+	local t = GameRules:GetGameTime() + (seconds or 4)
+	if st.expire_at == nil or st.expire_at > t then
+		st.expire_at = t
+	end
+end
+
+function IsQrPopupHolding(player_id)
+	local st = _G.qr_hold[player_id]
+	if st == nil or st.expire_at == nil then
+		return false
+	end
+	return GameRules:GetGameTime() < st.expire_at
+end
+
+--把之前压住的 show_draw_card 补发出去
+function FlushQrHold(player_id)
+	local st = _G.qr_hold[player_id]
+	if st == nil then
+		return
+	end
+	_G.qr_hold[player_id] = nil
+	if st.pending ~= nil and st.pending_team ~= nil then
+		CustomGameEventManager:Send_ServerToTeam(st.pending_team, "show_draw_card", st.pending)
+		print('[QR] flush held show_draw_card, player_id=' .. tostring(player_id))
+	end
+end
+
+--统一从这里下发 show_draw_card：二维码弹窗开着时，系统自动抽卡先压住
+function SendShowDrawCard(team_id, payload)
+	local hero = TeamId2Hero(team_id)
+	local player_id = hero and hero:GetPlayerID()
+	if player_id ~= nil and payload ~= nil and IsQrPopupHolding(player_id) then
+		--auto_unlock：只是解锁招募面板，客户端收到会直接 return，不会弹面板
+		--unlock：玩家自己点的刷新/买卡补位，说明他正在用招募面板，不能压
+		if payload.auto_unlock ~= true and payload.unlock ~= true then
+			local st = _G.qr_hold[player_id]
+			st.pending = payload
+			st.pending_team = team_id
+			print('[QR] hold show_draw_card, player_id=' .. tostring(player_id))
+			return
+		end
+		--玩家主动操作：取消保护（压住的那份作废，直接发最新的）
+		local st = _G.qr_hold[player_id]
+		st.pending = nil
+		st.pending_team = nil
+		st.expire_at = 0
+	end
+	CustomGameEventManager:Send_ServerToTeam(team_id, "show_draw_card", payload)
+end
+
 --游戏循环1.2——抽卡用到的方法
 function Draw5ChessAndShow(team_id, unlock, draw_type)
 	--unlock==false表示是系统自动抽牌
@@ -4531,7 +4636,7 @@ function Draw5ChessAndShow(team_id, unlock, draw_type)
 	--6：抽冷门棋子
 	local h = TeamId2Hero(team_id)
 	if h.chesslock == true then
-		CustomGameEventManager:Send_ServerToTeam(h:GetTeam(), "show_draw_card", {
+		SendShowDrawCard(h:GetTeam(), {
 			key = GetClientKey(h:GetTeam()),
 			chesses = h.curr_chess_table,
 			curr_money = h:GetMana(),
@@ -4613,7 +4718,7 @@ function Draw5ChessAndShow(team_id, unlock, draw_type)
 	end
 
 	-- UpdateMyMoney(team_id)
-	CustomGameEventManager:Send_ServerToTeam(team_id, "show_draw_card", {
+	SendShowDrawCard(team_id, {
 		key = GetClientKey(team_id),
 		chesses = curr_chess_table,
 		level_one_chess = level_one_chess,
@@ -4712,7 +4817,7 @@ function PostOneToServer(hero, steamid, rank, mode)
 			precache_check = precache_check.. r2..'|'..t2..'_'
 		end
 		-- url = url .. '&timer_check='..timer_check
-		url = url .. '&precache_check='..precache_check
+		-- url = url .. '&precache_check='..precache_check
 	end
 	--添加阵容价值和mvp棋子信息
 	local max_lineup_value = GetStat(hero:GetPlayerID(), 'max_lineup_value') or 0
@@ -6399,6 +6504,10 @@ function LoseARound(team, enemychess_new, is_skip)
 					[3] = 25,
 				}
 				local zeus_damage = math.floor(hero:GetHealth() * (u_thunder_table[u_thunder_level]) / 100)
+				if HasKillModifier(u) == true then
+					--限时宙斯：减半
+					zeus_damage = zeus_damage / 2.0
+				end
 				if zeus_damage > zeus_damage_max then
 					--宙斯雷劈伤害取最高的一个，不叠加
 					zeus_damage_max = zeus_damage
@@ -26488,7 +26597,7 @@ function DAC:OnPlayerReconnected(keys)
 		if hero ~= nil and hero.curr_chess_table then
 			local level_one_chess = FindLevelOneChess(hero)
 			hero.level_one_chess = level_one_chess
-			CustomGameEventManager:Send_ServerToTeam(hero:GetTeam(), "show_draw_card", {
+			SendShowDrawCard(hero:GetTeam(), {
 				key = GetClientKey(hero:GetTeam()),
 				chesses = hero.curr_chess_table,
 				curr_money = hero:GetMana(),
@@ -26878,6 +26987,14 @@ function DAC:OnRequestBuyChess(keys)
 
 	local team_id = _G.playerid2team[keys.PlayerID]
 	local h = TeamId2Hero(team_id)
+	--二维码弹窗保护期间客户端手里的招募列表还是旧的，先补发最新的，这次购买作废（避免买错棋子）
+	if h ~= nil and IsQrPopupHolding(h:GetPlayerID()) then
+		local st = _G.qr_hold[h:GetPlayerID()]
+		if st ~= nil and st.pending ~= nil then
+			FlushQrHold(h:GetPlayerID())
+			return
+		end
+	end
 	SetNotAfk(h)
 
 	if _G.team2playerid == nil or _G.team2playerid[team_id] == nil or PlayerResource:GetPlayer(_G.team2playerid[team_id]) == nil then
@@ -28263,8 +28380,149 @@ function DAC:OnExpBook(keys)
 	end
 end
 
+--刷新某个玩家的账号信息（通行证到期时间 vip_expire 等）
+--客户端商城二维码弹窗里的“刷新我的账户信息”按钮，实际只发了 refresh_shop_v5（刷商城货架），
+--并不会重新拉账号数据；这里在收到该请求时顺带重新请求一次账号接口，把新的 vip_info 写回去
+function RefreshPlayerVipInfo(player_id, notify_done)
+	local steam_id = _G.playerid2steamid[player_id]
+	if steam_id == nil or steam_id == '' then
+		return
+	end
+
+	--防抖：1.5 秒内只请求一次，避免商城连续刷新时打过多请求
+	--（客户端刷新按钮自己也有 2 秒冷却，这里不会把正常点击挡掉）
+	_G.vip_refresh_time = _G.vip_refresh_time or {}
+	local now = GameRules:GetGameTime()
+	if _G.vip_refresh_time[player_id] ~= nil and now - _G.vip_refresh_time[player_id] < 1.5 then
+		return
+	end
+	_G.vip_refresh_time[player_id] = now
+
+	local url = "http://autochess.ppbizon.com/courier/get/@" .. steam_id ..
+		"?hehe=" .. RandomInt(1, 9999) ..
+		"&language=" .. GetReportedLanguage(player_id) .. GetSendKey()
+	local req = CreateHTTPRequestScriptVM('GET', url)
+	if req == nil then
+		return
+	end
+	req:SetHTTPRequestAbsoluteTimeoutMS(10000)
+	req:Send(function(res)
+		if res == nil or res.StatusCode ~= 200 or res.Body == nil then
+			return
+		end
+		local t = json.decode(res.Body)
+		if t == nil or t.err ~= 0 or t.user_info == nil then
+			return
+		end
+		ApplyPlayerVipInfo(steam_id, t.user_info)
+		if notify_done == true then
+			NotifyQrRefreshDone(player_id)
+		end
+	end)
+end
+
+--给点了“刷新我的账户信息”的玩家弹一个居中的小提示（客户端 msg_box 事件 -> show_msg）
+function NotifyQrRefreshDone(player_id)
+	_G.qr_msg_time = _G.qr_msg_time or {}
+	local now = GameRules:GetGameTime()
+	if _G.qr_msg_time[player_id] ~= nil and now - _G.qr_msg_time[player_id] < 3 then
+		return
+	end
+	_G.qr_msg_time[player_id] = now
+	local player = PlayerResource:GetPlayer(player_id)
+	if player == nil then
+		return
+	end
+	CustomGameEventManager:Send_ServerToPlayer(player, "msg_box", {
+		text = '刷新完成！',
+		duration = 2,
+	})
+	print('[QR] notify refresh done, player_id=' .. tostring(player_id))
+end
+
+--从 vip_info 里取一个可比较的“过期时间”字符串（兼容接口可能用的几种字段名）
+function GetVipExpireValue(vip_info)
+	if type(vip_info) ~= 'table' then
+		return nil
+	end
+	local keys = { 'vip_expire', 'vip_expired', 'vip_expire_date', 'expire', 'vip_end_time' }
+	for _, k in ipairs(keys) do
+		local v = vip_info[k]
+		if v ~= nil and v ~= '' then
+			return tostring(v)
+		end
+	end
+	if type(vip_info.vip) == 'table' and vip_info.vip.vip_expire ~= nil then
+		return tostring(vip_info.vip.vip_expire)
+	end
+	return nil
+end
+
+--把新的 vip 信息写回本地缓存；只有真的发生变化时才重写 net table，
+--客户端 DACTableChanged("player_info") 会重新 ShowAllPlayerInfo -> 通行证 tooltip 才会刷新
+function ApplyPlayerVipInfo(steam_id, user_info)
+	if steam_id == nil or user_info == nil then
+		return
+	end
+
+	local changed = false
+	local new_vip_info = user_info.vip_info
+	local new_expire = GetVipExpireValue(new_vip_info)
+
+	local entries = {}
+	if _G.user_info ~= nil and _G.user_info[steam_id] ~= nil then
+		table.insert(entries, _G.user_info[steam_id])
+	end
+	if _G.stat_info ~= nil and _G.stat_info[steam_id] ~= nil then
+		table.insert(entries, _G.stat_info[steam_id])
+	end
+
+	for _, entry in pairs(entries) do
+		if new_vip_info ~= nil then
+			local old_expire = GetVipExpireValue(entry.vip_info)
+			if entry.vip_info == nil or old_expire ~= new_expire then
+				entry.vip_info = new_vip_info
+				changed = true
+			end
+		end
+		--只升不降：不要把“自定义游戏通行证/ticket”带来的 vip 状态抹掉
+		if user_info.is_vip == true and entry.is_vip ~= true then
+			entry.is_vip = true
+			changed = true
+		end
+	end
+
+	if changed ~= true then
+		return
+	end
+
+	--优先沿用客户端当前正在显示的那张表：stat_info 里有 vip_info 就写 stat_info，否则写 user_info
+	local stat = _G.stat_info and _G.stat_info[steam_id]
+	local info_table = nil
+	if stat ~= nil and stat.vip_info ~= nil then
+		info_table = _G.stat_info
+	elseif _G.user_info ~= nil and _G.user_info[steam_id] ~= nil then
+		info_table = _G.user_info
+	elseif stat ~= nil then
+		info_table = _G.stat_info
+	end
+	if info_table ~= nil then
+		CustomNetTables:SetTableValue("dac_table", "player_info",
+			{ info = info_table, hehe = RandomInt(1, 1000) })
+		print('[VIP] refresh vip_info for ' .. tostring(steam_id) .. ' expire=' .. tostring(new_expire))
+	end
+end
+
 function DAC:OnCatchCrab(keys)
 	local player_id = keys.PlayerID
+	--商城二维码弹窗的“刷新我的账户信息”走的是这条路径，顺带刷新账号（通行证有效期）
+	if keys.event == 'refresh_shop_v5' then
+		--二维码弹窗还开着（_G.qr_hold 有记录）才认为这是弹窗里的刷新按钮，才弹“刷新完成！”
+		local hold = _G.qr_hold[player_id]
+		RefreshPlayerVipInfo(player_id, hold ~= nil)
+		--点了刷新说明弹窗已经关掉：把保护窗口缩到 4 秒，之后补发压住的招募面板
+		ShortenQrHold(player_id)
+	end
 	local urls = {
 		ranking_top = 'http://autochess.ppbizon.com/ranking/top',
 		-- refresh_shop = 'http://autochess.ppbizon.com/shop/v4/get',
@@ -28466,6 +28724,86 @@ function DAC:OnSetAutoCombine(keys)
 	if hero ~= nil then
 		hero.is_auto_combine = keys.is_auto_combine
 	end
+end
+
+-- 商城顶栏加号按钮：把 当前玩家steamid + 时间戳 拼接起来做一次base64编码，
+-- 二维码内容 = 站点链接 + base64结果，再用它请求二维码接口，并把 http 返回的内容打印到控制台
+function DAC:OnRequestQRCode(keys)
+	local player_id = keys.PlayerID
+	local steam_id = _G.playerid2steamid[player_id]
+	if steam_id == nil or steam_id == '' then
+		--兜底：用账号id
+		local ok_id, account_id = pcall(function() return PlayerResource:GetSteamAccountID(player_id) end)
+		if ok_id and account_id ~= nil then
+			steam_id = tostring(account_id)
+		end
+	end
+	if steam_id == nil then
+		steam_id = ''
+	end
+
+	--弹窗打开期间先把招募面板的自动弹出压住，避免把商城页面顶掉
+	SetQrPopupHold(player_id)
+
+	local timestamp = nil
+	local ok, t = pcall(function() return os.time() end)
+	if ok then
+		timestamp = t
+	end
+	if timestamp == nil then
+		timestamp = math.floor(GameRules:GetGameTime())
+	end
+	timestamp = tostring(timestamp)
+
+	--二维码内容：https://www.dota2zizouqi.cn/pc/index.html?info= + base64(steamid+时间戳) + &game=autochess
+	local qr_text = 'https://www.dota2zizouqi.cn/pc/index.html?info=' ..
+		base64.encode(tostring(steam_id) .. timestamp) .. '&game=autochess'
+	--整个text做url编码（其中的 + / = ? : 等会破坏url参数）
+	local text_url = string.gsub(qr_text, '([^%w%-_%.~])', function(c)
+		return string.format('%%%02X', string.byte(c))
+	end)
+	local url = 'https://quickchart.io/qr?text=' .. text_url .. '&size=300'
+
+	print('[QR] steamid = ' .. tostring(steam_id) .. ', timestamp = ' .. timestamp)
+	print('[QR] text = ' .. qr_text)
+	print('[QR] url = ' .. url)
+
+	--把结果发回给点按钮的玩家，客户端用它显示二维码弹窗
+	local function send_qr_result(status_code, body_size)
+		local player = PlayerResource:GetPlayer(player_id)
+		if player == nil then
+			return
+		end
+		CustomGameEventManager:Send_ServerToPlayer(player, 'show_qr_code', {
+			url = url,
+			text = qr_text,
+			status_code = status_code,
+			body_size = body_size,
+		})
+	end
+
+	local req = CreateHTTPRequestScriptVM('GET', url)
+	if req == nil then
+		print('[QR] CreateHTTPRequestScriptVM FAILED!')
+		send_qr_result(0, 0)
+		return
+	end
+	req:SetHTTPRequestAbsoluteTimeoutMS(20000)
+	req:Send(function(res)
+		if res == nil then
+			print('[QR] HTTP FAILED! response = nil')
+			send_qr_result(0, 0)
+			return
+		end
+		print('[QR] StatusCode = ' .. tostring(res.StatusCode))
+		if res.Headers ~= nil then
+			print('[QR] ContentType = ' .. tostring(res.Headers['content-type']))
+		end
+		print('[QR] BodyLength = ' .. tostring(res.Body ~= nil and #res.Body or 0))
+		print('[QR] Body = ' .. tostring(res.Body))
+
+		send_qr_result(res.StatusCode or 0, (res.Body ~= nil and #res.Body or 0))
+	end)
 end
 
 function DAC:OnSelectDifficulty(keys)
@@ -28999,10 +29337,57 @@ end
 function DAC:OnPlayerLanguage(keys)
 	local player_id = keys.PlayerID
 	local language = keys.language
+	--按 steamid 额外缓存一份，供后续 HTTP 接口（courier/get 等）带 language 参数用
+	_G.player_language = _G.player_language or {}
+	local steam_id = _G.playerid2steamid and _G.playerid2steamid[player_id] or nil
+	if steam_id ~= nil and language ~= nil and language ~= '' then
+		_G.player_language[steam_id] = language
+	end
 	local hero = PlayerId2Hero(player_id)
 	if hero ~= nil then
 		hero.language = language
 	end
+end
+
+--取某个玩家上报过的语言（客户端 player_language 上报），没上报过就用默认值
+function GetReportedLanguage(player_id, default_language)
+	local language = nil
+	if player_id ~= nil then
+		local steam_id = _G.playerid2steamid and _G.playerid2steamid[player_id] or nil
+		if steam_id ~= nil and _G.player_language ~= nil then
+			language = _G.player_language[steam_id]
+		end
+		if language == nil or language == '' then
+			local hero = PlayerId2Hero(player_id)
+			if hero ~= nil then
+				language = hero.language
+			end
+		end
+	end
+	if language == nil or language == '' then
+		language = default_language or 'schinese'
+	end
+	return language
+end
+
+--同上，但入参是 steamid（大厅阶段可能还没有 player_id，靠 steamid 反查）
+function GetReportedLanguageBySteamID(steam_id, default_language)
+	if steam_id ~= nil and _G.player_language ~= nil then
+		local cached = _G.player_language[steam_id]
+		if cached ~= nil and cached ~= '' then
+			return cached
+		end
+	end
+	local player_id = _G.steamid2playerid and _G.steamid2playerid[steam_id] or nil
+	if player_id == nil and steam_id ~= nil then
+		for pid, sid in pairs(_G.playerid2steamid or {}) do
+			if sid == steam_id then
+				player_id = pid
+				break
+			end
+		end
+	end
+	return GetReportedLanguage(player_id, default_language)
 end
 
 --获取伤害的来源技能，如果是普攻伤害则返回nil
@@ -35067,6 +35452,7 @@ function DAC:GetAllPlayerInfoFromServer(keys)
 	local steam_id = keys.steam_id
 	if steam_id then
 		local url = "http://autochess.ppbizon.com/courier/get/@"..steam_id.."?hehe="..RandomInt(1, 9999)
+		url = url .. "&language=" .. GetReportedLanguageBySteamID(steam_id)
 		url = url .. GetSendKey()
 
 		local req = CreateHTTPRequestScriptVM('GET', url)

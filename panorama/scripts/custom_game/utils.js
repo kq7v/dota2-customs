@@ -69,7 +69,7 @@ function ShowVipTooltip(key, panel) {
 	var body = $.Localize('#txt_dac_vip');
 	var text = body;
 	if (dateStr) {
-		// 第一行：灰色"有效期至%s"；第二行空行；第三行正文
+		// 有效期那行 + 正文，中间不再留空行
 		var tpl = $.Localize('#txt_dac_vip_expire');
 		var line = '';
 		if (tpl && tpl.indexOf('#txt_dac_vip_expire') < 0) {
@@ -77,7 +77,7 @@ function ShowVipTooltip(key, panel) {
 		} else {
 			line = "<font color='#888888'>" + dateStr + '</font>';
 		}
-		if (line) text = line + '<br><br>' + body;
+		if (line) text = line + '<br>' + body;
 	}
 	if (panel) {
 		var title = $.Localize('#txt_dac_vip_title');

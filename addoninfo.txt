@@ -17,9 +17,9 @@
 		// "自由天梯_Ranked",
 		// "休闲_Casual",
 		// "休闲观战_CasualOB",
-		"ranked_1x8", 			// 默认地图，天梯比赛（无段位要求，或通过匹配平台控制段位要求）
+		// "ranked_1x8", 			// 默认地图，天梯比赛（无段位要求，或通过匹配平台控制段位要求）
 		"casual_1x8", 			// 休闲比赛，不计天梯分
-		// "casual_1x8_ob", 		// 休闲比赛，不计天梯分，带4个观战位。
+		"casual_1x8_ob", 		// 休闲比赛，不计天梯分，带4个观战位。
 
 		// 暂时下架的
 		// "ranked_2x4",
@@ -61,7 +61,7 @@
 	HideInTools = false
 	IsTemplate = false
 	CheckAFKPlayers = false
-	DefaultMap = "休闲观战_CasualOB"
+	DefaultMap = "casual_1x8_ob"
 	DisableIK = false
 	EnablePickRules = false
 	EventGame = false

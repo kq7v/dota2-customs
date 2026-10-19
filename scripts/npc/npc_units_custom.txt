@@ -19533,7 +19533,7 @@
 		// Class of entity of link to.
 		"BaseClass"	"npc_dota_creature"
 		"Model"	"models/hero_models/tb/tb11.vmdl"
-		"ModelScale"	"0.9"
+		"ModelScale"	"1.05"
 		// Abilities
 		// ----------------------------------------------------------------
 		// Ability 1.
@@ -19610,9 +19610,22 @@
 		{
 			"AttachWearables"
 			{
+				// Rictus Ripper immortal set: head / back / armor / weapon
 				"Wearable1"
 				{
-					"ItemDef"	"9750"
+					"ItemDef"	"31411"
+				}
+				"Wearable2"
+				{
+					"ItemDef"	"31409"
+				}
+				"Wearable3"
+				{
+					"ItemDef"	"31408"
+				}
+				"Wearable4"
+				{
+					"ItemDef"	"31412"
 				}
 			}
 		}
@@ -19829,7 +19842,7 @@
 		//
 		// Class of entity of link to.
 		"BaseClass"	"npc_dota_creature"
-		"Model"	"models/items/terrorblade/tb_samurai_samurai_demon/tb_samurai_samurai_demon.vmdl"
+		"Model"	"models/items/terrorblade/dreadhunt_demon/dreadhunt_demon.vmdl"
 		"ModelScale"	"0.95"
 		// Abilities
 		// ----------------------------------------------------------------
@@ -41905,9 +41918,22 @@
 		{
 			"AttachWearables"
 			{
+				// Rictus Ripper immortal set: head / back / armor / weapon
 				"Wearable1"
 				{
-					"ItemDef"	"9750"
+					"ItemDef"	"31411"
+				}
+				"Wearable2"
+				{
+					"ItemDef"	"31409"
+				}
+				"Wearable3"
+				{
+					"ItemDef"	"31408"
+				}
+				"Wearable4"
+				{
+					"ItemDef"	"31412"
 				}
 			}
 		}
@@ -41933,7 +41959,7 @@
 	"model_chess_tb_mohua3"
 	{
 		"BaseClass"	"npc_dota_creature"
-		"Model"	"models/items/terrorblade/tb_samurai_samurai_demon/tb_samurai_samurai_demon.vmdl"
+		"Model"	"models/items/terrorblade/dreadhunt_demon/dreadhunt_demon.vmdl"
 		"Creature"
 		{
 			"AttachWearables"	{}

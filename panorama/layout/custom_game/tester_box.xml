@@ -88,7 +88,7 @@
 				<Panel class="panel_tester_box_button" onactivate="openCourierSelect();">
 					<Panel>
 						<Label text="◄" />
-						<Image src="s2r://panorama/images/custom_game/ping_world_courier_png.vtex" style="width:30px;height:30px;margin-left:0px;" />
+						<Image src="s2r://panorama/images/custom_game/shop/courier_png.vtex" style="width:30px;height:30px;margin-left:0px;" />
 						<Label text="选择信使" />
 					</Panel>
 				</Panel>
