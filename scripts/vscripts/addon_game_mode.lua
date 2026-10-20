@@ -14896,16 +14896,40 @@ end
 function GemTD:OnRequestProxy(keys)
 	local requestid = keys.requestid
 	local url = keys.url
+	-- 排查用日志：请求进来、发出、返回结果都打一条
+	print(
+		"[PROXY] recv id="
+			.. tostring(requestid)
+			.. " player="
+			.. tostring(keys.PlayerID)
+			.. " url="
+			.. tostring(url):sub(1, 130)
+	)
 	if keys.PlayerID == nil or type(keys.PlayerID) ~= "number" then
+		print("[PROXY] id=" .. tostring(requestid) .. " bad PlayerID")
 		return
 	end
 	local player = PlayerResource:GetPlayer(keys.PlayerID)
 	local req = CreateHTTPRequestScriptVM("GET", url)
 	req:SetHTTPRequestAbsoluteTimeoutMS(20000)
 	req:Send(function(result)
-		if result["Body"] then
+		print(
+			"[PROXY] id="
+				.. tostring(requestid)
+				.. " status="
+				.. tostring(result and result.StatusCode)
+				.. " body_len="
+				.. tostring(result and result["Body"] and #result["Body"] or 0)
+		)
+		if result ~= nil and result["Body"] then
 			local t = json.decode(result["Body"])
 			if t == nil then
+				print(
+					"[PROXY] id="
+						.. tostring(requestid)
+						.. " json.decode FAILED, body head="
+						.. tostring(result["Body"]):sub(1, 200)
+				)
 				return
 			end
 			ResponseProxy({
@@ -14913,10 +14937,13 @@ function GemTD:OnRequestProxy(keys)
 				requestid = requestid,
 				player = player,
 			})
+		else
+			print("[PROXY] id=" .. tostring(requestid) .. " 没有 Body（请求失败或超时）")
 		end
 	end)
 end
 function ResponseProxy(keys)
+	print("[PROXY] send response_proxy id=" .. tostring(keys.requestid))
 	CustomGameEventManager:Send_ServerToPlayer(keys.player, "response_proxy", {
 		data_table = keys.data_table,
 		requestid = keys.requestid,

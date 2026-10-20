@@ -267,11 +267,10 @@ var my_maze_cache = null;
 // $("#topbar").SetHasClass("hidden", true);
 
 
-// 视角控制
+// 视角控制（改回原来的手感：滚轮同时改变俯仰角和距离，角度决定距离）
 //GameUI.SetCameraDistance( 1200 );
-// Camera yaw smoothing.
 var g_Distance = 0;
-var g_targetDistance = 1000;
+var g_targetDistance = 1000;    // 与初始角度 60 对应（angle = 50 + distance/100）
 var g_MaxDistance = 4000;
 var g_MinDistance = 0;
 var g_camera_angle = 60;
@@ -281,12 +280,23 @@ function smoothCameraDistance() {
     $.Schedule(1.0 / 30.0, smoothCameraDistance);
 
     g_targetDistance = Math.max(Math.min(g_targetDistance, g_MaxDistance), g_MinDistance);
-    g_Distance = g_Distance + (g_targetDistance - g_Distance) * 0.3;
     g_Distance = Math.max(Math.min(g_Distance, g_MaxDistance), g_MinDistance);
 
-    GameUI.SetCameraDistance(Math.floor(800 + g_Distance));
-    GameUI.SetCameraPitchMax(60);
-    GameUI.SetCameraPitchMin(60);
+    // 角度每帧平滑 1 度，滚轮 = 拉近拉远 + 改变俯仰角（不再是固定 60 度）
+    if (g_camera_angle_target > g_camera_angle) {
+        g_camera_angle = g_camera_angle + 1
+        GameUI.SetCameraPitchMax(g_camera_angle);
+        GameUI.SetCameraPitchMin(g_camera_angle);
+    }
+    if (g_camera_angle_target < g_camera_angle) {
+        g_camera_angle = g_camera_angle - 1
+        GameUI.SetCameraPitchMax(g_camera_angle);
+        GameUI.SetCameraPitchMin(g_camera_angle);
+    }
+
+    g_Distance = (g_camera_angle - 50) * 100
+    GameUI.SetCameraDistance(1000 + g_Distance);
+    return;
 }
 
 // Main mouse event callback
@@ -304,6 +314,9 @@ GameUI.SetMouseCallback(
         if (eventName === "wheeled") {
             g_targetDistance += arg * -100;
             g_targetDistance = Math.max(Math.min(g_targetDistance, g_MaxDistance), g_MinDistance);
+
+            // 滚轮同时驱动俯仰角：角度 = 50 + 距离/100（滚轮上/下就是拉远/拉近 + 抬高/压低视角）
+            g_camera_angle_target = 50 + (g_targetDistance) / 100;
 
             return CONSUME_EVENT;
         }
@@ -689,74 +702,312 @@ else {
 
 
 
-// get friends mmr
-var keys = [
+// ============================================================================
+// GemTD 好友排名补丁块：Steam GetFriendList 优先 -> steamgpt.net 兜底 + 查询转圈提示
+//
+// 用法：把这一整块粘到你本地 panorama/scripts/custom_game/gemtd.js 里，
+//       位置是原来的 "// get friends mmr" 那一整段（旧版那段 68 行是注释掉的，整段删掉），
+//       粘在 "// get mmr" 这一行之前即可。其它文件都不用改。
+//
+// 依赖（你的 gemtd.js 里本来就有）：request_proxy_data_table、RequestProxy、
+//       FindDotaHudElement、$.CreatePanel、GameEvents("request_proxy")、
+//       addon_game_mode.lua 里的 GemTD:OnRequestProxy。
+// ============================================================================
+
+// ==================== 好友排名：好友列表查询（Steam 官方接口优先，steamgpt.net 兜底） ====================
+// 流程：api.steampowered.com/ISteamUser/GetFriendList -> 查不到(超时/报错/空) -> steamgpt.net/friends/<steamid>.json
+// 拿到好友 steamid 后，仍然走 http://gemtd.ppbizon.com/gemtd/201807/mmr/get/ 查段位（接口未改动）
+// 另需 gem_board.xml 里好友排名表头的 #lbl_friend_rank_title（查询中/失败状态显示在标题上，见 FRIEND_RANK_PATCH.md 第 9 节）
+var FRIEND_STEAM_KEYS = [
     '968CE0A7C36CA9440441899F19C1707F',
     '990E299A833D8BCDCDE781ED98192574',
     'D90B5894B88D6FF32D3D39F8C5AE0060',
     '7F14C3F4EC674A7C72AA8A7C1BF17C03',
     '5EF7E4AC4FCAC916C6BE712D696D2854',
-    '1DB32B03E887FF71A59E5C7481087DB2',
+    '1DB32B03E887FF71A59E5C7481087DB2'
 ];
-var key = keys[Math.floor(Math.random() * 6)];
-var url = 'http://api.steampowered.com/ISteamUser/GetFriendList/v0001/?key='+key+'&relationship=friend&steamid=' + Game.GetPlayerInfo(Players.GetLocalPlayer()).player_steamid;
-RequestProxy(url, function(object){
-    var aa = object;
+var FRIEND_RANK_MAX = 100;      // 一次最多带多少个 steamid 去查段位（URL 太长服务器会拒）
+var FRIEND_RANK_ROWS = 10;      // 界面上最多显示多少个好友
+var friend_rank_busy = false;   // 防止连续点击重复请求
+var friend_rank_loaded = false; // 已经成功查到过一次，之后不再重复查询（本局内有效）
+var FRIEND_RANK_DEBUG = true;   // 排查期间打开：所有关键节点都会打印 [gemtd friend] 日志
 
-    var ff = aa.friendslist.friends;
-    var ids = [];
-    for (var fff in ff) {
-        ids.push(ff[fff].steamid);
-    }
+function friend_rank_log(msg) {
+    // 排查期间无条件打印（原本受 FRIEND_RANK_DEBUG 控制）
+    $.Msg('[gemtd friend] ' + msg);
+}
 
-    ids.push(Game.GetPlayerInfo(Players.GetLocalPlayer()).player_steamid);
-    var url222 = 'http://gemtd.ppbizon.com/gemtd/201807/mmr/get/@' + ids.join(',') + '?myself=' + Game.GetPlayerInfo(Players.GetLocalPlayer()).player_steamid;
-    RequestProxy(url222, function(aa){
-        var ff = aa.data;
-        var ids = [];
-        var count = 1;
+function my_steam_id() {
+    var info = Game.GetPlayerInfo(Players.GetLocalPlayer());
+    if (!info || !info.player_steamid) return '';
+    return '' + info.player_steamid;
+}
 
-        for (var fff in ff) {
+// 服务器是先用 lua 的 json.decode 解析、再把 table 发给客户端的，
+// 所以 json 里的数组到这里会变成 {"1":{...},"2":{...}} 这种“数字键对象”，没有 length。
+// 这里统一转成真正的 JS 数组（按 key 的数值排序，避免 "10" 排在 "2" 前面）。
+function friend_as_array(t) {
+    if (!t) return [];
+    if (typeof t.length === 'number' && typeof t.push === 'function') return t;   // 已经是数组
+    var keys = [];
+    for (var k in t) keys.push(k);
+    keys.sort(function (a, b) {
+        var na = parseInt(a);
+        var nb = parseInt(b);
+        if (!isNaN(na) && !isNaN(nb)) return na - nb;
+        return ('' + a) < ('' + b) ? -1 : (('' + a) > ('' + b) ? 1 : 0);
+    });
+    var out = [];
+    for (var i = 0; i < keys.length; i++) out.push(t[keys[i]]);
+    return out;
+}
 
-            if (!ff[fff] || ff[fff].rankall == "100%") {
-                break;
+// 带失败/超时回调的请求代理：成功 cb(对象)，失败 cb(null)，且只回调一次
+// （原来的 RequestProxy 超时后不回调，没法判断"查不到"，所以单独加一个）
+function request_proxy_ex(url, cb, tries) {
+    var r_id = Math.round(Math.random() * 10000000);
+    var left = tries || 20;                 // 最多轮询次数
+    var round = 0;
+    friend_rank_log('请求发出 id=' + r_id + ' tries=' + left + ' url=' + ('' + url).substring(0, 130) + ((('' + url).length > 130) ? '...' : ''));
+    GameEvents.SendCustomGameEventToServer("request_proxy", { "requestid": r_id, "url": url });
+
+    function poll() {
+        // 前 8 轮 0.25s 一次（接口快时能明显提前出结果），之后 0.5s
+        var interval = (round < 8) ? 0.25 : 0.5;
+        round++;
+        $.Schedule(interval, function () {
+            var d = request_proxy_data_table[r_id];
+            if (d) {
+                friend_rank_log('请求返回 id=' + r_id + ' 轮次=' + round + ' keys=' + (d ? Object.keys(d).join(',') : 'null'));
+                cb(d);
             }
-
-            if (ff[fff].user == aa.myself) {
-                $("#fd_rank_" + count).style['background-color'] = '#333333';
-                $("#fd_rank_1" + count).style['background-color'] = '#333333';
-            }
-            $("#avatar0_" + count + "_1").steamid = ff[fff].user;
-            $("#lbl_boss_damage0_" + count).text = ff[fff].rankall + '  ';
-            $("#rank_friend_img_" + count).style['opacity'] = 1;
-
-            if ((ff[fff].rankall + '').indexOf('%') < 0) {
-                $("#rank_friend_img_" + count).SetImage('file://{images}/custom_game/rank/all_rank_6.png');
-                $("#lbl_boss_damage0_" + count).style['color'] = 'yellow';
+            else if (--left > 0) {
+                poll();
             }
             else {
+                friend_rank_log('请求超时 id=' + r_id + '（服务器没回 response_proxy）');
+                cb(null);
+            }
+        });
+    }
+    poll();
+}
+
+// http://api.steampowered.com/ISteamUser/GetFriendList 的返回：{friendslist:{friends:[{steamid:"..."}]}}
+function parse_steam_friend_list(j) {
+    if (!j || !j.friendslist || !j.friendslist.friends) return null;
+    var arr = friend_as_array(j.friendslist.friends);
+    var ids = [];
+    for (var i = 0; i < arr.length; i++) {
+        if (arr[i] && arr[i].steamid) ids.push('' + arr[i].steamid);
+    }
+    return ids;
+}
+
+// https://steamgpt.net/friends/<steamid>.json 的返回：{result:"success",data:{count:N,friends:[{steamid64:"...",steam:{...}}]}}
+function parse_steamgpt_friend_list(j) {
+    if (!j || j.result !== 'success' || !j.data || !j.data.friends) return null;
+    var arr = friend_as_array(j.data.friends);
+    var ids = [];
+    for (var i = 0; i < arr.length; i++) {
+        var f = arr[i];
+        if (!f) continue;
+        var id = f.steamid64 || (f.steam && f.steam.steamid) || f.steamid;
+        if (id) ids.push('' + id);
+    }
+    return ids;
+}
+
+// 取好友列表：官方接口优先，失败再用 steamgpt.net
+function get_friend_steam_ids(cb) {
+    var me = my_steam_id();
+    friend_rank_log('get_friend_steam_ids 开始，me=' + (me ? me : '(空)'));
+    if (!me) { cb(null); return; }
+
+    var key = FRIEND_STEAM_KEYS[Math.floor(Math.random() * FRIEND_STEAM_KEYS.length)];
+    var official_url = 'http://api.steampowered.com/ISteamUser/GetFriendList/v0001/?key=' + key
+        + '&relationship=friend&steamid=' + me;
+
+    request_proxy_ex(official_url, function (j) {
+        var ids = parse_steam_friend_list(j);
+        friend_rank_log('官方接口返回: ' + (j ? JSON.stringify(j).substring(0, 160) : 'null') + ' -> 解析到 ' + (ids ? ids.length : 0) + ' 个好友');
+        if (ids && ids.length > 0) {
+            friend_rank_log('好友列表来自 api.steampowered.com，共 ' + ids.length + ' 个');
+            cb(ids);
+            return;
+        }
+        friend_rank_log('api.steampowered.com 没查到（返回为空或超时），改用 steamgpt.net');
+
+        // 官方接口超时 / 报错 / 好友列表为空，走备用接口
+        var backup_url = 'https://steamgpt.net/friends/' + me + '.json';
+        request_proxy_ex(backup_url, function (j2) {
+            var ids2 = parse_steamgpt_friend_list(j2);
+            friend_rank_log('steamgpt 返回: ' + (j2 ? JSON.stringify(j2).substring(0, 160) : 'null') + ' -> 解析到 ' + (ids2 ? ids2.length : 0) + ' 个好友');
+            if (ids2 && ids2.length > 0) {
+                friend_rank_log('好友列表来自 steamgpt.net，共 ' + ids2.length + ' 个');
+                cb(ids2);
+            }
+            else {
+                friend_rank_log('steamgpt.net 也没取到，放弃');
+                cb(null);
+            }
+        });
+    }, 16);     // 官方接口经常超时，给它 16*0.5s=8s，超了立刻走备用接口
+}
+
+// 填充好友排名列表（按 rankall 显示星数；不含 % 视为前 100 名，用金色图标）
+function fill_friend_rank(list, me) {
+    // 段位数据同样是 lua table 发过来的“数字键对象”，先转成真数组
+    list = friend_as_array(list);
+    var shown = 0;
+    for (var i = 0; i < list.length && shown < FRIEND_RANK_ROWS; i++) {
+        var d = list[i];
+        if (!d || !d.rankall || ('' + d.rankall) == '100%') continue;   // 未上榜，跳过
+        shown++;
+        var n = shown;
+        var is_me = ('' + d.user) == me;
+
+        var row = $('#fd_rank_' + n);
+        if (row) row.style['background-color'] = is_me ? '#333333' : 'transparent';
+
+        var row_b = $('#fd_rank_1' + n);
+        if (row_b) row_b.style['background-color'] = is_me ? '#333333' : 'transparent';
+
+        var av = $('#avatar0_' + n + '_1');
+        if (av) av.steamid = d.user;
+
+        var lbl = $('#lbl_boss_damage0_' + n);
+        if (lbl) {
+            lbl.text = d.rankall + '  ';
+            lbl.style['color'] = '#ffffff';
+        }
+
+        var img = $('#rank_friend_img_' + n);
+        if (img) {
+            img.style['opacity'] = 1;
+            if (('' + d.rankall).indexOf('%') < 0) {
+                img.SetImage('file://{images}/custom_game/rank/all_rank_6.png');
+                if (lbl) lbl.style['color'] = 'yellow';
+            }
+            else {
+                var r = parseInt(d.rankall);
                 var level = 1;
-                var r = parseInt(ff[fff].rankall);
                 if (r <= 2) { level = 5; }
                 else if (r <= 10) { level = 4; }
                 else if (r <= 25) { level = 3; }
                 else if (r <= 50) { level = 2; }
-                else { level = 1; }
-
-                $("#rank_friend_img_" + count).SetImage('file://{images}/custom_game/rank/all_rank_' + level + '.png');
-
-            }
-            count++;
-            if (count > 10) {
-                break;
+                img.SetImage('file://{images}/custom_game/rank/all_rank_' + level + '.png');
             }
         }
+    }
 
-        $("#friend_list_test").text = JSON.stringify(ff);
+    // 把没用到的行清空
+    for (var k = shown + 1; k <= FRIEND_RANK_ROWS; k++) {
+        var av2 = $('#avatar0_' + k + '_1'); if (av2) av2.steamid = '';
+        var l2 = $('#lbl_boss_damage0_' + k); if (l2) { l2.text = ''; l2.style['color'] = '#ffffff'; }
+        var i2 = $('#rank_friend_img_' + k); if (i2) i2.style['opacity'] = 0;
+    }
+    return shown;
+}
+
+// 查好友排名：标题显示“查询中...” -> 取好友列表 -> 查段位 -> 填表 -> 标题恢复“好友排名”
+// 只查一次：成功查到过就把 friend_rank_loaded 置 true，之后（本局内）再打开排行榜都不会重复请求。
+// 需要强制重查时调 refresh_friend_rank(true)。
+function refresh_friend_rank(force) {
+    if (!force && friend_rank_loaded) {
+        $.Msg('[gemtd friend] 已查过，跳过重复查询');
+        return;
+    }
+    if (friend_rank_busy) return;
+    friend_rank_busy = true;
+    friend_rank_set_title('busy');
+    $.Msg('[gemtd friend] refresh_friend_rank start');
+
+    get_friend_steam_ids(function (ids) {
+        if (!ids || ids.length == 0) {
+            friend_rank_busy = false;
+            $.Msg('[gemtd friend] 好友列表为空（两个接口都没拿到）');
+            friend_rank_set_title('failed');
+            return;
+        }
+        $.Msg('[gemtd friend] 拿到好友 ' + ids.length + ' 个，开始查段位');
+
+        var me = my_steam_id();
+        if (ids.indexOf(me) < 0) ids.push(me);
+        if (ids.length > FRIEND_RANK_MAX) ids = ids.slice(0, FRIEND_RANK_MAX);
+
+        var url = 'http://gemtd.ppbizon.com/gemtd/201807/mmr/get/@' + ids.join(',') + '?myself=' + me;
+        request_proxy_ex(url, function (aa) {
+            friend_rank_busy = false;
+            if (!aa || !aa.data) {
+                $.Msg('[gemtd friend] mmr/get 没返回 data');
+                friend_rank_set_title('failed');
+                return;
+            }
+            var n = fill_friend_rank(aa.data, me);
+            $.Msg('[gemtd friend] 段位返回 ' + aa.data.length + ' 条，已上榜填了 ' + n + ' 行（好友 ' + ids.length + ' 人）');
+            friend_rank_set_title('idle');
+            // 成功一次就锁定，避免每次打开排行榜都重新查
+            friend_rank_loaded = true;
+        });
     });
-});
+}
 
+// ==================== 好友排名标题状态 ====================
+// busy   : “好友排名（查询中...）”
+// failed : “好友排名（获取失败）”，2.5 秒后自动回到正常
+// idle   : 正常的“好友排名”
+// 不再用弹窗（弹窗在 HUD 里不好定位，标题上显示更直观）。
+var friend_rank_title_token = 0;
 
+function friend_rank_set_title(state) {
+    var lbl = $('#lbl_friend_rank_title');
+    if (!lbl) {
+        $.Msg('[gemtd friend] 找不到 #lbl_friend_rank_title（xml 没生效？）');
+        return;
+    }
+    if (state === 'busy') {
+        friend_rank_title_token++;
+        lbl.text = $.Localize('#text_friend_rank_loading');
+    }
+    else if (state === 'failed') {
+        friend_rank_title_token++;
+        var token = friend_rank_title_token;
+        lbl.text = $.Localize('#text_friend_rank_failed');
+        $.Schedule(2.5, function () {
+            // 期间没有新的查询/失败，才恢复
+            if (token === friend_rank_title_token && !friend_rank_busy) {
+                friend_rank_set_title('idle');
+            }
+        });
+    }
+    else {
+        friend_rank_title_token++;
+        lbl.text = $.Localize('#txt_friend_rank');
+    }
+}
+
+// 挂到好友面板的打开函数上：原来有 open_friend_board 就保留它的逻辑再追加刷新，没有就给个默认实现
+if (typeof open_friend_board === 'function') {
+    var _orig_open_friend_board = open_friend_board;
+    open_friend_board = function () {
+        _orig_open_friend_board.apply(this, arguments);
+        refresh_friend_rank();
+    };
+}
+else {
+    open_friend_board = function () {
+        var b = $('#friend_board');
+        if (b) b.style['position'] = '0px 0px 0px';
+        refresh_friend_rank();
+    };
+}
+
+// ==================== 本地集成：打开排行榜时刷新好友排名 ====================
+// 这份工程里好友排名显示在排行榜(ranking_board)的好友列上，没有单独的“打开好友面板”入口。
+// 触发点直接写在下面的 open_ranking_board() 里（不用再包装函数，避免 hoisting/被覆盖的坑）。
+// 排查用：控制台里能看到这一行，才说明这一版 gemtd.js 真的被加载了
+$.Msg('[gemtd friend] friend_rank_block 已加载 (build 2026-10-19b)');
 // get mmr
 // lbl_player_info1
 var steam_ids = '';
@@ -994,6 +1245,8 @@ function open_ranking_board() {
     if (!is_ranking_board_open) {
         $("#ranking_board").style["position"] = "0px 0px 0px";
         is_ranking_board_open = true;
+        // 打开排行榜时刷新好友排名（好友列就在排行榜里）
+        refresh_friend_rank();
     }
     else {
         $("#ranking_board").style["position"] = "3000px 0px 0px";

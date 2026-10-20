@@ -1826,6 +1826,8 @@
 		"txt_kill_progress_per_round"	"PROGRESS"
 		"txt_rank"	"RANK"
 		"txt_friend_rank"	"RANK Friend"
+		"text_friend_rank_loading"	"RANK Friend (loading...)"
+		"text_friend_rank_failed"	"RANK Friend (failed)"
 		"txt_gamemode_gemtd_1p"	"GEMTD SINGLE"
 		"txt_gamemode_gemtd_coop"	"GEMTD COOP"
 		"txt_gamemode_gemtd_race"	"GEMTD RACE"

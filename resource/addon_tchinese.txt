@@ -1822,6 +1822,8 @@
 		"txt_kill_progress_per_round"	"擊殺進度"
 		"txt_rank"	"排名"
 		"txt_friend_rank"	"好友排名"
+		"text_friend_rank_loading"	"好友排名（查詢中...）"
+		"text_friend_rank_failed"	"好友排名（取得失敗）"
 		"txt_gamemode_gemtd_1p"	"寶石TD 單人模式"
 		"txt_gamemode_gemtd_coop"	"寶石TD 共享合作模式"
 		"txt_gamemode_gemtd_race"	"寶石TD 對抗競速模式"

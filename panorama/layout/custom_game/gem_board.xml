@@ -2828,7 +2828,7 @@
 						<Label class="lbl middle large_text" text="#txt_rank" style="color:gray;" />
 					</Panel>
 					<Panel class="" style="width:195px;margin-right:44px;flow-children: right;">
-						<Label class="lbl middle large_text" text="#txt_friend_rank" style="color:gray;" />
+						<Label id="lbl_friend_rank_title" class="lbl middle large_text" text="#txt_friend_rank" style="color:gray;" />
 					</Panel>
 					<Panel class="" style="width:195px;margin-right:44px;flow-children: right;">
 						<Label class="lbl middle large_text" text="#txt_game_mode_gemtd_coop_1" style="color:gray;" />

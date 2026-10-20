@@ -1822,6 +1822,8 @@
 		"txt_kill_progress_per_round"	"击杀进度"
 		"txt_rank"	"排名"
 		"txt_friend_rank"	"好友排名"
+		"text_friend_rank_loading"	"好友排名（查询中...）"
+		"text_friend_rank_failed"	"好友排名（获取失败）"
 		"txt_gamemode_gemtd_1p"	"宝石TD 单人模式"
 		"txt_gamemode_gemtd_coop"	"宝石TD 共享合作模式"
 		"txt_gamemode_gemtd_race"	"宝石TD 对抗竞速模式"
