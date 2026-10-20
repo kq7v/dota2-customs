@@ -8,4 +8,9 @@
 ]]
 
 
-/* Prettified by Source 2 Viewer 20.1.0.0 - https://valveresourceformat.github.io */
+"platform_routing"
+{
+	"lobby_address" "123.207.207.214:39000"
+	"overseas_lobby_address" "43.157.46.87:39000"
+	"overseas2_lobby_address" "10.39.142.210:39000"
+}

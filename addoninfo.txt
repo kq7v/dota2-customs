@@ -15,10 +15,10 @@
 	IsTemplate = false
 	maps = 
 	[
-		"help_map"
+		"platform_entry",
 	]
 	CheckAFKPlayers = false
-	DefaultMap = "help_map"
+	DefaultMap = "platform_entry"
 	Default_Keys = null
 	DisableIK = false
 	EnablePickRules = false
@@ -28,13 +28,14 @@
 	ForceDefaultGuide = true
 	MinimalPrecache = false
 	MinPlayers = 1
-	MaxPlayers = 16
+	MaxPlayers = 24
 	map_options = 
 	[
 		{
-			map = "help_map"
+			map = "platform_entry"
+			MinPlayers = 1
 			MaxPlayers = 1
-		}
+		},
 	]
 	PenaltiesEnabled = false
 	TeamCount = -1

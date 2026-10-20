@@ -21,6 +21,7 @@ var g_TEAM_SPECATOR = 1;
 
 // 是否是比赛地图
 var mapInfo = Game.GetMapInfo();
+var g_IsPlatformMap = mapInfo && (mapInfo.map_display_name === "platform_entry" || mapInfo.map_display_name === "platform_lobby");
 var _IsTournamentMap = mapInfo && mapInfo.map_display_name == "tournament_map";
 var _IsGroupMode = mapInfo != undefined && mapInfo.map_display_name == "2v2v2v2";
 
@@ -49,6 +50,7 @@ function OnCopyVGLauncherLinkPressed() {
 // Handler for when the Lock and Start button is pressed
 //--------------------------------------------------------------------------------------------------
 function OnLockAndStartPressed() {
+	if (g_IsPlatformMap) return;
 	// OnAddBot();
 	// Don't allow a forced start if there are unassigned players
 	if (Game.GetUnassignedPlayerIDs().length > 0)
@@ -359,6 +361,10 @@ function InitTournamentModePanel() {
 // Entry point called when the team select panel is created
 //--------------------------------------------------------------------------------------------------
 (function () {
+	if (g_IsPlatformMap) {
+		$("#TeamSelectContainer").visible = false;
+		return;
+	}
 
 	// $("#MapInfo").SetDialogVariable("map_name", mapInfo.map_display_name);
 	var bShowSpectatorTeam = false;

@@ -26,12 +26,12 @@ var ShopEffectCard = require('./ShopEffectCard.js');
 var EOM_Image = require('./EOM_Image.js');
 var EOM_NumberAdjust = require('./EOM_NumberAdjust.js');
 var SectIcon = require('./SectIcon.js');
+var SectAbility = require('./SectAbility.js');
+var netdata_utils = require('./netdata_utils.js');
 require('./Heroes.js');
-require('./SectAbility.js');
 require('./HeroCard.js');
 require('./EOM_Portrait.js');
 require('./TalentTree.js');
-require('./netdata_utils.js');
 
 const EOM_DebugTool = props => {
   const [fps, setFps] = libs.createSignal("0");
@@ -2366,6 +2366,673 @@ const EOM_DebugTool_OutsiderItemPicker = props => {
   });
 };
 
+function getSettings(context) {
+  return {
+    stage: context.stage,
+    tier: context.tier,
+    compensateGoldCard: context.compensateGoldCard,
+    guaranteeHighestReward: context.guaranteeHighestReward,
+    forcedEquipmentLevel: context.forcedEquipmentLevel,
+    eurekaUpgradeCount: context.eurekaUpgradeCount
+  };
+}
+function describeSettings(context) {
+  return `阶段 ${context.stage} / 档位 ${context.tier} / 金卡补偿 ${context.compensateGoldCard ? '开' : '关'} / 最高奖励保底 ${context.guaranteeHighestReward ? '开' : '关'} / 强制装备 ${context.forcedEquipmentLevel ?? '无'} / 尤里卡 ${context.eurekaUpgradeCount}`;
+}
+function DebugChoice(props) {
+  return libs.createComponent(GenericPanel.CTextButton, {
+    className: "DebugChoice",
+    get enabled() {
+      return !props.disabled;
+    },
+    get text() {
+      return `${props.title}：${props.value}  ›`;
+    },
+    onactivate: () => props.onChange(props.options[(props.options.indexOf(props.value) + 1) % props.options.length])
+  });
+}
+function DebugToggle(props) {
+  return libs.createComponent(GenericPanel.CTextButton, {
+    className: "DebugChoice",
+    get classList() {
+      return {
+        Active: props.value
+      };
+    },
+    get enabled() {
+      return !props.disabled;
+    },
+    get text() {
+      return `${props.title}：${props.value ? '开' : '关'}`;
+    },
+    onactivate: () => props.onChange(!props.value)
+  });
+}
+function DebugPackage(props) {
+  return (() => {
+    const _el$ = libs.createElement("Panel", {}, null);
+    libs.setProp(_el$, "className", "DebugPackage");
+    libs.insert(_el$, libs.createComponent(GenericPanel.CLabel, {
+      className: "DebugSectionTitle",
+      get text() {
+        return `${props.title}${props.value?.special ? ' · 特殊组合' : ''}`;
+      }
+    }), null);
+    libs.insert(_el$, libs.createComponent(libs.Show, {
+      get when() {
+        return props.value;
+      },
+      get fallback() {
+        return libs.createComponent(GenericPanel.CLabel, {
+          className: "DebugHint",
+          get text() {
+            return props.emptyText ?? '暂无结果';
+          }
+        });
+      },
+      get children() {
+        const _el$2 = libs.createElement("Panel", {}, null);
+        libs.setProp(_el$2, "className", "DebugRewards");
+        libs.insert(_el$2, libs.createComponent(libs.For, {
+          get each() {
+            return Object.values(props.value?.displaySlots ?? {});
+          },
+          children: slot => {
+            const abilities = () => slot.type == 'ability' ? Object.values(slot.abilities ?? [slot.ability]) : [];
+            const name = () => {
+              if (slot.type == 'gold') return `${slot.amount} 金币`;
+              if (slot.type == 'ability') return abilities().map(aid => GetLocalization(`#DOTA_Tooltip_ability_mechanics_${aid}`)).join(' + ');
+              return GetLocalization(`#DOTA_Tooltip_ability_${slot.type == 'rune' ? slot.trait : slot.item}`);
+            };
+            const tooltip = () => {
+              if (slot.type == 'ability') return {
+                name: 'roshan_reward',
+                ability_list: JSON.stringify(abilities()),
+                playerID: Players.GetLocalPlayer()
+              };
+              if (slot.type == 'equipment') return {
+                name: 'equipment',
+                itemname: slot.item
+              };
+              if (slot.type == 'artifact' || slot.type == 'rune') return {
+                name: 'trait_ability',
+                ability_name: slot.type == 'rune' ? slot.trait : slot.item
+              };
+              return undefined;
+            };
+            return libs.createComponent(EOM_Panel.EOM_Panel, {
+              get className() {
+                return `DebugReward ${slot.uiRarity}`;
+              },
+              get customTooltip() {
+                return tooltip();
+              },
+              get children() {
+                return [libs.createComponent(GenericPanel.CLabel, {
+                  className: "DebugSlot",
+                  get text() {
+                    return `原槽位 ${slot.shopSlot ?? '?'}${slot.eurekaUpgraded ? ' · 尤里卡强化' : ''}`;
+                  }
+                }), (() => {
+                  const _el$3 = libs.createElement("Panel", {}, null);
+                  libs.setProp(_el$3, "className", "DebugIcons");
+                  libs.insert(_el$3, libs.createComponent(libs.For, {
+                    get each() {
+                      return abilities();
+                    },
+                    children: aid => libs.createComponent(SectAbility.SectAbilityImage, {
+                      sectAbilityID: aid
+                    })
+                  }), null);
+                  libs.insert(_el$3, libs.createComponent(libs.Show, {
+                    get when() {
+                      return slot.type == 'equipment';
+                    },
+                    get children() {
+                      const _el$4 = libs.createElement("DOTAItemImage", {
+                        get itemname() {
+                          return slot.item;
+                        },
+                        showtooltip: false
+                      }, null);
+                      libs.effect(_$p => libs.setProp(_el$4, "itemname", slot.item, _$p));
+                      return _el$4;
+                    }
+                  }), null);
+                  libs.insert(_el$3, libs.createComponent(libs.Show, {
+                    get when() {
+                      return slot.type == 'artifact' || slot.type == 'rune';
+                    },
+                    get children() {
+                      const _el$5 = libs.createElement("DOTAAbilityImage", {
+                        get abilityname() {
+                          return slot.type == 'rune' ? slot.trait : slot.item;
+                        },
+                        showtooltip: false
+                      }, null);
+                      libs.effect(_$p => libs.setProp(_el$5, "abilityname", slot.type == 'rune' ? slot.trait : slot.item, _$p));
+                      return _el$5;
+                    }
+                  }), null);
+                  libs.insert(_el$3, libs.createComponent(libs.Show, {
+                    get when() {
+                      return slot.type == 'gold';
+                    },
+                    get children() {
+                      return libs.createComponent(GenericPanel.CLabel, {
+                        className: "DebugGold",
+                        get text() {
+                          return `${slot.amount}`;
+                        }
+                      });
+                    }
+                  }), null);
+                  return _el$3;
+                })(), libs.createComponent(GenericPanel.CLabel, {
+                  className: "DebugRewardName",
+                  get text() {
+                    return name();
+                  }
+                })];
+              }
+            });
+          }
+        }));
+        return _el$2;
+      }
+    }), null);
+    return _el$;
+  })();
+}
+function TreasureDebugPanel() {
+  const localPlayerID = Players.GetLocalPlayer();
+  const playerData = netdata_utils.createNetTable('player_data', localPlayerID.toString());
+  const targetPlayerID = libs.createMemo(() => isSpectator() ? GameUI.GetSpectatorViewingInfo().player_id : playerData()?.viewPlayerInfo?.player_id ?? localPlayerID);
+  const [formal, setFormal] = libs.createSignal();
+  const [health, setHealth] = libs.createSignal();
+  const [response, setResponse] = libs.createSignal();
+  const [settings, setSettings] = libs.createSignal();
+  const [ignorePrevious, setIgnorePrevious] = libs.createSignal(false);
+  const [pending, setPending] = libs.createSignal(false);
+  const [error, setError] = libs.createSignal('');
+  const [showDetails, setShowDetails] = libs.createSignal(false);
+  const [poolTab, setPoolTab] = libs.createSignal('weights');
+  const [historySource, setHistorySource] = libs.createSignal('test');
+  const [historyUsage, setHistoryUsage] = libs.createSignal('input');
+  const [historyIndex, setHistoryIndex] = libs.createSignal(0);
+  const session = () => response()?.session;
+  const disabled = () => pending() || settings() == undefined;
+  const pendingPackage = () => formal()?.selected ? undefined : formal()?.package;
+  const displayedHistory = libs.createMemo(() => {
+    if (historySource() == 'formal') {
+      return pendingPackage() ? [pendingPackage(), formal()?.previousPackage] : [];
+    }
+    const history = historyUsage() == 'input' ? session()?.last?.history : session()?.history;
+    return Object.values(history ?? {});
+  });
+  const historyTitle = () => {
+    const round = historyIndex() == 0 ? '最近一组' : '再前一组';
+    if (historySource() == 'formal') return `正式历史 · ${historyIndex() == 0 ? '当前待选' : '前一组'} · 实时只读`;
+    if (historyUsage() == 'next') return `测试历史 · 下次刷新基准 · ${round}`;
+    return `测试历史 · 本次抽选输入 · ${round}${session()?.last?.ignorePrevious ? ' · 本次未参与排除' : ''}`;
+  };
+  const historyEmptyText = () => {
+    if (historySource() == 'formal' && !pendingPackage()) return formal()?.selected ? '本轮正式结果已领取' : '当前无正式待选结果';
+    if (historyIndex() == 1) return '暂无上两轮记录';
+    return historySource() == 'test' && historyUsage() == 'input' ? '尚未模拟，或本次为初次抽取，无历史输入' : '暂无历史，可初次抽取或加载正式两轮历史';
+  };
+  let sessionID = '';
+  let requestID = 0;
+  let generation = 0;
+  let requestTimer;
+  function request(action) {
+    if (pending() && action != 'reset') return;
+    requestID++;
+    setPending(true);
+    setError('');
+    clearTimeout(requestTimer);
+    requestTimer = setTimeout(() => {
+      setPending(false);
+      setError('测试请求未收到响应，请检查开发环境并重新初始化。');
+    }, 10000);
+    FireEvent('TreasureDebug', JSON.stringify({
+      sessionID,
+      requestID,
+      targetPlayerID: targetPlayerID(),
+      action,
+      settings: settings(),
+      ignorePrevious: ignorePrevious()
+    }));
+  }
+  function editSettings(patch) {
+    setSettings(value => ({
+      ...value,
+      ...patch
+    }));
+    if (patch.stage != undefined) request('stage');
+  }
+  libs.onMount(() => {
+    const dataListener = useNetData('treasure_debug', data => {
+      if (data.sessionID != sessionID || data.requestID != requestID || data.targetPlayerID != targetPlayerID()) return;
+      clearTimeout(requestTimer);
+      setPending(false);
+      setError(data.error ?? '');
+      setResponse(data);
+      if (data.session && !data.error) setSettings(getSettings(data.session.context));
+    }, localPlayerID);
+    libs.onCleanup(() => {
+      GameEvents.Unsubscribe(dataListener);
+      clearTimeout(requestTimer);
+    });
+    libs.createEffect(libs.on(targetPlayerID, id => {
+      generation++;
+      sessionID = `${Date.now()}:${generation}`;
+      clearTimeout(requestTimer);
+      setPending(false);
+      setError('');
+      setResponse(undefined);
+      setSettings(undefined);
+      setIgnorePrevious(false);
+      setHistorySource('test');
+      setHistoryUsage('input');
+      setHistoryIndex(0);
+      setFormal(getSyncDataKey('common', 'treasure', id));
+      const targetData = CustomNetTables.GetTableValue('player_data', id.toString());
+      setHealth(targetData?.health);
+      let waitingForHero = targetData?.heroEntIndex == undefined;
+      const formalListener = useSyncDataKey('common', 'treasure', setFormal, id);
+      const healthListener = useNetTableKey('player_data', id.toString(), value => {
+        setHealth(value?.health);
+        if (waitingForHero && value?.heroEntIndex != undefined) {
+          waitingForHero = false;
+          request('reset');
+        }
+      });
+      if (!waitingForHero) request('reset');
+      libs.onCleanup(() => {
+        CustomNetTables.UnsubscribeNetTableListener(formalListener);
+        CustomNetTables.UnsubscribeNetTableListener(healthListener);
+      });
+    }));
+  });
+  const poolText = libs.createMemo(() => {
+    const context = session()?.context;
+    if (!context) return '';
+    switch (poolTab()) {
+      case 'weights':
+        return JSON.stringify({
+          slotWeights: context.slotWeights,
+          goldCardCompensationWeights: context.goldCardCompensationWeights
+        }, null, 2);
+      case 'treasures':
+        return JSON.stringify(context.treasures, null, 2);
+      case 'abilities':
+        return JSON.stringify(context.abilityPools, null, 2);
+      case 'equipment':
+        return JSON.stringify(context.equipmentPools, null, 2);
+      case 'last':
+        return JSON.stringify(session()?.last?.context ?? {}, null, 2);
+    }
+  });
+  const tabs = [{
+    key: 'weights',
+    title: '阶段权重'
+  }, {
+    key: 'treasures',
+    title: '秘宝候选池'
+  }, {
+    key: 'abilities',
+    title: '技能候选池'
+  }, {
+    key: 'equipment',
+    title: '装备候选池'
+  }, {
+    key: 'last',
+    title: '本次完整上下文'
+  }];
+  return libs.createComponent(SelectionContainer, {
+    eventName: "TreasureDebugPanel",
+    title: "黑市刷新测试",
+    width: "1120px",
+    height: "820px",
+    hasFilter: false,
+    hasRawMode: false,
+    hasToggleSize: false,
+    get children() {
+      const _el$6 = libs.createElement("Panel", {}, null),
+        _el$7 = libs.createElement("Panel", {}, _el$6),
+        _el$8 = libs.createElement("Panel", {}, _el$6),
+        _el$9 = libs.createElement("Panel", {}, _el$6),
+        _el$0 = libs.createElement("Panel", {}, _el$6),
+        _el$1 = libs.createElement("Panel", {}, _el$6),
+        _el$10 = libs.createElement("Panel", {}, _el$1),
+        _el$12 = libs.createElement("Panel", {}, _el$1);
+      libs.setProp(_el$6, "className", "TreasureDebugContent");
+      libs.setProp(_el$7, "className", "DebugRow");
+      libs.insert(_el$7, libs.createComponent(GenericPanel.CLabel, {
+        className: "DebugTitle",
+        get text() {
+          return `目标玩家 ${targetPlayerID()} · ${Players.GetPlayerName(targetPlayerID())} · 实际血量 ${health() ?? '—'}`;
+        }
+      }), null);
+      libs.insert(_el$7, libs.createComponent(GenericPanel.CTextButton, {
+        className: "DebugAction",
+        text: "重新初始化",
+        onactivate: () => request('reset')
+      }), null);
+      libs.insert(_el$6, libs.createComponent(GenericPanel.CLabel, {
+        className: "DebugHint",
+        text: "仅模拟结果；血量档位不改变实际血量及秘宝血量条件。点击参数可切换取值。"
+      }), _el$8);
+      libs.insert(_el$6, libs.createComponent(libs.Show, {
+        get when() {
+          return libs.memo(() => !!(!settings() && !pending()))() && !error();
+        },
+        get children() {
+          return libs.createComponent(GenericPanel.CLabel, {
+            className: "DebugHint",
+            text: "等待目标英雄就绪后自动读取上下文。"
+          });
+        }
+      }), _el$8);
+      libs.insert(_el$6, libs.createComponent(libs.Show, {
+        get when() {
+          return error();
+        },
+        get children() {
+          return libs.createComponent(GenericPanel.CLabel, {
+            className: "DebugError",
+            get text() {
+              return error();
+            }
+          });
+        }
+      }), _el$8);
+      libs.setProp(_el$8, "className", "DebugRow");
+      libs.insert(_el$8, libs.createComponent(GenericPanel.CTextButton, {
+        className: "DebugAction",
+        text: "恢复正式上下文",
+        get enabled() {
+          return !disabled();
+        },
+        onactivate: () => request('restore')
+      }), null);
+      libs.insert(_el$8, libs.createComponent(GenericPanel.CTextButton, {
+        className: "DebugAction",
+        text: "加载正式两轮历史",
+        get enabled() {
+          return libs.memo(() => !!!disabled())() && pendingPackage() != undefined;
+        },
+        onactivate: () => request('load_previous')
+      }), null);
+      libs.insert(_el$8, libs.createComponent(GenericPanel.CTextButton, {
+        className: "DebugAction Primary",
+        text: "初次抽取",
+        get enabled() {
+          return !disabled();
+        },
+        onactivate: () => request('initial')
+      }), null);
+      libs.insert(_el$8, libs.createComponent(GenericPanel.CTextButton, {
+        className: "DebugAction Primary",
+        text: "模拟整组刷新",
+        get enabled() {
+          return libs.memo(() => !!!disabled())() && (Object.values(session()?.history ?? {}).length > 0 || ignorePrevious());
+        },
+        onactivate: () => request('refresh')
+      }), null);
+      libs.setProp(_el$9, "className", "DebugRow");
+      libs.insert(_el$9, libs.createComponent(DebugChoice, {
+        title: "阶段",
+        get value() {
+          return settings()?.stage ?? 1;
+        },
+        get options() {
+          return Object.values(response()?.stages ?? []);
+        },
+        get disabled() {
+          return disabled();
+        },
+        onChange: stage => editSettings({
+          stage
+        })
+      }), null);
+      libs.insert(_el$9, libs.createComponent(DebugChoice, {
+        title: "血量档位",
+        get value() {
+          return settings()?.tier ?? 1;
+        },
+        options: [1, 2, 3, 4, 5],
+        get disabled() {
+          return disabled();
+        },
+        onChange: tier => editSettings({
+          tier
+        })
+      }), null);
+      libs.insert(_el$9, libs.createComponent(DebugChoice, {
+        title: "强制装备（0=无）",
+        get value() {
+          return settings()?.forcedEquipmentLevel ?? 0;
+        },
+        get options() {
+          return [0, ...Object.values(response()?.equipmentLevels ?? [])];
+        },
+        get disabled() {
+          return disabled();
+        },
+        onChange: value => editSettings({
+          forcedEquipmentLevel: value == 0 ? undefined : value
+        })
+      }), null);
+      libs.insert(_el$9, libs.createComponent(DebugChoice, {
+        title: "尤里卡次数",
+        get value() {
+          return settings()?.eurekaUpgradeCount ?? 0;
+        },
+        options: [0, 1, 2, 3, 4],
+        get disabled() {
+          return disabled();
+        },
+        onChange: eurekaUpgradeCount => editSettings({
+          eurekaUpgradeCount
+        })
+      }), null);
+      libs.setProp(_el$0, "className", "DebugRow");
+      libs.insert(_el$0, libs.createComponent(DebugToggle, {
+        title: "无金卡补偿",
+        get value() {
+          return settings()?.compensateGoldCard ?? false;
+        },
+        get disabled() {
+          return disabled();
+        },
+        onChange: compensateGoldCard => editSettings({
+          compensateGoldCard
+        })
+      }), null);
+      libs.insert(_el$0, libs.createComponent(DebugToggle, {
+        title: "最高奖励保底",
+        get value() {
+          return settings()?.guaranteeHighestReward ?? false;
+        },
+        get disabled() {
+          return disabled();
+        },
+        onChange: guaranteeHighestReward => editSettings({
+          guaranteeHighestReward
+        })
+      }), null);
+      libs.insert(_el$0, libs.createComponent(DebugToggle, {
+        title: "忽略两轮历史",
+        get value() {
+          return ignorePrevious();
+        },
+        get disabled() {
+          return disabled();
+        },
+        onChange: setIgnorePrevious
+      }), null);
+      libs.insert(_el$6, libs.createComponent(GenericPanel.CLabel, {
+        className: "DebugHint",
+        text: "档位：1=41及以上，2=31–40，3=21–30，4=11–20，5=10及以下。忽略历史仍保留同组去重，并正常推进测试历史。"
+      }), _el$1);
+      libs.insert(_el$6, libs.createComponent(libs.Show, {
+        get when() {
+          return session()?.last;
+        },
+        children: last => [libs.createComponent(GenericPanel.CLabel, {
+          className: "DebugSectionTitle",
+          get text() {
+            return `最近一次：${last().mode == 'initial' ? '初次抽取' : '整组刷新'} · ${last().ignorePrevious ? '忽略两轮历史' : '使用正常排除规则'}`;
+          }
+        }), libs.createComponent(GenericPanel.CLabel, {
+          className: "DebugHint",
+          get text() {
+            return describeSettings(last().context);
+          }
+        }), libs.createComponent(DebugPackage, {
+          title: "本次模拟结果",
+          get value() {
+            return last().result;
+          }
+        })]
+      }), _el$1);
+      libs.setProp(_el$1, "className", "DebugHistory");
+      libs.setProp(_el$10, "className", "DebugRow");
+      libs.insert(_el$10, libs.createComponent(GenericPanel.CTextButton, {
+        className: "DebugAction",
+        get classList() {
+          return {
+            Active: historySource() == 'test'
+          };
+        },
+        text: "测试历史",
+        onactivate: () => setHistorySource('test')
+      }), null);
+      libs.insert(_el$10, libs.createComponent(GenericPanel.CTextButton, {
+        className: "DebugAction",
+        get classList() {
+          return {
+            Active: historySource() == 'formal'
+          };
+        },
+        text: "正式历史",
+        onactivate: () => setHistorySource('formal')
+      }), null);
+      libs.insert(_el$1, libs.createComponent(libs.Show, {
+        get when() {
+          return historySource() == 'test';
+        },
+        get children() {
+          const _el$11 = libs.createElement("Panel", {}, null);
+          libs.setProp(_el$11, "className", "DebugRow");
+          libs.insert(_el$11, libs.createComponent(GenericPanel.CTextButton, {
+            className: "DebugAction",
+            get classList() {
+              return {
+                Active: historyUsage() == 'input'
+              };
+            },
+            text: "本次抽选输入",
+            onactivate: () => setHistoryUsage('input')
+          }), null);
+          libs.insert(_el$11, libs.createComponent(GenericPanel.CTextButton, {
+            className: "DebugAction",
+            get classList() {
+              return {
+                Active: historyUsage() == 'next'
+              };
+            },
+            text: "下次刷新基准",
+            onactivate: () => setHistoryUsage('next')
+          }), null);
+          return _el$11;
+        }
+      }), _el$12);
+      libs.setProp(_el$12, "className", "DebugRow");
+      libs.insert(_el$12, libs.createComponent(GenericPanel.CTextButton, {
+        className: "DebugAction",
+        get classList() {
+          return {
+            Active: historyIndex() == 0
+          };
+        },
+        get text() {
+          return historySource() == 'formal' ? '当前待选' : '最近一组';
+        },
+        onactivate: () => setHistoryIndex(0)
+      }), null);
+      libs.insert(_el$12, libs.createComponent(GenericPanel.CTextButton, {
+        className: "DebugAction",
+        get classList() {
+          return {
+            Active: historyIndex() == 1
+          };
+        },
+        get text() {
+          return historySource() == 'formal' ? '前一组' : '再前一组';
+        },
+        onactivate: () => setHistoryIndex(1)
+      }), null);
+      libs.insert(_el$1, libs.createComponent(DebugPackage, {
+        get title() {
+          return historyTitle();
+        },
+        get value() {
+          return displayedHistory()[historyIndex()];
+        },
+        get emptyText() {
+          return historyEmptyText();
+        }
+      }), null);
+      libs.insert(_el$6, libs.createComponent(GenericPanel.CTextButton, {
+        className: "DebugAction",
+        get text() {
+          return showDetails() ? '收起只读上下文' : '展开只读上下文与候选池';
+        },
+        onactivate: () => setShowDetails(value => !value)
+      }), null);
+      libs.insert(_el$6, libs.createComponent(libs.Show, {
+        get when() {
+          return showDetails();
+        },
+        get children() {
+          return [libs.createComponent(GenericPanel.CLabel, {
+            className: "DebugHint",
+            text: "权重和秘宝池来自当前测试上下文；技能与装备池在恢复条件或模拟时读取真实玩家状态，尚未应用两轮历史和同组排除。"
+          }), (() => {
+            const _el$13 = libs.createElement("Panel", {}, null);
+            libs.setProp(_el$13, "className", "DebugRow");
+            libs.insert(_el$13, libs.createComponent(libs.For, {
+              each: tabs,
+              children: tab => libs.createComponent(GenericPanel.CTextButton, {
+                className: "DebugAction",
+                get classList() {
+                  return {
+                    Active: poolTab() == tab.key
+                  };
+                },
+                get text() {
+                  return tab.title;
+                },
+                onactivate: () => setPoolTab(tab.key)
+              })
+            }));
+            return _el$13;
+          })(), libs.createComponent(GenericPanel.CLabel, {
+            className: "DebugPoolText",
+            get text() {
+              return poolText();
+            }
+          })];
+        }
+      }), null);
+      return _el$6;
+    }
+  });
+}
+
 if (Players.GetTeam(Players.GetLocalPlayer()) == DOTATeam_t.DOTA_TEAM_BADGUYS) {
   [GameUI.GetSpectatorViewingInfo, GameUI.SetSpectatorViewingInfo] = libs.createSignal((() => {
     const playerData = CustomNetTables.GetAllTableValues("player_data");
@@ -2686,7 +3353,7 @@ function Demo() {
             get itemNames() {
               return Object.keys(sectToggleList);
             }
-          }), libs.createComponent(EOM_UnitInfo, {})];
+          }), libs.createComponent(EOM_UnitInfo, {}), libs.createComponent(TreasureDebugPanel, {})];
         },
         get children() {
           return [libs.createComponent(EOM_DebugTool_Category, {
@@ -2846,6 +3513,9 @@ function Demo() {
               }), libs.createComponent(DemoSelectionButton, {
                 eventName: "AddTreasureButtonPressed",
                 text: "添加黑市藏品"
+              }), libs.createComponent(DemoSelectionButton, {
+                eventName: "TreasureDebugPanel",
+                text: "黑市刷新测试"
               }), libs.createComponent(DemoSelectionButton, {
                 eventName: "PickSectButtonPressed",
                 text: "游戏流派"

@@ -337,108 +337,103 @@ f(
 		["354"] = 243,
 		["355"] = 244,
 		["356"] = 243,
-		["357"] = 248,
-		["358"] = 249,
-		["359"] = 250,
+		["357"] = 249,
+		["358"] = 250,
+		["359"] = 251,
 		["360"] = 251,
-		["361"] = 252,
-		["362"] = 253,
-		["363"] = 253,
-		["364"] = 253,
-		["365"] = 253,
-		["366"] = 253,
-		["367"] = 253,
-		["368"] = 253,
-		["370"] = 255,
-		["371"] = 248,
-		["372"] = 257,
-		["373"] = 258,
-		["374"] = 259,
-		["375"] = 260,
-		["376"] = 260,
-		["377"] = 260,
-		["379"] = 260,
-		["380"] = 261,
-		["381"] = 262,
-		["382"] = 262,
-		["383"] = 262,
-		["384"] = 262,
-		["385"] = 262,
-		["386"] = 262,
-		["387"] = 262,
-		["389"] = 264,
-		["390"] = 257,
-		["391"] = 267,
-		["392"] = 268,
-		["393"] = 269,
-		["394"] = 269,
-		["395"] = 269,
-		["396"] = 269,
-		["397"] = 270,
-		["398"] = 270,
-		["399"] = 270,
-		["400"] = 270,
-		["401"] = 270,
-		["403"] = 267,
-		["404"] = 273,
-		["405"] = 274,
-		["406"] = 275,
-		["407"] = 273,
-		["408"] = 277,
-		["409"] = 278,
-		["410"] = 279,
-		["413"] = 282,
-		["414"] = 283,
-		["415"] = 284,
-		["416"] = 285,
-		["419"] = 277,
-		["420"] = 289,
-		["421"] = 290,
-		["422"] = 289,
-		["423"] = 232,
-		["424"] = 225,
+		["361"] = 251,
+		["363"] = 251,
+		["364"] = 249,
+		["365"] = 254,
+		["366"] = 255,
+		["367"] = 256,
+		["368"] = 257,
+		["369"] = 258,
+		["370"] = 260,
+		["371"] = 260,
+		["374"] = 263,
+		["375"] = 264,
+		["376"] = 265,
+		["377"] = 265,
+		["378"] = 265,
+		["379"] = 265,
+		["380"] = 265,
+		["381"] = 265,
+		["382"] = 265,
+		["384"] = 254,
+		["385"] = 269,
+		["386"] = 270,
+		["387"] = 271,
+		["389"] = 269,
+		["390"] = 275,
+		["391"] = 276,
+		["392"] = 277,
+		["394"] = 275,
+		["395"] = 281,
+		["396"] = 282,
+		["397"] = 283,
+		["399"] = 281,
+		["400"] = 287,
+		["401"] = 288,
+		["404"] = 291,
+		["407"] = 294,
+		["408"] = 295,
+		["409"] = 297,
+		["410"] = 297,
+		["413"] = 302,
+		["414"] = 304,
+		["415"] = 305,
+		["416"] = 306,
+		["417"] = 307,
+		["418"] = 308,
+		["420"] = 287,
+		["421"] = 316,
+		["422"] = 317,
+		["423"] = 316,
+		["424"] = 232,
 		["425"] = 225,
 		["426"] = 225,
 		["427"] = 225,
 		["428"] = 225,
 		["429"] = 225,
 		["430"] = 225,
-		["431"] = 232,
-		["433"] = 232,
-		["435"] = 295,
-		["436"] = 296,
-		["437"] = 295,
-		["438"] = 296,
-		["439"] = 297,
-		["440"] = 298,
-		["441"] = 297,
-		["442"] = 296,
-		["443"] = 295,
-		["444"] = 296,
-		["446"] = 296,
-		["447"] = 301,
-		["448"] = 308,
-		["449"] = 301,
-		["450"] = 308,
-		["451"] = 310,
-		["452"] = 311,
-		["453"] = 310,
-		["454"] = 313,
-		["455"] = 314,
-		["456"] = 313,
-		["457"] = 318,
-		["458"] = 319,
-		["459"] = 318,
-		["460"] = 308,
-		["461"] = 301,
-		["462"] = 301,
-		["463"] = 301,
-		["464"] = 301,
-		["465"] = 301,
-		["466"] = 301,
-		["467"] = 301,
-		["468"] = 308,
-		["470"] = 308,
+		["431"] = 225,
+		["432"] = 232,
+		["434"] = 232,
+		["436"] = 322,
+		["437"] = 323,
+		["438"] = 322,
+		["439"] = 323,
+		["440"] = 324,
+		["441"] = 325,
+		["442"] = 324,
+		["443"] = 323,
+		["444"] = 322,
+		["445"] = 323,
+		["447"] = 323,
+		["448"] = 328,
+		["449"] = 335,
+		["450"] = 328,
+		["451"] = 335,
+		["452"] = 337,
+		["453"] = 338,
+		["454"] = 337,
+		["455"] = 340,
+		["456"] = 341,
+		["457"] = 340,
+		["458"] = 345,
+		["459"] = 346,
+		["460"] = 345,
+		["461"] = 335,
+		["462"] = 328,
+		["463"] = 328,
+		["464"] = 328,
+		["465"] = 328,
+		["466"] = 328,
+		["467"] = 328,
+		["468"] = 328,
+		["469"] = 335,
+		["471"] = 335,
 	}
 )
 local g = {}
@@ -723,48 +718,62 @@ end
 function O.prototype.EDeclareFunctions(self)
 	return { EOMModifierFunction.EOM_MODIFIER_PROPERTY_HEAL_BONUS }
 end
-function O.prototype.SaveStack(self)
-	local P = self:GetStackCount()
-	local Q = self:GetParent():GetPlayerOwnerID()
-	local R = PlayerData:getplayerData(Q)
-	if R then
-		R:modifyHeroAbilityExtraData("necrophos_talent", "DOTA_Tooltip_ability_necrophos_talent_2", P, true, true)
-	end
-	PlayerData:saveData(Q, "necrophos_talent_2", P)
-end
 function O.prototype.LoadStack(self)
-	local Q = self:GetParent():GetPlayerOwnerID()
-	local R = PlayerData:getplayerData(Q)
-	local S = PlayerData:loadData(Q, "necrophos_talent_2")
-	if S == nil then
-		S = 0
+	local P = self:GetParent():GetPlayerOwnerID()
+	local Q = PlayerData:loadData(P, "necrophos_talent_2")
+	if Q == nil then
+		Q = 0
 	end
-	local P = S
-	if R then
-		R:modifyHeroAbilityExtraData("necrophos_talent", "DOTA_Tooltip_ability_necrophos_talent_2", P, true, true)
-	end
-	return P
+	return Q
 end
-function O.prototype.Init(self)
-	local T = self:GetParent()
-	if PlayerData:loadData(T:GetPlayerOwnerID(), "necrophos_talent_2") == nil then
-		PlayerData:saveData(T:GetPlayerOwnerID(), "necrophos_talent_2", 0)
+function O.prototype.SyncStack(self)
+	local R = self:GetParent()
+	local P = R:GetPlayerOwnerID()
+	local S = self:LoadStack()
+	self:SetStackCount(S)
+	local T = PlayerData:getHero(P)
+	if R ~= (T and T.hero) then
+		return
+	end
+	local U = PlayerData:getplayerData(P)
+	if U then
+		U:modifyHeroAbilityExtraData("necrophos_talent", "DOTA_Tooltip_ability_necrophos_talent_2", S, true, true)
+	end
+end
+function O.prototype.OnCreated(self)
+	if IsServer() then
+		self:SyncStack()
+	end
+end
+function O.prototype.OnRefresh(self)
+	if IsServer() then
+		self:SyncStack()
 	end
 end
 function O.prototype.OnBattleStartBefore(self)
-	self:Init()
-	self:SetStackCount(self:LoadStack())
+	if IsServer() then
+		self:SyncStack()
+	end
 end
 function O.prototype.OnBattleEnd(self, s)
-	if IsServer() then
-		if s.isNeutral ~= nil then
-			return
-		end
-		local U = self:GetParent():GetPlayerOwnerID()
-		if s.winPlayerID == U and self.health_regen > 0 then
-			self:IncrementStackCount()
-			self:SaveStack()
-		end
+	if not IsServer() then
+		return
+	end
+	if s.isNeutral ~= nil then
+		return
+	end
+	local R = self:GetParent()
+	local P = R:GetPlayerOwnerID()
+	local V = PlayerData:getHero(P)
+	if R ~= (V and V.hero) or s.illusionPlayerID == P then
+		return
+	end
+	if s.winPlayerID == P and self.health_regen > 0 then
+		local W = self:LoadStack()
+		local X = W + 1
+		PlayerData:saveData(P, "necrophos_talent_2", X)
+		self:SyncStack()
+		print(string.format("[NecrophosTalent2] Player %d gained a victory stack: %d -> %d", P, W, X))
 	end
 end
 function O.prototype.EOM_GetModifierHeal_Bonus(self, s)
@@ -779,33 +788,33 @@ O = e(
 )
 g.modifier_necrophos_talent_2 = O
 g.necrophos_talent_4 = c()
-local V = g.necrophos_talent_4
-V.name = "necrophos_talent_4"
-d(V, i)
-function V.prototype.GetIntrinsicModifierName(self)
+local Y = g.necrophos_talent_4
+Y.name = "necrophos_talent_4"
+d(Y, i)
+function Y.prototype.GetIntrinsicModifierName(self)
 	return "modifier_necrophos_talent_4"
 end
-V = e({ j(nil) }, V)
-g.necrophos_talent_4 = V
+Y = e({ j(nil) }, Y)
+g.necrophos_talent_4 = Y
 g.modifier_necrophos_talent_4 = c()
-local W = g.modifier_necrophos_talent_4
-W.name = "modifier_necrophos_talent_4"
-d(W, l)
-function W.prototype.GetAbilitySpecialValue(self)
+local Z = g.modifier_necrophos_talent_4
+Z.name = "modifier_necrophos_talent_4"
+d(Z, l)
+function Z.prototype.GetAbilitySpecialValue(self)
 	self.mana_regen = self:GetAbilitySpecialValueFor("mana_regen")
 end
-function W.prototype.EDeclareFunctions(self)
+function Z.prototype.EDeclareFunctions(self)
 	return { EOMModifierFunction.EOM_MODIFIER_PROPERTY_MANA_REGEN_BONUS }
 end
-function W.prototype.EOM_GetModifierManaRegenBonus(self, s)
+function Z.prototype.EOM_GetModifierManaRegenBonus(self, s)
 	return self.mana_regen
 end
-W = e(
+Z = e(
 	{ m(
 		a,
 		{ IsHidden = true, IsDebuff = false, IsPurgable = false, IsPurgeException = false, AllowIllusionDuplicate = false }
 	) },
-	W
+	Z
 )
-g.modifier_necrophos_talent_4 = W
+g.modifier_necrophos_talent_4 = Z
 return g

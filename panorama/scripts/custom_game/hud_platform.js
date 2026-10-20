@@ -128,6 +128,7 @@ function onCleanup(fn) {
 function getListener() {
   return Listener;
 }
+createSignal(false);
 function children(fn) {
   const children = createMemo(fn);
   const memo = createMemo(() => resolveChildren(children()));
@@ -380,7 +381,6 @@ function resolveChildren(children) {
   }
   return children;
 }
-
 const FALLBACK = Symbol("fallback");
 function dispose(d) {
   for (let i = 0; i < d.length; i++) d[i]();
@@ -417,8 +417,7 @@ function mapArray(list, mapFn, options = {}) {
           });
           len = 1;
         }
-      }
-      else if (len === 0) {
+      } else if (len === 0) {
         mapped = new Array(newLen);
         for (j = 0; j < newLen; j++) {
           items[j] = newItems[j];
@@ -631,7 +630,6 @@ function splitProps(props, ...keys) {
   }
   return [...objects, otherObject];
 }
-
 const narrowedError = name => `Stale read from <${name}>.`;
 function For(props) {
   const fallback = "fallback" in props && {
@@ -660,7 +658,6 @@ function Show(props) {
 }
 
 const memo$1 = fn => createMemo(() => fn());
-
 function createRenderer$1({
   createElement,
   createTextNode,
@@ -745,7 +742,7 @@ function createRenderer$1({
     for (let i = 0, len = array.length; i < len; i++) {
       let item = array[i],
         t;
-      if (item == null || item === true || item === false) ; else if (Array.isArray(item)) {
+      if (item == null || item === true || item === false) ;else if (Array.isArray(item)) {
         dynamic = normalizeIncomingArray(normalized, item) || dynamic;
       } else if ((t = typeof item) === "string" || t === "number") {
         normalized.push(createTextNode(item));
@@ -892,187 +889,179 @@ function createRenderer$1({
     }
   };
 }
-
 function createRenderer(options) {
   const renderer = createRenderer$1(options);
   renderer.mergeProps = mergeProps$1;
   return renderer;
 }
 
-const StyleKeyAutoConvertToPixelList = [
-    'x',
-    'y',
-    'z',
-    'width',
-    'height',
-    'minHeight',
-    'maxHeight',
-    'minWidth',
-    'maxWidth',
-    'border-radius',
-    'borderRadius',
-    'fontSize',
-    'lineHeight',
-    'margin',
-    'marginBottom',
-    'marginLeft',
-    'marginRight',
-    'marginTop',
-    'padding',
-    'paddingBottom',
-    'paddingLeft',
-    'paddingRight',
-    'paddingTop'
-];
-
-function noop() { }
-
+const StyleKeyAutoConvertToPixelList = ['x', 'y', 'z', 'width', 'height', 'minHeight', 'maxHeight', 'minWidth', 'maxWidth', 'border-radius', 'borderRadius', 'fontSize', 'lineHeight', 'margin', 'marginBottom', 'marginLeft', 'marginRight', 'marginTop', 'padding', 'paddingBottom', 'paddingLeft', 'paddingRight', 'paddingTop'];
+function noop() {}
 function setDragEvent(node, event, callback) {
-    event = event.slice(2);
-    if (!callback) {
-        $.RegisterEventHandler(event, node, noop);
-        return;
-    }
-    if (event === 'DragStart') {
-        node.SetDraggable(true);
-    }
-    $.RegisterEventHandler(event, node, callback);
+  event = event.slice(2);
+  if (!callback) {
+    $.RegisterEventHandler(event, node, noop);
+    return;
+  }
+  if (event === 'DragStart') {
+    node.SetDraggable(true);
+  }
+  $.RegisterEventHandler(event, node, callback);
 }
-
 function setTooltipText(node, text) {
-    if (!text) {
-        node.ClearPanelEvent('onmouseover');
-        node.ClearPanelEvent('onmouseout');
-        return;
-    }
-    node.SetPanelEvent('onmouseover', () => {
-        $.DispatchEvent('DOTAShowTextTooltip', node, text);
-    });
-    node.SetPanelEvent('onmouseout', () => {
-        $.DispatchEvent('DOTAHideTextTooltip', node);
-    });
+  if (!text) {
+    node.ClearPanelEvent('onmouseover');
+    node.ClearPanelEvent('onmouseout');
+    return;
+  }
+  node.SetPanelEvent('onmouseover', () => {
+    $.DispatchEvent('DOTAShowTextTooltip', node, text);
+  });
+  node.SetPanelEvent('onmouseout', () => {
+    $.DispatchEvent('DOTAHideTextTooltip', node);
+  });
 }
 function setCustomTooltip(node, args) {
-    if (!args) {
-        node.ClearPanelEvent('onmouseover');
-        node.ClearPanelEvent('onmouseout');
-        return;
-    }
-    let path = args[1];
-    if (!path.startsWith('file://')) {
-        path = `file://{resources}/layout/custom_game/${path.replace('.xml', '')}.xml`;
-    }
-    node.SetPanelEvent('onmouseover', () => {
-        const params = node.GetAttributeString('__CustomTooltipParams__', '');
-        $.DispatchEvent('UIShowCustomLayoutParametersTooltip', node, args[0], path, params);
-    });
-    node.SetPanelEvent('onmouseout', () => {
-        $.DispatchEvent('UIHideCustomLayoutTooltip', args[0]);
-    });
+  if (!args) {
+    node.ClearPanelEvent('onmouseover');
+    node.ClearPanelEvent('onmouseout');
+    return;
+  }
+  let path = args[1];
+  if (!path.startsWith('file://')) {
+    path = `file://{resources}/layout/custom_game/${path.replace('.xml', '')}.xml`;
+  }
+  node.SetPanelEvent('onmouseover', () => {
+    const params = node.GetAttributeString('__CustomTooltipParams__', '');
+    $.DispatchEvent('UIShowCustomLayoutParametersTooltip', node, args[0], path, params);
+  });
+  node.SetPanelEvent('onmouseout', () => {
+    $.DispatchEvent('UIHideCustomLayoutTooltip', args[0]);
+  });
 }
 function setCustomTooltipParams(node, params) {
-    if (!params) {
-        node.SetAttributeString('__CustomTooltipParams__', '');
-        return;
-    }
-    let paramsString = Object.entries(params)
-        .map(v => `${v[0]}=${v[1]}`)
-        .join('&');
-    node.SetAttributeString('__CustomTooltipParams__', paramsString);
+  if (!params) {
+    node.SetAttributeString('__CustomTooltipParams__', '');
+    return;
+  }
+  let paramsString = Object.entries(params).map(v => `${v[0]}=${v[1]}`).join('&');
+  node.SetAttributeString('__CustomTooltipParams__', paramsString);
 }
-
 const hasOwn = Object.prototype.hasOwnProperty;
-const nodeTrash = (function () {
-    let root = $.GetContextPanel();
-    while (root.GetParent()) {
-        root = root.GetParent();
+const nodeTrash = function () {
+  let root = $.GetContextPanel();
+  while (root.GetParent()) {
+    root = root.GetParent();
+  }
+  return $.CreatePanel('Panel', root, '', {
+    style: 'visibility: collapse;'
+  });
+}();
+const {
+  render: _render,
+  effect,
+  memo,
+  createComponent,
+  createElement,
+  insert,
+  spread,
+  setProp,
+  mergeProps,
+  use
+} = createRenderer({
+  createElement(type, props, parent) {
+    const {
+      id,
+      snippet,
+      vars,
+      dialogVariables,
+      text,
+      style,
+      visible,
+      enabled,
+      checked,
+      attrs,
+      type: _type,
+      ..._props
+    } = props;
+    const styleIsString = typeof style === 'string';
+    if (styleIsString) {
+      props.style = style;
     }
-    return $.CreatePanel('Panel', root, '', {
-        style: 'visibility: collapse;'
+    if (type === 'GenericPanel') {
+      type = _type;
+    }
+    const el = $.CreatePanel(type, parent || $.GetContextPanel(), id || '', _props);
+    if (typeof visible === 'boolean') {
+      el.visible = visible;
+    }
+    if (typeof enabled === 'boolean') {
+      el.enabled = enabled;
+    }
+    if (typeof checked === 'boolean') {
+      el.checked = checked;
+    }
+    el.SetDisableFocusOnMouseDown(true);
+    if (!styleIsString) {
+      applyStyles(el, style);
+    }
+    if (snippet) {
+      el.BLoadLayoutSnippet(snippet);
+    }
+    if (vars) {
+      setDialogVariables(el, vars, {});
+    }
+    if (dialogVariables) {
+      setDialogVariables(el, dialogVariables, {});
+    }
+    if (text) {
+      if (text[0] === '#') {
+        el.__solidText = text;
+        el.text = $.Localize(text, el);
+      } else {
+        el.text = text;
+      }
+    }
+    return el;
+  },
+  createTextNode(value, parent) {
+    if (typeof value !== 'string') {
+      value = String(value);
+    }
+    if (value[0] === '#') {
+      value = $.Localize(value, parent);
+    }
+    const child = $.CreatePanel('Label', parent || $.GetContextPanel(), '', {
+      text: value,
+      html: 'true'
     });
-})();
-const { render: _render, effect, memo, createComponent, createElement, insert, spread, setProp, mergeProps, use } = createRenderer({
-    createElement(type, props, parent) {
-        const { id, snippet, vars, dialogVariables, text, style, visible, enabled, checked, attrs, type: _type, ..._props } = props;
-        const styleIsString = typeof style === 'string';
-        if (styleIsString) {
-            props.style = style;
-        }
-        if (type === 'GenericPanel') {
-            type = _type;
-        }
-        const el = $.CreatePanel(type, parent || $.GetContextPanel(), id || '', _props);
-        if (typeof visible === 'boolean') {
-            el.visible = visible;
-        }
-        if (typeof enabled === 'boolean') {
-            el.enabled = enabled;
-        }
-        if (typeof checked === 'boolean') {
-            el.checked = checked;
-        }
-        el.SetDisableFocusOnMouseDown(true);
-        if (!styleIsString) {
-            applyStyles(el, style);
-        }
-        if (snippet) {
-            el.BLoadLayoutSnippet(snippet);
-        }
-        if (vars) {
-            setDialogVariables(el, vars, {});
-        }
-        if (dialogVariables) {
-            setDialogVariables(el, dialogVariables, {});
-        }
-        if (text) {
-            if (text[0] === '#') {
-                el.__solidText = text;
-                el.text = $.Localize(text, el);
-            }
-            else {
-                el.text = text;
-            }
-        }
-        return el;
-    },
-    createTextNode(value, parent) {
-        if (typeof value !== 'string') {
-            value = String(value);
-        }
-        if (value[0] === '#') {
-            value = $.Localize(value, parent);
-        }
-        const child = $.CreatePanel('Label', parent || $.GetContextPanel(), '', {
-            text: value,
-            html: 'true'
-        });
-        child.SetDisableFocusOnMouseDown(true);
-        if (value[0] === '#') {
-            child.__solidText = value;
-        }
-        return child;
-    },
-    replaceText(textNode, value) {
-        if (!textNode || !textNode.IsValid()) {
-            return;
-        }
-        if (value[0] === '#') {
-            textNode.__solidText = value;
-            value = $.Localize(value, textNode);
-        }
-        textNode.text = value;
-    },
-    isTextNode(node) {
-        if (!node || !node.IsValid()) {
-            return false;
-        }
-        return node.paneltype === 'Label';
-    },
-    insertNode(parent, node, anchor) {
-        if (!parent || !parent.IsValid() || !node || !node.IsValid()) {
-            return;
-        }
-        node.SetParent(parent);
+    child.SetDisableFocusOnMouseDown(true);
+    if (value[0] === '#') {
+      child.__solidText = value;
+    }
+    return child;
+  },
+  replaceText(textNode, value) {
+    if (!textNode || !textNode.IsValid()) {
+      return;
+    }
+    if (value[0] === '#') {
+      textNode.__solidText = value;
+      value = $.Localize(value, textNode);
+    }
+    textNode.text = value;
+  },
+  isTextNode(node) {
+    if (!node || !node.IsValid()) {
+      return false;
+    }
+    return node.paneltype === 'Label';
+  },
+  insertNode(parent, node, anchor) {
+    if (!parent || !parent.IsValid() || !node || !node.IsValid()) {
+      return;
+    }
+    node.SetParent(parent);
         if (anchor && anchor.IsValid()) {
             parent.MoveChildBefore(node, anchor);
         } else {
@@ -1081,256 +1070,227 @@ const { render: _render, effect, memo, createComponent, createElement, insert, s
                 parent.MoveChildAfter(node, lastChild);
             }
         }
-    },
-    removeNode(parent, node) {
-        if (!parent || !parent.IsValid() || !node || !node.IsValid()) {
-            return;
-        }
-        node.SetParent(nodeTrash);
-        $.Schedule(0, () => {
-            if (node.GetParent() === nodeTrash) {
-                node.DeleteAsync(0);
-            }
-        });
-    },
-    getParentNode(node) {
-        if (!node || !node.IsValid()) {
-            return;
-        }
-        const parent = node.GetParent();
-        if (parent) {
-            return parent;
-        }
-    },
-    getFirstChild(node) {
-        if (!node || !node.IsValid()) {
-            return;
-        }
-        const child = node.GetChild(0);
-        if (!child) {
-            return;
-        }
-        return child;
-    },
-    getNextSibling(node) {
-        if (!node || !node.IsValid()) {
-            return;
-        }
-        const parent = node.GetParent();
-        if (!parent) {
-            return;
-        }
-        const el = parent.GetChild(parent.GetChildIndex(node) + 1);
-        if (!el) {
-            return;
-        }
-        return el;
-    },
-    setProperty(node, name, value, prev) {
-        if (!node || !node.IsValid()) {
-            return;
-        }
-        if (name === 'id') {
-            return;
-        }
-        if (name === 'class' || name === 'className') {
-            applyClassNames(node, value || '', prev || '');
-        }
-        else if (name === 'text') {
-            if (value[0] === '#') {
-                node.__solidText = value;
-                node.text = $.Localize(value, node);
-            }
-            else {
-                node.text = value;
-            }
-        }
-        else if (name === 'src' && node.SetImage) {
-            node.SetImage(value);
-        }
-        else if (name === 'classList') {
-            updateClassList(node, value, prev);
-        }
-        else if (name === 'style') {
-            applyStyles(node, value, prev);
-        }
-        else if (name === 'vars' || name === 'dialogVariables') {
-            setDialogVariables(node, value, prev);
-        }
-        else if (name === 'attrs') {
-            setAttributes(node, value);
-        }
-        else if (name === 'inputnamespace') {
-            node.SetInputNamespace(value || '');
-        }
-        else if (name === 'draggable') {
-            node.SetDraggable(value === true);
-        }
-        else if (name === 'acceptsfocus') {
-            node.SetAcceptsFocus(value === true);
-        }
-        else if (name === 'tooltip_text') {
-            setTooltipText(node, value);
-        }
-        else if (name === 'custom_tooltip') {
-            setCustomTooltip(node, value);
-        }
-        else if (name === 'custom_tooltip_params') {
-            setCustomTooltipParams(node, value);
-        }
-        else if (name === 'onDragStart' ||
-            name === 'onDragEnd' ||
-            name === 'onDragEnter' ||
-            name === 'onDragDrop' ||
-            name === 'onDragLeave') {
-            setDragEvent(node, name, value);
-        }
-        else if (name.startsWith('data-')) {
-            setData(node, name.slice(5), value);
-        }
-        else if (name.startsWith('on')) {
-            setPanelEvent(node, name, value);
-        }
-        else {
-            if (hasOwn.call(node, name)) {
-                node[name] = value;
-            }
-            else {
-                node.SetAttributeString(name, String(value));
-            }
-        }
+  },
+  removeNode(parent, node) {
+    if (!parent || !parent.IsValid() || !node || !node.IsValid()) {
+      return;
     }
+    node.SetParent(nodeTrash);
+    $.Schedule(0, () => {
+      if (node.GetParent() === nodeTrash) {
+        node.DeleteAsync(0);
+      }
+    });
+  },
+  getParentNode(node) {
+    if (!node || !node.IsValid()) {
+      return;
+    }
+    const parent = node.GetParent();
+    if (parent) {
+      return parent;
+    }
+  },
+  getFirstChild(node) {
+    if (!node || !node.IsValid()) {
+      return;
+    }
+    const child = node.GetChild(0);
+    if (!child) {
+      return;
+    }
+    return child;
+  },
+  getNextSibling(node) {
+    if (!node || !node.IsValid()) {
+      return;
+    }
+    const parent = node.GetParent();
+    if (!parent) {
+      return;
+    }
+    const el = parent.GetChild(parent.GetChildIndex(node) + 1);
+    if (!el) {
+      return;
+    }
+    return el;
+  },
+  setProperty(node, name, value, prev) {
+    if (!node || !node.IsValid()) {
+      return;
+    }
+    if (name === 'id') {
+      return;
+    }
+    if (name === 'class' || name === 'className') {
+      applyClassNames(node, value || '', prev || '');
+    } else if (name === 'text') {
+      if (value[0] === '#') {
+        node.__solidText = value;
+        node.text = $.Localize(value, node);
+      } else {
+        node.text = value;
+      }
+    } else if (name === 'src' && node.SetImage) {
+      node.SetImage(value);
+    } else if (name === 'classList') {
+      updateClassList(node, value, prev);
+    } else if (name === 'style') {
+      applyStyles(node, value, prev);
+    } else if (name === 'vars' || name === 'dialogVariables') {
+      setDialogVariables(node, value, prev);
+    } else if (name === 'attrs') {
+      setAttributes(node, value);
+    } else if (name === 'inputnamespace') {
+      node.SetInputNamespace(value || '');
+    } else if (name === 'draggable') {
+      node.SetDraggable(value === true);
+    } else if (name === 'acceptsfocus') {
+      node.SetAcceptsFocus(value === true);
+    } else if (name === 'tooltip_text') {
+      setTooltipText(node, value);
+    } else if (name === 'custom_tooltip') {
+      setCustomTooltip(node, value);
+    } else if (name === 'custom_tooltip_params') {
+      setCustomTooltipParams(node, value);
+    } else if (name === 'onDragStart' || name === 'onDragEnd' || name === 'onDragEnter' || name === 'onDragDrop' || name === 'onDragLeave') {
+      setDragEvent(node, name, value);
+    } else if (name.startsWith('data-')) {
+      setData(node, name.slice(5), value);
+    } else if (name.startsWith('on')) {
+      setPanelEvent(node, name, value);
+    } else {
+      if (hasOwn.call(node, name)) {
+        node[name] = value;
+      } else {
+        node.SetAttributeString(name, String(value));
+      }
+    }
+  }
 });
 function render(code, container) {
-    if (container.__solidDisposer) {
-        container.__solidDisposer();
-        container.RemoveAndDeleteChildren();
-    }
-    Object.defineProperty(container, '__solidDisposer', {
-        configurable: true,
-        value: _render(code, container)
-    });
-    return container.__solidDisposer;
+  if (container.__solidDisposer) {
+    container.__solidDisposer();
+    container.RemoveAndDeleteChildren();
+  }
+  Object.defineProperty(container, '__solidDisposer', {
+    configurable: true,
+    value: _render(code, container)
+  });
+  return container.__solidDisposer;
 }
 const splitClassName = /\s+/;
 function applyClassNames(node, names, prev) {
-    const nameList = names.split(splitClassName);
-    const oldList = prev.split(splitClassName);
-    for (let i = oldList.length - 1; i >= 0; i--) {
-        const name = oldList[i];
-        if (nameList.includes(name)) {
-            continue;
-        }
-        else {
-            node.RemoveClass(name);
-        }
+  const nameList = names.split(splitClassName);
+  const oldList = prev.split(splitClassName);
+  for (let i = oldList.length - 1; i >= 0; i--) {
+    const name = oldList[i];
+    if (nameList.includes(name)) {
+      continue;
+    } else {
+      node.RemoveClass(name);
     }
-    for (const name of nameList) {
-        node.AddClass(name);
-    }
+  }
+  for (const name of nameList) {
+    node.AddClass(name);
+  }
 }
 function updateClassList(node, state, prev) {
-    state = state || {};
-    if (prev) {
-        for (const k in prev) {
-            if (state[k] === undefined) {
-                node.RemoveClass(k);
-            }
-        }
+  state = state || {};
+  if (prev) {
+    for (const k in prev) {
+      if (state[k] === undefined) {
+        node.RemoveClass(k);
+      }
     }
-    for (const k in state) {
-        node.SetHasClass(k, state[k] === true);
-    }
+  }
+  for (const k in state) {
+    node.SetHasClass(k, state[k] === true);
+  }
 }
 function applyStyles(node, styles, prev) {
-    styles = styles || {};
-    prev = prev || {};
-    for (const k in prev) {
-        if (!hasOwn.call(styles, k)) {
-            node.style[k] = null;
-        }
+  styles = styles || {};
+  prev = prev || {};
+  for (const k in prev) {
+    if (!hasOwn.call(styles, k)) {
+      node.style[k] = null;
     }
-    for (const k in styles) {
-        if (typeof styles[k] === 'number') {
-            if (StyleKeyAutoConvertToPixelList.includes(k)) {
-                node.style[k] = `${styles[k]}px`;
-                continue;
-            }
-        }
-        node.style[k] = styles[k] === undefined ? null : styles[k];
+  }
+  for (const k in styles) {
+    if (typeof styles[k] === 'number') {
+      if (StyleKeyAutoConvertToPixelList.includes(k)) {
+        node.style[k] = `${styles[k]}px`;
+        continue;
+      }
     }
+    node.style[k] = styles[k] === undefined ? null : styles[k];
+  }
 }
 function setPanelEvent(node, event, handle) {
-    if (!handle) {
-        node.ClearPanelEvent(event);
-        return;
-    }
-    node.SetPanelEvent(event, function () {
-        handle(node);
-    });
+  if (!handle) {
+    node.ClearPanelEvent(event);
+    return;
+  }
+  node.SetPanelEvent(event, function () {
+    handle(node);
+  });
 }
 const PANORAMA_INVALID_DATE = 2 ** 52;
 function setDialogVariables(node, vars, prev) {
-    prev = prev || {};
-    for (const key in prev) {
-        if (!vars[key]) {
-            const value = prev[key];
-            if (typeof value === 'string') {
-                node.SetDialogVariable(key, `[!s:${key}]`);
-            }
-            else if (typeof value === 'number') {
-                node.SetDialogVariableInt(key, NaN);
-            }
-            else {
-                node.SetDialogVariableTime(key, PANORAMA_INVALID_DATE);
-            }
-        }
+  prev = prev || {};
+  for (const key in prev) {
+    if (!vars[key]) {
+      const value = prev[key];
+      if (typeof value === 'string') {
+        node.SetDialogVariable(key, `[!s:${key}]`);
+      } else if (typeof value === 'number') {
+        node.SetDialogVariableInt(key, NaN);
+      } else {
+        node.SetDialogVariableTime(key, PANORAMA_INVALID_DATE);
+      }
     }
-    for (const key in vars) {
-        const value = vars[key];
-        if (typeof value === 'string') {
-            if (value[0] === '#') {
-                node.SetDialogVariableLocString(key, value);
-            }
-            else {
-                node.SetDialogVariable(key, value);
-            }
-        }
-        else if (typeof value === 'number') {
-            node.SetDialogVariableInt(key, value);
-        }
-        else {
-            node.SetDialogVariableTime(key, Math.floor(value.getTime() / 1000));
-        }
+  }
+  for (const key in vars) {
+    const value = vars[key];
+    if (typeof value === 'string') {
+      if (value[0] === '#') {
+        node.SetDialogVariableLocString(key, value);
+      } else {
+        node.SetDialogVariable(key, value);
+      }
+    } else if (typeof value === 'number') {
+      node.SetDialogVariableInt(key, value);
+    } else {
+      node.SetDialogVariableTime(key, Math.floor(value.getTime() / 1000));
     }
-    if (node.__solidText) {
-        node.text = $.Localize(node.__solidText, node);
-    }
+  }
+  if (node.__solidText) {
+    node.text = $.Localize(node.__solidText, node);
+  }
 }
 function setAttributes(node, attrs) {
-    for (const key in attrs) {
-        const value = attrs[key];
-        if (typeof value === 'number') {
-            node.SetAttributeInt(key, value);
-        }
-        else {
-            node.SetAttributeString(key, value);
-        }
+  for (const key in attrs) {
+    const value = attrs[key];
+    if (typeof value === 'number') {
+      node.SetAttributeInt(key, value);
+    } else {
+      node.SetAttributeString(key, value);
     }
+  }
 }
 function setData(node, key, v) {
-    if (!node.Data) {
-        const data = {};
-        Object.defineProperty(node, 'Data', {
-            configurable: true,
-            enumerable: true,
-            writable: true,
-            value: function () {
-                return data;
-            }
-        });
-    }
-    node.Data()[key] = v;
+  if (!node.Data) {
+    const data = {};
+    Object.defineProperty(node, 'Data', {
+      configurable: true,
+      enumerable: true,
+      writable: true,
+      value: function () {
+        return data;
+      }
+    });
+  }
+  node.Data()[key] = v;
 }
 
 const $RAW = Symbol("store-raw"),
@@ -1546,7 +1506,6 @@ function createStore(...[store, options]) {
   }
   return [wrappedStore, setStore];
 }
-
 const $ROOT = Symbol("store-root");
 function applyState(target, parent, property, merge, key) {
   const previous = parent[property];
@@ -1638,84 +1597,62 @@ function getDefaultExportFromCjs (x) {
 
 var classnames = {exports: {}};
 
-/*!
-	Copyright (c) 2018 Jed Watson.
-	Licensed under the MIT License (MIT), see
-	http://jedwatson.github.io/classnames
-*/
-
 var hasRequiredClassnames;
 
 function requireClassnames () {
 	if (hasRequiredClassnames) return classnames.exports;
 	hasRequiredClassnames = 1;
 	(function (module) {
-		/* global define */
-
 		(function () {
 
-			var hasOwn = {}.hasOwnProperty;
-
-			function classNames () {
-				var classes = '';
-
-				for (var i = 0; i < arguments.length; i++) {
-					var arg = arguments[i];
-					if (arg) {
-						classes = appendClass(classes, parseValue(arg));
-					}
-				}
-
-				return classes;
-			}
-
-			function parseValue (arg) {
-				if (typeof arg === 'string' || typeof arg === 'number') {
-					return arg;
-				}
-
-				if (typeof arg !== 'object') {
-					return '';
-				}
-
-				if (Array.isArray(arg)) {
-					return classNames.apply(null, arg);
-				}
-
-				if (arg.toString !== Object.prototype.toString && !arg.toString.toString().includes('[native code]')) {
-					return arg.toString();
-				}
-
-				var classes = '';
-
-				for (var key in arg) {
-					if (hasOwn.call(arg, key) && arg[key]) {
-						classes = appendClass(classes, key);
-					}
-				}
-
-				return classes;
-			}
-
-			function appendClass (value, newClass) {
-				if (!newClass) {
-					return value;
-				}
-			
-				if (value) {
-					return value + ' ' + newClass;
-				}
-			
-				return value + newClass;
-			}
-
-			if (module.exports) {
-				classNames.default = classNames;
-				module.exports = classNames;
-			} else {
-				window.classNames = classNames;
-			}
-		}()); 
+		  var hasOwn = {}.hasOwnProperty;
+		  function classNames() {
+		    var classes = '';
+		    for (var i = 0; i < arguments.length; i++) {
+		      var arg = arguments[i];
+		      if (arg) {
+		        classes = appendClass(classes, parseValue(arg));
+		      }
+		    }
+		    return classes;
+		  }
+		  function parseValue(arg) {
+		    if (typeof arg === 'string' || typeof arg === 'number') {
+		      return arg;
+		    }
+		    if (typeof arg !== 'object') {
+		      return '';
+		    }
+		    if (Array.isArray(arg)) {
+		      return classNames.apply(null, arg);
+		    }
+		    if (arg.toString !== Object.prototype.toString && !arg.toString.toString().includes('[native code]')) {
+		      return arg.toString();
+		    }
+		    var classes = '';
+		    for (var key in arg) {
+		      if (hasOwn.call(arg, key) && arg[key]) {
+		        classes = appendClass(classes, key);
+		      }
+		    }
+		    return classes;
+		  }
+		  function appendClass(value, newClass) {
+		    if (!newClass) {
+		      return value;
+		    }
+		    if (value) {
+		      return value + ' ' + newClass;
+		    }
+		    return value + newClass;
+		  }
+		  if (module.exports) {
+		    classNames.default = classNames;
+		    module.exports = classNames;
+		  } else {
+		    window.classNames = classNames;
+		  }
+		})(); 
 	} (classnames));
 	return classnames.exports;
 }
@@ -2383,6 +2320,7 @@ function PlatformLobby() {
   const entry = Game.GetMapInfo().map_display_name === 'platform_entry';
   const [entryConnecting, setEntryConnecting] = createSignal(false);
   const chooseEntry = region => {
+    if (entryConnecting()) return;
     setEntryConnecting(true);
     GameEvents.SendEventClientSide('client_side_event', {
       event_name: 'platform_entry_select',
@@ -2837,10 +2775,10 @@ function PlatformLobby() {
       when: entry,
       get fallback() {
         return (() => {
-          const _el$66 = createElement("Panel", {
+          const _el$68 = createElement("Panel", {
             "class": "PlatformColumn PlatformBody"
           }, null);
-          insert(_el$66, createComponent(Show, {
+          insert(_el$68, createComponent(Show, {
             get when() {
               return memo(() => !!connected())() && !otherGame();
             },
@@ -2850,10 +2788,10 @@ function PlatformLobby() {
                   return !room() || matching();
                 },
                 get children() {
-                  const _el$67 = createElement("Panel", {
+                  const _el$69 = createElement("Panel", {
                     "class": "PlatformMatchToolbar"
                   }, null);
-                  insert(_el$67, createComponent(EOM_DropDown, {
+                  insert(_el$69, createComponent(EOM_DropDown, {
                     menuClassName: "PlatformDropDownMenu",
                     className: "PlatformMode",
                     get index() {
@@ -2875,50 +2813,50 @@ function PlatformLobby() {
                           return game()?.maps ?? [];
                         },
                         children: choice => (() => {
-                          const _el$111 = createElement("Label", {
+                          const _el$113 = createElement("Label", {
                             get text() {
                               return choice.name;
                             }
                           }, null);
-                          effect(_$p => setProp(_el$111, "text", choice.name, _$p));
-                          return _el$111;
+                          effect(_$p => setProp(_el$113, "text", choice.name, _$p));
+                          return _el$113;
                         })()
                       });
                     }
                   }), null);
-                  insert(_el$67, createComponent(Show, {
+                  insert(_el$69, createComponent(Show, {
                     get when() {
                       return !room() || matching();
                     },
                     get children() {
-                      const _el$68 = createElement("Button", {
+                      const _el$70 = createElement("Button", {
                           get ["class"]() {
                             return matching() ? 'PlatformButton PlatformMatchButton PlatformMatchingButton' : 'PlatformButton PlatformMatchButton';
                           }
                         }, null),
-                        _el$69 = createElement("Label", {
+                        _el$71 = createElement("Label", {
                           get text() {
                             return matching() ? '#platform_cancel_match' : '#platform_match';
                           }
-                        }, _el$68);
-                      setProp(_el$68, "onactivate", () => matching() ? roomAction('leave') : startMatching());
+                        }, _el$70);
+                      setProp(_el$70, "onactivate", () => matching() ? roomAction('leave') : startMatching());
                       effect(_p$ => {
                         const _v$12 = matching() ? 'PlatformButton PlatformMatchButton PlatformMatchingButton' : 'PlatformButton PlatformMatchButton',
                           _v$13 = !loading(),
                           _v$14 = matching() ? '#platform_cancel_match' : '#platform_match';
-                        _v$12 !== _p$._v$12 && (_p$._v$12 = setProp(_el$68, "class", _v$12, _p$._v$12));
-                        _v$13 !== _p$._v$13 && (_p$._v$13 = setProp(_el$68, "enabled", _v$13, _p$._v$13));
-                        _v$14 !== _p$._v$14 && (_p$._v$14 = setProp(_el$69, "text", _v$14, _p$._v$14));
+                        _v$12 !== _p$._v$12 && (_p$._v$12 = setProp(_el$70, "class", _v$12, _p$._v$12));
+                        _v$13 !== _p$._v$13 && (_p$._v$13 = setProp(_el$70, "enabled", _v$13, _p$._v$13));
+                        _v$14 !== _p$._v$14 && (_p$._v$14 = setProp(_el$71, "text", _v$14, _p$._v$14));
                         return _p$;
                       }, {
                         _v$12: undefined,
                         _v$13: undefined,
                         _v$14: undefined
                       });
-                      return _el$68;
+                      return _el$70;
                     }
                   }), null);
-                  return _el$67;
+                  return _el$69;
                 }
               }), createComponent(Show, {
                 get when() {
@@ -2926,116 +2864,116 @@ function PlatformLobby() {
                 },
                 get fallback() {
                   return (() => {
-                    const _el$112 = createElement("Panel", {
+                    const _el$114 = createElement("Panel", {
                         "class": "PlatformColumn PlatformRoomBrowser"
                       }, null),
-                      _el$113 = createElement("Panel", {
+                      _el$115 = createElement("Panel", {
                         "class": "PlatformHallTab"
-                      }, _el$112);
+                      }, _el$114);
                       createElement("Label", {
                         text: "#platform_room_hall"
-                      }, _el$113);
+                      }, _el$115);
                       createElement("Label", {
                         "class": "PlatformSectionTitle",
                         text: "#platform_room_list"
-                      }, _el$112);
-                      const _el$116 = createElement("Panel", {
+                      }, _el$114);
+                      const _el$118 = createElement("Panel", {
                         "class": "PlatformBrowserToolbar"
-                      }, _el$112);
+                      }, _el$114);
                       createElement("Label", {
                         "class": "PlatformRegionLabel",
                         text: "#platform_region"
-                      }, _el$116);
-                      const _el$118 = createElement("Button", {
+                      }, _el$118);
+                      const _el$120 = createElement("Button", {
                         get ["class"]() {
                           return region() ? 'PlatformButton PlatformRegionButton' : 'PlatformButton PlatformRegionButton PlatformRegionSelected';
                         }
-                      }, _el$116);
+                      }, _el$118);
                       createElement("Label", {
                         text: "#platform_all_regions"
-                      }, _el$118);
-                      const _el$120 = createElement("Panel", {
+                      }, _el$120);
+                      const _el$122 = createElement("Panel", {
                         "class": "PlatformToolbarSpacer"
-                      }, _el$116),
-                      _el$121 = createElement("Button", {
+                      }, _el$118),
+                      _el$123 = createElement("Button", {
                         "class": "PlatformButton PlatformRefreshButton"
-                      }, _el$116);
+                      }, _el$118);
                       createElement("Label", {
                         text: "#platform_refresh"
-                      }, _el$121);
-                      const _el$123 = createElement("Button", {
+                      }, _el$123);
+                      const _el$125 = createElement("Button", {
                         "class": "PlatformButton PlatformCreateButton"
-                      }, _el$116);
+                      }, _el$118);
                       createElement("Label", {
                         text: "#platform_create"
-                      }, _el$123);
-                      const _el$125 = createElement("Panel", {
-                        "class": "PlatformList"
-                      }, _el$112),
-                      _el$126 = createElement("Panel", {
-                        "class": "PlatformRoomTableHeader"
                       }, _el$125);
+                      const _el$127 = createElement("Panel", {
+                        "class": "PlatformList"
+                      }, _el$114),
+                      _el$128 = createElement("Panel", {
+                        "class": "PlatformRoomTableHeader"
+                      }, _el$127);
                       createElement("Label", {
                         "class": "PlatformRoomName",
                         text: "#platform_room_title"
-                      }, _el$126);
+                      }, _el$128);
                       createElement("Label", {
                         "class": "PlatformRoomCount",
                         text: "#platform_players"
-                      }, _el$126);
+                      }, _el$128);
                       createElement("Label", {
                         "class": "PlatformRoomState",
                         text: "#platform_status"
-                      }, _el$126);
+                      }, _el$128);
                       createElement("Label", {
                         "class": "PlatformRoomMode",
                         text: "#platform_mode"
-                      }, _el$126);
+                      }, _el$128);
                       createElement("Label", {
                         "class": "PlatformRoomHost",
                         text: "#platform_host"
-                      }, _el$126);
+                      }, _el$128);
                       createElement("Label", {
                         "class": "PlatformRoomAction",
                         text: "#platform_action"
-                      }, _el$126);
-                      const _el$133 = createElement("Panel", {
+                      }, _el$128);
+                      const _el$135 = createElement("Panel", {
                         "class": "PlatformRoomTableBody"
-                      }, _el$125),
-                      _el$138 = createElement("Panel", {
+                      }, _el$127),
+                      _el$140 = createElement("Panel", {
                         "class": "PlatformRow"
-                      }, _el$112);
-                    setProp(_el$118, "onactivate", () => setRegion(''));
-                    insert(_el$116, createComponent(For, {
+                      }, _el$114);
+                    setProp(_el$120, "onactivate", () => setRegion(''));
+                    insert(_el$118, createComponent(For, {
                       get each() {
                         return regions();
                       },
                       children: item => (() => {
-                        const _el$139 = createElement("Button", {
+                        const _el$141 = createElement("Button", {
                             get ["class"]() {
                               return region() === item.id ? 'PlatformButton PlatformRegionButton PlatformRegionSelected' : 'PlatformButton PlatformRegionButton';
                             }
                           }, null),
-                          _el$140 = createElement("Label", {
+                          _el$142 = createElement("Label", {
                             get text() {
                               return item.name;
                             }
-                          }, _el$139);
-                        setProp(_el$139, "onactivate", () => setRegion(item.id));
+                          }, _el$141);
+                        setProp(_el$141, "onactivate", () => setRegion(item.id));
                         effect(_p$ => {
                           const _v$31 = region() === item.id ? 'PlatformButton PlatformRegionButton PlatformRegionSelected' : 'PlatformButton PlatformRegionButton',
                             _v$32 = item.name;
-                          _v$31 !== _p$._v$31 && (_p$._v$31 = setProp(_el$139, "class", _v$31, _p$._v$31));
-                          _v$32 !== _p$._v$32 && (_p$._v$32 = setProp(_el$140, "text", _v$32, _p$._v$32));
+                          _v$31 !== _p$._v$31 && (_p$._v$31 = setProp(_el$141, "class", _v$31, _p$._v$31));
+                          _v$32 !== _p$._v$32 && (_p$._v$32 = setProp(_el$142, "text", _v$32, _p$._v$32));
                           return _p$;
                         }, {
                           _v$31: undefined,
                           _v$32: undefined
                         });
-                        return _el$139;
+                        return _el$141;
                       })()
-                    }), _el$120);
-                    insert(_el$116, createComponent(EOM_TextEntry, {
+                    }), _el$122);
+                    insert(_el$118, createComponent(EOM_TextEntry, {
                       className: "PlatformRoomSearch",
                       placeholder: "#platform_search_rooms",
                       acceptsfocus: true,
@@ -3045,87 +2983,87 @@ function PlatformLobby() {
                         setOffset(0);
                         void run(refresh);
                       }
-                    }), _el$121);
-                    setProp(_el$121, "onactivate", () => {
+                    }), _el$123);
+                    setProp(_el$123, "onactivate", () => {
                       setOffset(0);
                       void run(connected() ? refresh : initialize);
                     });
-                    setProp(_el$123, "onactivate", () => {
+                    setProp(_el$125, "onactivate", () => {
                       title = '';
                       password = '';
                       setError('');
                       setCreateOpen(true);
                     });
-                    insert(_el$133, createComponent(Show, {
+                    insert(_el$135, createComponent(Show, {
                       get when() {
                         return visibleRooms().length === 0;
                       },
                       get children() {
-                        const _el$134 = createElement("Panel", {
+                        const _el$136 = createElement("Panel", {
                             "class": "PlatformEmptyRooms"
                           }, null),
-                          _el$135 = createElement("Panel", {
+                          _el$137 = createElement("Panel", {
                             "class": "PlatformEmptyContent"
-                          }, _el$134),
-                          _el$136 = createElement("Label", {
+                          }, _el$136),
+                          _el$138 = createElement("Label", {
                             "class": "PlatformEmptyTitle",
                             get text() {
                               return search() || region() ? "#platform_no_search_rooms" : "#platform_no_rooms_title";
                             }
-                          }, _el$135);
+                          }, _el$137);
                           createElement("Label", {
                             "class": "PlatformEmptyHint",
                             text: "#platform_no_rooms_hint"
-                          }, _el$135);
-                        effect(_$p => setProp(_el$136, "text", search() || region() ? "#platform_no_search_rooms" : "#platform_no_rooms_title", _$p));
-                        return _el$134;
+                          }, _el$137);
+                        effect(_$p => setProp(_el$138, "text", search() || region() ? "#platform_no_search_rooms" : "#platform_no_rooms_title", _$p));
+                        return _el$136;
                       }
                     }), null);
-                    insert(_el$133, createComponent(For, {
+                    insert(_el$135, createComponent(For, {
                       get each() {
                         return visibleRooms();
                       },
                       children: item => (() => {
-                        const _el$141 = createElement("Panel", {
+                        const _el$143 = createElement("Panel", {
                             "class": "PlatformRoomTableRow"
                           }, null),
-                          _el$142 = createElement("Label", {
+                          _el$144 = createElement("Label", {
                             "class": "PlatformRoomName",
                             get text() {
                               return item.title || '#platform_room_title';
                             }
-                          }, _el$141),
-                          _el$143 = createElement("Label", {
+                          }, _el$143),
+                          _el$145 = createElement("Label", {
                             "class": "PlatformRoomCount",
                             get text() {
                               return String(item.players?.length ?? Object.keys(item.members ?? {}).length) + '/' + item.capacity;
                             }
-                          }, _el$141),
-                          _el$144 = createElement("Label", {
+                          }, _el$143),
+                          _el$146 = createElement("Label", {
                             "class": "PlatformRoomState",
                             get text() {
                               return '#platform_state_' + item.state;
                             }
-                          }, _el$141),
-                          _el$145 = createElement("Label", {
+                          }, _el$143),
+                          _el$147 = createElement("Label", {
                             "class": "PlatformRoomMode",
                             get text() {
                               return game()?.maps.find(choice => choice.id === item.map)?.name ?? '#platform_room_title';
                             }
-                          }, _el$141),
-                          _el$146 = createElement("Label", {
+                          }, _el$143),
+                          _el$148 = createElement("Label", {
                             "class": "PlatformRoomHost",
                             get text() {
                               return item.players?.find(player => player.id === item.owner)?.name || '#platform_player';
                             }
-                          }, _el$141),
-                          _el$147 = createElement("Button", {
+                          }, _el$143),
+                          _el$149 = createElement("Button", {
                             "class": "PlatformButton PlatformRoomAction"
-                          }, _el$141);
+                          }, _el$143);
                           createElement("Label", {
                             text: "#platform_join"
-                          }, _el$147);
-                        setProp(_el$147, "onactivate", () => {
+                          }, _el$149);
+                        setProp(_el$149, "onactivate", () => {
                           if (item.locked) {
                             password = '';
                             setError('');
@@ -3139,12 +3077,12 @@ function PlatformLobby() {
                             _v$36 = game()?.maps.find(choice => choice.id === item.map)?.name ?? '#platform_room_title',
                             _v$37 = item.players?.find(player => player.id === item.owner)?.name || '#platform_player',
                             _v$38 = !loading() && !room() && item.state === 'LOBBY' && (item.players?.length ?? Object.keys(item.members ?? {}).length) < item.capacity;
-                          _v$33 !== _p$._v$33 && (_p$._v$33 = setProp(_el$142, "text", _v$33, _p$._v$33));
-                          _v$34 !== _p$._v$34 && (_p$._v$34 = setProp(_el$143, "text", _v$34, _p$._v$34));
-                          _v$35 !== _p$._v$35 && (_p$._v$35 = setProp(_el$144, "text", _v$35, _p$._v$35));
-                          _v$36 !== _p$._v$36 && (_p$._v$36 = setProp(_el$145, "text", _v$36, _p$._v$36));
-                          _v$37 !== _p$._v$37 && (_p$._v$37 = setProp(_el$146, "text", _v$37, _p$._v$37));
-                          _v$38 !== _p$._v$38 && (_p$._v$38 = setProp(_el$147, "enabled", _v$38, _p$._v$38));
+                          _v$33 !== _p$._v$33 && (_p$._v$33 = setProp(_el$144, "text", _v$33, _p$._v$33));
+                          _v$34 !== _p$._v$34 && (_p$._v$34 = setProp(_el$145, "text", _v$34, _p$._v$34));
+                          _v$35 !== _p$._v$35 && (_p$._v$35 = setProp(_el$146, "text", _v$35, _p$._v$35));
+                          _v$36 !== _p$._v$36 && (_p$._v$36 = setProp(_el$147, "text", _v$36, _p$._v$36));
+                          _v$37 !== _p$._v$37 && (_p$._v$37 = setProp(_el$148, "text", _v$37, _p$._v$37));
+                          _v$38 !== _p$._v$38 && (_p$._v$38 = setProp(_el$149, "enabled", _v$38, _p$._v$38));
                           return _p$;
                         }, {
                           _v$33: undefined,
@@ -3154,10 +3092,10 @@ function PlatformLobby() {
                           _v$37: undefined,
                           _v$38: undefined
                         });
-                        return _el$141;
+                        return _el$143;
                       })()
                     }), null);
-                    insert(_el$138, createComponent(Show, {
+                    insert(_el$140, createComponent(Show, {
                       get when() {
                         return offset() > 0;
                       },
@@ -3168,7 +3106,7 @@ function PlatformLobby() {
                         });
                       }
                     }), null);
-                    insert(_el$138, createComponent(Show, {
+                    insert(_el$140, createComponent(Show, {
                       get when() {
                         return hasMore();
                       },
@@ -3183,111 +3121,111 @@ function PlatformLobby() {
                       const _v$28 = region() ? 'PlatformButton PlatformRegionButton' : 'PlatformButton PlatformRegionButton PlatformRegionSelected',
                         _v$29 = !loading(),
                         _v$30 = !loading() && !room();
-                      _v$28 !== _p$._v$28 && (_p$._v$28 = setProp(_el$118, "class", _v$28, _p$._v$28));
-                      _v$29 !== _p$._v$29 && (_p$._v$29 = setProp(_el$121, "enabled", _v$29, _p$._v$29));
-                      _v$30 !== _p$._v$30 && (_p$._v$30 = setProp(_el$123, "enabled", _v$30, _p$._v$30));
+                      _v$28 !== _p$._v$28 && (_p$._v$28 = setProp(_el$120, "class", _v$28, _p$._v$28));
+                      _v$29 !== _p$._v$29 && (_p$._v$29 = setProp(_el$123, "enabled", _v$29, _p$._v$29));
+                      _v$30 !== _p$._v$30 && (_p$._v$30 = setProp(_el$125, "enabled", _v$30, _p$._v$30));
                       return _p$;
                     }, {
                       _v$28: undefined,
                       _v$29: undefined,
                       _v$30: undefined
                     });
-                    return _el$112;
+                    return _el$114;
                   })();
                 },
                 get children() {
-                  const _el$70 = createElement("Panel", {
+                  const _el$72 = createElement("Panel", {
                       "class": "PlatformRoomPage"
                     }, null),
-                    _el$71 = createElement("Panel", {
+                    _el$73 = createElement("Panel", {
                       "class": "PlatformRoomHeader"
-                    }, _el$70),
-                    _el$72 = createElement("Panel", {
+                    }, _el$72),
+                    _el$74 = createElement("Panel", {
                       "class": "PlatformRoomHeading"
-                    }, _el$71);
+                    }, _el$73);
                     createElement("Label", {
                       "class": "PlatformRoomGameTitle",
                       text: "#platform_c4_game_title"
-                    }, _el$72);
-                    const _el$74 = createElement("Panel", {
+                    }, _el$74);
+                    const _el$76 = createElement("Panel", {
                       "class": "PlatformRoomIdentity"
-                    }, _el$72),
-                    _el$75 = createElement("Label", {
+                    }, _el$74),
+                    _el$77 = createElement("Label", {
                       "class": "PlatformRoomTitle",
                       get text() {
                         return room()?.title || '#platform_room_title';
                       }
-                    }, _el$74),
-                    _el$76 = createElement("Label", {
+                    }, _el$76),
+                    _el$78 = createElement("Label", {
                       "class": "PlatformRoomStatus",
                       get text() {
                         return '#platform_state_' + room()?.state;
                       }
-                    }, _el$74),
-                    _el$77 = createElement("Panel", {
+                    }, _el$76),
+                    _el$79 = createElement("Panel", {
                       "class": "PlatformRoomHeaderActions"
-                    }, _el$71),
-                    _el$80 = createElement("Button", {
+                    }, _el$73),
+                    _el$82 = createElement("Button", {
                       "class": "PlatformButton PlatformRoomLeave"
-                    }, _el$77);
+                    }, _el$79);
                     createElement("Label", {
                       text: "#platform_leave"
-                    }, _el$80);
-                    const _el$82 = createElement("Panel", {
-                      "class": "PlatformRoomSettings"
-                    }, _el$70),
-                    _el$83 = createElement("Panel", {
-                      "class": "PlatformRoomSetting PlatformRoomModeSetting"
                     }, _el$82);
+                    const _el$84 = createElement("Panel", {
+                      "class": "PlatformRoomSettings"
+                    }, _el$72),
+                    _el$85 = createElement("Panel", {
+                      "class": "PlatformRoomSetting PlatformRoomModeSetting"
+                    }, _el$84);
                     createElement("Label", {
                       "class": "PlatformSettingCaption",
                       text: "#platform_mode"
-                    }, _el$83);
-                    const _el$85 = createElement("Panel", {
+                    }, _el$85);
+                    const _el$87 = createElement("Panel", {
                       "class": "PlatformRoomSetting PlatformRoomHostingSetting"
-                    }, _el$82);
+                    }, _el$84);
                     createElement("Label", {
                       "class": "PlatformSettingCaption",
                       text: "#platform_play_mode"
-                    }, _el$85);
+                    }, _el$87);
                     createElement("Label", {
                       "class": "PlatformSettingValue",
                       text: "#platform_hosting_dedicated"
-                    }, _el$85);
-                    const _el$88 = createElement("Panel", {
+                    }, _el$87);
+                    const _el$90 = createElement("Panel", {
                       "class": "PlatformRoomSetting PlatformRoomAutoSetting"
-                    }, _el$82);
+                    }, _el$84);
                     createElement("Label", {
                       "class": "PlatformSettingCaption",
                       text: "#platform_auto_start"
-                    }, _el$88);
-                    const _el$90 = createElement("Button", {
+                    }, _el$90);
+                    const _el$92 = createElement("Button", {
                       get ["class"]() {
                         return memberCount() > 1 && room()?.autoStart ? 'PlatformAutoStartSwitch PlatformAutoStartEnabled' : 'PlatformAutoStartSwitch';
                       }
-                    }, _el$88);
+                    }, _el$90);
                     createElement("Panel", {
                       "class": "PlatformAutoStartKnob",
                       hittest: false
-                    }, _el$90);
-                    const _el$92 = createElement("Label", {
+                    }, _el$92);
+                    const _el$94 = createElement("Label", {
                       "class": "PlatformAutoStartHint",
                       text: "#platform_auto_start_summary"
-                    }, _el$88),
-                    _el$93 = createElement("Panel", {
+                    }, _el$90),
+                    _el$95 = createElement("Panel", {
                       "class": "PlatformRoomSetting PlatformRoomPasswordSetting"
-                    }, _el$82);
+                    }, _el$84);
                     createElement("Label", {
                       "class": "PlatformSettingCaption",
                       text: "#platform_password"
-                    }, _el$93);
-                    const _el$99 = createElement("Panel", {
+                    }, _el$95);
+                    const _el$101 = createElement("Panel", {
                       "class": "PlatformRoomWorkspace"
-                    }, _el$70),
-                    _el$100 = createElement("Panel", {
+                    }, _el$72),
+                    _el$102 = createElement("Panel", {
                       "class": "PlatformRoomDetails"
-                    }, _el$99),
-                    _el$101 = createElement("Label", {
+                    }, _el$101),
+                    _el$103 = createElement("Label", {
                       "class": "PlatformRoomMembersTitle",
                       text: "#platform_room_members",
                       get dialogVariables() {
@@ -3296,34 +3234,34 @@ function PlatformLobby() {
                           total: room()?.capacity ?? 8
                         };
                       }
-                    }, _el$100),
-                    _el$102 = createElement("Panel", {
+                    }, _el$102),
+                    _el$104 = createElement("Panel", {
                       "class": "PlatformChat"
-                    }, _el$99);
+                    }, _el$101);
                     createElement("Label", {
                       "class": "PlatformChatTitle",
                       text: "#platform_room_chat"
-                    }, _el$102);
-                    const _el$104 = createElement("Panel", {
+                    }, _el$104);
+                    const _el$106 = createElement("Panel", {
                       "class": "PlatformChatMessages"
-                    }, _el$102),
-                    _el$106 = createElement("Panel", {
+                    }, _el$104),
+                    _el$108 = createElement("Panel", {
                       "class": "PlatformRow PlatformChatComposer"
-                    }, _el$102),
-                    _el$107 = createElement("TextEntry", {
+                    }, _el$104),
+                    _el$109 = createElement("TextEntry", {
                       id: "PlatformRoomChatInput",
                       "class": "PlatformChatInput",
                       placeholder: "#platform_chat_placeholder",
                       acceptsfocus: true,
                       maxchars: 300
-                    }, _el$106),
-                    _el$108 = createElement("Button", {
+                    }, _el$108),
+                    _el$110 = createElement("Button", {
                       "class": "PlatformButton PlatformChatSend"
-                    }, _el$106);
+                    }, _el$108);
                     createElement("Label", {
                       text: "#platform_send"
-                    }, _el$108);
-                    const _el$110 = createElement("Label", {
+                    }, _el$110);
+                    const _el$112 = createElement("Label", {
                       "class": "PlatformChatError",
                       get text() {
                         return chatError() ? '#platform_request_failed_code' : '';
@@ -3333,53 +3271,53 @@ function PlatformLobby() {
                           code: chatError()
                         };
                       }
-                    }, _el$102);
-                  insert(_el$77, createComponent(Show, {
+                    }, _el$104);
+                  insert(_el$79, createComponent(Show, {
                     get when() {
                       return room()?.state === 'LOBBY';
                     },
                     get fallback() {
                       return (() => {
-                        const _el$149 = createElement("Button", {
+                        const _el$151 = createElement("Button", {
                             "class": "PlatformButton PlatformRoomStart"
                           }, null),
-                          _el$150 = createElement("Label", {
+                          _el$152 = createElement("Label", {
                             get text() {
                               return memo(() => !!room()?.canLaunch)() ? restoredMatchID() === room()?.id ? '#platform_reconnect_now' : '#platform_enter' : '#platform_state_' + room()?.state;
                             }
-                          }, _el$149);
-                        setProp(_el$149, "onactivate", () => {
+                          }, _el$151);
+                        setProp(_el$151, "onactivate", () => {
                           void run(enterMatch);
                         });
                         effect(_p$ => {
                           const _v$39 = !loading() && !!room()?.canLaunch,
                             _v$40 = memo(() => !!room()?.canLaunch)() ? restoredMatchID() === room()?.id ? '#platform_reconnect_now' : '#platform_enter' : '#platform_state_' + room()?.state;
-                          _v$39 !== _p$._v$39 && (_p$._v$39 = setProp(_el$149, "enabled", _v$39, _p$._v$39));
-                          _v$40 !== _p$._v$40 && (_p$._v$40 = setProp(_el$150, "text", _v$40, _p$._v$40));
+                          _v$39 !== _p$._v$39 && (_p$._v$39 = setProp(_el$151, "enabled", _v$39, _p$._v$39));
+                          _v$40 !== _p$._v$40 && (_p$._v$40 = setProp(_el$152, "text", _v$40, _p$._v$40));
                           return _p$;
                         }, {
                           _v$39: undefined,
                           _v$40: undefined
                         });
-                        return _el$149;
+                        return _el$151;
                       })();
                     },
                     get children() {
-                      const _el$78 = createElement("Button", {
+                      const _el$80 = createElement("Button", {
                           "class": "PlatformButton PlatformRoomStart"
                         }, null);
                         createElement("Label", {
                           text: "#platform_start"
-                        }, _el$78);
-                      setProp(_el$78, "onactivate", () => roomAction('start', {
+                        }, _el$80);
+                      setProp(_el$80, "onactivate", () => roomAction('start', {
                         launchMode: 'dedicated'
                       }));
-                      effect(_$p => setProp(_el$78, "enabled", canEditRoom(), _$p));
-                      return _el$78;
+                      effect(_$p => setProp(_el$80, "enabled", canEditRoom(), _$p));
+                      return _el$80;
                     }
-                  }), _el$80);
-                  setProp(_el$80, "onactivate", () => roomAction('leave'));
-                  insert(_el$83, createComponent(EOM_DropDown, {
+                  }), _el$82);
+                  setProp(_el$82, "onactivate", () => roomAction('leave'));
+                  insert(_el$85, createComponent(EOM_DropDown, {
                     menuClassName: "PlatformDropDownMenu",
                     className: "PlatformMode",
                     get index() {
@@ -3400,43 +3338,43 @@ function PlatformLobby() {
                           return game()?.maps ?? [];
                         },
                         children: choice => (() => {
-                          const _el$151 = createElement("Label", {
+                          const _el$153 = createElement("Label", {
                             get text() {
                               return choice.name;
                             }
                           }, null);
-                          effect(_$p => setProp(_el$151, "text", choice.name, _$p));
-                          return _el$151;
+                          effect(_$p => setProp(_el$153, "text", choice.name, _$p));
+                          return _el$153;
                         })()
                       });
                     }
                   }), null);
-                  setProp(_el$90, "tooltip_text", "#platform_auto_start_hint");
-                  setProp(_el$90, "onactivate", () => roomAction('auto-start', {
+                  setProp(_el$92, "tooltip_text", "#platform_auto_start_hint");
+                  setProp(_el$92, "onactivate", () => roomAction('auto-start', {
                     autoStart: !room()?.autoStart
                   }));
-                  setProp(_el$92, "tooltip_text", "#platform_auto_start_hint");
-                  insert(_el$93, createComponent(Show, {
+                  setProp(_el$94, "tooltip_text", "#platform_auto_start_hint");
+                  insert(_el$95, createComponent(Show, {
                     get when() {
                       return room()?.owner === userID();
                     },
                     get fallback() {
                       return (() => {
-                        const _el$152 = createElement("Label", {
+                        const _el$154 = createElement("Label", {
                           "class": "PlatformSettingValue",
                           get text() {
                             return room()?.locked ? '#platform_password_set' : '#platform_password_not_set';
                           }
                         }, null);
-                        effect(_$p => setProp(_el$152, "text", room()?.locked ? '#platform_password_set' : '#platform_password_not_set', _$p));
-                        return _el$152;
+                        effect(_$p => setProp(_el$154, "text", room()?.locked ? '#platform_password_set' : '#platform_password_not_set', _$p));
+                        return _el$154;
                       })();
                     },
                     get children() {
-                      const _el$95 = createElement("Panel", {
+                      const _el$97 = createElement("Panel", {
                           "class": "PlatformRoomPasswordRow"
                         }, null),
-                        _el$96 = createElement("TextEntry", {
+                        _el$98 = createElement("TextEntry", {
                           id: "PlatformRoomPasswordInput",
                           "class": "PlatformRoomPasswordInput",
                           placeholder: "#platform_password_not_set",
@@ -3444,37 +3382,37 @@ function PlatformLobby() {
                             return !passwordVisible();
                           },
                           acceptsfocus: true
-                        }, _el$95),
-                        _el$97 = createElement("Button", {
+                        }, _el$97),
+                        _el$99 = createElement("Button", {
                           "class": "PlatformPasswordVisibility"
-                        }, _el$95),
-                        _el$98 = createElement("Label", {
+                        }, _el$97),
+                        _el$100 = createElement("Label", {
                           get text() {
                             return passwordVisible() ? '#platform_password_hide' : '#platform_password_show';
                           }
-                        }, _el$97);
+                        }, _el$99);
                       use(panel => {
                         roomPasswordInput = panel;
                         panel.SetDisableFocusOnMouseDown(false);
                         roomPasswordDraft = room()?.join_password ?? '';
                         panel.text = roomPasswordDraft;
-                      }, _el$96);
-                      setProp(_el$96, "ontextentrychange", panel => {
+                      }, _el$98);
+                      setProp(_el$98, "ontextentrychange", panel => {
                         roomPasswordDraft = panel.text;
                         setPasswordDirty(panel.text !== (room()?.join_password ?? ''));
                       });
-                      setProp(_el$96, "oninputsubmit", saveRoomPassword);
-                      setProp(_el$96, "onblur", saveRoomPassword);
-                      setProp(_el$97, "onactivate", () => setPasswordVisible(value => !value));
+                      setProp(_el$98, "oninputsubmit", saveRoomPassword);
+                      setProp(_el$98, "onblur", saveRoomPassword);
+                      setProp(_el$99, "onactivate", () => setPasswordVisible(value => !value));
                       effect(_p$ => {
                         const _v$15 = !passwordVisible(),
                           _v$16 = canEditRoom(),
                           _v$17 = !loading(),
                           _v$18 = passwordVisible() ? '#platform_password_hide' : '#platform_password_show';
-                        _v$15 !== _p$._v$15 && (_p$._v$15 = setProp(_el$96, "password", _v$15, _p$._v$15));
-                        _v$16 !== _p$._v$16 && (_p$._v$16 = setProp(_el$96, "enabled", _v$16, _p$._v$16));
-                        _v$17 !== _p$._v$17 && (_p$._v$17 = setProp(_el$97, "enabled", _v$17, _p$._v$17));
-                        _v$18 !== _p$._v$18 && (_p$._v$18 = setProp(_el$98, "text", _v$18, _p$._v$18));
+                        _v$15 !== _p$._v$15 && (_p$._v$15 = setProp(_el$98, "password", _v$15, _p$._v$15));
+                        _v$16 !== _p$._v$16 && (_p$._v$16 = setProp(_el$98, "enabled", _v$16, _p$._v$16));
+                        _v$17 !== _p$._v$17 && (_p$._v$17 = setProp(_el$99, "enabled", _v$17, _p$._v$17));
+                        _v$18 !== _p$._v$18 && (_p$._v$18 = setProp(_el$100, "text", _v$18, _p$._v$18));
                         return _p$;
                       }, {
                         _v$15: undefined,
@@ -3482,10 +3420,10 @@ function PlatformLobby() {
                         _v$17: undefined,
                         _v$18: undefined
                       });
-                      return _el$95;
+                      return _el$97;
                     }
                   }), null);
-                  insert(_el$100, createComponent(RoomSeats, {
+                  insert(_el$102, createComponent(RoomSeats, {
                     get room() {
                       return room();
                     },
@@ -3496,8 +3434,8 @@ function PlatformLobby() {
                   }), null);
                   use(panel => {
                     chatList = panel;
-                  }, _el$104);
-                  insert(_el$104, createComponent(Show, {
+                  }, _el$106);
+                  insert(_el$106, createComponent(Show, {
                     get when() {
                       return chats().length === 0;
                     },
@@ -3508,7 +3446,7 @@ function PlatformLobby() {
                       }, null);
                     }
                   }), null);
-                  insert(_el$104, createComponent(For, {
+                  insert(_el$106, createComponent(For, {
                     get each() {
                       return chats();
                     },
@@ -3526,13 +3464,13 @@ function PlatformLobby() {
                   use(panel => {
                     chatInput = panel;
                     panel.SetDisableFocusOnMouseDown(false);
-                  }, _el$107);
-                  setProp(_el$107, "ontextentrychange", panel => setMessage(panel.text));
-                  setProp(_el$107, "oninputsubmit", panel => {
+                  }, _el$109);
+                  setProp(_el$109, "ontextentrychange", panel => setMessage(panel.text));
+                  setProp(_el$109, "oninputsubmit", panel => {
                     setMessage(panel.text);
                     sendMessage();
                   });
-                  setProp(_el$108, "onactivate", () => {
+                  setProp(_el$110, "onactivate", () => {
                     void sendMessage();
                   });
                   effect(_p$ => {
@@ -3550,15 +3488,15 @@ function PlatformLobby() {
                       _v$27 = {
                         code: chatError()
                       };
-                    _v$19 !== _p$._v$19 && (_p$._v$19 = setProp(_el$75, "text", _v$19, _p$._v$19));
-                    _v$20 !== _p$._v$20 && (_p$._v$20 = setProp(_el$76, "text", _v$20, _p$._v$20));
-                    _v$21 !== _p$._v$21 && (_p$._v$21 = setProp(_el$80, "enabled", _v$21, _p$._v$21));
-                    _v$22 !== _p$._v$22 && (_p$._v$22 = setProp(_el$90, "class", _v$22, _p$._v$22));
-                    _v$23 !== _p$._v$23 && (_p$._v$23 = setProp(_el$90, "enabled", _v$23, _p$._v$23));
-                    _v$24 !== _p$._v$24 && (_p$._v$24 = setProp(_el$101, "dialogVariables", _v$24, _p$._v$24));
-                    _v$25 !== _p$._v$25 && (_p$._v$25 = setProp(_el$108, "enabled", _v$25, _p$._v$25));
-                    _v$26 !== _p$._v$26 && (_p$._v$26 = setProp(_el$110, "text", _v$26, _p$._v$26));
-                    _v$27 !== _p$._v$27 && (_p$._v$27 = setProp(_el$110, "dialogVariables", _v$27, _p$._v$27));
+                    _v$19 !== _p$._v$19 && (_p$._v$19 = setProp(_el$77, "text", _v$19, _p$._v$19));
+                    _v$20 !== _p$._v$20 && (_p$._v$20 = setProp(_el$78, "text", _v$20, _p$._v$20));
+                    _v$21 !== _p$._v$21 && (_p$._v$21 = setProp(_el$82, "enabled", _v$21, _p$._v$21));
+                    _v$22 !== _p$._v$22 && (_p$._v$22 = setProp(_el$92, "class", _v$22, _p$._v$22));
+                    _v$23 !== _p$._v$23 && (_p$._v$23 = setProp(_el$92, "enabled", _v$23, _p$._v$23));
+                    _v$24 !== _p$._v$24 && (_p$._v$24 = setProp(_el$103, "dialogVariables", _v$24, _p$._v$24));
+                    _v$25 !== _p$._v$25 && (_p$._v$25 = setProp(_el$110, "enabled", _v$25, _p$._v$25));
+                    _v$26 !== _p$._v$26 && (_p$._v$26 = setProp(_el$112, "text", _v$26, _p$._v$26));
+                    _v$27 !== _p$._v$27 && (_p$._v$27 = setProp(_el$112, "dialogVariables", _v$27, _p$._v$27));
                     return _p$;
                   }, {
                     _v$19: undefined,
@@ -3571,12 +3509,12 @@ function PlatformLobby() {
                     _v$26: undefined,
                     _v$27: undefined
                   });
-                  return _el$70;
+                  return _el$72;
                 }
               })];
             }
           }));
-          return _el$66;
+          return _el$68;
         })();
       },
       get children() {
@@ -3597,13 +3535,20 @@ function PlatformLobby() {
             text: "#platform_entry_china"
           }, _el$30);
           const _el$32 = createElement("Button", {
-            "class": "PlatformButton PlatformEntryButton PlatformEntryButtonLast"
+            "class": "PlatformButton PlatformEntryButton"
           }, _el$29);
           createElement("Label", {
             text: "#platform_entry_overseas"
           }, _el$32);
+          const _el$34 = createElement("Button", {
+            "class": "PlatformButton PlatformEntryButton PlatformEntryButtonLast"
+          }, _el$29);
+          createElement("Label", {
+            text: "#platform_entry_overseas2"
+          }, _el$34);
         setProp(_el$30, "onactivate", () => chooseEntry('china'));
         setProp(_el$32, "onactivate", () => chooseEntry('overseas'));
+        setProp(_el$34, "onactivate", () => chooseEntry('overseas2'));
         insert(_el$27, createComponent(Show, {
           get when() {
             return entryConnecting();
@@ -3623,12 +3568,12 @@ function PlatformLobby() {
         return !entry && (error() || otherGame() || loading() || matching() || !connected());
       },
       get children() {
-        const _el$35 = createElement("Panel", {
+        const _el$37 = createElement("Panel", {
             get ["class"]() {
               return memo(() => !!error())() ? 'PlatformMatchPopover PlatformStatusError' : memo(() => !!otherGame())() ? 'PlatformMatchPopover PlatformStatusWarning' : loading() || !connected() ? 'PlatformMatchPopover PlatformStatusLoading' : 'PlatformMatchPopover';
             }
           }, null),
-          _el$37 = createElement("Label", {
+          _el$39 = createElement("Label", {
             "class": "PlatformMatchPopoverStatus",
             get text() {
               return error() || (otherGame() ? '#platform_other_game_room' : loading() || !connected() ? '#platform_loading' : '#platform_state_MATCHING');
@@ -3638,8 +3583,8 @@ function PlatformLobby() {
                 code: errorDetails()
               };
             }
-          }, _el$35);
-        insert(_el$35, createComponent(Show, {
+          }, _el$37);
+        insert(_el$37, createComponent(Show, {
           get when() {
             return memo(() => !!!error())() && !otherGame();
           },
@@ -3654,66 +3599,66 @@ function PlatformLobby() {
               "class": "PlatformMatchSpinner"
             }, null);
           }
-        }), _el$37);
-        insert(_el$35, createComponent(Show, {
+        }), _el$39);
+        insert(_el$37, createComponent(Show, {
           get when() {
             return matching();
           },
           get children() {
             return [(() => {
-              const _el$38 = createElement("Label", {
+              const _el$40 = createElement("Label", {
                 "class": "PlatformMatchPopoverCount",
                 get text() {
                   return String(room()?.players?.filter(player => player.role !== 'spectator' && player.role !== 'observer').length ?? Object.keys(room()?.members ?? {}).length) + '/' + (room()?.maxPlayers || room()?.capacity || 8);
                 }
               }, null);
-              effect(_$p => setProp(_el$38, "text", String(room()?.players?.filter(player => player.role !== 'spectator' && player.role !== 'observer').length ?? Object.keys(room()?.members ?? {}).length) + '/' + (room()?.maxPlayers || room()?.capacity || 8), _$p));
-              return _el$38;
+              effect(_$p => setProp(_el$40, "text", String(room()?.players?.filter(player => player.role !== 'spectator' && player.role !== 'observer').length ?? Object.keys(room()?.members ?? {}).length) + '/' + (room()?.maxPlayers || room()?.capacity || 8), _$p));
+              return _el$40;
             })(), (() => {
-              const _el$39 = createElement("Label", {
+              const _el$41 = createElement("Label", {
                 "class": "PlatformMatchPopoverTime",
                 get text() {
                   return matchTime();
                 }
               }, null);
-              effect(_$p => setProp(_el$39, "text", matchTime(), _$p));
-              return _el$39;
+              effect(_$p => setProp(_el$41, "text", matchTime(), _$p));
+              return _el$41;
             })()];
           }
         }), null);
-        insert(_el$35, createComponent(Show, {
+        insert(_el$37, createComponent(Show, {
           get when() {
             return memo(() => !!error())() && (!connected() || communicationError());
           },
           get children() {
-            const _el$40 = createElement("Button", {
+            const _el$42 = createElement("Button", {
                 "class": "PlatformStatusRetry"
               }, null);
               createElement("Label", {
                 text: "#platform_retry"
-              }, _el$40);
-            setProp(_el$40, "onactivate", () => {
+              }, _el$42);
+            setProp(_el$42, "onactivate", () => {
               void run(initialize);
             });
-            effect(_$p => setProp(_el$40, "enabled", !loading(), _$p));
-            return _el$40;
+            effect(_$p => setProp(_el$42, "enabled", !loading(), _$p));
+            return _el$42;
           }
         }), null);
-        insert(_el$35, createComponent(Show, {
+        insert(_el$37, createComponent(Show, {
           get when() {
             return error();
           },
           get children() {
-            const _el$42 = createElement("Button", {
+            const _el$44 = createElement("Button", {
                 "class": "PlatformStatusClose"
               }, null);
               createElement("Panel", {
                 "class": "PlatformStatusCloseIcon",
                 hittest: false
-              }, _el$42);
-            setProp(_el$42, "tooltip_text", "#platform_close_notification");
-            setProp(_el$42, "onactivate", () => setError(''));
-            return _el$42;
+              }, _el$44);
+            setProp(_el$44, "tooltip_text", "#platform_close_notification");
+            setProp(_el$44, "onactivate", () => setError(''));
+            return _el$44;
           }
         }), null);
         effect(_p$ => {
@@ -3722,16 +3667,16 @@ function PlatformLobby() {
             _v$0 = {
               code: errorDetails()
             };
-          _v$8 !== _p$._v$8 && (_p$._v$8 = setProp(_el$35, "class", _v$8, _p$._v$8));
-          _v$9 !== _p$._v$9 && (_p$._v$9 = setProp(_el$37, "text", _v$9, _p$._v$9));
-          _v$0 !== _p$._v$0 && (_p$._v$0 = setProp(_el$37, "dialogVariables", _v$0, _p$._v$0));
+          _v$8 !== _p$._v$8 && (_p$._v$8 = setProp(_el$37, "class", _v$8, _p$._v$8));
+          _v$9 !== _p$._v$9 && (_p$._v$9 = setProp(_el$39, "text", _v$9, _p$._v$9));
+          _v$0 !== _p$._v$0 && (_p$._v$0 = setProp(_el$39, "dialogVariables", _v$0, _p$._v$0));
           return _p$;
         }, {
           _v$8: undefined,
           _v$9: undefined,
           _v$0: undefined
         });
-        return _el$35;
+        return _el$37;
       }
     }), null);
     insert(_el$22, createComponent(Show, {
@@ -3739,42 +3684,42 @@ function PlatformLobby() {
         return memo(() => reconnectPromptID() === room()?.id)() && reconnectable(room());
       },
       get children() {
-        const _el$44 = createElement("Panel", {
+        const _el$46 = createElement("Panel", {
             "class": "PlatformModalOverlay"
           }, null),
-          _el$45 = createElement("Panel", {
+          _el$47 = createElement("Panel", {
             "class": "PlatformCreateDialog"
-          }, _el$44);
+          }, _el$46);
           createElement("Label", {
             "class": "PlatformTitle",
             text: "#platform_reconnect_title"
-          }, _el$45);
+          }, _el$47);
           createElement("Label", {
             "class": "PlatformReconnectDescription",
             text: "#platform_reconnect_description"
-          }, _el$45);
-          const _el$48 = createElement("Label", {
+          }, _el$47);
+          const _el$50 = createElement("Label", {
             get text() {
               return room()?.title || '#platform_room_title';
             }
-          }, _el$45),
-          _el$49 = createElement("Panel", {
+          }, _el$47),
+          _el$51 = createElement("Panel", {
             "class": "PlatformRow PlatformDialogActions"
-          }, _el$45),
-          _el$50 = createElement("Button", {
+          }, _el$47),
+          _el$52 = createElement("Button", {
             "class": "PlatformButton PlatformReconnectLater"
-          }, _el$49);
+          }, _el$51);
           createElement("Label", {
             text: "#platform_reconnect_later"
-          }, _el$50);
-          const _el$52 = createElement("Button", {
+          }, _el$52);
+          const _el$54 = createElement("Button", {
             "class": "PlatformButton PlatformPrimaryButton PlatformReconnectConfirm"
-          }, _el$49);
+          }, _el$51);
           createElement("Label", {
             text: "#platform_reconnect_now"
-          }, _el$52);
-        setProp(_el$50, "onactivate", () => setReconnectPromptID(''));
-        setProp(_el$52, "onactivate", () => {
+          }, _el$54);
+        setProp(_el$52, "onactivate", () => setReconnectPromptID(''));
+        setProp(_el$54, "onactivate", () => {
           const roomID = room()?.id;
           void run(() => enterMatch(roomID));
         });
@@ -3782,16 +3727,16 @@ function PlatformLobby() {
           const _v$1 = room()?.title || '#platform_room_title',
             _v$10 = !loading(),
             _v$11 = !loading();
-          _v$1 !== _p$._v$1 && (_p$._v$1 = setProp(_el$48, "text", _v$1, _p$._v$1));
-          _v$10 !== _p$._v$10 && (_p$._v$10 = setProp(_el$50, "enabled", _v$10, _p$._v$10));
-          _v$11 !== _p$._v$11 && (_p$._v$11 = setProp(_el$52, "enabled", _v$11, _p$._v$11));
+          _v$1 !== _p$._v$1 && (_p$._v$1 = setProp(_el$50, "text", _v$1, _p$._v$1));
+          _v$10 !== _p$._v$10 && (_p$._v$10 = setProp(_el$52, "enabled", _v$10, _p$._v$10));
+          _v$11 !== _p$._v$11 && (_p$._v$11 = setProp(_el$54, "enabled", _v$11, _p$._v$11));
           return _p$;
         }, {
           _v$1: undefined,
           _v$10: undefined,
           _v$11: undefined
         });
-        return _el$44;
+        return _el$46;
       }
     }), null);
     insert(_el$22, createComponent(Show, {
@@ -3799,29 +3744,29 @@ function PlatformLobby() {
         return memo(() => !!(createOpen() && !room()))() && !otherGame();
       },
       get children() {
-        const _el$54 = createElement("Panel", {
+        const _el$56 = createElement("Panel", {
             "class": "PlatformModalOverlay"
           }, null),
-          _el$55 = createElement("Panel", {
+          _el$57 = createElement("Panel", {
             "class": "PlatformCreateDialog"
-          }, _el$54);
+          }, _el$56);
           createElement("Label", {
             "class": "PlatformTitle",
             text: "#platform_create"
-          }, _el$55);
+          }, _el$57);
           createElement("Label", {
             text: "#platform_room_title"
-          }, _el$55);
-          const _el$58 = createElement("Label", {
+          }, _el$57);
+          const _el$60 = createElement("Label", {
             text: "#platform_mode"
-          }, _el$55),
-          _el$59 = createElement("Label", {
+          }, _el$57),
+          _el$61 = createElement("Label", {
             text: "#platform_password"
-          }, _el$55),
-          _el$60 = createElement("Panel", {
+          }, _el$57),
+          _el$62 = createElement("Panel", {
             "class": "PlatformRow PlatformDialogActions"
-          }, _el$55);
-        insert(_el$55, createComponent(EOM_TextEntry, {
+          }, _el$57);
+        insert(_el$57, createComponent(EOM_TextEntry, {
           get placeholder() {
             return defaultRoomName();
           },
@@ -3832,8 +3777,8 @@ function PlatformLobby() {
           onChange: (_, __, text) => {
             title = text;
           }
-        }), _el$58);
-        insert(_el$55, createComponent(EOM_DropDown, {
+        }), _el$60);
+        insert(_el$57, createComponent(EOM_DropDown, {
           menuClassName: "PlatformDropDownMenu",
           className: "PlatformMode",
           get index() {
@@ -3852,34 +3797,34 @@ function PlatformLobby() {
                 return game()?.maps ?? [];
               },
               children: choice => (() => {
-                const _el$154 = createElement("Label", {
+                const _el$156 = createElement("Label", {
                   get text() {
                     return choice.name;
                   }
                 }, null);
-                effect(_$p => setProp(_el$154, "text", choice.name, _$p));
-                return _el$154;
+                effect(_$p => setProp(_el$156, "text", choice.name, _$p));
+                return _el$156;
               })()
             });
           }
-        }), _el$59);
-        insert(_el$55, createComponent(EOM_TextEntry, {
+        }), _el$61);
+        insert(_el$57, createComponent(EOM_TextEntry, {
           placeholder: "#platform_password",
           acceptsfocus: true,
           ref: panel => panel.SetDisableFocusOnMouseDown(false),
           onChange: (_, __, text) => {
             password = text;
           }
-        }), _el$60);
-        insert(_el$60, () => button('#platform_cancel', () => setCreateOpen(false)), null);
-        insert(_el$60, () => button('#platform_create', () => {
+        }), _el$62);
+        insert(_el$62, () => button('#platform_cancel', () => setCreateOpen(false)), null);
+        insert(_el$62, () => button('#platform_create', () => {
           void run(async () => {
             await request(base() + '/rooms', 'POST', createRoomPayload(map(), title.trim() || defaultRoomName(), password));
             setCreateOpen(false);
             await refresh();
           });
         }, true), null);
-        return _el$54;
+        return _el$56;
       }
     }), null);
     insert(_el$22, createComponent(Show, {
@@ -3887,25 +3832,25 @@ function PlatformLobby() {
         return memo(() => !!(joinTarget() && !room()))() && !otherGame();
       },
       get children() {
-        const _el$61 = createElement("Panel", {
+        const _el$63 = createElement("Panel", {
             "class": "PlatformModalOverlay"
           }, null),
-          _el$62 = createElement("Panel", {
+          _el$64 = createElement("Panel", {
             "class": "PlatformCreateDialog"
-          }, _el$61);
+          }, _el$63);
           createElement("Label", {
             "class": "PlatformTitle",
             text: "#platform_join"
-          }, _el$62);
-          const _el$64 = createElement("Label", {
+          }, _el$64);
+          const _el$66 = createElement("Label", {
             get text() {
               return joinTarget()?.title || '#platform_room_title';
             }
-          }, _el$62),
-          _el$65 = createElement("Panel", {
+          }, _el$64),
+          _el$67 = createElement("Panel", {
             "class": "PlatformRow PlatformDialogActions"
-          }, _el$62);
-        insert(_el$62, createComponent(EOM_TextEntry, {
+          }, _el$64);
+        insert(_el$64, createComponent(EOM_TextEntry, {
           placeholder: "#platform_password",
           acceptsfocus: true,
           ref: panel => {
@@ -3917,15 +3862,15 @@ function PlatformLobby() {
           onChange: (_, __, text) => {
             password = text;
           }
-        }), _el$65);
-        insert(_el$65, () => button('#platform_cancel', () => setJoinTarget(undefined)), null);
-        insert(_el$65, () => button('#platform_join', () => {
+        }), _el$67);
+        insert(_el$67, () => button('#platform_cancel', () => setJoinTarget(undefined)), null);
+        insert(_el$67, () => button('#platform_join', () => {
           if (joinTarget()) mutate('/rooms/' + joinTarget().id + '/join', {
             password
           });
         }, true), null);
-        effect(_$p => setProp(_el$64, "text", joinTarget()?.title || '#platform_room_title', _$p));
-        return _el$61;
+        effect(_$p => setProp(_el$66, "text", joinTarget()?.title || '#platform_room_title', _$p));
+        return _el$63;
       }
     }), null);
     return _el$22;

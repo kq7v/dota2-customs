@@ -227,7 +227,7 @@
 
 .PlatformEntryChoices
 {
-	width: 640px;
+	width: 820px;
 	height: fit-children;
 	horizontal-align: center;
 	vertical-align: center;
@@ -283,6 +283,8 @@
 .PlatformLobby .PlatformEntryButton Label
 {
 	font-size: 20px;
+	horizontal-align: center;
+	vertical-align: center;
 }
 
 .PlatformLobby .PlatformEntryStatus

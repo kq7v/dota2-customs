@@ -4642,3 +4642,20 @@
 	font-size: 22px;
 	color: #ffffff;
 }
+
+.PlatformReturnButton
+{
+	horizontal-align: right;
+	vertical-align: bottom;
+	margin: 24px;
+	padding: 12px 20px;
+	border: 1px solid #7c8999;
+	background-color: #242d39;
+	z-index: 100;
+}
+
+.PlatformReturnButton Label
+{
+	color: #e0e5ec;
+	font-size: 22px;
+}

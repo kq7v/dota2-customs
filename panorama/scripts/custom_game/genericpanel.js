@@ -33,6 +33,13 @@ const CDOTAScenePanel = props => {
     return _el$12;
   })();
 };
+const CTextButton = props => {
+  return (() => {
+    const _el$23 = libs.createElement("TextButton", props, null);
+    libs.spread(_el$23, props, false);
+    return _el$23;
+  })();
+};
 function GenericPanel2(props) {
   let [local, other] = libs.splitProps(props, ["type"]);
   let [, other2] = libs.splitProps(props, ["type", "children"]);
@@ -90,6 +97,7 @@ function DynamicKey(props) {
 exports.CDOTAScenePanel = CDOTAScenePanel;
 exports.CImage = CImage;
 exports.CLabel = CLabel;
+exports.CTextButton = CTextButton;
 exports.DynamicKey = DynamicKey;
 exports.TabButton = TabButton;
 exports.UICanvas = UICanvas;

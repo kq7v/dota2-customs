@@ -14,7 +14,7 @@ var libs = require('./libs.js');
 var GenericPanel = require('./GenericPanel.js');
 var EOM_Panel = require('./EOM_Panel.js');
 
-let DotaHud = GameUI.CustomUIConfig()._HUDRoot_;
+let DotaHud = GameUI.CustomUIConfig()._HUDRoot_ ?? $.GetContextPanel();
 while (DotaHud.GetParent() != undefined) {
   DotaHud = DotaHud.GetParent();
 }
@@ -37,12 +37,12 @@ if (DotaHud != undefined && EOM_DropDownContainer == undefined) {
 }
 const EOM_DropDown = props => {
   const mergerd = libs.mergeProps$1({
-    id: doUniqueString("EOM_DropDown"),
+    id: "EOM_DropDown_" + Date.now().toString(36) + "_" + Math.random().toString(36).slice(2),
     menuPosition: "bottom",
     hasClear: false,
     enable: true
   }, props);
-  const [local, others] = libs.splitProps(mergerd, ["children", "index", "placeholder", "onChange", "onClear", "id", "menuPosition", "hasClear", "enable"]);
+  const [local, others] = libs.splitProps(mergerd, ["children", "index", "placeholder", "onChange", "onClear", "id", "menuPosition", "hasClear", "enable", "menuClassName"]);
   let resolved = libs.children(() => local.children);
   let selfRef = undefined;
   let myMenu = undefined;
@@ -96,6 +96,7 @@ const EOM_DropDown = props => {
     if (myMenu == undefined && selfRef) {
       myMenu = $.CreatePanel("Panel", selfRef, `${local.id}_DropDownMenu`);
       myMenu.AddClass("EOM_DropDownMenu");
+      if (local.menuClassName) myMenu.AddClass(local.menuClassName);
       let _resolved = libs.children(() => local.children);
       if (_resolved()) {
         if (local.hasClear) {
