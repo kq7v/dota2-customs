@@ -247,3 +247,111 @@ function smoothCameraDistance() {
     GameUI.SetCameraDistance(g_currDistance);
     return;
 }
+// ===== 开局镜头：开局就在自己棋盘上空，2.5 秒缓缓降落到棋盘中心（和按 ` 回到的位置一致）=====
+(function () {
+    function Log(m) { try { $.Msg('[DAC-camera] ' + m); } catch (e) { } }
+    var START_DISTANCE = 3200;   // 起始高度
+    var END_DISTANCE = 1400;     // 结束高度（和 ResetCamera 一致）
+    var START_PITCH = 82;        // 起始俯仰角
+    var END_PITCH = 60;          // 结束俯仰角
+    var SECONDS = 2.5;           // 下落时长
+    var started = false;
+    var waited = 0;
+
+    function MyTeam() {
+        try { return Players.GetTeam(Players.GetLocalPlayer()); } catch (e) { return undefined; }
+    }
+
+    function MyCenter() {
+        try {
+            if (typeof CENTER_ENTITY_INDEX === 'undefined' || !CENTER_ENTITY_INDEX) { return undefined; }
+            return CENTER_ENTITY_INDEX[MyTeam()];
+        } catch (e) { return undefined; }
+    }
+
+    // 先拉到高空并保持
+    function ApplyHigh() {
+        try {
+            GameUI.SetCameraPitchMin(START_PITCH);
+            GameUI.SetCameraPitchMax(START_PITCH);
+            GameUI.SetCameraDistance(START_DISTANCE);
+        } catch (e) { }
+    }
+
+    // 和按 ` 回城完全一样的做法：先选中自己的英雄，再把镜头对准棋盘中心坐标
+    function FocusCenter(center, smooth) {
+        try {
+            GameUI.SelectUnit(Players.GetPlayerHeroEntityIndex(Players.GetLocalPlayer()), false);
+        } catch (e) { }
+        try {
+            $.Schedule(0.05, function () {
+                try { GameUI.SetCameraTargetPosition(center, smooth === undefined ? 0.2 : smooth); } catch (e2) { }
+            });
+        } catch (e3) { }
+    }
+
+    function Begin() {
+        if (started) { return; }
+        started = true;
+        var center = MyCenter();
+        if (center !== undefined) {
+            FocusCenter(center);
+        } else {
+            Log('center not ready, keep current camera focus');
+        }
+        ApplyHigh();
+
+        var steps = Math.max(1, Math.round(SECONDS * 30));
+        var step = 0;
+        function Tick() {
+            try {
+                step++;
+                var k = step / steps;
+                if (k > 1) { k = 1; }
+                GameUI.SetCameraDistance(START_DISTANCE + (END_DISTANCE - START_DISTANCE) * k);
+                var pitch = START_PITCH + (END_PITCH - START_PITCH) * k;
+                GameUI.SetCameraPitchMin(pitch);
+                GameUI.SetCameraPitchMax(pitch);
+                // 每 0.2 秒重新对准一次棋盘中心，避免镜头被“跟随信使”抢回去
+                if (center !== undefined && step % 6 === 0) {
+                    GameUI.SetCameraTargetPosition(center, 0.2);
+                }
+                if (k < 1) {
+                    $.Schedule(1.0 / 30.0, Tick);
+                    return;
+                }
+            } catch (e) { Log('tick error: ' + e); }
+            try {
+                g_targetDistance = END_DISTANCE;
+                g_currDistance = END_DISTANCE;
+                GameUI.SetCameraDistance(END_DISTANCE);
+                GameUI.SetCameraPitchMin(END_PITCH);
+                GameUI.SetCameraPitchMax(END_PITCH);
+                if (center !== undefined) { GameUI.SetCameraTargetPosition(center, 0.2); }
+                Log('done');
+            } catch (e2) { }
+            if (center !== undefined) {
+                $.Schedule(0.3, function () {
+                    try { GameUI.SetCameraTargetPosition(center, 0.2); } catch (e3) { }
+                });
+            }
+        }
+        Log('descend start, center=' + center);
+        $.Schedule(0.1, Tick);
+    }
+
+    // 等自己的棋盘中心坐标可用（这期间一直保持高空）
+    function WaitCenter() {
+        if (started) { return; }
+        if (MyCenter() !== undefined) { Begin(); return; }
+        waited += 0.1;
+        ApplyHigh();
+        if (waited >= 5.0) { Begin(); return; }
+        $.Schedule(0.1, WaitCenter);
+    }
+
+    Log('installed');
+    ApplyHigh();
+    $.Schedule(0, WaitCenter);
+    $.Schedule(0.5, function () { if (!started) { ApplyHigh(); } });
+})();

@@ -5552,7 +5552,7 @@
 
 		"text_panel_shop_title_spring_festival"		"战利品兑换·芳晓佳节"
 		"text_panel_shop_title"		"战利品兑换" 
-				"text_store_qr_button_title"		"多多岛商店"
+		"text_store_qr_button_title"		"多多岛商店"
 		"text_store_qr_button_tips"		"点击开启！"
 		"text_store_tips_biscuit_title"		"甜甜圈"
 		"text_store_tips_biscuit"		"用来兑换某些特殊装饰哦和嘲讽表情包，可以通过完成通行证任务获取。"

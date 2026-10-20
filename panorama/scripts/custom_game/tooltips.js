@@ -187,9 +187,10 @@ function ShowSynergyTooltipsSmallIconsInner(chess_list_all, panel_icons_containe
 				ii.style['saturation'] = '0';
 			}
 			if (c.i_have){
+				//已经有了的棋子：右下角打对号（原来是 check_png.vtex，src 被注释掉导致对号不见了）
 				$.CreatePanel("Image", container1, "", { 
-					style: "height:16px;width:16px;margin-left:-16px;margin-top:21px;img-shadow:1px 1px 3px 0.0 #00000011;",
-					// src: "s2r://panorama/images/control_icons/check_png.vtex",
+					src: "file://{images}/custom_game/tick.png",
+					style: "height:14px;width:18px;margin-left:-19px;margin-top:20px;img-shadow:0px 0px 2px 2px #000000cc;",
 				});
 			}
 		}

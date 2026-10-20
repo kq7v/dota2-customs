@@ -457,6 +457,7 @@ function DAC:InitGameMode()
 	CustomGameEventManager:RegisterListener("request_damage_stat", Dynamic_Wrap(DAC, "OnRequestDamageStat"))
 	CustomGameEventManager:RegisterListener("item_double_coin", Dynamic_Wrap(DAC, "ItemDoubleCoin"))
 	CustomGameEventManager:RegisterListener("request_qr_code", Dynamic_Wrap(DAC, "OnRequestQRCode"))
+	CustomGameEventManager:RegisterListener("qr_popup_closed", Dynamic_Wrap(DAC, "OnQrPopupClosed"))
 	-- CustomGameEventManager:RegisterListener("collect_host", Dynamic_Wrap(DAC, "OnCollectHost"))
 	-- CustomGameEventManager:RegisterListener("connect_server", Dynamic_Wrap(DAC, "OnConnectServer"))
 
@@ -4587,6 +4588,11 @@ function IsQrPopupHolding(player_id)
 		return false
 	end
 	return GameRules:GetGameTime() < st.expire_at
+end
+
+--二维码弹窗被关掉了（客户端点×或者关掉商城）：立刻把保护窗口缩短，别让招募面板一直不刷新
+function DAC:OnQrPopupClosed(keys)
+	ShortenQrHold(keys.PlayerID, 2)
 end
 
 --把之前压住的 show_draw_card 补发出去

@@ -4671,9 +4671,22 @@ function ForceSingleSelection() {
 }
 
 
+// 点击“别处”关闭：表情轮盘 / 阵型轮盘 / 设置
+function DacClosePopupsOnClick(eventName, mouseButton) {
+    if (eventName !== 'pressed') { return; }
+    if (mouseButton !== 0 && mouseButton !== 1) { return; }
+    var e = $('#panel_emotion_box');
+    if (e && !e.BHasClass('invisible')) { HideChatEmotion(); }
+    var l = $('#panel_lineup_box');
+    if (l && !l.BHasClass('invisible')) { HideLineupShortCuts(); }
+    var c = FindDotaHudElement('panel_config');
+    if (c && c.BHasClass('show')) { c.SetHasClass('show', false); }
+}
 // 监听鼠标事件
 if (Players.GetTeam(Players.GetLocalPlayer()) != 1) {
     GameUI.SetMouseCallback((eventName, mouseButton) => {
+        // 先处理“点击别处关闭弹窗”，再走原来的选人逻辑
+        try { DacClosePopupsOnClick(eventName, mouseButton); } catch (e0) { }
         const CONSUME_EVENT = true;
         const CONTINUE_EVENT = false;
         const LEFT_BUTTON = 0;
@@ -6714,7 +6727,11 @@ function show_panel_draw_card() {
     }
 
     set_draw_card_status();
-    open_panel_draw_card();
+    //商城面板开着的时候，自动刷新只更新招募面板的内容，不把它弹到商城（二维码弹窗）上面
+    var store_open = $('#store_panel_v5') && $('#store_panel_v5').BHasClass('show');
+    if (!store_open) {
+        open_panel_draw_card();
+    }
 }
 
 $.RegisterEventHandler('DragStart', $('#legendary_box'), function (panelId, draggedPanel) {
@@ -8254,9 +8271,17 @@ var STORE_QR_TEXT = '';
 
 function HideStoreQRPopup() {
     STORE_QR_WAITING = false;
-    $('#store_qr_popup').SetHasClass('invisible', true);
+    var popup = $('#store_qr_popup');
+    var was_open = popup && !popup.BHasClass('invisible');
+    if (popup) {
+        popup.SetHasClass('invisible', true);
+    }
     //弹窗关掉后，加号恢复原色、可以再次点击
     $('#btn_plus_store_title').SetHasClass('store_plus_disabled', false);
+    //通知服务端：把「压住招募面板」的保护窗口缩短，否则招募面板要等满 180 秒才恢复自动刷新
+    if (was_open) {
+        GameEvents.SendCustomGameEventToServer('qr_popup_closed', {});
+    }
 }
 
 // 弹窗底部的提示行：没内容时整个收起来，避免按钮下面多出一块空白
