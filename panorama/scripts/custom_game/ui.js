@@ -12,7 +12,7 @@ if (Game.GetMapInfo().map_display_name == 'casual_1x8_ob' || Game.GetMapInfo().m
     GameUI.CustomUIConfig().team_select = {};
     GameUI.CustomUIConfig().team_select.bShowSpectatorTeam = true;
 }
-$.Msg(1111)
+// $.Msg(1111)    // 调试打印，已关闭（日志里会刷 1111）
 GameUI.SetDefaultUIEnabled( DotaDefaultUIElement_t.DOTA_DEFAULT_UI_TOP_TIMEOFDAY, false );
 GameUI.SetDefaultUIEnabled( DotaDefaultUIElement_t.DOTA_DEFAULT_UI_TOP_HEROES, false );
 GameUI.SetDefaultUIEnabled( DotaDefaultUIElement_t.DOTA_DEFAULT_UI_FLYOUT_SCOREBOARD, false );

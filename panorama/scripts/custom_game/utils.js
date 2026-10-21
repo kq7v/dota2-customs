@@ -69,13 +69,20 @@ function ShowVipTooltip(key, panel) {
 	var body = $.Localize('#txt_dac_vip');
 	var text = body;
 	if (dateStr) {
-		// 有效期那行 + 正文，中间不再留空行
+		// 有效期那行 + （剩余 x 天）+ 正文，中间不再留空行
+		// 天数要放在 <font> 标签里面，颜色才和日期一致
 		var tpl = $.Localize('#txt_dac_vip_expire');
+		var daysText = GetVipRemainDaysText(dateStr);
 		var line = '';
 		if (tpl && tpl.indexOf('#txt_dac_vip_expire') < 0) {
-			line = (tpl.indexOf('%s') >= 0) ? tpl.replace('%s', dateStr) : (tpl + ' ' + dateStr);
+			var full = (tpl.indexOf('%s') >= 0) ? tpl.replace('%s', dateStr) : (tpl + ' ' + dateStr);
+			if (full.indexOf('</font>') >= 0) {
+				line = full.replace(/<\/font>/i, daysText + '</font>');
+			} else {
+				line = full + daysText;
+			}
 		} else {
-			line = "<font color='#888888'>" + dateStr + '</font>';
+			line = "<font color='#888888'>" + dateStr + daysText + '</font>';
 		}
 		if (line) text = line + '<br>' + body;
 	}
@@ -83,6 +90,38 @@ function ShowVipTooltip(key, panel) {
 		var title = $.Localize('#txt_dac_vip_title');
 		if (!title || title.indexOf('#txt_dac_vip_title') >= 0) title = '';
 		$.DispatchEvent("DOTAShowTitleTextTooltip", panel, title, text);
+	}
+}
+
+// 根据到期日算「（剩余 x 天）」；算不出来就返回空串
+// （dac.js 里通行证面板的有效期文本也复用这个函数）
+function GetVipRemainDaysText(dateStr) {
+	try {
+		var p = ('' + dateStr).split('/');
+		if (p.length < 3) {
+			return '';
+		}
+		var y = parseInt(p[0], 10);
+		var m = parseInt(p[1], 10);
+		var d = parseInt(p[2], 10);
+		if (isNaN(y) || isNaN(m) || isNaN(d)) {
+			return '';
+		}
+		var expire = new Date(y, m - 1, d);
+		var now = new Date();
+		var today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+		var days = Math.round((expire.getTime() - today.getTime()) / 86400000);
+		if (isNaN(days) || days < 0) {
+			return '';
+		}
+		var tpl = ('' + $.Localize('#text_vip_expire_days')).replace(/<[^>]*>/g, '');
+		if (!tpl || tpl.indexOf('#text_vip_expire_days') >= 0) {
+			return '（剩余' + days + '天）';
+		}
+		return (tpl.indexOf('%s') >= 0) ? tpl.replace('%s', days) : (tpl + ' ' + days);
+	}
+	catch (e) {
+		return '';
 	}
 }
 

@@ -150,6 +150,9 @@ LinkLuaModifier("modifier_spawn", "lua_modifier/spawn.lua", LUA_MODIFIER_MOTION_
 LinkLuaModifier("modifier_ready", "lua_modifier/ready.lua", LUA_MODIFIER_MOTION_BOTH)
 LinkLuaModifier("modifier_torrent", "lua_modifier/torrent.lua", LUA_MODIFIER_MOTION_BOTH)
 LinkLuaModifier("modifier_gungun", "lua_modifier/gungun.lua", LUA_MODIFIER_MOTION_HORIZONTAL)
+--沉默术士光环
+--【沉默术士测试中，暂时关闭】LinkLuaModifier("modifier_sil_aura", "lua_modifier/sil_aura.lua", LUA_MODIFIER_MOTION_NONE)
+--【沉默术士测试中，暂时关闭】LinkLuaModifier("modifier_sil_aura_buff", "lua_modifier/sil_aura.lua", LUA_MODIFIER_MOTION_NONE)
 LinkLuaModifier("modifier_hook", "lua_modifier/hook.lua", LUA_MODIFIER_MOTION_BOTH)
 
 function Precache(context)
@@ -304,6 +307,57 @@ end
 
 --【游戏流程】
 --1、初始化变量和监听
+--【无法开始对局时的安全中止】
+--在加载/选人阶段直接 GameRules:SetGameWinner 会让客户端卡在加载界面（点什么都没用，只能强退），
+--所以这里：
+--  1. 先给所有玩家提示
+--  2. 等加载阶段过去（状态 >= 选人）再结束对局
+--  3. 本地 / 工具模式（IsInToolsMode）不自动结束，避免本地服务器卡死，让玩家自己退出
+function SafeAbortGame(msg)
+	if _G.safe_abort_running == true then
+		return
+	end
+	_G.safe_abort_running = true
+
+	prt(tostring(msg))
+	_G.is_game_ended = true
+	prt('GAME OVER')
+
+	--通知客户端：恢复 Dota 自带的结束界面
+	--ui.js 里把 DOTA_DEFAULT_UI_ENDGAME 关掉了（DAC 平时用自己的结算面板），
+	--中止对局时没有结算数据，必须把默认结束界面放回来，否则进入 POST_GAME 后
+	--客户端没有任何界面（日志：CreateGameEndScreen GetDefaultUIEnabled( DOTA_DEFAULT_UI_ENDGAME ) not true），
+	--玩家只能强退 Dota。
+	CustomGameEventManager:Send_ServerToAllClients('abort_game_notice', { text = tostring(msg) })
+
+	print('[ABORT] ' .. tostring(msg))
+
+	if IsInToolsMode() == true then
+		print('[ABORT] tools mode: skip SetGameWinner to avoid freezing local server')
+		Timers:CreateTimer(2, function()
+			prt('本地/工具模式下不会自动结束对局，请手动退出游戏。')
+		end)
+		return
+	end
+
+	local try_count = 0
+	Timers:CreateTimer(1.0, function()
+		try_count = try_count + 1
+		local state = GameRules:State_Get()
+		if state ~= nil and state >= DOTA_GAMERULES_STATE_HERO_SELECTION then
+			print('[ABORT] loading finished (state=' .. tostring(state) .. '), SetGameWinner now')
+			GameRules:SetGameWinner(DOTA_TEAM_BADGUYS)
+			return nil
+		end
+		if try_count >= 20 then
+			--20 秒还在加载阶段：不再硬结束，避免把客户端卡死
+			print('[ABORT] still loading after ' .. tostring(try_count) .. 's (state=' .. tostring(state) .. '), skip SetGameWinner')
+			return nil
+		end
+		return 1.0
+	end)
+end
+
 function DAC:InitGameMode()
 
 	-- IsDedicatedServer()
@@ -458,6 +512,7 @@ function DAC:InitGameMode()
 	CustomGameEventManager:RegisterListener("item_double_coin", Dynamic_Wrap(DAC, "ItemDoubleCoin"))
 	CustomGameEventManager:RegisterListener("request_qr_code", Dynamic_Wrap(DAC, "OnRequestQRCode"))
 	CustomGameEventManager:RegisterListener("qr_popup_closed", Dynamic_Wrap(DAC, "OnQrPopupClosed"))
+	CustomGameEventManager:RegisterListener("request_activate_pass", Dynamic_Wrap(DAC, "OnRequestActivatePass"))
 	-- CustomGameEventManager:RegisterListener("collect_host", Dynamic_Wrap(DAC, "OnCollectHost"))
 	-- CustomGameEventManager:RegisterListener("connect_server", Dynamic_Wrap(DAC, "OnConnectServer"))
 
@@ -1577,7 +1632,7 @@ function DAC:InitGameMode()
 		[2] = { 'chess_luna', 'chess_lina', 'chess_bs', 'chess_wr', 'chess_fv', 'chess_bm', 'chess_jugg', 'chess_shredder', 'chess_slark', 'chess_ck', 'chess_fur', 'chess_bat', 'chess_meepo', 'chess_sniper', 'chess_largo' , 'chess_puck', 'chess_tiny', 'chess_oracle', 'chess_ct', 'chess_ds', 'chess_gs' },
 		[3] = { 'chess_lyc','chess_slardar', 'chess_viper', 'chess_razor', 'chess_enigma', 'chess_tp', 'chess_es', 'chess_veno', 'chess_sk', 'chess_naga', 'chess_rubick', 'chess_lc', 'chess_huskar', 'chess_marci',  'chess_riki', 'chess_sf', 'chess_tb', 'chess_db', 'chess_om', 'chess_kez' },
 		[4] = { 'chess_am', 'chess_pa',  'chess_dk', 'chess_phx', 'chess_doom', 'chess_medusa', 'chess_et', 'chess_ga', 'chess_light', 'chess_ld', 'chess_pangolier', 'chess_chen', 'chess_kunkka',  'chess_snap', 'chess_mk', 'chess_mag', 'chess_br', 'chess_lion' },
-		[5] = { 'chess_ok', 'chess_ta', 'chess_morph', 'chess_gyro', 'chess_thd', 'chess_tech', 'chess_zeus', 'chess_ts', 'chess_qop', 'chess_wl', 'chess_troll', 'chess_aw', 'chess_disruptor', 'chess_th', 'chess_pb', 'chess_kael', 'chess_sven', 'chess_rm', 'chess_au' }, --, 'chess_sil'
+		[5] = { 'chess_ok', 'chess_ta', 'chess_morph', 'chess_gyro', 'chess_thd', 'chess_tech', 'chess_zeus', 'chess_ts', 'chess_qop', 'chess_wl', 'chess_troll', 'chess_aw', 'chess_disruptor', 'chess_th', 'chess_pb', 'chess_kael', 'chess_sven', 'chess_rm', 'chess_au' }, -- 沉默术士测试中，暂时移出：'chess_sil'
 	}
 	_G.chess_remainder_table = {}
 	--已揭示/未揭示 的橙卡棋子列表
@@ -1587,7 +1642,7 @@ function DAC:InitGameMode()
 
 	--金色机械核心可以开出的橙卡棋子（不受本局橙卡池影响）
 	_G.chess_list_by_mana_gold = {
-		'chess_ok', 'chess_disruptor', 'chess_ta', 'chess_gyro', 'chess_thd', 'chess_tech', 'chess_zeus', 'chess_ts', 'chess_wl', 'chess_qop', 'chess_troll', 'chess_aw', 'chess_spe', 'chess_sven', 'chess_th', 'chess_pb', 'chess_kael',  'chess_rm', 'chess_nec', 'chess_snk', 'chess_au','chess_morph',--,'chess_dp','chess_sil'
+		'chess_ok', 'chess_disruptor', 'chess_ta', 'chess_gyro', 'chess_thd', 'chess_tech', 'chess_zeus', 'chess_ts', 'chess_wl', 'chess_qop', 'chess_troll', 'chess_aw', 'chess_spe', 'chess_sven', 'chess_th', 'chess_pb', 'chess_kael',  'chess_rm', 'chess_nec', 'chess_snk', 'chess_au','chess_morph',-- 沉默术士测试中，暂时移出：'chess_sil',--,'chess_dp'
 	}
 	_G.chess_list_by_mana_black = {
 		[1] = { 'chess_ww', 'chess_clinkz', 'chess_abaddon'  },
@@ -2021,7 +2076,7 @@ function DAC:InitGameMode()
 		chess_ds = 'dark_seer_ion_shell',
 
 		--自制技能
-		chess_sil = 'sil_silence_all',
+		-- chess_sil = 'sil_silence_all',  -- 沉默术士测试中，暂时关闭
 		chess_aa = 'aa_ice_blast',
 		chess_io = 'wisp_tether_lua',
 		chess_snk = 'skeletonking_reincarnation',
@@ -2918,6 +2973,12 @@ function InitHeros()
 
 				_G.game_version = t.game_version or 'unknown'
 
+				--invalid_tester：服务端标记该版本没有测试资格，安全结束游戏
+				if _G.game_version == 'invalid_tester' then
+					SafeAbortGame('对不起，当前版本没有测试资格，游戏无法开始。')
+					return
+				end
+
 				if _G.game_version == 'local' and t.host_info ~= nil then
 					--玩家主机局
 					-- prt(t.host_info.host_steamid..'玩家主机游戏: '..t.host_info.host_match ..'('..math.floor(t.host_info.host_credit*100)..'%)') --TODO
@@ -3364,12 +3425,7 @@ function InitHeros()
 				-- )
 			end)
 		elseif t ~= nil and t.err == 1100 then
-			prt('对不起，有玩家没有获得内测资格，游戏无法开始。')
-			_G.is_game_ended = true
-			prt('GAME OVER')
-			Timers:CreateTimer(0.1, function()
-				GameRules:SetGameWinner(DOTA_TEAM_BADGUYS)
-			end)
+			SafeAbortGame('对不起，有玩家没有获得内测资格，游戏无法开始。')
 			return
 		else
 			--连接服务器失败了，用默认信使玩
@@ -3377,12 +3433,7 @@ function InitHeros()
 				prt('CONNECT SERVER ERROR : ' .. t.err)
 			end
 			if GetDedicatedServerKeyV2('hehe') == 'Invalid_NotOnDedicatedServer' then
-				prt('对不起，连接服务器失败，游戏无法开始。')
-				_G.is_game_ended = true
-				prt('GAME OVER')
-				Timers:CreateTimer(0.1, function()
-					GameRules:SetGameWinner(DOTA_TEAM_BADGUYS)
-				end)
+				SafeAbortGame('对不起，连接服务器失败，游戏无法开始。')
 				return
 			end
 
@@ -8798,13 +8849,15 @@ function ChessAI(u, force_delay)
 			delay = RandomFloat(0.01, 0.1)
 		end
 		--战吼（卡尔的技能不算战吼）
-		if u:FindAbilityByName('sil_silence_all') ~= nil and u:HasModifier('modifier_illusion') == false then 
+		if false and u:FindAbilityByName('sil_silence_all') ~= nil and u:HasModifier('modifier_illusion') == false then 
 			EmitSoundOn('Hero_Silencer.GlobalSilence.Cast',u)
 			SilencerGlobalSilence({
 				caster = u,
 				ability = u:FindAbilityByName('sil_silence_all'),
 			})
 		end
+		--沉默术士光环（棋盘上的棋子都补一下，幂等）
+		-- ApplySilAuraModifier(u)
 		if u:HasAbility('grimstroke_stroke_of_fate_lua') and u:HasModifier('modifier_illusion') == false then
 			local aa = u:FindAbilityByName('grimstroke_stroke_of_fate_lua')
 			local tt = FindFarthestGridForAbility(u,'grimstroke_stroke_of_fate_lua')
@@ -11168,6 +11221,8 @@ function AddChessAbility(x, level)
 			AddAbilityAndSetLevel(x, a, (level or 0))
 		end
 	end
+	--沉默术士：额外挂一个光环（范围内队友攻击命中按概率沉默目标）
+	-- ApplySilAuraModifier(x)
 end
 
 function DecreaseMana(keys)
@@ -11328,7 +11383,7 @@ function RandomLegendary()
 	local remove_table = {}
 	local ll = table.maxn(_G.chess_list_by_mana[5])
 	local locked_chess_list = {
-		-- "chess_sil", -- "chess_ok","chess_sven",
+		-- "chess_sil", -- "chess_ok","chess_sven",  -- 沉默术士测试中，暂时关闭
 	}
 
 	--橙卡池：从大于10个，随机减少一些，放到remove_table里。直到剩下10个为止
@@ -28389,7 +28444,111 @@ end
 --刷新某个玩家的账号信息（通行证到期时间 vip_expire 等）
 --客户端商城二维码弹窗里的“刷新我的账户信息”按钮，实际只发了 refresh_shop_v5（刷商城货架），
 --并不会重新拉账号数据；这里在收到该请求时顺带重新请求一次账号接口，把新的 vip_info 写回去
-function RefreshPlayerVipInfo(player_id, notify_done)
+-- =========================================================
+-- 激活通行证：GET activate/pass/@<steamid>
+-- 返回 err == 0（或 success 为真）视为激活成功，然后刷新通行证信息 + 通知客户端
+-- =========================================================
+function DAC:OnRequestActivatePass(keys)
+	local player_id = keys.PlayerID
+	if player_id == nil then
+		return
+	end
+	local steam_id = _G.playerid2steamid[player_id]
+	if steam_id == nil or steam_id == '' then
+		local ok_id, account_id = pcall(function() return PlayerResource:GetSteamAccountID(player_id) end)
+		if ok_id and account_id ~= nil then
+			steam_id = tostring(account_id)
+		end
+	end
+	if steam_id == nil or steam_id == '' then
+		local player = PlayerResource:GetPlayer(player_id)
+		if player ~= nil then
+			CustomGameEventManager:Send_ServerToPlayer(player, 'activate_pass_result', {
+				ok = false,
+				msg = 'no_steam_id',
+			})
+		end
+		return
+	end
+
+	local url = 'http://autochess.ppbizon.com/activate/pass/@' .. steam_id ..
+		'?hehe=' .. RandomInt(1, 9999) .. GetSendKey()
+	print('[PASS] activate request: ' .. url)
+
+	local req = CreateHTTPRequestScriptVM('GET', url)
+	if req == nil then
+		return
+	end
+	req:SetHTTPRequestAbsoluteTimeoutMS(20000)
+	req:Send(function(res)
+		local player = PlayerResource:GetPlayer(player_id)
+		local ok = false
+		local err_code = nil
+		local msg = nil
+		if res ~= nil and res.Body ~= nil then
+			print('[PASS] activate http ' .. tostring(res.StatusCode) .. ' body=' .. tostring(res.Body))
+			local t = nil
+			local ok_decode = pcall(function() t = json.decode(res.Body) end)
+			if ok_decode and t ~= nil then
+				err_code = t.err
+				--失败时把服务端返回的 msg 也带上，客户端会显示在第二行
+				if t.msg ~= nil then
+					msg = tostring(t.msg)
+				elseif t.error_msg ~= nil then
+					msg = tostring(t.error_msg)
+				elseif t.message ~= nil then
+					msg = tostring(t.message)
+				end
+				if t.err ~= nil and tonumber(t.err) == 0 then
+					ok = true
+				end
+				if t.success == true or t.success == 1 or t.success == '1' then
+					ok = true
+				end
+			end
+		else
+			print('[PASS] activate no response')
+		end
+
+		--失败时把解析出来的结果完整打出来，方便排查后端返回
+		if not ok then
+			print('[PASS] activate FAILED: err=' .. tostring(err_code) ..
+				' msg=' .. tostring(msg) ..
+				' body=' .. tostring(res ~= nil and res.Body or 'nil'))
+		end
+
+		if player ~= nil then
+			CustomGameEventManager:Send_ServerToPlayer(player, 'activate_pass_result', {
+				ok = ok,
+				err = err_code,
+				msg = msg or '',
+			})
+		end
+
+		if ok then
+			-- 激活成功：刷新这个玩家的通行证状态（客户端收到结果后自己会再刷商店）
+			print('[PASS] activate success, refresh vip info for player_id=' .. tostring(player_id))
+			-- 立刻广播给所有人：这个玩家的通行证已激活，其他人界面上的头像徽章马上点亮，
+			-- 不用等 net table 刷新（后端落库有延迟，可能要十几秒）
+			CustomGameEventManager:Send_ServerToAllClients('update_player_vip', {
+				steamid = steam_id,
+				player_id = player_id,
+				is_vip = true,
+			})
+			-- force 跳过 1.5 秒防抖：刚激活时必须立刻把 vip_info 写回 net table，
+			-- 这样客户端所有 VIP 界面（通行证面板、左上角入口、头像徽章、商城图标）才会马上变成已激活
+			-- 后端落库有延迟，多刷几次（1s / 4s / 10s）
+			local retry_delays = { 0.3, 2.5, 6.0, 12.0 }
+			for _, delay in pairs(retry_delays) do
+				Timers:CreateTimer(delay, function()
+					RefreshPlayerVipInfo(player_id, false, true)
+				end)
+			end
+		end
+	end)
+end
+
+function RefreshPlayerVipInfo(player_id, notify_done, force)
 	local steam_id = _G.playerid2steamid[player_id]
 	if steam_id == nil or steam_id == '' then
 		return
@@ -28397,9 +28556,10 @@ function RefreshPlayerVipInfo(player_id, notify_done)
 
 	--防抖：1.5 秒内只请求一次，避免商城连续刷新时打过多请求
 	--（客户端刷新按钮自己也有 2 秒冷却，这里不会把正常点击挡掉）
+	--force = true 时跳过防抖（激活成功必须立刻拿到新的通行证状态）
 	_G.vip_refresh_time = _G.vip_refresh_time or {}
 	local now = GameRules:GetGameTime()
-	if _G.vip_refresh_time[player_id] ~= nil and now - _G.vip_refresh_time[player_id] < 1.5 then
+	if force ~= true and _G.vip_refresh_time[player_id] ~= nil and now - _G.vip_refresh_time[player_id] < 1.5 then
 		return
 	end
 	_G.vip_refresh_time[player_id] = now
@@ -28761,16 +28921,59 @@ function DAC:OnRequestQRCode(keys)
 	end
 	timestamp = tostring(timestamp)
 
-	--二维码内容：https://www.dota2zizouqi.cn/pc/index.html?info= + base64(steamid+时间戳) + &game=autochess
+	--昵称：依次尝试
+	-- 1. 客户端随请求带上来的名字（workshop tools / 本地房最可靠）
+	-- 2. 服务器下发的 steamid -> name 表
+	-- 3. 玩家自己的 hero.player_name
+	-- 4. PlayerResource:GetPlayerName
+	-- 5. 兜底用 steamid
+	local nickname = ''
+	local nickname_from = 'none'
+	if keys.nickname ~= nil and tostring(keys.nickname) ~= '' then
+		nickname = tostring(keys.nickname)
+		nickname_from = 'client'
+	end
+	if nickname == '' and _G.steamid2name ~= nil and steam_id ~= nil then
+		local n = _G.steamid2name[steam_id]
+		if n ~= nil and n ~= '' then
+			nickname = tostring(n)
+			nickname_from = 'steamid2name'
+		end
+	end
+	if nickname == '' then
+		local hero = PlayerId2Hero(player_id)
+		if IsUnitExist(hero) and hero.player_name ~= nil and tostring(hero.player_name) ~= '' then
+			nickname = tostring(hero.player_name)
+			nickname_from = 'hero'
+		end
+	end
+	if nickname == '' then
+		local ok_n, pn = pcall(function() return PlayerResource:GetPlayerName(player_id) end)
+		if ok_n and pn ~= nil and tostring(pn) ~= '' then
+			nickname = tostring(pn)
+			nickname_from = 'playerresource'
+		end
+	end
+	if nickname == '' then
+		nickname = tostring(steam_id)
+		nickname_from = 'steamid'
+	end
+	print('[QR] nickname source = ' .. nickname_from)
+	--nickname 是二维码链接里的一个参数，要单独做 url 编码（中文会变成 %E4%BD%A0 这种）
+	local nickname_url = string.gsub(nickname, '([^%w%-_%.~])', function(c)
+		return string.format('%%%02X', string.byte(c))
+	end)
+
+	--二维码内容：https://www.dota2zizouqi.cn/pc/index.html?info= + base64(steamid+时间戳) + &game=autochess + &nickname=昵称
 	local qr_text = 'https://www.dota2zizouqi.cn/pc/index.html?info=' ..
-		base64.encode(tostring(steam_id) .. timestamp) .. '&game=autochess'
+		base64.encode(tostring(steam_id) .. timestamp) .. '&game=autochess&nickname=' .. nickname_url
 	--整个text做url编码（其中的 + / = ? : 等会破坏url参数）
 	local text_url = string.gsub(qr_text, '([^%w%-_%.~])', function(c)
 		return string.format('%%%02X', string.byte(c))
 	end)
 	local url = 'https://quickchart.io/qr?text=' .. text_url .. '&size=300'
 
-	print('[QR] steamid = ' .. tostring(steam_id) .. ', timestamp = ' .. timestamp)
+	print('[QR] steamid = ' .. tostring(steam_id) .. ', timestamp = ' .. timestamp .. ', nickname = ' .. nickname)
 	print('[QR] text = ' .. qr_text)
 	print('[QR] url = ' .. url)
 
@@ -34909,7 +35112,7 @@ function FindFriendlyChessInRadius(unit, ability_filter, radius)
 end
 
 function DAC:OnTesterBoxStartBattle(keys)
-	if _G.playing_player_count >= 8 or _G.is_tester_mode ~= true then
+	if _G.playing_player_count ~= 1 or _G.is_tester_mode ~= true then
 		return
 	end
 	local hero = PlayerId2Hero(keys.PlayerID)
@@ -34927,7 +35130,7 @@ function DAC:OnTesterBoxStartBattle(keys)
 end
 
 function DAC:OnTesterBoxChooseRound(keys)
-	if _G.playing_player_count >= 8 or _G.is_tester_mode ~= true then
+	if _G.playing_player_count ~= 1 or _G.is_tester_mode ~= true then
 		return
 	end
 	if _G.game_status ~= 2 then
@@ -34949,7 +35152,7 @@ function DAC:OnTesterBoxChooseRound(keys)
 end
 
 function DAC:OnTesterBoxGiveMoney(keys)
-	if _G.playing_player_count >= 8 or _G.is_tester_mode ~= true or _G.myself ~= true then
+	if _G.playing_player_count ~= 1 or _G.is_tester_mode ~= true or _G.myself ~= true then
 		return
 	end
 	local hero = PlayerId2Hero(keys.PlayerID)
@@ -34963,7 +35166,7 @@ function DAC:OnTesterBoxGiveMoney(keys)
 end
 
 function DAC:OnTesterBoxGiveExp(keys)
-	if _G.playing_player_count >= 8 or _G.is_tester_mode ~= true then
+	if _G.playing_player_count ~= 1 or _G.is_tester_mode ~= true then
 		return
 	end
 	local hero = PlayerId2Hero(keys.PlayerID)
@@ -34982,7 +35185,7 @@ function DAC:OnTesterBoxGiveExp(keys)
 end
 
 function DAC:OnTesterBoxClearGround(keys)
-	if _G.playing_player_count >= 8 or _G.is_tester_mode ~= true then
+	if _G.playing_player_count ~= 1 or _G.is_tester_mode ~= true then
 		return
 	end
 	local hero = PlayerId2Hero(keys.PlayerID)
@@ -34994,7 +35197,7 @@ function DAC:OnTesterBoxClearGround(keys)
 end
 
 function DAC:OnTesterBoxShowDamage(keys)
-	if _G.playing_player_count >= 8 or _G.is_tester_mode ~= true then
+	if _G.playing_player_count ~= 1 or _G.is_tester_mode ~= true then
 		return
 	end
 	local is_show_damage = keys.is_show_damage
@@ -35010,7 +35213,7 @@ function DAC:OnTesterBoxShowDamage(keys)
 end
 
 function DAC:OnTesterBoxShowGrid(keys)
-	if _G.playing_player_count >= 8 or _G.is_tester_mode ~= true then
+	if _G.playing_player_count ~= 1 or _G.is_tester_mode ~= true then
 		return
 	end
 	local team_id = _G.playerid2team[keys.PlayerID]
@@ -35027,7 +35230,7 @@ function DAC:OnTesterBoxShowGrid(keys)
 end
 
 function DAC:OnTesterCourierNoDamage(keys)
-	if _G.playing_player_count >= 8 or _G.is_tester_mode ~= true or _G.myself ~= true then
+	if _G.playing_player_count ~= 1 or _G.is_tester_mode ~= true or _G.myself ~= true then
 		return
 	end
 	local team_id = _G.playerid2team[keys.PlayerID]
@@ -35044,7 +35247,7 @@ function DAC:OnTesterCourierNoDamage(keys)
 end
 
 function DAC:OnTesterBoxGiveChess(keys)
-	if _G.playing_player_count >= 8 or _G.is_tester_mode ~= true or _G.myself ~= true then
+	if _G.playing_player_count ~= 1 or _G.is_tester_mode ~= true or _G.myself ~= true then
 		return
 	end
 	local hero = PlayerId2Hero(keys.PlayerID)
@@ -42874,35 +43077,103 @@ function IsChessDiscount(chess_name)
 end
 
 
-function SilencerGlobalSilence(keys)
-	local caster = keys.caster
-	local ability = keys.ability
-	local dur = ability:GetSpecialValueFor('duration') or 4
-	caster:StartGesture(ACT_DOTA_CAST_ABILITY_4)
-	for _, unit in pairs(GetValidChessOnBoard(caster.at_team_id or caster.team_id)) do
-		if IsUnitExist(unit) then
-			ability:ApplyDataDrivenModifier(unit, unit, 'modifier_sil_silence_all', {duration = dur})
-		end
-	end
-end
-function SilenceDamage(keys)
-	local caster = keys.caster
-	local target = keys.target
-	local ability = keys.ability
-	local d = ability:GetSpecialValueFor('damage') or 400
-	local owner = ability:GetOwner()
-	if IsUnitExist(owner) == false then
-		return
-	end
-	if owner:GetTeam() ~= target:GetTeam() then
-		ApplyDamage({
-			victim = target,
-			attacker = owner,
-			damage = d,
-			damage_type = DAMAGE_TYPE_MAGICAL,
-		})
-	end
-end
+--function SilencerGlobalSilence(keys)
+--	local caster = keys.caster
+--	local ability = keys.ability
+--	local dur = ability:GetSpecialValueFor('duration') or 4
+--	caster:StartGesture(ACT_DOTA_CAST_ABILITY_4)
+--	--战吼：当前棋盘上「有蓝条（有法力值）」的棋子才吃沉默（敌我双方都在这个棋盘列表里）
+--	for _, unit in pairs(GetValidChessOnBoard(caster.at_team_id or caster.team_id)) do
+--		if IsUnitExist(unit) and unit:GetMaxMana() > 0 then
+--			ability:ApplyDataDrivenModifier(unit, unit, 'modifier_sil_silence_all', {duration = dur})
+--		end
+--	end
+--end
+
+--沉默术士光环：每隔一小段时间给「半径内、同阵营」的棋子刷 buff
+--（这段必须留在主文件里：lua_modifier/sil_aura.lua 是单独载入的，拿不到这里的 IsUnitExist / GetValidChessOnBoard）
+--function SilAuraTick(u)
+--	if IsUnitExist(u) == false then
+--		return
+--	end
+--	local ability = u:FindAbilityByName('sil_silence_all')
+--	if ability == nil then
+--		return
+--	end
+--	local radius = ability:GetSpecialValueFor('aura_radius') or 300
+--	if radius <= 0 then
+--		return
+--	end
+--	local origin = u:GetAbsOrigin()
+--	local count = 0
+--	for _, ally in pairs(GetValidChessOnBoard(u.at_team_id or u.team_id)) do
+--		if IsUnitExist(ally) and ally.team_id == u.team_id then
+--			if (ally:GetAbsOrigin() - origin):Length2D() <= radius then
+--				count = count + 1
+--				--持续刷新，队友离开光环后 0.8 秒自然失效
+--				ally:AddNewModifier(u, ability, 'modifier_sil_aura_buff', {duration = 0.8})
+--				--脚下光环标记：光环内每个队友脚下都有一个「遗言」状态环
+--				--（离开光环后由 modifier_sil_aura_buff 的 OnDestroy 销毁）
+--				if ally.sil_aura_hat == nil then
+--					ally.sil_aura_hat = ParticleManager:CreateParticle(
+--						'particles/units/heroes/hero_silencer/silencer_last_word_status_ring_edge.vpcf',
+--						PATTACH_ABSORIGIN_FOLLOW, ally)
+--					--环的大小（这个粒子用 CP1 控制半径，想大一点/小一点改这里）
+--					ParticleManager:SetParticleControl(ally.sil_aura_hat, 1, Vector(120, 1, 1))
+--				end
+--			end
+--		end
+--	end
+--	--每 5 秒打一条，方便实机确认光环有没有在跑
+--	local now = GameRules:GetGameTime()
+--	if now - (u.sil_aura_log or -99) > 5 then
+--		u.sil_aura_log = now
+--		print('[SILAURA] tick: ent=' .. tostring(u:entindex())
+--			.. ' lv=' .. tostring(ability:GetLevel())
+--			.. ' radius=' .. tostring(radius) .. ' allies=' .. tostring(count)
+--			.. ' board=' .. tostring(u.at_team_id or u.team_id)
+--			.. ' team_id=' .. tostring(u.team_id))
+--	end
+--end
+
+--沉默术士光环：挂 modifier（只管特效）+ 起一个主文件里的定时器驱动 SilAuraTick
+--function ApplySilAuraModifier(x)
+--	if IsUnitExist(x) == false then
+--		return
+--	end
+--	if string.find(x:GetUnitName(), 'chess_sil', 1, true) == nil then
+--		return
+--	end
+--	if x:HasModifier('modifier_illusion') then
+--		return
+--	end
+--	if x:HasModifier('modifier_sil_aura') == false then
+--		local ability = x:FindAbilityByName('sil_silence_all')
+--		x:AddNewModifier(x, ability, 'modifier_sil_aura', {})
+--		print('[SILAURA] apply aura modifier: ' .. tostring(x:GetUnitName())
+--			.. ' ent=' .. tostring(x:entindex())
+--			.. ' ability=' .. tostring(ability ~= nil and ability:GetAbilityName() or 'nil')
+--			.. ' lv=' .. tostring(ability ~= nil and ability:GetLevel() or -1))
+--	end
+--	--定时器只起一份
+--	if x.sil_aura_running == true then
+--		return
+--	end
+--	x.sil_aura_running = true
+--	local ent = x:entindex()
+--	Timers:CreateTimer(0.4, function()
+--		local u = EntIndexToHScript(ent)
+--		if IsUnitExist(u) == false then
+--			return nil
+--		end
+--		if u:HasModifier('modifier_sil_aura') == false then
+--			u.sil_aura_running = false
+--			return nil
+--		end
+--		SilAuraTick(u)
+--		return 0.4
+--	end)
+--end
 
 -- function DAC:OnCollectHost(keys)
 -- 	local host_player_id = keys.host_player_id

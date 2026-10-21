@@ -48,9 +48,7 @@
 			<Panel class="iconone" id="icon-list" onactivate="ShowList();" onmouseover="tips_over_guide(&apos;tips_icon-list&apos;,&apos;icon-list&apos;)" onmouseout="tips_out()" style="tooltip-position:bottom;" />
 			<Panel class="iconone" id="icon-ranking" onactivate="ShowRanking();" onmouseover="tips_over_guide(&apos;tips_icon-ranking&apos;,&apos;icon-ranking&apos;)" onmouseout="tips_out()" style="tooltip-position:bottom;" />
 			<Panel class="iconone invisible" id="icon-my" onactivate="ShowStoreV5();" onmouseover="tips_over_guide(&apos;tips_icon-my&apos;,&apos;icon-my&apos;)" onmouseout="tips_out()" style="tooltip-position:bottom;" />
-			<Panel id="icon_event_ti12" onmouseover="OnMouseOverEventti12(&apos;event_ti12&apos;,&apos;icon_event_ti12&apos;)" onmouseout="OnMouseOutEventti12()" onactivate="ShowEventti12()" class="" visible="false">
-				<Image id="icon_event_ti12_shield" src="s2r://panorama/images/custom_game/event/ti13/logo_small_png.vtex" />
-			</Panel>
+			<Panel class="iconone vip_locked" id="icon-vip" onactivate="ShowVip();" style="tooltip-position:bottom;" />
 		</Panel>
 		<Panel id="legendary_box" class="panel_with_border" hittest="true" onactivate="" draggable="true">
 			<Panel class="store_title">
@@ -1766,6 +1764,7 @@
 			</Panel>
 		</Panel>
 		<Panel id="panel_vip" class="exclusion_window panel_with_border" hittest="true" onactivate="">
+			<Panel id="panel_vip_emblem" hittest="false" />
 			<Panel class="store_title" style="z-index:600;background-image:none;box-shadow: fill #00000000 -4px -4px 8px 8px;">
 				<Label class="text_panel_title" text="#tips_icon-vip_title" />
 			</Panel>
@@ -1800,7 +1799,7 @@
 				<Label text="#text_vip_roshan_title" class="panel_vip_title" />
 				<Label text="#text_vip_roshan_desc" class="panel_vip_text right_space" />
 				<Panel class="panel_new_event tags_one right_space">
-					<Label class="text_new_event" text="#text_vip_got" />
+					<Label id="text_vip_roshan_status" class="text_new_event" text="#text_vip_got" />
 				</Panel>
 			</Panel>
 			<Panel id="panel_vip_projectile" class="panel_vip_item">
@@ -1810,10 +1809,16 @@
 					<Panel class="goods_list_one_chessboard_name_bar">
 						<Label style="color:#b0c3d9;" text="#b104" />
 					</Panel>
+					<Panel class="panel_new_event tags_one" style="">
+						<Label id="text_vip_board1_status" class="text_new_event" text="#text_vip_got" />
+					</Panel>
 				</Panel>
 				<Panel id="panel_vip_chessboard_model2" class="good_list_one" style="background-image:url(&apos;file://{images}/custom_game/chessboard/b102.png&apos;);background-size:100% 100%;">
 					<Panel class="goods_list_one_chessboard_name_bar">
 						<Label style="color:#b0c3d9;" text="#b102" />
+					</Panel>
+					<Panel class="panel_new_event tags_one" style="">
+						<Label id="text_vip_board2_status" class="text_new_event" text="#text_vip_got" />
 					</Panel>
 				</Panel>
 			</Panel>
@@ -1821,96 +1826,33 @@
 				<Label text="#text_vip_avatar_title" class="panel_vip_title" />
 				<Label text="#text_vip_avatar_desc" class="panel_vip_text" />
 				<Panel class="panel_new_event tags_one">
-					<Label class="text_new_event" text="#text_vip_on" />
+					<Label id="text_vip_avatar_status" class="text_new_event" text="#text_vip_on" />
 				</Panel>
 			</Panel>
 			<Panel id="panel_vip_bullet" class="panel_vip_item">
 				<Label text="#text_vip_bullet_title" class="panel_vip_title" />
 				<Label text="#text_vip_bullet_desc" class="panel_vip_text" />
 				<Panel class="panel_new_event tags_one">
-					<Label class="text_new_event" text="#text_vip_on" />
+					<Label id="text_vip_bullet_status" class="text_new_event" text="#text_vip_on" />
 				</Panel>
 			</Panel>
-			<Panel id="panel_vip_ad_4">
-				<Panel id="list_vip_vote_null" class="list_vip_vote_null">
-					<Image src="s2r://panorama/images/custom_game/vip/bird_sang_png.vtex" style="width:180px;height:105px;horizontal-align:center;margin-top:160px;" />
-					<Label style="font-size:24px;horizontal-align:center;margin-top:5px;" text="#text_no_vote" />
-				</Panel>
-				<Panel class="list_vip_vote">
-					<Panel id="panel_vote_box_1" class="panel_vote_box invisible">
-						<Panel id="panel_vote_box_1_winner_1" class="panel_vote_box_winner1">
-							<DOTAScenePanel id="panel_vote_box_1_winner_1_hero" class="panel_vote_box_winner_hero" unit="" light="global_light" antialias="true" renderdeferred="false" particleonly="false" />
-						</Panel>
-						<Panel id="panel_vote_box_1_winner_2" class="panel_vote_box_winner2">
-							<DOTAScenePanel id="panel_vote_box_1_winner_2_hero" class="panel_vote_box_winner_hero" unit="" light="global_light" antialias="true" renderdeferred="false" particleonly="false" />
-						</Panel>
-						<Panel id="panel_vote_box_1_winner_3" class="panel_vote_box_winner3">
-							<DOTAScenePanel id="panel_vote_box_1_winner_3_hero" class="panel_vote_box_winner_hero" unit="" light="global_light" antialias="true" renderdeferred="false" particleonly="false" />
-						</Panel>
-						<Panel id="panel_vote_box_1_title" class="panel_vote_box_title">
-							<Label id="text_vote_box_1_title" class="text_vote_box_title" text="" />
-							<Label id="text_vote_box_1_time" class="text_vote_box_time" text="" />
-							<Panel id="button_vote_box_1" class="dota_button button_vote_box invisible" onactivate="show_vote_panel(1);">
-								<Label text="#vote" />
+			<Panel id="panel_vip_activate">
+				<Label id="text_activate_pass_explain" text="#text_activate_pass_explain" />
+				<Label id="text_vip_expire_time" text="#text_vip_not_active" />
+				<Panel id="panel_activate_buttons">
+					<Panel id="button_activate_pass" class="dac_button" onactivate="OnClickActivatePass();">
+						<Panel id="button_activate_pass_inner">
+							<Panel id="panel_activate_loading" class="invisible">
+								<Panel id="panel_activate_spinner" />
 							</Panel>
-							<Panel id="panel_vote_box_1_voted" class="panel_vote_box_voted invisible">
-								<Image class="image_vote_box_voted_tick" src="s2r://panorama/images/custom_game/tick_png.vtex" />
-								<DOTAHeroImage id="panel_vote_box_1_hero" heroname="" heroimagestyle="icon" />
-							</Panel>
+							<Label id="text_activate_pass" text="#text_activate_pass" />
 						</Panel>
-						<Label id="panel_vote_box_1_winner_text_1" class="panel_vote_box_winner_text1" text="30%" />
-						<Label id="panel_vote_box_1_winner_text_2" class="panel_vote_box_winner_text2" text="30%" />
-						<Label id="panel_vote_box_1_winner_text_3" class="panel_vote_box_winner_text3" text="30%" />
 					</Panel>
-					<Panel id="panel_vote_box_2" class="panel_vote_box invisible">
-						<Panel id="panel_vote_box_2_winner_1" class="panel_vote_box_winner1">
-							<DOTAScenePanel id="panel_vote_box_2_winner_1_hero" class="panel_vote_box_winner_hero" unit="" light="global_light" antialias="true" renderdeferred="false" particleonly="false" />
+					<Panel id="button_goto_store" class="dac_button" onactivate="OnClickGoToStore();">
+						<Panel id="button_goto_store_inner">
+							<Image id="button_goto_store_icon" src="s2r://panorama/images/custom_game/icon_jump_png.vtex" />
+							<Label id="button_goto_store_text" text="#text_activate_pass_goto_store" />
 						</Panel>
-						<Panel id="panel_vote_box_2_winner_2" class="panel_vote_box_winner2">
-							<DOTAScenePanel id="panel_vote_box_2_winner_2_hero" class="panel_vote_box_winner_hero" unit="" light="global_light" antialias="true" renderdeferred="false" particleonly="false" />
-						</Panel>
-						<Panel id="panel_vote_box_2_winner_3" class="panel_vote_box_winner3">
-							<DOTAScenePanel id="panel_vote_box_2_winner_3_hero" class="panel_vote_box_winner_hero" unit="" light="global_light" antialias="true" renderdeferred="false" particleonly="false" />
-						</Panel>
-						<Panel id="panel_vote_box_2_title" class="panel_vote_box_title">
-							<Label id="text_vote_box_2_title" class="text_vote_box_title" text="" />
-							<Label id="text_vote_box_2_time" class="text_vote_box_time" text="" />
-							<Panel id="button_vote_box_2" class="dota_button button_vote_box invisible" onactivate="show_vote_panel(2);">
-								<Label text="#vote" />
-							</Panel>
-							<Panel id="panel_vote_box_2_voted" class="panel_vote_box_voted invisible">
-								<Image class="image_vote_box_voted_tick" src="s2r://panorama/images/custom_game/tick_png.vtex" />
-								<DOTAHeroImage id="panel_vote_box_2_hero" heroname="" heroimagestyle="icon" />
-							</Panel>
-						</Panel>
-						<Label id="panel_vote_box_2_winner_text_1" class="panel_vote_box_winner_text1" text="30%" />
-						<Label id="panel_vote_box_2_winner_text_2" class="panel_vote_box_winner_text2" text="30%" />
-						<Label id="panel_vote_box_2_winner_text_3" class="panel_vote_box_winner_text3" text="30%" />
-					</Panel>
-					<Panel id="panel_vote_box_3" class="panel_vote_box invisible">
-						<Panel id="panel_vote_box_3_winner_1" class="panel_vote_box_winner1">
-							<DOTAScenePanel id="panel_vote_box_3_winner_1_hero" class="panel_vote_box_winner_hero" unit="" light="global_light" antialias="true" renderdeferred="false" particleonly="false" />
-						</Panel>
-						<Panel id="panel_vote_box_3_winner_2" class="panel_vote_box_winner2">
-							<DOTAScenePanel id="panel_vote_box_3_winner_2_hero" class="panel_vote_box_winner_hero" unit="" light="global_light" antialias="true" renderdeferred="false" particleonly="false" />
-						</Panel>
-						<Panel id="panel_vote_box_3_winner_3" class="panel_vote_box_winner3">
-							<DOTAScenePanel id="panel_vote_box_3_winner_3_hero" class="panel_vote_box_winner_hero" unit="" light="global_light" antialias="true" renderdeferred="false" particleonly="false" />
-						</Panel>
-						<Panel id="panel_vote_box_3_title" class="panel_vote_box_title">
-							<Label id="text_vote_box_3_title" class="text_vote_box_title" text="" />
-							<Label id="text_vote_box_3_time" class="text_vote_box_time" text="" />
-							<Panel id="button_vote_box_3" class="dota_button button_vote_box invisible" onactivate="show_vote_panel(3);">
-								<Label text="#vote" />
-							</Panel>
-							<Panel id="panel_vote_box_3_voted" class="panel_vote_box_voted invisible">
-								<Image class="image_vote_box_voted_tick" src="s2r://panorama/images/custom_game/tick_png.vtex" />
-								<DOTAHeroImage id="panel_vote_box_3_hero" heroname="" heroimagestyle="icon" />
-							</Panel>
-						</Panel>
-						<Label id="panel_vote_box_3_winner_text_1" class="panel_vote_box_winner_text1" text="30%" />
-						<Label id="panel_vote_box_3_winner_text_2" class="panel_vote_box_winner_text2" text="30%" />
-						<Label id="panel_vote_box_3_winner_text_3" class="panel_vote_box_winner_text3" text="30%" />
 					</Panel>
 				</Panel>
 			</Panel>

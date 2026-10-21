@@ -228,6 +228,8 @@
 	padding-right:40px;
 	vertical-align: center;
 	horizontal-align: center;
+	white-space: normal;
+	max-width: 520px;
 }
 
 #confirm_box

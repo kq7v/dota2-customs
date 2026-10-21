@@ -36933,261 +36933,264 @@
 		}
 	}
 
-	// "chess_sil"
-	// {
-	// 	"BaseClass"			"npc_dota_creature"
-	// 	"SoundSet"			"Hero_Silencer"
-    //     "GameSoundsFile"    "soundevents/game_sounds_heroes/game_sounds_silencer.vsndevts"
-	// 	"VoiceFile"     	"soundevents/voscripts/game_sounds_vo_silencer.vsndevts"
-	// 	"Model"				"models/heroes/silencer/silencer.vmdl"
-	// 	"ModelScale"		"0.55"
-	// 	"Level"				"5"
-	// 	"AttackDamageMin"	"50"
-	// 	"AttackDamageMax"	"110"
-	// 	"AttackRate"		"1.600000"
-	// 	"AttackRange"		"400"
-	// 	"ProjectileModel"	"particles/units/heroes/hero_silencer/silencer_base_attack.vpcf"
-	// 	"ProjectileSpeed"	"800"
-	// 	"StatusHealth"		"900"
-	// 	"StatusHealthRegen"	"0"
-	// 	"StatusMana"		"0"
-	// 	"StatusManaRegen"	"0"
-	// 	"ArmorPhysical"		"5"
-	// 	"MagicalResistance"	"30"
-	// 	"AttackAnimationPoint"	"0.5"
-	// 	"AttackCapabilities"	"DOTA_UNIT_CAP_RANGED_ATTACK"
-	// 	"MovementCapabilities"	"DOTA_UNIT_CAP_MOVE_GROUND"
-	// 	"MovementSpeed"	"500"
-	// 	"MovementTurnRate"	"10"
-	// 	"TeamName"	"DOTA_TEAM_GOODGUYS"
-	// 	"CombatClassAttack"	"DOTA_COMBAT_CLASS_ATTACK_BASIC"
-	// 	"CombatClassDefend"	"DOTA_COMBAT_CLASS_DEFEND_BASIC"
-	// 	"UnitRelationshipClass"	"DOTA_NPC_UNIT_RELATIONSHIP_TYPE_BUILDING"
-	// 	"MinimapIcon"	"minimap_creep"
-	// 	"MinimapIconSize"	"256"
-	// 	"VisionDaytimeRange"	"900"
-	// 	"VisionNighttimeRange"	"600"
-	// 	"HasInventory"	"1"
-	// 	"ConsideredHero"	"1"
-	// 	"HealthBarOffset"	"150"
-	// 	"RingRadius"	"60"
-	// 	"Ability1"	"is_human"
-	// 	"Ability2"	"is_warlock"
-	// 	"Ability3"	""
-	// 	"Ability4"	""
-	// 	"Ability5"	""
-	// 	"Ability6"	""
-	// 	"Ability7"	""
-	// 	"Ability8"	""
-	// 	"Ability9"	""
-	// 	"Ability10"	""
-	// 	"Ability11"	""
-	// 	"Ability12"	""
-	// 	"Ability13"	""
-	// 	"Ability14"	""
-	// 	"Ability15"	"no_collision"
-	// 	"Ability16"	"dac_guai_base"
-	// 	"Creature"
-	// 	{
-	// 		"AttachWearables"
-	// 		{
-	// 			"Wearable1"
-	// 			{
-	// 				"ItemDef"	"303"
-	// 			}
-	// 			"Wearable2"
-	// 			{
-	// 				"ItemDef"	"28"
-	// 			}
-	// 			"Wearable3"
-	// 			{
-	// 				"ItemDef"	"302"
-	// 			}
-	// 			"Wearable4"
-	// 			{
-	// 				"ItemDef"	"301"
-	// 			}
-	// 			"Wearable5"
-	// 			{
-	// 				"ItemDef"	"27"
-	// 			}
-	// 			"Wearable6"
-	// 			{
-	// 				"ItemDef"	"304"
-	// 			}
-	// 		}
-	// 	}
-	// }
-	// "chess_sil1"
-	// {
-	// 	"BaseClass"			"npc_dota_creature"
-	// 	"SoundSet"			"Hero_Silencer"
-    //     "GameSoundsFile"    "soundevents/game_sounds_heroes/game_sounds_silencer.vsndevts"
-	// 	"VoiceFile"     	"soundevents/voscripts/game_sounds_vo_silencer.vsndevts"
-	// 	"Model"				"models/heroes/silencer/silencer.vmdl"
-	// 	"ModelScale"		"0.7"
-	// 	"Level"				"7"
-	// 	"AttackDamageMin"	"100"
-	// 	"AttackDamageMax"	"220"
-	// 	"AttackRate"		"1.600000"
-	// 	"AttackRange"		"400"
-	// 	"ProjectileModel"	"particles/units/heroes/hero_silencer/silencer_base_attack.vpcf"
-	// 	"ProjectileSpeed"	"800"
-	// 	"StatusHealth"		"1800"
-	// 	"StatusHealthRegen"	"0"
-	// 	"StatusMana"		"0"
-	// 	"StatusManaRegen"	"0"
-	// 	"ArmorPhysical"		"5"
-	// 	"MagicalResistance"	"30"
-	// 	"AttackAnimationPoint"	"0.5"
-	// 	"AttackCapabilities"	"DOTA_UNIT_CAP_RANGED_ATTACK"
-	// 	"MovementCapabilities"	"DOTA_UNIT_CAP_MOVE_GROUND"
-	// 	"MovementSpeed"	"500"
-	// 	"MovementTurnRate"	"10"
-	// 	"TeamName"	"DOTA_TEAM_GOODGUYS"
-	// 	"CombatClassAttack"	"DOTA_COMBAT_CLASS_ATTACK_BASIC"
-	// 	"CombatClassDefend"	"DOTA_COMBAT_CLASS_DEFEND_BASIC"
-	// 	"UnitRelationshipClass"	"DOTA_NPC_UNIT_RELATIONSHIP_TYPE_BUILDING"
-	// 	"MinimapIcon"	"minimap_creep"
-	// 	"MinimapIconSize"	"256"
-	// 	"VisionDaytimeRange"	"900"
-	// 	"VisionNighttimeRange"	"600"
-	// 	"HasInventory"	"1"
-	// 	"ConsideredHero"	"1"
-	// 	"HealthBarOffset"	"150"
-	// 	"RingRadius"	"60"
-	// 	"Ability1"	"is_human"
-	// 	"Ability2"	"is_warlock"
-	// 	"Ability3"	""
-	// 	"Ability4"	""
-	// 	"Ability5"	""
-	// 	"Ability6"	""
-	// 	"Ability7"	""
-	// 	"Ability8"	""
-	// 	"Ability9"	""
-	// 	"Ability10"	""
-	// 	"Ability11"	""
-	// 	"Ability12"	""
-	// 	"Ability13"	""
-	// 	"Ability14"	""
-	// 	"Ability15"	"no_collision"
-	// 	"Ability16"	"dac_guai_base"
-	// 	"Creature"
-	// 	{
-	// 		"AttachWearables"
-	// 		{
-	// 			"Wearable1"
-	// 			{
-	// 				"ItemDef"	"26316"
-	// 			}
-	// 			"Wearable2"
-	// 			{
-	// 				"ItemDef"	"26320"
-	// 			}
-	// 			"Wearable3"
-	// 			{
-	// 				"ItemDef"	"26315"
-	// 			}
-	// 			"Wearable4"
-	// 			{
-	// 				"ItemDef"	"26317"
-	// 			}
-	// 			"Wearable5"
-	// 			{
-	// 				"ItemDef"	"26319"
-	// 			}
-	// 			"Wearable6"
-	// 			{
-	// 				"ItemDef"	"304"
-	// 			}
-	// 		}
-	// 	}
-	// }
-	// "chess_sil11"
-	// {
-	// 	"BaseClass"			"npc_dota_creature"
-	// 	"SoundSet"			"Hero_Silencer"
-    //     "GameSoundsFile"    "soundevents/game_sounds_heroes/game_sounds_silencer.vsndevts"
-	// 	"VoiceFile"     	"soundevents/voscripts/game_sounds_vo_silencer.vsndevts"
-	// 	"Model"				"models/heroes/silencer/silencer.vmdl"
-	// 	"ModelScale"		"0.85"
-	// 	"Level"				"9"
-	// 	"AttackDamageMin"	"200"
-	// 	"AttackDamageMax"	"440"
-	// 	"AttackRate"		"1.600000"
-	// 	"AttackRange"		"400"
-	// 	"ProjectileModel"	"particles/units/heroes/hero_silencer/silencer_base_attack.vpcf"
-	// 	"ProjectileSpeed"	"800"
-	// 	"StatusHealth"		"3600"
-	// 	"StatusHealthRegen"	"0"
-	// 	"StatusMana"		"0"
-	// 	"StatusManaRegen"	"0"
-	// 	"ArmorPhysical"		"5"
-	// 	"MagicalResistance"	"30"
-	// 	"AttackAnimationPoint"	"0.5"
-	// 	"AttackCapabilities"	"DOTA_UNIT_CAP_RANGED_ATTACK"
-	// 	"MovementCapabilities"	"DOTA_UNIT_CAP_MOVE_GROUND"
-	// 	"MovementSpeed"	"500"
-	// 	"MovementTurnRate"	"10"
-	// 	"TeamName"	"DOTA_TEAM_GOODGUYS"
-	// 	"CombatClassAttack"	"DOTA_COMBAT_CLASS_ATTACK_BASIC"
-	// 	"CombatClassDefend"	"DOTA_COMBAT_CLASS_DEFEND_BASIC"
-	// 	"UnitRelationshipClass"	"DOTA_NPC_UNIT_RELATIONSHIP_TYPE_BUILDING"
-	// 	"MinimapIcon"	"minimap_creep"
-	// 	"MinimapIconSize"	"256"
-	// 	"VisionDaytimeRange"	"900"
-	// 	"VisionNighttimeRange"	"600"
-	// 	"HasInventory"	"1"
-	// 	"ConsideredHero"	"1"
-	// 	"HealthBarOffset"	"150"
-	// 	"RingRadius"	"60"
-	// 	"Ability1"	"is_human"
-	// 	"Ability2"	"is_warlock"
-	// 	"Ability3"	""
-	// 	"Ability4"	""
-	// 	"Ability5"	""
-	// 	"Ability6"	""
-	// 	"Ability7"	""
-	// 	"Ability8"	""
-	// 	"Ability9"	""
-	// 	"Ability10"	""
-	// 	"Ability11"	""
-	// 	"Ability12"	""
-	// 	"Ability13"	""
-	// 	"Ability14"	""
-	// 	"Ability15"	"no_collision"
-	// 	"Ability16"	"dac_guai_base"
-	// 	"Creature"
-	// 	{
-	// 		"AttachWearables"
-	// 		{
-	// 			"Wearable1"
-	// 			{
-	// 				"ItemDef"	"26316"
-	// 			}
-	// 			"Wearable2"
-	// 			{
-	// 				"ItemDef"	"26320"
-	// 			}
-	// 			"Wearable3"
-	// 			{
-	// 				"ItemDef"	"26315"
-	// 			}
-	// 			"Wearable4"
-	// 			{
-	// 				"ItemDef"	"26317"
-	// 			}
-	// 			"Wearable5"
-	// 			{
-	// 				"ItemDef"	"12414"
-	// 			}
-	// 			"Wearable6"
-	// 			{
-	// 				"ItemDef"	"26318"
-	// 			}
-	// 		}
-	// 	}
-	// }
+	// 【沉默术士测试中，暂时关闭】以下单位定义已注释，恢复时去掉块内每行行首的 //
+//	"chess_sil"
+//	{
+//		"BaseClass"			"npc_dota_creature"
+//		"SoundSet"			"Hero_Silencer"
+//        "GameSoundsFile"    "soundevents/game_sounds_heroes/game_sounds_silencer.vsndevts"
+//		"VoiceFile"     	"soundevents/voscripts/game_sounds_vo_silencer.vsndevts"
+//		"Model"				"models/heroes/silencer/silencer.vmdl"
+//		"ModelScale"		"0.55"
+//		"Level"				"5"
+//		"AttackDamageMin"	"50"
+//		"AttackDamageMax"	"110"
+//		"AttackRate"		"1.600000"
+//		"AttackRange"		"400"
+//		"ProjectileModel"	"particles/units/heroes/hero_silencer/silencer_base_attack.vpcf"
+//		"ProjectileSpeed"	"800"
+//		"StatusHealth"		"900"
+//		"StatusHealthRegen"	"0"
+//		"StatusMana"		"0"
+//		"StatusManaRegen"	"0"
+//		"ArmorPhysical"		"5"
+//		"MagicalResistance"	"30"
+//		"AttackAnimationPoint"	"0.5"
+//		"AttackCapabilities"	"DOTA_UNIT_CAP_RANGED_ATTACK"
+//		"MovementCapabilities"	"DOTA_UNIT_CAP_MOVE_GROUND"
+//		"MovementSpeed"	"500"
+//		"MovementTurnRate"	"10"
+//		"TeamName"	"DOTA_TEAM_GOODGUYS"
+//		"CombatClassAttack"	"DOTA_COMBAT_CLASS_ATTACK_BASIC"
+//		"CombatClassDefend"	"DOTA_COMBAT_CLASS_DEFEND_BASIC"
+//		"UnitRelationshipClass"	"DOTA_NPC_UNIT_RELATIONSHIP_TYPE_BUILDING"
+//		"MinimapIcon"	"minimap_creep"
+//		"MinimapIconSize"	"256"
+//		"VisionDaytimeRange"	"900"
+//		"VisionNighttimeRange"	"600"
+//		"HasInventory"	"1"
+//		"ConsideredHero"	"1"
+//		"HealthBarOffset"	"150"
+//		"RingRadius"	"60"
+//		"Ability1"	"is_human"
+//		"Ability2"	"is_warlock"
+//		"Ability3"	""
+//		"Ability4"	""
+//		"Ability5"	""
+//		"Ability6"	""
+//		"Ability7"	""
+//		"Ability8"	""
+//		"Ability9"	""
+//		"Ability10"	""
+//		"Ability11"	""
+//		"Ability12"	""
+//		"Ability13"	""
+//		"Ability14"	""
+//		"Ability15"	"no_collision"
+//		"Ability16"	"dac_guai_base"
+//		"Creature"
+//		{
+//			"AttachWearables"
+//			{
+//				"Wearable1"
+//				{
+//					"ItemDef"	"303"
+//				}
+//				"Wearable2"
+//				{
+//					"ItemDef"	"28"
+//				}
+//				"Wearable3"
+//				{
+//					"ItemDef"	"302"
+//				}
+//				"Wearable4"
+//				{
+//					"ItemDef"	"301"
+//				}
+//				"Wearable5"
+//				{
+//					"ItemDef"	"27"
+//				}
+//				"Wearable6"
+//				{
+//					"ItemDef"	"304"
+//				}
+//			}
+//		}
+//	}
+	// 【沉默术士测试中，暂时关闭】以下单位定义已注释，恢复时去掉块内每行行首的 //
+//	"chess_sil1"
+//	{
+//		"BaseClass"			"npc_dota_creature"
+//		"SoundSet"			"Hero_Silencer"
+//        "GameSoundsFile"    "soundevents/game_sounds_heroes/game_sounds_silencer.vsndevts"
+//		"VoiceFile"     	"soundevents/voscripts/game_sounds_vo_silencer.vsndevts"
+//		"Model"				"models/heroes/silencer/silencer.vmdl"
+//		"ModelScale"		"0.7"
+//		"Level"				"7"
+//		"AttackDamageMin"	"100"
+//		"AttackDamageMax"	"220"
+//		"AttackRate"		"1.600000"
+//		"AttackRange"		"400"
+//		"ProjectileModel"	"particles/units/heroes/hero_silencer/silencer_base_attack.vpcf"
+//		"ProjectileSpeed"	"800"
+//		"StatusHealth"		"1800"
+//		"StatusHealthRegen"	"0"
+//		"StatusMana"		"0"
+//		"StatusManaRegen"	"0"
+//		"ArmorPhysical"		"5"
+//		"MagicalResistance"	"30"
+//		"AttackAnimationPoint"	"0.5"
+//		"AttackCapabilities"	"DOTA_UNIT_CAP_RANGED_ATTACK"
+//		"MovementCapabilities"	"DOTA_UNIT_CAP_MOVE_GROUND"
+//		"MovementSpeed"	"500"
+//		"MovementTurnRate"	"10"
+//		"TeamName"	"DOTA_TEAM_GOODGUYS"
+//		"CombatClassAttack"	"DOTA_COMBAT_CLASS_ATTACK_BASIC"
+//		"CombatClassDefend"	"DOTA_COMBAT_CLASS_DEFEND_BASIC"
+//		"UnitRelationshipClass"	"DOTA_NPC_UNIT_RELATIONSHIP_TYPE_BUILDING"
+//		"MinimapIcon"	"minimap_creep"
+//		"MinimapIconSize"	"256"
+//		"VisionDaytimeRange"	"900"
+//		"VisionNighttimeRange"	"600"
+//		"HasInventory"	"1"
+//		"ConsideredHero"	"1"
+//		"HealthBarOffset"	"150"
+//		"RingRadius"	"60"
+//		"Ability1"	"is_human"
+//		"Ability2"	"is_warlock"
+//		"Ability3"	""
+//		"Ability4"	""
+//		"Ability5"	""
+//		"Ability6"	""
+//		"Ability7"	""
+//		"Ability8"	""
+//		"Ability9"	""
+//		"Ability10"	""
+//		"Ability11"	""
+//		"Ability12"	""
+//		"Ability13"	""
+//		"Ability14"	""
+//		"Ability15"	"no_collision"
+//		"Ability16"	"dac_guai_base"
+//		"Creature"
+//		{
+//			"AttachWearables"
+//			{
+//				"Wearable1"
+//				{
+//					"ItemDef"	"26316"
+//				}
+//				"Wearable2"
+//				{
+//					"ItemDef"	"26320"
+//				}
+//				"Wearable3"
+//				{
+//					"ItemDef"	"26315"
+//				}
+//				"Wearable4"
+//				{
+//					"ItemDef"	"26317"
+//				}
+//				"Wearable5"
+//				{
+//					"ItemDef"	"26319"
+//				}
+//				"Wearable6"
+//				{
+//					"ItemDef"	"304"
+//				}
+//			}
+//		}
+//	}
+	// 【沉默术士测试中，暂时关闭】以下单位定义已注释，恢复时去掉块内每行行首的 //
+//	"chess_sil11"
+//	{
+//		"BaseClass"			"npc_dota_creature"
+//		"SoundSet"			"Hero_Silencer"
+//        "GameSoundsFile"    "soundevents/game_sounds_heroes/game_sounds_silencer.vsndevts"
+//		"VoiceFile"     	"soundevents/voscripts/game_sounds_vo_silencer.vsndevts"
+//		"Model"				"models/heroes/silencer/silencer.vmdl"
+//		"ModelScale"		"0.85"
+//		"Level"				"9"
+//		"AttackDamageMin"	"200"
+//		"AttackDamageMax"	"440"
+//		"AttackRate"		"1.600000"
+//		"AttackRange"		"400"
+//		"ProjectileModel"	"particles/units/heroes/hero_silencer/silencer_base_attack.vpcf"
+//		"ProjectileSpeed"	"800"
+//		"StatusHealth"		"3600"
+//		"StatusHealthRegen"	"0"
+//		"StatusMana"		"0"
+//		"StatusManaRegen"	"0"
+//		"ArmorPhysical"		"5"
+//		"MagicalResistance"	"30"
+//		"AttackAnimationPoint"	"0.5"
+//		"AttackCapabilities"	"DOTA_UNIT_CAP_RANGED_ATTACK"
+//		"MovementCapabilities"	"DOTA_UNIT_CAP_MOVE_GROUND"
+//		"MovementSpeed"	"500"
+//		"MovementTurnRate"	"10"
+//		"TeamName"	"DOTA_TEAM_GOODGUYS"
+//		"CombatClassAttack"	"DOTA_COMBAT_CLASS_ATTACK_BASIC"
+//		"CombatClassDefend"	"DOTA_COMBAT_CLASS_DEFEND_BASIC"
+//		"UnitRelationshipClass"	"DOTA_NPC_UNIT_RELATIONSHIP_TYPE_BUILDING"
+//		"MinimapIcon"	"minimap_creep"
+//		"MinimapIconSize"	"256"
+//		"VisionDaytimeRange"	"900"
+//		"VisionNighttimeRange"	"600"
+//		"HasInventory"	"1"
+//		"ConsideredHero"	"1"
+//		"HealthBarOffset"	"150"
+//		"RingRadius"	"60"
+//		"Ability1"	"is_human"
+//		"Ability2"	"is_warlock"
+//		"Ability3"	""
+//		"Ability4"	""
+//		"Ability5"	""
+//		"Ability6"	""
+//		"Ability7"	""
+//		"Ability8"	""
+//		"Ability9"	""
+//		"Ability10"	""
+//		"Ability11"	""
+//		"Ability12"	""
+//		"Ability13"	""
+//		"Ability14"	""
+//		"Ability15"	"no_collision"
+//		"Ability16"	"dac_guai_base"
+//		"Creature"
+//		{
+//			"AttachWearables"
+//			{
+//				"Wearable1"
+//				{
+//					"ItemDef"	"26316"
+//				}
+//				"Wearable2"
+//				{
+//					"ItemDef"	"26320"
+//				}
+//				"Wearable3"
+//				{
+//					"ItemDef"	"26315"
+//				}
+//				"Wearable4"
+//				{
+//					"ItemDef"	"26317"
+//				}
+//				"Wearable5"
+//				{
+//					"ItemDef"	"12414"
+//				}
+//				"Wearable6"
+//				{
+//					"ItemDef"	"26318"
+//				}
+//			}
+//		}
+//	}
 
 	"courier_h001"
 	{	
@@ -47459,74 +47462,76 @@
 		}
 	}
 
-	// "model_chess_sil1"
-	// {
-	// 	"BaseClass"			"npc_dota_creature"
-	// 	"Model"				"models/heroes/silencer/silencer.vmdl"
-	// 	"Creature"
-	// 	{
-	// 		"AttachWearables"
-	// 		{
-	// 			"Wearable1"
-	// 			{
-	// 				"ItemDef"	"26316"
-	// 			}
-	// 			"Wearable2"
-	// 			{
-	// 				"ItemDef"	"26320"
-	// 			}
-	// 			"Wearable3"
-	// 			{
-	// 				"ItemDef"	"26315"
-	// 			}
-	// 			"Wearable4"
-	// 			{
-	// 				"ItemDef"	"26317"
-	// 			}
-	// 			"Wearable5"
-	// 			{
-	// 				"ItemDef"	"26319"
-	// 			}
-	// 			"Wearable6"
-	// 			{
-	// 				"ItemDef"	"304"
-	// 			}
-	// 		}
-	// 	}
-	// }
-	// "model_chess_sil11"
-	// {
-	// 	"BaseClass"			"npc_dota_creature"
-	// 	"Model"				"models/heroes/silencer/silencer.vmdl"
-	// 	"Creature"
-	// 	{
-	// 		"AttachWearables"
-	// 		{
-	// 			"Wearable1"
-	// 			{
-	// 				"ItemDef"	"26316"
-	// 			}
-	// 			"Wearable2"
-	// 			{
-	// 				"ItemDef"	"26320"
-	// 			}
-	// 			"Wearable3"
-	// 			{
-	// 				"ItemDef"	"26315"
-	// 			}
-	// 			"Wearable4"
-	// 			{
-	// 				"ItemDef"	"26317"
-	// 			}
-	// 			"Wearable5"
-	// 			{
-	// 				"ItemDef"	"12414"
-	// 			}
-	// 			"Wearable6"
-	// 			{
-	// 				"ItemDef"	"26318"
-	// 			}
-	// 		}
-	// 	}
-	// }
+	// 【沉默术士测试中，暂时关闭】以下单位定义已注释，恢复时去掉块内每行行首的 //
+//	"model_chess_sil1"
+//	{
+//		"BaseClass"			"npc_dota_creature"
+//		"Model"				"models/heroes/silencer/silencer.vmdl"
+//		"Creature"
+//		{
+//			"AttachWearables"
+//			{
+//				"Wearable1"
+//				{
+//					"ItemDef"	"26316"
+//				}
+//				"Wearable2"
+//				{
+//					"ItemDef"	"26320"
+//				}
+//				"Wearable3"
+//				{
+//					"ItemDef"	"26315"
+//				}
+//				"Wearable4"
+//				{
+//					"ItemDef"	"26317"
+//				}
+//				"Wearable5"
+//				{
+//					"ItemDef"	"26319"
+//				}
+//				"Wearable6"
+//				{
+//					"ItemDef"	"304"
+//				}
+//			}
+//		}
+//	}
+	// 【沉默术士测试中，暂时关闭】以下单位定义已注释，恢复时去掉块内每行行首的 //
+//	"model_chess_sil11"
+//	{
+//		"BaseClass"			"npc_dota_creature"
+//		"Model"				"models/heroes/silencer/silencer.vmdl"
+//		"Creature"
+//		{
+//			"AttachWearables"
+//			{
+//				"Wearable1"
+//				{
+//					"ItemDef"	"26316"
+//				}
+//				"Wearable2"
+//				{
+//					"ItemDef"	"26320"
+//				}
+//				"Wearable3"
+//				{
+//					"ItemDef"	"26315"
+//				}
+//				"Wearable4"
+//				{
+//					"ItemDef"	"26317"
+//				}
+//				"Wearable5"
+//				{
+//					"ItemDef"	"12414"
+//				}
+//				"Wearable6"
+//				{
+//					"ItemDef"	"26318"
+//				}
+//			}
+//		}
+//	}
 }

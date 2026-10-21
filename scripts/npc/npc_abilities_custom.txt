@@ -18825,15 +18825,7 @@
 				"IsPurgable"	"0"
 				"EffectName"	"particles/generic_gameplay/generic_silence.vpcf"
 				"EffectAttachType"	"follow_overhead"
-				"OnDestroy"
-				{
-					"RunScript"
-					{
-						"Target"		"TARGET"
-						"ScriptFile"	"scripts/vscripts/addon_game_mode.lua"
-						"Function"		"SilenceDamage"
-					}
-				}
+				// OnDestroy 已移除：沉默结束时不再造成魔法伤害
 				// "OnIntervalThink"
 				// {
 				// 	"RunScript"
@@ -18849,7 +18841,13 @@
 		"AbilityValues"
 		{
 			"duration" 		"6 8 12"
-			"damage"		"400 600 800"
+			//光环：范围 / 命中后沉默概率(%) / 沉默时长（按 1/2/3 星）
+			"aura_radius"		"300 400 500"
+			"aura_chance"		"50 75 100"
+			"aura_duration"		"3 4 5"
+			//光环触发沉默的那一下附加的魔法伤害
+			"aura_damage"		"100"
 		}
+		"AbilityCastRange"	"300 400 500"
 	}
 }

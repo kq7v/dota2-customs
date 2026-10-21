@@ -847,6 +847,9 @@ return {
 		"particles/units/heroes/hero_morphling/morphling_waveform_wave_2.vpcf",
 		"particles/units/heroes/hero_morphling/morphling_waveform_wave_2_copy.vpcf",
 		-- chess_dp -> death_prophet_exorcism
+		-- 大招召唤的小魂（dota_death_prophet_exorcism_spirit）的模型和微光，漏了会显示 ERROR 红牌子
+		"models/heroes/death_prophet/death_prophet_ghost.vmdl",
+		"particles/units/heroes/hero_death_prophet/death_prophet_spirit_glow.vpcf",
 		"particles/units/heroes/hero_death_prophet/death_prophet_exorcism_attack.vpcf",
 		"particles/units/heroes/hero_death_prophet/death_prophet_exorcism_attack_building.vpcf",
 		"particles/units/heroes/hero_death_prophet/death_prophet_exorcism_attack_building_chunks.vpcf",
@@ -1348,6 +1351,11 @@ return {
 		"particles/units/heroes/hero_zeus/zeus_cloud_strike.vpcf",
 		"particles/units/heroes/hero_ringmaster/ringmaster_wheel_projectile.vpcf",
 		"particles/units/heroes/hero_silencer/silencer_global_silence.vpcf",
+		"particles/units/heroes/hero_silencer/silencer_glaives_of_wisdom_glow.vpcf",
+		"particles/units/heroes/hero_silencer/silencer_glaives_of_wisdom.vpcf",
+		"particles/units/heroes/hero_silencer/silencer_glaives_of_wisdom_explosion.vpcf",
+		"particles/econ/items/silencer/silencer_ti8/silencer_ti8_glaive_glow.vpcf",
+		"particles/units/heroes/hero_silencer/silencer_last_word_status_ring_edge.vpcf",
 		"particles/units/heroes/hero_earth_spirit/espirit_magnetize.vpcf",
 		"particles/units/heroes/hero_wisp/wisp_relocate_marker.vpcf",
 		"particles/units/heroes/hero_wisp/wisp_relocate_channel.vpcf",

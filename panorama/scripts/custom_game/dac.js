@@ -1352,7 +1352,10 @@ function ShowAllPlayerInfo(data) {
             //ob
             continue;
         }
-        if (i == Game.GetPlayerInfo(Players.GetLocalPlayer()).player_steamid) {
+        var is_local_player = (i == Game.GetPlayerInfo(Players.GetLocalPlayer()).player_steamid);
+        // 本地玩家刚激活成功时，服务端 net table 可能还是旧数据，这里用本地标记兜底
+        var vip_now = data.info[i].is_vip || (LOCAL_VIP_ACTIVATED && is_local_player);
+        if (is_local_player) {
             // 显示任务信息
             ShowQuestInfo(data.info[i].vip_info);
             // 商城顶栏的通行证图标
@@ -1369,7 +1372,7 @@ function ShowAllPlayerInfo(data) {
             $('#avatar_player_' + data.info[i].player_id).steamid = i;
         }
 
-        if (data.info[i].is_vip) {
+        if (vip_now) {
             $('#avatar_player_vip_badge_' + data.info[i].player_id).SetHasClass('invisible', false);
             $('#avatar_player_vip_' + data.info[i].player_id).SetHasClass('invisible', false);
             RefreshVipTooltip($('#avatar_player_vip_badge_' + data.info[i].player_id), data.info[i].player_id, data.info[i].vip_info || data.info[i]);
@@ -2623,7 +2626,8 @@ function SendHTTPCb(keys) {
                 show_msg('内测资格激活成功！');
             }
             else if (object.award.vip) {
-                show_msg($.Localize('#text_vip_activate_success')+((object.award.vip.vip_expire||'000000')+'').replace(/(\d{4})(\d{2})(\d{2})/, '$1/$2/$3'));
+                var expStr = ((object.award.vip.vip_expire || '000000') + '').replace(/(\d{4})(\d{2})(\d{2})/, '$1/$2/$3');
+                show_msg($.Localize('#text_vip_activate_success') + expStr + GetVipRemainDaysText(expStr));
             }
             else if (object.award.candy) {
                 open_panel_award('dac', 'candy', '', object.award.candy, 'cdkey');
@@ -8166,7 +8170,11 @@ function FillStoreV5(data) {
     SHOP_INFO_V5 = data.shop_info;
     ShowMyMoney(data.user_info.candy, data.user_info.biscuit);
 
-    if (data.is_shop_available) {
+    if (data.is_shop_available === false) {
+        // 只有后端明确返回不可用才隐藏商店按钮；字段缺失时保持显示（激活后刷新可能不返回该字段）
+        $('#icon-my').SetHasClass('invisible', true);
+    }
+    else {
         $('#icon-my').SetHasClass('invisible', false);
 
         OnStoreV5ChooseCate(SHOP_V5_CURR_TAB || 'recomment');
@@ -8192,9 +8200,6 @@ function FillStoreV5(data) {
             $('#store_link').SetHasClass('invisible', false);
         }
     }
-    else {
-        $('#icon-my').SetHasClass('invisible', true);
-    }
 
     if (data && data.user_info && data.user_info.onduty_hero) {
         // 更新 MY_ONDUTY_HERO
@@ -8208,14 +8213,23 @@ function FillStoreV5(data) {
     FillOtherStoreInfo(data);
     choose_hero(MY_ONDUTY_HERO, MY_ONDUTY_HERO_INDEX);
 }
-// ===== 商城顶栏的通行证图标 =====
+// ===== 商城顶栏的通行证图标 ===== 
 var STORE_IS_VIP = false;
 var STORE_VIP_INFO = null;
+// 本次会话内刚激活成功过：服务端 net table 可能还没跟上，用这个标记避免界面又闪回「未激活」
+var LOCAL_VIP_ACTIVATED = false;
 
 // 已激活：原色 + 和头像通行证徽章一致的“标题+正文”气泡；未激活：灰色
 function UpdateStorePassIcon(is_vip, vip_info) {
+    // 刚激活成功时，服务端数据回来可能还是旧的（后端落库有延迟），这里以本地标记为准
+    if (LOCAL_VIP_ACTIVATED && !is_vip) {
+        $.Msg('[PASS] UpdateStorePassIcon: server says not vip, but locally activated -> keep activated UI');
+        is_vip = true;
+    }
     STORE_IS_VIP = !!is_vip;
     STORE_VIP_INFO = vip_info || null;
+    // 左上角的通行证入口也跟着刷新（已激活=彩色，未激活=灰色）
+    RefreshVipEntryIcon(STORE_IS_VIP, STORE_VIP_INFO); 
     var panel = $('#image_pass_storage');
     if (!panel) {
         return;
@@ -8233,6 +8247,344 @@ function UpdateStorePassIcon(is_vip, vip_info) {
         panel.SetPanelEvent('onmouseout', OnOutStoreIconTip);
     }
 }
+
+// 左上角「通行证」入口（替换原来的 TI15 竞猜入口）
+// 所有人可见；图标由 CSS 按 vip_active 类切换（未激活=蓝灰，已激活=彩色棋盘图）
+//
+// 【调试开关】置 true → 无视真实通行证状态，强制显示「未激活」的灰蓝图标
+//   （用来在自己有通行证的账号上预览未激活态；调试完改回 false）
+var DEBUG_FORCE_VIP_ENTRY_LOCKED = false;
+
+function RefreshVipEntryIcon(is_vip, vip_info) {
+    var entry = $('#icon-vip');
+    if (!entry) {
+        return;
+    }
+    if (DEBUG_FORCE_VIP_ENTRY_LOCKED === true) {
+        is_vip = false;
+        vip_info = null;
+        // 便于确认调试开关生效
+        $.Msg('[VIP-ENTRY] DEBUG_FORCE_VIP_ENTRY_LOCKED = true，已强制显示未激活态');
+    }
+    entry.SetHasClass('vip_locked', !is_vip);
+    entry.SetHasClass('vip_active', !!is_vip);
+    // 通行证面板里的「有效期」文本也一起刷新
+    RefreshVipExpireText(is_vip, vip_info);
+
+    // 左上角入口的 hover：只显示「通行证特权」，不带标题（详细 tooltip 保留给商城图标/头像徽章）
+    entry.SetPanelEvent('onmouseover', function () {
+        $.DispatchEvent('DOTAShowTextTooltip', entry, $.Localize('#tips_icon-vip_title'));
+    });
+    entry.SetPanelEvent('onmouseout', function () {
+        $.DispatchEvent('DOTAHideTextTooltip');
+        $.DispatchEvent('DOTAHideTitleTextTooltip');
+    });
+}
+
+// =========================================================
+// 通行证面板：有效期文本 + 「激活通行证」按钮
+// =========================================================
+
+// 通行证面板里的显示逻辑：
+//   已激活 -> 只显示有效期/已激活文字，隐藏「说明 + 激活按钮」
+//   未激活 -> 显示「说明 + 激活按钮」，隐藏有效期那行
+function RefreshVipExpireText(is_vip, vip_info) {
+    // 面板整体状态（灰色背景、各特权项的「未激活/已启用」文案）一起刷新
+    RefreshVipPanelState(is_vip);
+
+    var label = $('#text_vip_expire_time');
+    var explain = $('#text_activate_pass_explain');
+    var btn_group = $('#panel_activate_buttons');
+    var btn = $('#button_activate_pass');
+
+    // 说明 + 按钮组：只在未激活时出现
+    if (explain) {
+        explain.SetHasClass('invisible', !!is_vip);
+    }
+    if (btn_group) {
+        btn_group.SetHasClass('invisible', !!is_vip);
+    }
+    if (btn) {
+        btn.SetHasClass('invisible', !!is_vip);
+    }
+    if (!label) {
+        return;
+    }
+
+    if (!is_vip) {
+        // 未激活：不显示「尚未激活通行证」这行，避免和上面的说明重复
+        label.SetHasClass('invisible', true);
+        return;
+    }
+
+    label.SetHasClass('invisible', false);
+    var dateStr = GetVipExpireText(vip_info);   // utils.js 里已有的解析（yyyy/mm/dd）
+    if (dateStr) {
+        // 「通行证已激活，有效期至 2027/09/10（剩余 x 天）」
+        // 模板里若有 <font> 标签则去掉，Label 不解析 HTML
+        var tpl = ('' + $.Localize('#text_vip_active_expire')).replace(/<[^>]*>/g, '');
+        var head;
+        if (!tpl || tpl.indexOf('#text_vip_active_expire') >= 0) {
+            head = $.Localize('#text_vip_active') + ' ' + dateStr;
+        }
+        else {
+            head = (tpl.indexOf('%s') >= 0) ? tpl.replace('%s', dateStr) : (tpl + ' ' + dateStr);
+        }
+        label.text = head + GetVipRemainDaysText(dateStr);
+    }
+    else {
+        label.text = $.Localize('#text_vip_active');
+    }
+}
+
+// 通行证面板的「是否已激活」外观：
+//   未激活 -> 面板整体换灰色背景，各特权项的状态标签显示「未激活」
+//   已激活 -> 恢复金色背景和原来的「已启用 / 已解锁」文案
+// 面板上所有「已解锁 / 已启用 / 未解锁」状态角标：未激活通行证时统一显示「未激活」
+var VIP_PANEL_STATUS_LABELS = [
+    ['text_vip_roshan_status', '#text_vip_got'],
+    ['text_vip_board1_status', '#text_vip_got'],
+    ['text_vip_board2_status', '#text_vip_got'],
+    ['text_vip_avatar_status', '#text_vip_on'],
+    ['text_vip_bullet_status', '#text_vip_on'],
+    ['text_vip_firstwin_got_1', '#text_vip_ungot'],
+    ['text_vip_quest_got_1', '#text_vip_ungot'],
+];
+
+function RefreshVipPanelState(is_vip) {
+    var panel = $('#panel_vip');
+    if (panel) {
+        panel.SetHasClass('vip_locked', !is_vip);
+    }
+    for (var i = 0; i < VIP_PANEL_STATUS_LABELS.length; i++) {
+        var label = $('#' + VIP_PANEL_STATUS_LABELS[i][0]);
+        if (!label) {
+            continue;
+        }
+        label.text = is_vip
+            ? $.Localize(VIP_PANEL_STATUS_LABELS[i][1])
+            : $.Localize('#text_vip_not_activated');
+    }
+}
+
+// 根据到期日算「（剩余 x 天）」；实现在 utils.js（那里的通行证 tooltip 也用），这里直接复用
+
+// 服务端中止对局（无测试资格 / 连不上服务器等）：
+// ui.js 里关掉了 DOTA_DEFAULT_UI_ENDGAME（平时用 DAC 自己的结算界面），
+// 中止时没有结算数据，这里必须把 Dota 默认的结束界面放回来，
+// 否则进入 POST_GAME 后屏幕上什么都没有，玩家只能强退。
+GameEvents.Subscribe('abort_game_notice', function (keys) {
+    try {
+        GameUI.SetDefaultUIEnabled(DotaDefaultUIElement_t.DOTA_DEFAULT_UI_ENDGAME, true);
+        $.Msg('[ABORT] DOTA_DEFAULT_UI_ENDGAME enabled');
+    }
+    catch (e) {
+        $.Msg('[ABORT] enable ENDGAME ui failed: ' + e);
+    }
+    // 顺手把被 dac.js 强制隐藏的“断开连接”按钮放出来，留一条手动退出的路
+    if (FindDotaHudElement('DisconnectButton')) {
+        FindDotaHudElement('DisconnectButton').style['opacity'] = '1';
+    }
+    if (keys && keys.text) {
+        show_msg(keys.text);
+    }
+});
+
+// 激活请求是否正在等待回包（防止重复点击）
+var ACTIVATE_PASS_PENDING = false;
+// 只要成功过一次，就永久不再弹「激活失败」（后端重复回包 / 超时兜底都不弹）
+var ACTIVATE_PASS_SUCCEEDED = false;
+
+// 切换按钮的「加载中」状态：转圈 + 文案变「激活中...」+ 按钮置灰不可点
+function SetActivatePassLoading(loading) {
+    ACTIVATE_PASS_PENDING = !!loading;
+
+    var btn = $('#button_activate_pass');
+    if (btn) {
+        // 查询中：按钮进入 unavailable（禁用）外观；loading 用来保证转圈环仍白亮
+        btn.SetHasClass('unavailable', !!loading);
+        btn.SetHasClass('loading', !!loading);
+    }
+    var spin = $('#panel_activate_loading');
+    if (spin) {
+        spin.SetHasClass('invisible', !loading);
+    }
+    var label = $('#text_activate_pass');
+    if (label) {
+        label.text = loading
+            ? $.Localize('#text_activate_pass_loading')
+            : $.Localize('#text_activate_pass');
+    }
+}
+
+// 点击「直接去商店购买」：打开战利品兑换（商店）窗口，并弹出二维码充值弹窗
+function OnClickGoToStore() {
+    $.Msg('[PASS] goto store: open store panel + qr popup');
+    try {
+        // 1) 战利品兑换窗口
+        ShowStoreV5();
+    }
+    catch (e) {
+        $.Msg('[PASS] ShowStoreV5 failed: ' + e);
+    }
+    try {
+        // 2) 二维码弹窗（内部会向服务端请求二维码）
+        OnClickStoreV5PlusButton();
+    }
+    catch (e) {
+        $.Msg('[PASS] OnClickStoreV5PlusButton failed: ' + e);
+    }
+}
+
+// 点击「激活通行证」：只发请求给服务端，由服务端去请求 activate/pass/<steamid>
+// （不在客户端打开外部浏览器）
+function OnClickActivatePass() {
+    if (ACTIVATE_PASS_PENDING) {
+        return;
+    }
+    // 已经激活过就不用再点（防止后端落库延迟期间重复请求，回来一个「激活失败」的弹窗）
+    if (LOCAL_VIP_ACTIVATED || STORE_IS_VIP) {
+        $.Msg('[PASS] already activated, ignore click');
+        return;
+    }
+    SetActivatePassLoading(true);
+
+    // 兜底：服务端 HTTP 超时是 20 秒，25 秒还没回包就自己复位，避免一直转圈
+    $.Schedule(25, function () {
+        if (ACTIVATE_PASS_SUCCEEDED) {
+            return;                 // 已经成功了，超时兜底不再弹失败
+        }
+        if (ACTIVATE_PASS_PENDING) {
+            $.Msg('[PASS] activate no response in 25s, reset loading');
+            SetActivatePassLoading(false);
+            show_msg($.Localize('#text_activate_pass_failed'));
+        }
+    });
+
+    $.Msg('[PASS] request activate pass');
+    GameEvents.SendCustomGameEventToServer('request_activate_pass', {});
+}
+
+// 服务端广播：某个玩家的通行证刚激活成功 -> 立刻把他头像上的 VIP 徽章点亮（不用等 player_info 刷新）
+GameEvents.Subscribe('update_player_vip', function (keys) {
+    if (!keys || !keys.is_vip) {
+        return;
+    }
+    try {
+        var idx = GetPlayerIndexByPlayerID(keys.player_id);
+        $.Msg('[PASS] update_player_vip: player_id=' + keys.player_id + ' index=' + idx);
+        if (idx === undefined || idx === null || idx < 0) {
+            return;
+        }
+        if ($('#avatar_player_vip_badge_' + idx)) {
+            $('#avatar_player_vip_badge_' + idx).SetHasClass('invisible', false);
+        }
+        if ($('#avatar_player_vip_' + idx)) {
+            $('#avatar_player_vip_' + idx).SetHasClass('invisible', false);
+        }
+        // 如果是自己，顺带把整块 VIP 界面也点亮
+        var my_steamid = Game.GetPlayerInfo(Players.GetLocalPlayer()).player_steamid;
+        if (('' + keys.steamid) === ('' + my_steamid)) {
+            LOCAL_VIP_ACTIVATED = true;
+            STORE_IS_VIP = true;
+            RefreshVipEntryIcon(true, STORE_VIP_INFO);
+            RefreshVipPanelState(true);
+        }
+    }
+    catch (e) {
+        $.Msg('[PASS] update_player_vip failed: ' + e);
+    }
+});
+
+// 本地玩家的头像 VIP 徽章（激活成功后立刻显示，不等 net table）
+function ShowLocalPlayerVipBadge(show) {
+    try {
+        var my_index = Players.GetLocalPlayer();
+        if ($('#avatar_player_vip_badge_' + my_index)) {
+            $('#avatar_player_vip_badge_' + my_index).SetHasClass('invisible', !show);
+        }
+        if ($('#avatar_player_vip_' + my_index)) {
+            $('#avatar_player_vip_' + my_index).SetHasClass('invisible', !show);
+        }
+    }
+    catch (e) {
+        $.Msg('[PASS] ShowLocalPlayerVipBadge failed: ' + e);
+    }
+}
+
+// 服务端校验结果：err == 0 视为激活成功
+GameEvents.Subscribe('activate_pass_result', function (keys) {
+    // 无论成功失败，先结束加载状态
+    SetActivatePassLoading(false);
+
+    if (keys && keys.ok) {
+        // 先本地立刻把 VIP 相关界面切到「已激活」，不用等服务端 net table 回来：
+        //   左上角入口图标、通行证面板（金色背景 + 各特权项已启用/已解锁）、本地玩家头像 VIP 徽章
+        ACTIVATE_PASS_SUCCEEDED = true;   // 成功一次后，永久不再弹「激活失败」
+        LOCAL_VIP_ACTIVATED = true;       // 会话内锁定为已激活，避免后端落库延迟导致界面闪回「未激活」
+        STORE_IS_VIP = true;
+        RefreshVipEntryIcon(true, STORE_VIP_INFO);
+        RefreshVipPanelState(true);
+        ShowLocalPlayerVipBadge(true);
+        // 左上角商店按钮：确保激活过程中被刷新隐藏过也能恢复
+        if ($('#icon-my')) {
+            $('#icon-my').SetHasClass('invisible', false);
+        }
+
+        show_msg('#text_activate_pass_success', 'file://{images}/custom_game/vip/bird_sang.png', 6);
+
+        // 再拉真实的通行证信息（有效期等），服务端那边也会强制刷新一次
+        refresh_shop_v5();
+        $.Schedule(1.5, function () {
+            refresh_shop_v5();
+        });
+        $.Schedule(4.0, function () {
+            refresh_shop_v5();
+        });
+        return;
+    }
+
+    // 已经成功过：后端重复回包/超时兜底送来的失败一律忽略，绝不再弹失败弹窗
+    if (ACTIVATE_PASS_SUCCEEDED) {
+        $.Msg('[PASS] ignore failure popup because activate already succeeded');
+        return;
+    }
+
+    var err = (keys && keys.err !== undefined && keys.err !== null) ? ('' + keys.err) : '';
+    var msg = (keys && keys.msg !== undefined && keys.msg !== null) ? ('' + keys.msg) : '';
+
+    // 失败时把服务端返回的完整信息打到控制台，方便排查
+    try {
+        $.Msg('[PASS] activate failed, result=' + JSON.stringify(keys));
+    }
+    catch (e) {
+        $.Msg('[PASS] activate failed, err=' + err + ' msg=' + msg);
+    }
+
+    // 弹窗文案：
+    //   1501 -> 「由于steam库存未公开，暂时无法激活。」+ 第二行服务端原始 msg
+    //   其它 -> 原样显示服务端 msg；没有 msg 就显示通用的失败提示
+    var head = (err === '1501') ? $.Localize('#text_activate_pass_steam_private') : '';
+    var detail = (msg !== '' && msg !== 'no_steam_id') ? msg : '';
+
+    if (head === '' && detail === '') {
+        show_msg($.Localize('#text_activate_pass_failed'));
+    }
+    else if (head !== '' && detail !== '') {
+        // msg_box_text 带 html="true"，<br> 会正常换行
+        show_msg(head + '<br>' + detail);
+    }
+    else {
+        show_msg(head !== '' ? head : detail);
+    }
+});
+
+// 界面初始化：先按「未激活」显示，等服务器数据回来再刷新
+
+$.Schedule(1, function () {
+    RefreshVipEntryIcon(typeof STORE_IS_VIP !== 'undefined' ? STORE_IS_VIP : false,
+        typeof STORE_VIP_INFO !== 'undefined' ? STORE_VIP_INFO : null);
+});
 
 // 通用：把tooltip锚定到指定控件上，避免气泡位置跑偏
 function ShowStoreIconTip(panel_id, token) {
@@ -8361,7 +8713,15 @@ function OnClickStoreV5PlusButton() {
             SetStoreQRPopupTips($.Localize('#text_store_qr_popup_timeout'));
         }
     });
-    GameEvents.SendCustomGameEventToServer('request_qr_code', {});
+    // 昵称随请求一起带上：workshop tools / 本地房下服务端不一定能拿到玩家名
+    var qr_nickname = '';
+    try {
+        qr_nickname = Players.GetPlayerName(Players.GetLocalPlayer()) || '';
+    }
+    catch (e) {
+        qr_nickname = '';
+    }
+    GameEvents.SendCustomGameEventToServer('request_qr_code', { nickname: qr_nickname });
 }
 
 // 充值后刷新账户信息：关掉弹窗，重新请求 shop/v5（回调 FillStoreV5 会整页重绘商店）
@@ -11142,7 +11502,7 @@ var HOST_CREDIT = 0;
 function ShowHostInfo(){
     var data = CustomNetTables.GetTableValue("game_info", "host_info");
     var player_index = GetPlayerIndexByPlayerID(data.host_playerid);
-    $.Msg('host:'+player_index);
+    // $.Msg('host:'+player_index);   // 调试打印，已关闭（日志里会刷 host:x）
     $('#panel_host_'+player_index).SetHasClass('invisible',false);
     $('#panel_host_'+player_index).style['position'] = '0px 0px 0px';
     HOST_MATCH = data.host_match;
@@ -11177,4 +11537,4 @@ if (data && data.game_host_type == 'server'){
             $('#'+host_panel_list[i]).SetHasClass('opacity0',true);
         }
     }
-}
+}

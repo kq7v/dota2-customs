@@ -11,6 +11,8 @@
 function downloadPlatform() {
     var addonId = '3797844518';
     var config = GameUI.CustomUIConfig();
+    // 平台下载链路的调试日志开关（true 时才往控制台打 [下载验证] ...）
+    var DEBUG_TRACE = false;
 
     // 停止之前的诊断和等待循环
     if (config.workshopVerification && config.workshopVerification.stop) {
@@ -35,6 +37,8 @@ function downloadPlatform() {
     }
 
     function trace(name, args) {
+        // 调试输出默认关闭；排查平台下载问题时把下面的 DEBUG_TRACE 改成 true
+        if (!DEBUG_TRACE) return;
         $.Msg('[下载验证] ' + name +
             ' pending=' + run.pending +
             ' argc=' + args.length);
@@ -82,7 +86,9 @@ function downloadPlatform() {
         $.Schedule(3, function () {
             if (!live() || !run.pending) return;
 
-            $.Msg('[下载验证] 尚未收到匹配的安装通知，继续等 3 秒');
+            if (DEBUG_TRACE) {
+                $.Msg('[下载验证] 尚未收到匹配的安装通知，继续等 3 秒');
+            }
             wait();
         });
     }
@@ -92,13 +98,13 @@ function downloadPlatform() {
 
         run.started = true;
         run.pending = true;
-        $.Msg('[下载验证] 请求下载 ' + addonId);
+        if (DEBUG_TRACE) $.Msg('[下载验证] 请求下载 ' + addonId);
 
         try {
             $.DispatchEvent('DOTADownloadCustomGameUpdate', addonId);
         } catch (err) {
             run.pending = false;
-            $.Msg('[下载验证] 请求异常：', err);
+            if (DEBUG_TRACE) $.Msg('[下载验证] 请求异常：', err);
             return;
         }
 
@@ -110,27 +116,23 @@ function downloadPlatform() {
         });
     }
 
-    $.Msg('[下载验证] 测试已加载，1 秒后请求下载');
+    if (DEBUG_TRACE) $.Msg('[下载验证] 测试已加载，1 秒后请求下载');
     $.Schedule(1, start);
 }
 
 function StartLaunchPlatform(){
     var map_name = 'ranked_1x8';
     var map_display_name = Game.GetMapInfo().map_display_name;
-    $.Msg(map_display_name);
+    // 调试打印已关闭（原来会刷地图名 / 111111 / 222222 / 333333 / 准备启动）
     if (map_display_name == '休闲_casual' || map_display_name == '休闲_Casual'){
-        $.Msg(111111);
         map_name = 'casual_1x8';
     }
     if (map_display_name == '休闲观战_casualob' || map_display_name == '休闲观战_CasualOB'){
-        $.Msg(222222);
         map_name = 'casual_1x8_ob';
     }
     if (map_display_name == '自由天梯_ranked' || map_display_name == '自由天梯_Ranked'){
-        $.Msg(333333);
         map_name = 'ranked_1x8';
     }
-    $.Msg('准备启动: '+map_name);
     GameEvents.SendEventClientSide('client_connect_server', { map_name: map_name });
 }
 
