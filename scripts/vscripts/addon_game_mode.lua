@@ -513,6 +513,8 @@ function DAC:InitGameMode()
 	CustomGameEventManager:RegisterListener("request_qr_code", Dynamic_Wrap(DAC, "OnRequestQRCode"))
 	CustomGameEventManager:RegisterListener("qr_popup_closed", Dynamic_Wrap(DAC, "OnQrPopupClosed"))
 	CustomGameEventManager:RegisterListener("request_activate_pass", Dynamic_Wrap(DAC, "OnRequestActivatePass"))
+	--调试：模拟断线重连（客户端定时发 debug_fake_reconnect，见 dac.js 的 DEBUG_FAKE_RECONNECT）
+	CustomGameEventManager:RegisterListener("debug_fake_reconnect", Dynamic_Wrap(DAC, "OnDebugFakeReconnect"))
 	-- CustomGameEventManager:RegisterListener("collect_host", Dynamic_Wrap(DAC, "OnCollectHost"))
 	-- CustomGameEventManager:RegisterListener("connect_server", Dynamic_Wrap(DAC, "OnConnectServer"))
 
@@ -26459,6 +26461,27 @@ function SetPlayerConnectedInfo(keys)
 	_G.connect_state[keys.PlayerID] = true
 end
 
+--==========================================================
+--调试：模拟一次断线重连（单机测试用）
+--  _G.DEBUG_FAKE_RECONNECT 改成 false 就能整体关掉
+--  触发方式：客户端 DEBUG_FAKE_RECONNECT 打开后定时自动发（不再占用 F8）
+--==========================================================
+_G.DEBUG_FAKE_RECONNECT = false
+
+function DAC:OnDebugFakeReconnect(keys)
+	if _G.DEBUG_FAKE_RECONNECT ~= true then
+		return
+	end
+	local pid = keys.player_id
+	if pid == nil or tonumber(pid) == nil then
+		return
+	end
+	pid = tonumber(pid)
+	print('[DEBUG] fake reconnect (simulate player_reconnected), player_id=' .. tostring(pid))
+	--直接复用真实重连的处理逻辑：客户端收到的下行事件和真重连完全一致
+	DAC:OnPlayerReconnected({ PlayerID = pid })
+end
+
 function DAC:OnPlayerReconnected(keys)
 
 	local hero = PlayerId2Hero(keys.PlayerID)
@@ -26479,6 +26502,8 @@ function DAC:OnPlayerReconnected(keys)
 			hehe = RandomInt(1, 100000)
 		}
 	)
+
+	
 	local steamid = _G.playerid2steamid[keys.PlayerID]
 	
 	

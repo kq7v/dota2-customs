@@ -9,62 +9,62 @@
 
 
 // UI事件
-GameEvents.Subscribe("msg", OnMsg);
-GameEvents.Subscribe("show_time", OnShowTime);
-GameEvents.Subscribe("mima", OnMima);
-GameEvents.Subscribe("show_draw_card", OnShowDrawCard);
-GameEvents.Subscribe("close_draw_card", close_panel_draw_card);
-GameEvents.Subscribe("show_gold", OnShowGold);
-GameEvents.Subscribe("send_http_cb", SendHTTPCb);
-GameEvents.Subscribe("win_streak", OnWinStreak);
-GameEvents.Subscribe("sync_hp", OnSyncHp);
-GameEvents.Subscribe("population", OnPopulation);
-GameEvents.Subscribe("player_reconnect", OnPlayerReconnect);
-GameEvents.Subscribe("show_liuju", OnShowLiuju);
-GameEvents.Subscribe("hide_liuju", OnHideLiuju);
-GameEvents.Subscribe("update_liuju", OnUpdateLiuju);
-GameEvents.Subscribe("request_buy_chess_cb", OnRequestBuyChessCb);
-GameEvents.Subscribe("show_gameover", OnShowGameover);
-GameEvents.Subscribe("show_damage_stat", OnShowDamageStat);
-GameEvents.Subscribe("show_ob_count", OnShowOBCount);
-GameEvents.Subscribe("show_round_win_lose", ShowRoundWinLose);
-GameEvents.Subscribe("clear_round_win_lose", ClearRoundWinLose);
-GameEvents.Subscribe("request_player_language", OnRequestPlayerLanguage);
-GameEvents.Subscribe("test_legendary", OnTestLegendary);
-GameEvents.Subscribe("show_ban_choose", OnShowBanChoose);
-GameEvents.Subscribe("show_confirm_unban_synergy", OnShowConfirmUnbanSynergy);
-GameEvents.Subscribe("ban_chess", OnBanChess);
-GameEvents.Subscribe("unban_chess", OnUnBanChess);
-GameEvents.Subscribe("dota_player_update_selected_unit", ForceSingleSelection);
-GameEvents.Subscribe("show_cursor_hero_icon", OnShowCursorHeroIcon);
-// GameEvents.Subscribe("show_combinable_item", OnShowCombinableItem);
-GameEvents.Subscribe("toggle_is_click_select", OnToggleIsClickSelect);
-GameEvents.Subscribe("show_drodo_courier_buff", OnShowDrodoCourierBuff);
-GameEvents.Subscribe("show_lua_ping", OnShowLuaPing);
-GameEvents.Subscribe("update_ranking_top", UpdateRankingTop);
-GameEvents.Subscribe("init_chesspool", FillChessListPanel);
-GameEvents.Subscribe("user_panel_ranking", UserPanelRanking);
-GameEvents.Subscribe("hide_damage_stat", HideDamageStat);
-GameEvents.Subscribe("show_petgpt", ShowPetGPT);
-GameEvents.Subscribe("hide_petgpt", HidePetGPT);
-GameEvents.Subscribe("set_petgpt_status", SetPetGPTStatus);
-GameEvents.Subscribe("show_banned_items", SetBannedItem);
-// GameEvents.Subscribe("update_item_recycle_result", UpdateItemRecycleResult);
-GameEvents.Subscribe("show_item_recycle_result", ShowItemRecycleResult);
-GameEvents.Subscribe("toggle_request_recycle_item", ToggleRequestRecycleItem);
-GameEvents.Subscribe("refill_chess_in_panel", RefillChessInPanel);
-GameEvents.Subscribe("update_my_money", UpdateMyMoney);
-GameEvents.Subscribe("show_double_coin_confirm", DoubleCoinComfirm);
-GameEvents.Subscribe("show_2b_per", OnShow2bPer);
-GameEvents.Subscribe("show_qr_code", OnShowStoreQRCode);
+GameEvents.Subscribe("msg", SafeCallback("msg", OnMsg));
+GameEvents.Subscribe("show_time", SafeCallback("show_time", OnShowTime));
+GameEvents.Subscribe("mima", SafeCallback("mima", OnMima));
+GameEvents.Subscribe("show_draw_card", SafeCallback("show_draw_card", OnShowDrawCard));
+GameEvents.Subscribe("close_draw_card", SafeCallback("close_draw_card", close_panel_draw_card));
+GameEvents.Subscribe("show_gold", SafeCallback("show_gold", OnShowGold));
+GameEvents.Subscribe("send_http_cb", SafeCallback("send_http_cb", SendHTTPCb));
+GameEvents.Subscribe("win_streak", SafeCallback("win_streak", OnWinStreak));
+GameEvents.Subscribe("sync_hp", SafeCallback("sync_hp", OnSyncHp));
+GameEvents.Subscribe("population", SafeCallback("population", OnPopulation));
+GameEvents.Subscribe("player_reconnect", SafeCallback("player_reconnect", OnPlayerReconnect));
+GameEvents.Subscribe("show_liuju", SafeCallback("show_liuju", OnShowLiuju));
+GameEvents.Subscribe("hide_liuju", SafeCallback("hide_liuju", OnHideLiuju));
+GameEvents.Subscribe("update_liuju", SafeCallback("update_liuju", OnUpdateLiuju));
+GameEvents.Subscribe("request_buy_chess_cb", SafeCallback("request_buy_chess_cb", OnRequestBuyChessCb));
+GameEvents.Subscribe("show_gameover", SafeCallback("show_gameover", OnShowGameover));
+GameEvents.Subscribe("show_damage_stat", SafeCallback("show_damage_stat", OnShowDamageStat));
+GameEvents.Subscribe("show_ob_count", SafeCallback("show_ob_count", OnShowOBCount));
+GameEvents.Subscribe("show_round_win_lose", SafeCallback("show_round_win_lose", ShowRoundWinLose));
+GameEvents.Subscribe("clear_round_win_lose", SafeCallback("clear_round_win_lose", ClearRoundWinLose));
+GameEvents.Subscribe("request_player_language", SafeCallback("request_player_language", OnRequestPlayerLanguage));
+GameEvents.Subscribe("test_legendary", SafeCallback("test_legendary", OnTestLegendary));
+GameEvents.Subscribe("show_ban_choose", SafeCallback("show_ban_choose", OnShowBanChoose));
+GameEvents.Subscribe("show_confirm_unban_synergy", SafeCallback("show_confirm_unban_synergy", OnShowConfirmUnbanSynergy));
+GameEvents.Subscribe("ban_chess", SafeCallback("ban_chess", OnBanChess));
+GameEvents.Subscribe("unban_chess", SafeCallback("unban_chess", OnUnBanChess));
+GameEvents.Subscribe("dota_player_update_selected_unit", SafeCallback("dota_player_update_selected_unit", ForceSingleSelection));
+GameEvents.Subscribe("show_cursor_hero_icon", SafeCallback("show_cursor_hero_icon", OnShowCursorHeroIcon));
+// GameEvents.Subscribe("show_combinable_item", SafeCallback("show_combinable_item", OnShowCombinableItem));
+GameEvents.Subscribe("toggle_is_click_select", SafeCallback("toggle_is_click_select", OnToggleIsClickSelect));
+GameEvents.Subscribe("show_drodo_courier_buff", SafeCallback("show_drodo_courier_buff", OnShowDrodoCourierBuff));
+GameEvents.Subscribe("show_lua_ping", SafeCallback("show_lua_ping", OnShowLuaPing));
+GameEvents.Subscribe("update_ranking_top", SafeCallback("update_ranking_top", UpdateRankingTop));
+GameEvents.Subscribe("init_chesspool", SafeCallback("init_chesspool", FillChessListPanel));
+GameEvents.Subscribe("user_panel_ranking", SafeCallback("user_panel_ranking", UserPanelRanking));
+GameEvents.Subscribe("hide_damage_stat", SafeCallback("hide_damage_stat", HideDamageStat));
+GameEvents.Subscribe("show_petgpt", SafeCallback("show_petgpt", ShowPetGPT));
+GameEvents.Subscribe("hide_petgpt", SafeCallback("hide_petgpt", HidePetGPT));
+GameEvents.Subscribe("set_petgpt_status", SafeCallback("set_petgpt_status", SetPetGPTStatus));
+GameEvents.Subscribe("show_banned_items", SafeCallback("show_banned_items", SetBannedItem));
+// GameEvents.Subscribe("update_item_recycle_result", SafeCallback("update_item_recycle_result", UpdateItemRecycleResult));
+GameEvents.Subscribe("show_item_recycle_result", SafeCallback("show_item_recycle_result", ShowItemRecycleResult));
+GameEvents.Subscribe("toggle_request_recycle_item", SafeCallback("toggle_request_recycle_item", ToggleRequestRecycleItem));
+GameEvents.Subscribe("refill_chess_in_panel", SafeCallback("refill_chess_in_panel", RefillChessInPanel));
+GameEvents.Subscribe("update_my_money", SafeCallback("update_my_money", UpdateMyMoney));
+GameEvents.Subscribe("show_double_coin_confirm", SafeCallback("show_double_coin_confirm", DoubleCoinComfirm));
+GameEvents.Subscribe("show_2b_per", SafeCallback("show_2b_per", OnShow2bPer));
+GameEvents.Subscribe("show_qr_code", SafeCallback("show_qr_code", OnShowStoreQRCode));
 
-CustomNetTables.SubscribeNetTableListener("dac_table", DACTableChanged);
-CustomNetTables.SubscribeNetTableListener("player_info_table", PlayerInfoTableChanged);
-CustomNetTables.SubscribeNetTableListener("ranking_top_table", RankingTopTableChanged);
-CustomNetTables.SubscribeNetTableListener("quest_table", QuestTableChanged);
-CustomNetTables.SubscribeNetTableListener("game_info", GameInfoTableChanged);
-CustomNetTables.SubscribeNetTableListener("chess_pool_table", ChessPoolTableChanged);
-CustomNetTables.SubscribeNetTableListener("player_id_table", PlayerIDTableChanged);
+CustomNetTables.SubscribeNetTableListener("dac_table", SafeCallback("nt:dac_table", DACTableChanged));
+CustomNetTables.SubscribeNetTableListener("player_info_table", SafeCallback("nt:player_info_table", PlayerInfoTableChanged));
+CustomNetTables.SubscribeNetTableListener("ranking_top_table", SafeCallback("nt:ranking_top_table", RankingTopTableChanged));
+CustomNetTables.SubscribeNetTableListener("quest_table", SafeCallback("nt:quest_table", QuestTableChanged));
+CustomNetTables.SubscribeNetTableListener("game_info", SafeCallback("nt:game_info", GameInfoTableChanged));
+CustomNetTables.SubscribeNetTableListener("chess_pool_table", SafeCallback("nt:chess_pool_table", ChessPoolTableChanged));
+CustomNetTables.SubscribeNetTableListener("player_id_table", SafeCallback("nt:player_id_table", PlayerIDTableChanged));
 
 UpdateHeroIcon();
 ShowAllPlayerInfo();
@@ -82,14 +82,135 @@ SetHotKey('K', ShowChatEmotion, HideChatEmotion);
 SetHotKey('/', ToggleLegendaryBox);
 SetHotKey('L', ShowLineupShortCuts, HideLineupShortCuts);
 SetHotKey('J', TogglePetGPTStatus);
+
+//==========================================================
+// 调试：模拟断线重连（不需要按键，定时自动触发）
+//   （之前用 F8，但 F8 和 Dota2 默认快捷键冲突，会顺带触发商店购买并弹「金钱不足」，
+//     所以改成定时自动触发，完全不占按键）
+//   客户端发 debug_fake_reconnect -> 服务端复用 DAC:OnPlayerReconnected
+//   => 客户端会收到和真重连一样的下行事件（player_reconnect / set_petgpt_status /
+//      update_config / show_all_player_connect_status / sync_hp / 战利品弹窗…）
+// 注意：不会真的重建 Panorama HUD（那是引擎行为），但能覆盖这些"重连时序"崩溃
+// 发布时保持 false 即可（服务端还有一道 _G.DEBUG_FAKE_RECONNECT 开关）
+//==========================================================
+var DEBUG_FAKE_RECONNECT = false;          // 总开关（调试时改 true，发布必须 false）
+var DEBUG_FAKE_RECONNECT_FIRST_DELAY = 6;  // 进图后多少秒第一次触发
+var DEBUG_FAKE_RECONNECT_INTERVAL = 15;    // 之后每隔多少秒再触发；填 0 = 只触发一次
+
+if (DEBUG_FAKE_RECONNECT === true) {
+    var __fake_reconnect_count = 0;
+    function __DoFakeReconnect() {
+        __fake_reconnect_count++;
+        $.Msg('[DEBUG] fake reconnect #' + __fake_reconnect_count
+            + ', player_id=' + Game.GetLocalPlayerID());
+        GameEvents.SendCustomGameEventToServer('debug_fake_reconnect', {
+            player_id: Game.GetLocalPlayerID(),
+        });
+        if (DEBUG_FAKE_RECONNECT_INTERVAL > 0) {
+            $.Schedule(DEBUG_FAKE_RECONNECT_INTERVAL, __DoFakeReconnect);
+        }
+    }
+    $.Msg('[DEBUG] fake reconnect armed: first in ' + DEBUG_FAKE_RECONNECT_FIRST_DELAY
+        + 's, interval=' + DEBUG_FAKE_RECONNECT_INTERVAL + 's');
+    $.Schedule(DEBUG_FAKE_RECONNECT_FIRST_DELAY, __DoFakeReconnect);
+}
 // SetHotKey('R', Try2Reroll);
 
 
 // 全局变量
 var IS_CURSOR_HERO_ICON_SHOWING = false;
 var MOVING_PCF = -1;
+
+//粒子句柄校验：Particles.CreateParticle 在资源没加载好（重连后常见）时会返回 undefined，
+//直接把 undefined 传给 Particles.* 会抛 "expected Number" 异常并把后续脚本整段跳过
+function IsValidParticleIndex(p) {
+    return (typeof p === 'number' && p >= 0);
+}
+
+//==========================================================
+// 动态创建的 HUD 面板（宠物托管/表情/阵型/羁绊 buff 栏/圣物提示/留局按钮…）
+// 在「断线重连 / HUD 重建 / 面板还没创建」时 FindDotaHudElement 会返回 null，
+// 直接 .style / .visible 会抛 TypeError 并让整段脚本被跳过（Skipping rest of script）。
+// 统一走下面这几个包装函数，取不到元素就安静跳过。
+//==========================================================
+function HudStyle(id, prop, value) {
+    var el = FindDotaHudElement(id);
+    if (!el) { return false; }
+    el.style[prop] = value;
+    return true;
+}
+
+function HudVisible(id, visible) {
+    var el = FindDotaHudElement(id);
+    if (!el) { return false; }
+    el.visible = visible;
+    return true;
+}
+
+function HudClass(id, cls, has_class) {
+    var el = FindDotaHudElement(id);
+    if (!el) { return false; }
+    el.SetHasClass(cls, has_class);
+    return true;
+}
+
+function HudImage(id, src) {
+    var el = FindDotaHudElement(id);
+    if (!el) { return false; }
+    el.SetImage(src);
+    return true;
+}
+
+function HudEvent(id, event_name, callback) {
+    var el = FindDotaHudElement(id);
+    if (!el) { return false; }
+    el.SetPanelEvent(event_name, callback);
+    return true;
+}
+
+//==========================================================
+// 通用加固
+//   1) GetTableSafe：net table 取不到就是 nil（重连/表还没下发），
+//      直接索引会抛 Type error，用它兜底成空表
+//   2) SafeCallback：给事件/net table 回调套 try/catch。
+//      Panorama 里回调抛异常会 "Skipping rest of script"，把同一段里后面的逻辑全丢掉，
+//      套上之后单个回调出错只打日志，不影响其它链路
+//==========================================================
+function GetTableSafe(tbl, key) {
+    var v = CustomNetTables.GetTableValue(tbl, key);
+    return v || {};
+}
+
+function SafeCallback(name, fn) {
+    return function () {
+        try {
+            return fn.apply(null, arguments);
+        }
+        catch (e) {
+            $.Msg('[JS-ERROR] ' + name + ': ' + e);
+            if (e && e.stack) {
+                $.Msg('[JS-ERROR] stack: ' + e.stack);
+            }
+        }
+    };
+}
 var PORTRAIT_UNIT = Players.GetLocalPlayerPortraitUnit();
 var IS_SEASON_AWARD_AVAILABLE = true;
+
+// 通行证面板的「是否已激活」外观：
+//   未激活 -> 面板整体换灰色背景，各特权项的状态标签显示「未激活」
+//   已激活 -> 恢复金色背景和原来的「已启用 / 已解锁」文案
+// 面板上所有「已解锁 / 已启用 / 未解锁」状态角标：未激活通行证时统一显示「未激活」
+var VIP_PANEL_STATUS_LABELS = [
+    ['text_vip_roshan_status', '#text_vip_got'],
+    ['text_vip_board1_status', '#text_vip_got'],
+    ['text_vip_board2_status', '#text_vip_got'],
+    ['text_vip_avatar_status', '#text_vip_on'],
+    ['text_vip_bullet_status', '#text_vip_on'],
+    ['text_vip_firstwin_got_1', '#text_vip_ungot'],
+    ['text_vip_quest_got_1', '#text_vip_ungot'],
+];
+
 $('#text_chess_list_title').text = $.Localize('#' + 'chess_list') + ' (' + CHESS_COUNT + ')';
 
 var my_collect_ready = {};
@@ -240,22 +361,22 @@ if (FindDotaHudElement('inventory')) {
         style: "width:60px;height:40px;vertical-align:top;horizontal-align:right;margin-top:-35px;margin-right:70px;position:0px 10px 0px;transition-duration:0.2s;transition-property:position;z-index:0;",
         hittest: 'true',
     });
-    FindDotaHudElement('emotion_button').style['tooltip-position'] = 'top';
-    FindDotaHudElement('emotion_button').SetPanelEvent("onmouseover",
+    HudStyle('emotion_button', 'tooltip-position', 'top');
+    HudEvent('emotion_button', "onmouseover",
         function () {
             $.DispatchEvent("DOTAShowTitleTextTooltip", FindDotaHudElement('emotion_button'), $.Localize('#' + 'text_icon_emotion_button'), $.Localize('#' + 'text_icon_emotion_button_desc'));
-            FindDotaHudElement('emotion_button').style['position'] = '0px 0px 0px';
-            FindDotaHudElement('emotion_button').SetImage("file://{images}/custom_game/button2.png");
+            HudStyle('emotion_button', 'position', '0px 0px 0px');
+            HudImage('emotion_button', "file://{images}/custom_game/button2.png");
         }
     );
-    FindDotaHudElement('emotion_button').SetPanelEvent("onmouseout",
+    HudEvent('emotion_button', "onmouseout",
         function () {
             $.DispatchEvent("DOTAHideTitleTextTooltip");
-            FindDotaHudElement('emotion_button').style['position'] = '0px 10px 0px';
-            FindDotaHudElement('emotion_button').SetImage("file://{images}/custom_game/button2.png");
+            HudStyle('emotion_button', 'position', '0px 10px 0px');
+            HudImage('emotion_button', "file://{images}/custom_game/button2.png");
         }
     );
-    FindDotaHudElement('emotion_button').SetPanelEvent("onactivate",
+    HudEvent('emotion_button', "onactivate",
         function () {
             ShowChatEmotion();
         }
@@ -267,8 +388,8 @@ if (FindDotaHudElement('inventory')) {
         style: "width:60px;height:40px;vertical-align:top;horizontal-align:right;margin-top:-35px;margin-right:136px;position:0px 10px 0px;transition-duration:0.2s;transition-property:position;z-index:0;",
         hittest: 'true',
     });
-    FindDotaHudElement('petgpt_button').style['tooltip-position'] = 'top';
-    FindDotaHudElement('petgpt_button').visible = false;
+    HudStyle('petgpt_button', 'tooltip-position', 'top');
+    HudVisible('petgpt_button', false);
 
     SetPetGPTStatus({
         key: CLIENT_KEY,
@@ -281,22 +402,22 @@ if (FindDotaHudElement('inventory')) {
         style: "width:60px;height:40px;vertical-align:top;horizontal-align:right;margin-top:-35px;margin-right:5px;position:0px 10px 0px;transition-duration:0.2s;transition-property:position;z-index:0;",
         hittest: 'true',
     });
-    FindDotaHudElement('lineup_button').style['tooltip-position'] = 'top';
-    FindDotaHudElement('lineup_button').SetPanelEvent("onmouseover",
+    HudStyle('lineup_button', 'tooltip-position', 'top');
+    HudEvent('lineup_button', "onmouseover",
         function () {
             $.DispatchEvent("DOTAShowTitleTextTooltip", FindDotaHudElement('lineup_button'), $.Localize('#' + 'text_icon_lineup_button'), $.Localize('#' + 'text_icon_lineup_button_desc'));
-            FindDotaHudElement('lineup_button').style['position'] = '0px 0px 0px';
-            FindDotaHudElement('lineup_button').SetImage("file://{images}/custom_game/button3.png");
+            HudStyle('lineup_button', 'position', '0px 0px 0px');
+            HudImage('lineup_button', "file://{images}/custom_game/button3.png");
         }
     );
-    FindDotaHudElement('lineup_button').SetPanelEvent("onmouseout",
+    HudEvent('lineup_button', "onmouseout",
         function () {
             $.DispatchEvent("DOTAHideTitleTextTooltip");
-            FindDotaHudElement('lineup_button').style['position'] = '0px 10px 0px';
-            FindDotaHudElement('lineup_button').SetImage("file://{images}/custom_game/button3.png");
+            HudStyle('lineup_button', 'position', '0px 10px 0px');
+            HudImage('lineup_button', "file://{images}/custom_game/button3.png");
         }
     );
-    FindDotaHudElement('lineup_button').SetPanelEvent("onactivate",
+    HudEvent('lineup_button', "onactivate",
         function () {
             ShowLineupShortCuts();
         }
@@ -630,7 +751,7 @@ var mima_waterid = 0;
 OnTestLegendary();
 
 function OnTestLegendary() {
-    var data = CustomNetTables.GetTableValue("chess_pool_table", 'legendary_info');
+    var data = GetTableSafe("chess_pool_table", 'legendary_info');
     if (data && data.chess_banned) {
         var g_arr = data.chess_banned;
         SetLegendaryChessStatus(g_arr);
@@ -1597,6 +1718,16 @@ function tips_out() {
 
 // 抽牌面板
 var MY_DRAW_CHESS_LIST = {};
+
+//抽牌列表兜底：服务端某些流程（重连重新弹抽牌面板等）下发的 show_draw_card 里没有 chesses，
+//直接把 MY_DRAW_CHESS_LIST 赋成 undefined 后，后面任何 MY_DRAW_CHESS_LIST[x] 都会抛
+// "Cannot set properties of undefined"，所以读写前统一走这个函数
+function EnsureDrawChessList() {
+    if (!MY_DRAW_CHESS_LIST || typeof MY_DRAW_CHESS_LIST !== 'object') {
+        MY_DRAW_CHESS_LIST = {};
+    }
+    return MY_DRAW_CHESS_LIST;
+}
 var IS_PANEL_DRAW_CARD_SHOW = false;
 var IS_PANEL_DRAW_CARD_LOCKED = false;
 var IS_PANEL_PLAYER_DETAILS_SHOW = false;
@@ -1612,7 +1743,7 @@ function chess2specclass(chess) {
 
 // 购买第index个棋子
 function request_buy_chess(index) {
-    if (!MY_DRAW_CHESS_LIST[index + 1]) {
+    if (!EnsureDrawChessList()[index + 1]) {
         return;
     }
     var is_money_enough = check_buy_available(index);
@@ -1642,6 +1773,7 @@ function OnRequestBuyChessCb(keys) {
     set_draw_card_status();
 
     $('#panel_draw_card_guangzhao_' + (buy_index - 1)).SetHasClass('invisible', true);
+    EnsureDrawChessList();
     MY_DRAW_CHESS_LIST[buy_index] = null;
     // 选中自己棋手
     GameUI.SelectUnit(Players.GetPlayerHeroEntityIndex(Players.GetLocalPlayer()), false);
@@ -1711,13 +1843,17 @@ function ShowDrawCard(keys) {
     }
     LEVEL_ONE_CHESS = keys.level_one_chess;
 
-    MY_DRAW_CHESS_LIST = keys.chesses;
+    //服务端可能没带 chesses（重连等），兜底成空表
+    MY_DRAW_CHESS_LIST = (keys.chesses && typeof keys.chesses === 'object') ? keys.chesses : {};
     show_panel_draw_card();
     GameUI.SelectUnit(-1, false);
 }
 
 function check_buy_available(index) {
-    var c = MY_DRAW_CHESS_LIST[index + 1];
+    var c = EnsureDrawChessList()[index + 1];
+    if (!c) {
+        return 'no_chess';
+    }
     var price = c.price;
     var my_gold = MY_GOLD || Math.round(Entities.GetMana(Players.GetPlayerHeroEntityIndex(Players.GetLocalPlayer())));
     var my_rm_token = MY_RM_TOKEN || 0;
@@ -2860,7 +2996,9 @@ function ShowMsg() {
         });
 
         $.Schedule(5, function () {
-            Particles.DestroyParticleEffect(effects, true)
+            if (IsValidParticleIndex(effects)) {
+                Particles.DestroyParticleEffect(effects, true);
+            }
             $('#winstreak').SetHasClass('invisible', true);
             ShowMsg();
         });
@@ -2981,7 +3119,7 @@ function OnPlayerReconnect(data) {
 
     // （7）显示圣物物品栏上的剩余回合数
     var local_player_id = Players.GetLocalPlayer();
-    var relic_ttl = CustomNetTables.GetTableValue("player_id_table", 'relic_ttl_' + local_player_id);
+    var relic_ttl = GetTableSafe("player_id_table", 'relic_ttl_' + local_player_id);
     if (relic_ttl) {
         RELIC_TTL = relic_ttl['ttl'];
         UpdateRelicRemainingRounds(RELIC_TTL);
@@ -2996,18 +3134,21 @@ function OnPlayerReconnect(data) {
 
 
 function OnShowLegendaryAndBan() {
-    var data = CustomNetTables.GetTableValue("chess_pool_table", 'legendary_info');
+    var data = GetTableSafe("chess_pool_table", 'legendary_info');
     SetLegendaryChessAndRelicInfo(data);
 
-    var destroy_table = CustomNetTables.GetTableValue("chess_pool_table", 'destroy_info');
+    var destroy_table = GetTableSafe("chess_pool_table", 'destroy_info');
     SetDestroyedChessStatus(destroy_table);
 
     var synergy_banned_data = CustomNetTables.GetTableValue("chess_pool_table", 'ban_info_' + Players.GetLocalPlayer());
     if (synergy_banned_data) {
         var synergy_banned = synergy_banned_data.banned_synergy;
-        var synergy_table = CustomNetTables.GetTableValue("chess_pool_table", 'synergy_info');
-        var s = synergy_table[synergy_banned];
-        SetBannedChessStatus(s);
+        var synergy_table = GetTableSafe("chess_pool_table", 'synergy_info');
+        //重连时这张表可能还没下发，直接索引会抛 TypeError 打断整条重连链
+        if (synergy_table && synergy_banned) {
+            var s = synergy_table[synergy_banned];
+            SetBannedChessStatus(s);
+        }
     }
 }
 
@@ -3057,13 +3198,13 @@ function show_collect_part(c, index) {
 }
 function OnShowLiuju(keys) {
     if (!CheckClientKey(keys.key)) return;
-    FindDotaHudElement('button_liuju').SetHasClass('unavailable', false);
+    HudClass('button_liuju', 'unavailable', false);
     // // $('#btn_liuju').SetHasClass('invisible',false);
     // OnSuggestLiuju();
 }
 function OnHideLiuju(keys) {
     if (!CheckClientKey(keys.key)) return;
-    FindDotaHudElement('button_liuju').SetHasClass('unavailable', true);
+    HudClass('button_liuju', 'unavailable', true);
     // $('#button_liuju').SetHasClass('invisible', true);
 }
 function OnUpdateLiuju(keys) {
@@ -4227,7 +4368,7 @@ function ShowBanOneSynergyOnChessListPanel(synergy) {
         return;
     }
     var curr_money = Entities.GetMana(Players.GetPlayerHeroEntityIndex(Players.GetLocalPlayer()));
-    var synergy_table = CustomNetTables.GetTableValue("chess_pool_table", 'synergy_info');
+    var synergy_table = GetTableSafe("chess_pool_table", 'synergy_info');
     var ban_info = CustomNetTables.GetTableValue("chess_pool_table", 'ban_info');
 
     var local_steam_id = Game.GetPlayerInfo(Players.GetLocalPlayer()).player_steamid;
@@ -4358,7 +4499,7 @@ function OnShowBanChoose(keys) {
     if (!CheckClientKey(keys.key)) return;
 
     var curr_money = keys.curr_money;
-    var synergy_table = CustomNetTables.GetTableValue("chess_pool_table", 'synergy_info');
+    var synergy_table = GetTableSafe("chess_pool_table", 'synergy_info');
     var ban_info = CustomNetTables.GetTableValue("chess_pool_table", 'ban_info');
 
     var local_steam_id = Game.GetPlayerInfo(Players.GetLocalPlayer()).player_steamid;
@@ -4564,7 +4705,7 @@ function request_unban_chess() {
 var BAN_SYNERGY, BAN_PRICE;
 function BanChess(synergy) {
 
-    var synergy_table = CustomNetTables.GetTableValue("chess_pool_table", 'synergy_info');
+    var synergy_table = GetTableSafe("chess_pool_table", 'synergy_info');
     var ban_info = CustomNetTables.GetTableValue("chess_pool_table", 'ban_info');
     var price = Math.round(ban_info[synergy].price || 999);
 
@@ -4617,7 +4758,7 @@ function OnBanChess(keys) {
     var synergy = keys.synergy;
     close_ban_choose();
     if (synergy) {
-        var synergy_table = CustomNetTables.GetTableValue("chess_pool_table", 'synergy_info');
+        var synergy_table = GetTableSafe("chess_pool_table", 'synergy_info');
         var s = synergy_table[synergy];
         SetBannedChessStatus(s);
     }
@@ -4793,10 +4934,19 @@ function ShowMovingChess(unit_index) {
         return;
     show_cursor_hero(unitName);
 
-    // if (MOVING_PCF){
-    Particles.DestroyParticleEffect(MOVING_PCF, true);
-    // }
+    // 先清掉上一次的拖拽粒子（句柄可能是 -1 / undefined，必须校验）
+    if (IsValidParticleIndex(MOVING_PCF)) {
+        Particles.DestroyParticleEffect(MOVING_PCF, true);
+        Particles.ReleaseParticleIndex(MOVING_PCF);
+    }
+    MOVING_PCF = -1;
+
     MOVING_PCF = Particles.CreateParticle('particles/ui/selection/selection_grid_drag.vpcf', ParticleAttachment_t.PATTACH_ABSORIGIN_FOLLOW, unit_index);
+    if (!IsValidParticleIndex(MOVING_PCF)) {
+        // 粒子没创建出来（重连后资源未就绪）：不要再把 undefined 传下去
+        MOVING_PCF = -1;
+        return;
+    }
     const origin = Entities.GetAbsOrigin(unit_index);
 
     origin[2] += 50;
@@ -4832,10 +4982,11 @@ function UpdateHeroIcon() {
         $('#cursor_hero_icon').style.position = '' + newX + 'px ' + newY + 'px ' + '0px';
 
 
-        const gamePosition = Game.ScreenXYToWorld(cursorPosition[0], cursorPosition[1]);
-        const origin = Entities.GetAbsOrigin(PORTRAIT_UNIT);
-        Particles.SetParticleControl(MOVING_PCF, 5, [gamePosition[0], gamePosition[1], gamePosition[2]]);
-        Particles.SetParticleControl(MOVING_PCF, 2, [128, 128, 128]);
+        if (IsValidParticleIndex(MOVING_PCF)) {
+            const gamePosition = Game.ScreenXYToWorld(cursorPosition[0], cursorPosition[1]);
+            Particles.SetParticleControl(MOVING_PCF, 5, [gamePosition[0], gamePosition[1], gamePosition[2]]);
+            Particles.SetParticleControl(MOVING_PCF, 2, [128, 128, 128]);
+        }
 
     }
 }
@@ -4866,8 +5017,13 @@ function hide_cursor_hero() {
     $('#cursor_hero_icon').heroname = '';
     IS_CURSOR_HERO_ICON_SHOWING = false;
 
-    Particles.DestroyParticleEffect(MOVING_PCF, true);
-    Particles.ReleaseParticleIndex(MOVING_PCF);
+    //重连后 MOVING_PCF 可能还是 undefined（粒子没创建成功），这里必须先校验，
+    //否则 Particles.* 抛异常会打断整个脚本，后面 reconnect 的初始化全部跳过
+    if (IsValidParticleIndex(MOVING_PCF)) {
+        Particles.DestroyParticleEffect(MOVING_PCF, true);
+        Particles.ReleaseParticleIndex(MOVING_PCF);
+    }
+    MOVING_PCF = -1;
 }
 
 // 渲染小地图 和 玩家头像
@@ -5670,7 +5826,7 @@ function UpdateRankingSelf() {
 
 
 // 监听选中的单位
-GameEvents.Subscribe("dota_player_update_query_unit", OnPlayerQueryUnit);
+GameEvents.Subscribe("dota_player_update_query_unit", SafeCallback("dota_player_update_query_unit", OnPlayerQueryUnit));
 ShowUnitLevelPlus();
 var LAST_PORTRAIT_UNIT;
 function ShowUnitLevelPlus() {
@@ -5716,13 +5872,13 @@ function OnPlayerQueryUnit(keys) {
         // 选中自己信使
         FindDotaHudElement('abilities').style['margin-left'] = '10px';
         if (FindDotaHudElement('emotion_button')) {
-            FindDotaHudElement('emotion_button').visible = true;
+            HudVisible('emotion_button', true);
         }
         if (FindDotaHudElement('petgpt_button')) {
             FindDotaHudElement('petgpt_button').visible = true;
         }
         if (FindDotaHudElement('lineup_button')) {
-            FindDotaHudElement('lineup_button').visible = true;
+            HudVisible('lineup_button', true);
         }
         if (FindDotaHudElement('inventory_tpscroll_container')) {
             FindDotaHudElement('inventory_tpscroll_container').visible = true;
@@ -5754,10 +5910,10 @@ function OnPlayerQueryUnit(keys) {
             FindDotaHudElement('petgpt_button').visible = false;
         }
         if (FindDotaHudElement('emotion_button')) {
-            FindDotaHudElement('emotion_button').visible = false;
+            HudVisible('emotion_button', false);
         }
         if (FindDotaHudElement('lineup_button')) {
-            FindDotaHudElement('lineup_button').visible = false;
+            HudVisible('lineup_button', false);
         }
         if (Entities.GetTeamNumber(portrait_unit) == Players.GetTeam(Players.GetLocalPlayer())) {
             // 选中友方棋子
@@ -5803,7 +5959,7 @@ function OnPlayerQueryUnit(keys) {
     }
     // }
 }
-GameEvents.Subscribe("update_portrait_courier_name", OnPlayerQueryUnit);
+GameEvents.Subscribe("update_portrait_courier_name", SafeCallback("update_portrait_courier_name", OnPlayerQueryUnit));
 function UpdatePortraitCourierName(portrait_unit) {
     if (portrait_unit && FindDotaHudElement('UnitNameLabel')) {
         var data = CustomNetTables.GetTableValue("player_id_table", 'courier_' + Entities.GetPlayerOwnerID(portrait_unit));
@@ -5855,10 +6011,11 @@ function ShowDrodoCourierBuffContainer(team_id) {
     FillDrodoCourierBuffContainer(DRODO_BUFF_LIST[team_id], team_id);
 
     $.Schedule(0.01, function () {
-        FindDotaHudElement('DrodoBuffs').style['opacity'] = '1';
-        FindDotaHudElement('DrodoDebuffs').style['opacity'] = '1';
-        FindDotaHudElement('buffs').style['opacity'] = '0.0';
-        FindDotaHudElement('debuffs').style['opacity'] = '0.0';
+        //延迟执行期间面板可能已被重建/销毁，全部走安全访问
+        HudStyle('DrodoBuffs', 'opacity', '1');
+        HudStyle('DrodoDebuffs', 'opacity', '1');
+        HudStyle('buffs', 'opacity', '0.0');
+        HudStyle('debuffs', 'opacity', '0.0');
     });
 }
 function HideDrodoCourierBuffContainer() {
@@ -5870,10 +6027,11 @@ function HideDrodoCourierBuffContainer() {
     }
 
     $.Schedule(0.01, function () {
-        FindDotaHudElement('buffs').style['opacity'] = '1';
-        FindDotaHudElement('debuffs').style['opacity'] = '1';
-        FindDotaHudElement('DrodoBuffs').style['opacity'] = '0.0';
-        FindDotaHudElement('DrodoDebuffs').style['opacity'] = '0.0';
+        //延迟执行期间面板可能已被重建/销毁，全部走安全访问
+        HudStyle('buffs', 'opacity', '1');
+        HudStyle('debuffs', 'opacity', '1');
+        HudStyle('DrodoBuffs', 'opacity', '0.0');
+        HudStyle('DrodoDebuffs', 'opacity', '0.0');
     });
 }
 
@@ -6517,6 +6675,7 @@ function show_panel_draw_card() {
     for (var i in chess_discount_list){
         discount_chess_dic[chess_discount_list[i]] = 1;
     }
+    EnsureDrawChessList();
     for (var i = 0; i <= 4; i++) {
         var c = MY_DRAW_CHESS_LIST['' + (i + 1)];
 
@@ -7481,27 +7640,45 @@ function TogglePetGPTStatus() {
     }
 }
 
-function SetPetGPTStatus(keys) {
+function SetPetGPTStatus(keys, retry_count) {
     if (!CheckClientKey(keys.key)) return;
+
+    //重连/切图时 petgpt_button 可能还没被创建出来（这个按钮是动态生成的），
+    //直接 FindDotaHudElement(...).style 会抛 TypeError 并让整段脚本被跳过，这里先判空
+    var btn = FindDotaHudElement('petgpt_button');
+    if (!btn) {
+        //面板还没建好：1 秒后重试，最多 5 次（重连后 HUD 重建有时序差）
+        var tries = retry_count || 0;
+        if (tries < 5) {
+            $.Schedule(1.0, function () {
+                SetPetGPTStatus(keys, tries + 1);
+            });
+        }
+        else {
+            $.Msg('[PETGPT] petgpt_button not found, skip status sync');
+        }
+        return;
+    }
+
     if (keys.on_off == "1") {
         // 开
         IS_PETGPT_ON = true;
-        FindDotaHudElement('petgpt_button').style['position'] = '0px 0px 0px';
-        FindDotaHudElement('petgpt_button').style['box-shadow'] = 'fill #ffffff66 0px 0px 8px 0px';
+        btn.style['position'] = '0px 0px 0px';
+        btn.style['box-shadow'] = 'fill #ffffff66 0px 0px 8px 0px';
 
-        FindDotaHudElement('petgpt_button').SetImage("file://{images}/custom_game/button1.png");
+        btn.SetImage("file://{images}/custom_game/button1.png");
 
-        FindDotaHudElement('petgpt_button').SetPanelEvent("onmouseover",
+        btn.SetPanelEvent("onmouseover",
             function () {
-                $.DispatchEvent("DOTAShowTitleTextTooltip", FindDotaHudElement('petgpt_button'), $.Localize('#' + 'text_icon_petgpt_button'), $.Localize('#' + 'text_icon_petgpt_button_desc'));
+                $.DispatchEvent("DOTAShowTitleTextTooltip", btn, $.Localize('#' + 'text_icon_petgpt_button'), $.Localize('#' + 'text_icon_petgpt_button_desc'));
             }
         );
-        FindDotaHudElement('petgpt_button').SetPanelEvent("onmouseout",
+        btn.SetPanelEvent("onmouseout",
             function () {
                 $.DispatchEvent("DOTAHideTitleTextTooltip");
             }
         );
-        FindDotaHudElement('petgpt_button').SetPanelEvent("onactivate",
+        btn.SetPanelEvent("onactivate",
             function () {
                 RequestPetGPT(false);
             }
@@ -7510,25 +7687,25 @@ function SetPetGPTStatus(keys) {
     else {
         // 关
         IS_PETGPT_ON = false;
-        FindDotaHudElement('petgpt_button').style['position'] = '0px 10px 0px';
-        FindDotaHudElement('petgpt_button').SetImage("file://{images}/custom_game/button1.png");
-        FindDotaHudElement('petgpt_button').style['box-shadow'] = 'fill #ffffff66 0px 0px 0px 0px';
+        btn.style['position'] = '0px 10px 0px';
+        btn.SetImage("file://{images}/custom_game/button1.png");
+        btn.style['box-shadow'] = 'fill #ffffff66 0px 0px 0px 0px';
 
-        FindDotaHudElement('petgpt_button').SetPanelEvent("onmouseover",
+        btn.SetPanelEvent("onmouseover",
             function () {
-                $.DispatchEvent("DOTAShowTitleTextTooltip", FindDotaHudElement('petgpt_button'), $.Localize('#' + 'text_icon_petgpt_button'), $.Localize('#' + 'text_icon_petgpt_button_desc'));
-                FindDotaHudElement('petgpt_button').style['position'] = '0px 0px 0px';
-                FindDotaHudElement('petgpt_button').SetImage("file://{images}/custom_game/button1.png");
+                $.DispatchEvent("DOTAShowTitleTextTooltip", btn, $.Localize('#' + 'text_icon_petgpt_button'), $.Localize('#' + 'text_icon_petgpt_button_desc'));
+                btn.style['position'] = '0px 0px 0px';
+                btn.SetImage("file://{images}/custom_game/button1.png");
             }
         );
-        FindDotaHudElement('petgpt_button').SetPanelEvent("onmouseout",
+        btn.SetPanelEvent("onmouseout",
             function () {
                 $.DispatchEvent("DOTAHideTitleTextTooltip");
-                FindDotaHudElement('petgpt_button').style['position'] = '0px 10px 0px';
-                FindDotaHudElement('petgpt_button').SetImage("file://{images}/custom_game/button1.png");
+                btn.style['position'] = '0px 10px 0px';
+                btn.SetImage("file://{images}/custom_game/button1.png");
             }
         );
-        FindDotaHudElement('petgpt_button').SetPanelEvent("onactivate",
+        btn.SetPanelEvent("onactivate",
             function () {
                 RequestPetGPT(true);
             }
@@ -7546,9 +7723,10 @@ function FillChessListPanel() {
         4: [],
         5: [],
     }
-    var chess_list_by_mana = CustomNetTables.GetTableValue("chess_pool_table", 'chess_list_by_mana');
-    var chess_list_by_mana_black = CustomNetTables.GetTableValue("chess_pool_table", 'chess_list_by_mana_black');
-    var chess_list_by_mana_special = CustomNetTables.GetTableValue("chess_pool_table", 'chess_list_by_mana_special');
+    //重连/刚进图时这几张表可能还没下发，兜底成空表，避免 chess_list_by_mana[cost] 抛异常
+    var chess_list_by_mana = CustomNetTables.GetTableValue("chess_pool_table", 'chess_list_by_mana') || {};
+    var chess_list_by_mana_black = CustomNetTables.GetTableValue("chess_pool_table", 'chess_list_by_mana_black') || {};
+    var chess_list_by_mana_special = CustomNetTables.GetTableValue("chess_pool_table", 'chess_list_by_mana_special') || {};
     var chess_discount_list = CustomNetTables.GetTableValue("chess_pool_table", 'chess_discount_list') || {};
     var discount_chess_dic = {};
     for (var i in chess_discount_list){
@@ -7556,12 +7734,12 @@ function FillChessListPanel() {
     }
     
     for (var cost = 1; cost <= 5; cost++) {
-        var chess_list_cost = chess_list_by_mana[cost];
+        var chess_list_cost = chess_list_by_mana[cost] || [];
         for (var i in chess_list_cost) {
             var chess = chess_list_cost[i];
             var spec_class = CHESS_2_SPEC_CLASS[chess];
             //百戏大王
-            var rm_spec_class = CustomNetTables.GetTableValue("chess_pool_table", 'chess_rm_class');
+            var rm_spec_class = GetTableSafe("chess_pool_table", 'chess_rm_class');
             if (rm_spec_class && chess == 'chess_rm') {
                 spec_class = '';
                 for (var i in rm_spec_class) {
@@ -7581,7 +7759,7 @@ function FillChessListPanel() {
         }
     }
     for (var cost = 1; cost <= 5; cost++) {
-        var chess_list_cost = chess_list_by_mana_black[cost];
+        var chess_list_cost = chess_list_by_mana_black[cost] || [];
         for (var i in chess_list_cost) {
             var chess = chess_list_cost[i];
             var spec_class = CHESS_2_SPEC_CLASS[chess];
@@ -7598,7 +7776,7 @@ function FillChessListPanel() {
         }
     }
     for (var cost = 1; cost <= 5; cost++) {
-        var chess_list_cost = chess_list_by_mana_special[cost];
+        var chess_list_cost = chess_list_by_mana_special[cost] || [];
         for (var i in chess_list_cost) {
             var chess = chess_list_cost[i];
             var spec_class = CHESS_2_SPEC_CLASS[chess];
@@ -7700,7 +7878,7 @@ function FillChessListPanel() {
 
     FillItemListPanel();
 
-    var data = CustomNetTables.GetTableValue("chess_pool_table", 'legendary_info');
+    var data = GetTableSafe("chess_pool_table", 'legendary_info');
     SetLegendaryChessAndRelicInfo(data);
 
     HideChessDetail();
@@ -8038,7 +8216,7 @@ function PlayerIDTableChanged(table, key, data) {
 }
 
 function ShowRevealedLegendaryChessList() {
-    var data = CustomNetTables.GetTableValue("chess_pool_table", 'revealed_legendary_chess_list');
+    var data = GetTableSafe("chess_pool_table", 'revealed_legendary_chess_list');
     for (var j in data) {
         var chess = data[j];
         if ($('#movie_legendary_box_' + (j - 1))) {
@@ -8069,7 +8247,7 @@ function ShowRevealedLegendaryChessList() {
         $('#panel_legendary_box_' + (j - 1)).AddClass('legendary_box_' + chess);
     }
 
-    var data2 = CustomNetTables.GetTableValue("chess_pool_table", 'unrevealed_legendary_chess_list');
+    var data2 = GetTableSafe("chess_pool_table", 'unrevealed_legendary_chess_list');
 
     for (var i in data2) {
         if (data2[i] && $("#" + data2[i])) {
@@ -8337,21 +8515,12 @@ function RefreshVipExpireText(is_vip, vip_info) {
     }
 }
 
-// 通行证面板的「是否已激活」外观：
-//   未激活 -> 面板整体换灰色背景，各特权项的状态标签显示「未激活」
-//   已激活 -> 恢复金色背景和原来的「已启用 / 已解锁」文案
-// 面板上所有「已解锁 / 已启用 / 未解锁」状态角标：未激活通行证时统一显示「未激活」
-var VIP_PANEL_STATUS_LABELS = [
-    ['text_vip_roshan_status', '#text_vip_got'],
-    ['text_vip_board1_status', '#text_vip_got'],
-    ['text_vip_board2_status', '#text_vip_got'],
-    ['text_vip_avatar_status', '#text_vip_on'],
-    ['text_vip_bullet_status', '#text_vip_on'],
-    ['text_vip_firstwin_got_1', '#text_vip_ungot'],
-    ['text_vip_quest_got_1', '#text_vip_ungot'],
-];
-
 function RefreshVipPanelState(is_vip) {
+    //兜底：脚本初始化早期（顶层 ShowAllPlayerInfo 调用链）可能还没跑过上面的赋值，
+    //visitor 情况下这里可能仍是 undefined，直接遍历会抛 TypeError 并打断整段脚本
+    if (!VIP_PANEL_STATUS_LABELS || !VIP_PANEL_STATUS_LABELS.length) {
+        return;
+    }
     var panel = $('#panel_vip');
     if (panel) {
         panel.SetHasClass('vip_locked', !is_vip);
@@ -8373,7 +8542,7 @@ function RefreshVipPanelState(is_vip) {
 // ui.js 里关掉了 DOTA_DEFAULT_UI_ENDGAME（平时用 DAC 自己的结算界面），
 // 中止时没有结算数据，这里必须把 Dota 默认的结束界面放回来，
 // 否则进入 POST_GAME 后屏幕上什么都没有，玩家只能强退。
-GameEvents.Subscribe('abort_game_notice', function (keys) {
+GameEvents.Subscribe('abort_game_notice', SafeCallback('abort_game_notice', function (keys) {
     try {
         GameUI.SetDefaultUIEnabled(DotaDefaultUIElement_t.DOTA_DEFAULT_UI_ENDGAME, true);
         $.Msg('[ABORT] DOTA_DEFAULT_UI_ENDGAME enabled');
@@ -8388,7 +8557,7 @@ GameEvents.Subscribe('abort_game_notice', function (keys) {
     if (keys && keys.text) {
         show_msg(keys.text);
     }
-});
+}));
 
 // 激活请求是否正在等待回包（防止重复点击）
 var ACTIVATE_PASS_PENDING = false;
@@ -8466,7 +8635,7 @@ function OnClickActivatePass() {
 }
 
 // 服务端广播：某个玩家的通行证刚激活成功 -> 立刻把他头像上的 VIP 徽章点亮（不用等 player_info 刷新）
-GameEvents.Subscribe('update_player_vip', function (keys) {
+GameEvents.Subscribe('update_player_vip', SafeCallback('update_player_vip', function (keys) {
     if (!keys || !keys.is_vip) {
         return;
     }
@@ -8494,7 +8663,7 @@ GameEvents.Subscribe('update_player_vip', function (keys) {
     catch (e) {
         $.Msg('[PASS] update_player_vip failed: ' + e);
     }
-});
+}));
 
 // 本地玩家的头像 VIP 徽章（激活成功后立刻显示，不等 net table）
 function ShowLocalPlayerVipBadge(show) {
@@ -8513,7 +8682,7 @@ function ShowLocalPlayerVipBadge(show) {
 }
 
 // 服务端校验结果：err == 0 视为激活成功
-GameEvents.Subscribe('activate_pass_result', function (keys) {
+GameEvents.Subscribe('activate_pass_result', SafeCallback('activate_pass_result', function (keys) {
     // 无论成功失败，先结束加载状态
     SetActivatePassLoading(false);
 
@@ -8577,7 +8746,7 @@ GameEvents.Subscribe('activate_pass_result', function (keys) {
     else {
         show_msg(head !== '' ? head : detail);
     }
-});
+}));
 
 // 界面初始化：先按「未激活」显示，等服务器数据回来再刷新
 
@@ -10421,7 +10590,7 @@ function UpdateTalentTree(player_id) {
             FindDotaHudElement('talent_tree_' + t).SetHasClass('learnable', true);
             BindTalentClickEvent(t);
         }
-        FindDotaHudElement('panel_talent_tree_box_inner').SetHasClass('unavailable', false);
+        HudClass('panel_talent_tree_box_inner', 'unavailable', false);
 
         SetTalentTreeNewLevelProgressBar(talent_tree_panel_name, ROUND);
     }
@@ -10445,7 +10614,7 @@ function HasLearnableTalentOption() {
 // 服务端的新状态是异步下发的：刚点完时面板上仍留着旧的 learnable，直接用会误判，
 // 所以按 0.1 秒轮询复查（最多 0.5 秒），一旦发现确实没有可选项就关闭；
 // 若一直还有可选项（或状态迟迟未刷新）就保持打开——宁可多开，不可误关。
-GameEvents.Subscribe("choose_talent_result", function () {
+GameEvents.Subscribe("choose_talent_result", SafeCallback("choose_talent_result", function () {
     var tries = 0;
     var check = function () {
         tries++;
@@ -10458,7 +10627,7 @@ GameEvents.Subscribe("choose_talent_result", function () {
         }
     };
     $.Schedule(0.1, check);
-});
+}));
 
 // 显示圣物剩余回合数的新UI
 var pui = FindDotaHudElement('inventory_composition_layer_container');
@@ -10527,14 +10696,14 @@ function ShowRelicTTL() {
     if (p) {
         p.style['opacity'] = 1;
     }
-    FindDotaHudElement('panel_relic_show').style['opacity'] = 1;
+    HudStyle('panel_relic_show', 'opacity', 1);
 }
 function HideRelicTTL() {
     var p = FindDotaHudElement('panel_relic_ttl');
     if (p) {
         p.style['opacity'] = 0;
     }
-    FindDotaHudElement('panel_relic_show').style['opacity'] = 0;
+    HudStyle('panel_relic_show', 'opacity', 0);
 }
 function UpdateMyMoney(keys) {
     if (keys.gold || keys.gold == 0) {
@@ -11500,15 +11669,26 @@ function tips_over_host(pos) {
 var HOST_MATCH = 0;
 var HOST_CREDIT = 0;
 function ShowHostInfo(){
+    // host_info 这张表不一定会下发（非主机房 / 重连时还没推到 / 本局没有 host 信息），
+    // 原来直接 data.host_playerid 会抛 TypeError 并让整段脚本被跳过（OnPlayerReconnect 里的后续都丢了）
     var data = CustomNetTables.GetTableValue("game_info", "host_info");
+    if (!data || data.host_playerid === undefined || data.host_playerid === null) {
+        return;
+    }
     var player_index = GetPlayerIndexByPlayerID(data.host_playerid);
-    // $.Msg('host:'+player_index);   // 调试打印，已关闭（日志里会刷 host:x）
-    $('#panel_host_'+player_index).SetHasClass('invisible',false);
-    $('#panel_host_'+player_index).style['position'] = '0px 0px 0px';
+    if (player_index === undefined || player_index === null || player_index < 0) {
+        return;
+    }
+    var host_panel = $('#panel_host_' + player_index);
+    if (!host_panel) {
+        return;
+    }
+    host_panel.SetHasClass('invisible', false);
+    host_panel.style['position'] = '0px 0px 0px';
     HOST_MATCH = data.host_match;
     HOST_CREDIT = data.host_credit;
 
-    if (local_id == data.host_steamid){
+    if (typeof local_id !== 'undefined' && local_id == data.host_steamid){
         showPanelHost();
     }
 }

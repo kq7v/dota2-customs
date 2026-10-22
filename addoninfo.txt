@@ -61,7 +61,7 @@
 	HideInTools = false
 	IsTemplate = false
 	CheckAFKPlayers = false
-	DefaultMap = "casual_1x8_ob"
+	DefaultMap = "casual_1x8"
 	DisableIK = false
 	EnablePickRules = false
 	EventGame = false
