@@ -47,4 +47,4 @@ function EOM_CheckBox2(props) {
   })();
 }
 
-exports.EOM_CheckBox2 = EOM_CheckBox2;
+exports.EOM_CheckBox2 = EOM_CheckBox2;

@@ -194,4 +194,4 @@ function getCourierExplorePreview(courierID, playerCouriers, skillPrefix = "expl
 }
 
 exports.getCourierExplorePreview = getCourierExplorePreview;
-exports.parseDropPreview = parseDropPreview;
+exports.parseDropPreview = parseDropPreview;

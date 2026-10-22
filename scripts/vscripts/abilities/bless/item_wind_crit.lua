@@ -25,12 +25,12 @@ function k.prototype.EventListener(self)
 	return {
 		damage_event = function(l, m)
 			if m.attacker == self:GetCaster() and not m.is_crit then
-				self:IncrementStackCount(1, false)
+				self:IncrementStackCount()
 			end
 		end,
 		crit_event = function(l, m)
 			if m.attacker == self:GetCaster() then
-				self:SetStackCount(0, false)
+				self:SetStackCount(0)
 			end
 		end,
 	}

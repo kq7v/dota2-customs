@@ -46,4 +46,4 @@ const HeroCard = props => {
   }));
 };
 
-exports.HeroCard = HeroCard;
+exports.HeroCard = HeroCard;

@@ -292,4 +292,4 @@ GameUI.CustomUIConfig().payments_order = {
 		"region": "CNHK",
 		"state": 1
 	}
-};
+};

@@ -12,6 +12,7 @@
 
 var libs = require('./libs.js');
 var EOM_Icon = require('./EOM_Icon.js');
+var EOM_HotKeyDisplay = require('./EOM_HotKeyDisplay.js');
 var hotkey_label = require('./hotkey_label.js');
 var service_netdata_helper = require('./service_netdata_helper.js');
 var common_item = require('./common_item.js');
@@ -53,7 +54,7 @@ const CommonBox = props => {
   }, props, {
     class: libs.classNames("CommonBox", props.class)
   });
-  const [local, others] = libs.splitProps(merged, ["itemName", "showCost", "cost", "entIndex", "rarity", "upgradeLevel"]);
+  const [local, others] = libs.splitProps(merged, ["itemName", "showCost", "cost", "entIndex", "rarity", "upgradeLevel", "hotkey"]);
   const kv = libs.createMemo(() => KeyValues.npc_items_custom[local.itemName] ?? {});
   const rarity = libs.createMemo(() => {
     if (local.rarity != undefined) return local.rarity;
@@ -169,6 +170,22 @@ const CommonBox = props => {
       },
       size: "large"
     }), _el$2);
+    libs.insert(_el$3, libs.createComponent(libs.Show, {
+      get when() {
+        return local.hotkey;
+      },
+      get children() {
+        return libs.createComponent(EOM_HotKeyDisplay.EOM_HotKeyDisplay, {
+          get hotkey() {
+            return local.hotkey;
+          },
+          marginLeft: "6px",
+          verticalAlign: "center",
+          hittest: false,
+          hittestchildren: false
+        });
+      }
+    }), null);
     libs.insert(_el$3, libs.createComponent(libs.For, {
       get each() {
         return extraTags();
@@ -308,4 +325,4 @@ const CommonBox = props => {
 };
 
 exports.CommonBox = CommonBox;
-exports.SectIcon = SectIcon;
+exports.SectIcon = SectIcon;

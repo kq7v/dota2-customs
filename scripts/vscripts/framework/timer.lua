@@ -165,16 +165,33 @@ function l.prototype.GameTimer(self, C, D, E)
 	end
 	return self:StartThink("GameTimer", C, D, E)
 end
-function l.prototype.StartIntervalThink(self, G, D, E)
-	return self:StartThink("Modifier", G, D, E)
+function l.prototype.StartIntervalThink(self, C, x, G, H)
+	local I = math.max(x, FrameTime())
+	local n
+	n = self:StartThink("GameTimer", C, I, function()
+		if H ~= nil and not H() then
+			self:StopTimer(n)
+			return
+		end
+		local J = G()
+		if J == -1 then
+			self:StopTimer(n)
+			return
+		end
+		if type(J) == "number" and J >= 0 then
+			I = math.max(J, FrameTime())
+		end
+		return I
+	end)
+	return n
 end
-function l.prototype.StopTimer(self, H)
+function l.prototype.StopTimer(self, K)
 	self:EnsureTimerStorage()
-	self:RemoveTimerById(tostring(H))
+	self:RemoveTimerById(tostring(K))
 end
-function l.prototype.RestartTimer(self, H)
+function l.prototype.RestartTimer(self, K)
 	self:EnsureTimerStorage()
-	local n = tostring(H)
+	local n = tostring(K)
 	if self.timerList[n] then
 		self.timerList[n].stack = 0
 	end

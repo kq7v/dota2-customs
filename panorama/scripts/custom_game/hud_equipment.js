@@ -11,6 +11,7 @@
 'use strict'; const require = GameUI.__require;
 
 var libs = require('./libs.js');
+var entry_range_inputs = require('./entry_range_inputs.js');
 var EOM_Button = require('./EOM_Button.js');
 var EOM_CheckBox = require('./EOM_CheckBox.js');
 var EOM_DropDown = require('./EOM_DropDown.js');
@@ -87,11 +88,18 @@ const EQUIPMENT_BREAK_KEY_TYPE = "equipment_break";
 const EQUIPMENT_AUTO_BREAK_ENABLED_KEY = "equipment_auto_break_enabled";
 const EQUIPMENT_AUTO_BREAK_CONFIG_KEY = "equipment_auto_break_config";
 const NEEDLV_LIST$1 = Object.values(KeyValues.equip_class_setting).map(setting => setting.need_level);
+const SUB_ENTRY_LIST = Object.values(KeyValues.equip_entry).filter(entry => entry.entry_type === 2).sort((a, b) => a.id - b.id);
+const SUB_ENTRY_COMPARISONS = ["lt", "gt", "lte", "gte"];
 const DEFAULT_AUTO_BREAK_CONFIG = {
+  action: "break",
   needLevels: [],
   rarities: [],
   classes: [],
-  suits: []
+  suits: [],
+  parts: [],
+  includeSubEntries: [],
+  subEntryMaxValues: {},
+  subEntryComparisons: {}
 };
 const getEnabledFromText = value => value === "1";
 const buildSelectedMap = values => {
@@ -101,8 +109,62 @@ const buildSelectedMap = values => {
   }
   return map;
 };
-const getSelectedNumbers = map => Object.keys(map).filter(key => map[key]).map(Number).filter(value => isFinite(value));
+const normalizeAutoBreakNumbers = value => {
+  if (value == undefined) return [];
+  return [...new Set(value)];
+};
+const getSelectedNumbers = map => normalizeAutoBreakNumbers(Object.keys(map).filter(key => map[key]).map(Number));
 const getSelectedStrings = map => Object.keys(map).filter(key => map[key]);
+const hasInvalidAutoBreakNumbers = config => [config.needLevels, config.rarities, config.classes, config.parts].some(values => values !== undefined && (!Array.isArray(values) || values.some(value => typeof value !== "number" || !Number.isInteger(value) || value <= 0)));
+const parseSubEntryNumber = value => {
+  if (typeof value !== "number" && typeof value !== "string") return NaN;
+  if (typeof value === "string" && value.trim() === "") return NaN;
+  return toFiniteNumber(value, NaN);
+};
+const normalizeSubEntryMaxValues = (value, included) => {
+  const result = {};
+  if (!value || typeof value !== "object" || Array.isArray(value)) return result;
+  for (const id of included) {
+    const raw = value[id];
+    if (raw === undefined) continue;
+    result[id] = typeof raw === "number" && Number.isFinite(raw) ? raw : "invalid";
+  }
+  return result;
+};
+const getSubEntryMaxValuesFromText = (values, included) => {
+  const result = {};
+  for (const id of included) {
+    const text = values[id]?.trim() ?? "";
+    if (text === "") continue;
+    const value = /^[+-]?(?:\d+(?:\.\d*)?|\.\d+)$/.test(text) ? Number(text) : NaN;
+    result[id] = Number.isFinite(value) ? value : "invalid";
+  }
+  return result;
+};
+const normalizeSubEntryComparisons = (value, included, action) => {
+  const result = {};
+  for (const id of included) {
+    const raw = value && typeof value === "object" && !Array.isArray(value) ? value[id] : undefined;
+    result[id] = raw === undefined ? action === "keep" ? "gte" : "lte" : SUB_ENTRY_COMPARISONS.includes(raw) ? raw : "invalid";
+  }
+  return result;
+};
+const matchesSubEntryValue = (entry, limit, comparison) => {
+  const value = parseSubEntryNumber(entry.base_value);
+  if (typeof limit !== "number" || !Number.isFinite(limit) || !Number.isFinite(value)) return undefined;
+  switch (comparison) {
+    case "lt":
+      return value < limit;
+    case "gt":
+      return value > limit;
+    case "lte":
+      return value <= limit;
+    case "gte":
+      return value >= limit;
+    default:
+      return undefined;
+  }
+};
 const equipmentHasGemEffect$1 = equipment => {
   if (!equipment?.inlay_gems_data) return false;
   const gemSlots = JSON.parseSafe(equipment.inlay_gems_data);
@@ -112,11 +174,21 @@ const getAutoBreakConfigFromText = value => {
   if (!value) return DEFAULT_AUTO_BREAK_CONFIG;
   const parsed = JSON.parseSafe(value);
   if (!parsed) return DEFAULT_AUTO_BREAK_CONFIG;
+  if (hasInvalidAutoBreakNumbers(parsed)) {
+    ErrorMessage(GetLocalization("#Equipment_AutoBreakConfigInvalid"));
+    return DEFAULT_AUTO_BREAK_CONFIG;
+  }
+  const includeSubEntries = Array.isArray(parsed.includeSubEntries) ? parsed.includeSubEntries.map(String).filter(value => value != "") : [];
   return {
-    needLevels: Array.isArray(parsed.needLevels) ? parsed.needLevels.map(Number).filter(value => isFinite(value)) : [],
-    rarities: Array.isArray(parsed.rarities) ? parsed.rarities.map(Number).filter(value => isFinite(value)) : [],
-    classes: Array.isArray(parsed.classes) ? parsed.classes.map(Number).filter(value => isFinite(value)) : [],
-    suits: Array.isArray(parsed.suits) ? parsed.suits.map(String).filter(value => value != "") : []
+    action: parsed.action === "keep" ? "keep" : "break",
+    needLevels: normalizeAutoBreakNumbers(parsed.needLevels),
+    rarities: normalizeAutoBreakNumbers(parsed.rarities),
+    classes: normalizeAutoBreakNumbers(parsed.classes),
+    suits: Array.isArray(parsed.suits) ? parsed.suits.map(String).filter(value => value != "") : [],
+    parts: normalizeAutoBreakNumbers(parsed.parts),
+    includeSubEntries,
+    subEntryMaxValues: normalizeSubEntryMaxValues(parsed.subEntryMaxValues, includeSubEntries),
+    subEntryComparisons: normalizeSubEntryComparisons(parsed.subEntryComparisons, includeSubEntries, parsed.action === "keep" ? "keep" : "break")
   };
 };
 const EquipBreak = () => {
@@ -143,10 +215,32 @@ const EquipBreak = () => {
   const [addedLv, setAddedLv] = libs.createSignal(0);
   const [showAutoBreakWindow, setShowAutoBreakWindow] = libs.createSignal(false);
   const [autoBreakEnabled, setAutoBreakEnabled] = libs.createSignal(false);
+  const [autoBreakEnabledSaving, setAutoBreakEnabledSaving] = libs.createSignal(false);
+  const [autoBreakAction, setAutoBreakAction] = libs.createSignal("break");
   const [autoBreakNeedLv, setAutoBreakNeedLv] = libs.createSignal({});
   const [autoBreakRarity, setAutoBreakRarity] = libs.createSignal({});
   const [autoBreakClass, setAutoBreakClass] = libs.createSignal({});
   const [autoBreakSuit, setAutoBreakSuit] = libs.createSignal({});
+  const [autoBreakParts, setAutoBreakParts] = libs.createSignal({});
+  const [autoBreakSubEntries, setAutoBreakSubEntries] = libs.createSignal({});
+  const [autoBreakSubEntryLimits, setAutoBreakSubEntryLimits] = libs.createSignal({});
+  const [autoBreakSubEntryComparisons, setAutoBreakSubEntryComparisons] = libs.createSignal({});
+  const selectAutoBreakSubEntry = (id, selected) => libs.batch(() => {
+    setAutoBreakSubEntries(prev => ({
+      ...prev,
+      [id]: selected
+    }));
+    if (selected && autoBreakSubEntryComparisons()[id] === undefined) {
+      setAutoBreakSubEntryComparisons(prev => ({
+        ...prev,
+        [id]: autoBreakAction() === "keep" ? "gte" : "lte"
+      }));
+    }
+  });
+  const [autoBreakDetails, setAutoBreakDetails] = libs.createSignal({
+    status: "idle",
+    items: {}
+  });
   libs.createEffect(libs.on(selectedItemTab, () => {
     libs.batch(() => {
       setSelectedItemList([]);
@@ -156,8 +250,6 @@ const EquipBreak = () => {
   }, {
     defer: true
   }));
-  let pendingAutoBreakEnabled;
-  let autoBreakEnabledSaveRequestID = 0;
   let appliedAutoBreakConfigText;
   const player_account_levels = solid_utils.createServiceNetData("player_account_levels", {
     "equip_break_level": {
@@ -166,6 +258,13 @@ const EquipBreak = () => {
     }
   });
   const player_key_values = solid_utils.createServiceNetData("player_key_values", {});
+  const applyAutoBreakEnabled = enabled => {
+    if (autoBreakEnabled() === enabled) return;
+    setAutoBreakEnabled(enabled);
+    GameEvents.SendCustomEventToServer("equipment_auto_break_intent", {
+      enabled: enabled ? 1 : 0
+    });
+  };
   const currentLv = libs.createMemo(() => {
     const lv = player_account_levels().equip_break_level.level;
     return lv;
@@ -184,51 +283,135 @@ const EquipBreak = () => {
     setItemListIsHidden(showingAutoBreakWindow || !showingSelectedItems && slot == -1);
   }));
   const getCurrentAutoBreakConfig = () => ({
+    action: autoBreakAction(),
     needLevels: getSelectedNumbers(autoBreakNeedLv()),
     rarities: getSelectedNumbers(autoBreakRarity()),
     classes: getSelectedNumbers(autoBreakClass()),
-    suits: getSelectedStrings(autoBreakSuit())
+    suits: getSelectedStrings(autoBreakSuit()),
+    parts: getSelectedNumbers(autoBreakParts()),
+    includeSubEntries: getSelectedStrings(autoBreakSubEntries()),
+    subEntryMaxValues: getSubEntryMaxValuesFromText(autoBreakSubEntryLimits(), getSelectedStrings(autoBreakSubEntries())),
+    subEntryComparisons: normalizeSubEntryComparisons(autoBreakSubEntryComparisons(), getSelectedStrings(autoBreakSubEntries()), autoBreakAction())
   });
   const applyAutoBreakConfig = config => {
+    setAutoBreakAction(config.action);
     setAutoBreakNeedLv(buildSelectedMap(config.needLevels));
     setAutoBreakRarity(buildSelectedMap(config.rarities));
     setAutoBreakClass(buildSelectedMap(config.classes));
     setAutoBreakSuit(buildSelectedMap(config.suits));
+    setAutoBreakParts(buildSelectedMap(config.parts));
+    setAutoBreakSubEntries(buildSelectedMap(config.includeSubEntries));
+    setAutoBreakSubEntryComparisons(config.subEntryComparisons);
+    setAutoBreakSubEntryLimits(Object.fromEntries(Object.entries(config.subEntryMaxValues).map(([id, value]) => [id, value === "invalid" ? GetLocalization("#Equipment_AutoBreakThresholdInvalidValue") : String(value)])));
+  };
+  const needsAutoBreakDetails = libs.createMemo(() => getSelectedStrings(autoBreakSubEntries()).length > 0);
+  const hasInvalidAutoBreakThreshold = libs.createMemo(() => {
+    const config = getCurrentAutoBreakConfig();
+    return hasInvalidAutoBreakNumbers(config) || Object.entries(config.subEntryMaxValues).some(([id, value]) => value === "invalid" || config.subEntryComparisons[id] === "invalid");
+  });
+  libs.createEffect(libs.on([showAutoBreakWindow, needsAutoBreakDetails, player_equipments], ([show, needsDetails, source]) => {
+    if (!show || !needsDetails) {
+      setAutoBreakDetails({
+        status: "idle",
+        items: {}
+      });
+      return;
+    }
+    const ids = Object.keys(source);
+    if (ids.length === 0) {
+      setAutoBreakDetails({
+        source,
+        status: "ready",
+        items: {}
+      });
+      return;
+    }
+    let active = true;
+    setAutoBreakDetails({
+      source,
+      status: "loading",
+      items: {}
+    });
+    const request = ServerRequest("get_equip_detail", {
+      id: ids
+    }, items => {
+      if (active) setAutoBreakDetails({
+        source,
+        status: "ready",
+        items
+      });
+    }, 10, () => {
+      if (active) setAutoBreakDetails({
+        source,
+        status: "failed",
+        items: {}
+      });
+    });
+    libs.onCleanup(() => {
+      active = false;
+      if (request != undefined) CancelRequest(request);
+    });
+  }));
+  const matchesAutoBreakConditions = (equip, config) => {
+    const entries = autoBreakDetails().items[equip.id]?.adverb_entry_data;
+    if (config.includeSubEntries.length > 0 && entries === undefined) return undefined;
+    let subEntriesMatch = true;
+    for (const id of config.includeSubEntries) {
+      const selected = (entries ?? []).filter(entry => entry.id === id);
+      if (selected.length === 0) {
+        subEntriesMatch = false;
+        continue;
+      }
+      const limit = config.subEntryMaxValues[id];
+      if (limit === undefined) continue;
+      const results = selected.map(entry => matchesSubEntryValue(entry, limit, config.subEntryComparisons[id]));
+      if (results.some(result => result === undefined)) return undefined;
+      if (!(config.action === "keep" ? results.some(Boolean) : results.every(Boolean))) subEntriesMatch = false;
+    }
+    return subEntriesMatch && (config.needLevels.length === 0 || config.needLevels.includes(equip.need_level)) && (config.rarities.length === 0 || config.rarities.includes(equip.rarity)) && (config.classes.length === 0 || config.classes.includes(equip.class)) && (config.parts.length === 0 || config.parts.includes(equip.equip_part)) && (config.suits.length === 0 || Object.values(equip.ability_entry_data ?? {}).some(entry => config.suits.includes(entry.id)));
   };
   const isAutoBreakMatch = (equip, config) => {
-    if (equipment_utils.EquipmentHasStates(equip)) return false;
-    const needLevelMatch = config.needLevels.length == 0 || config.needLevels.includes(equip.need_level);
-    const rarityMatch = config.rarities.length == 0 || config.rarities.includes(equip.rarity);
-    const classMatch = config.classes.length == 0 || config.classes.includes(equip.class);
-    const suitMatch = config.suits.length == 0 || equip.ability_entry_data?.[0]?.id != undefined && config.suits.includes(equip.ability_entry_data[0].id);
-    return needLevelMatch && rarityMatch && classMatch && suitMatch;
+    if (equipment_utils.EquipmentHasStates(equip) || !hasAutoBreakRule(config) || hasInvalidAutoBreakNumbers(config)) return false;
+    if (Object.values(config.subEntryMaxValues).some(value => value === "invalid")) return false;
+    if (Object.keys(config.subEntryMaxValues).some(id => config.subEntryComparisons[id] === "invalid")) return false;
+    const matches = matchesAutoBreakConditions(equip, config);
+    if (matches === undefined) return false;
+    return config.action === "keep" ? !matches : matches;
   };
   const hasAutoBreakRule = config => {
-    return config.needLevels.length > 0 || config.rarities.length > 0 || config.classes.length > 0 || config.suits.length > 0;
+    return config.needLevels.length > 0 || config.rarities.length > 0 || config.classes.length > 0 || config.suits.length > 0 || config.parts.length > 0 || config.includeSubEntries.length > 0;
   };
   const autoBreakMatchedCount = libs.createMemo(() => {
     const config = getCurrentAutoBreakConfig();
     if (!hasAutoBreakRule(config)) return 0;
+    if (needsAutoBreakDetails()) {
+      const details = autoBreakDetails();
+      if (details.status !== "ready" || details.source !== player_equipments() || Object.values(player_equipments()).some(equip => !equipment_utils.EquipmentHasStates(equip) && !details.items[equip.id])) return undefined;
+    }
     return Object.values(player_equipments()).filter(equip => isAutoBreakMatch(equip, config)).length;
   });
   const saveAutoBreakEnabled = (checked, panel) => {
-    const previousChecked = autoBreakEnabled();
-    const requestID = autoBreakEnabledSaveRequestID + 1;
-    autoBreakEnabledSaveRequestID = requestID;
-    pendingAutoBreakEnabled = checked;
-    setAutoBreakEnabled(checked);
+    if (autoBreakEnabledSaving()) {
+      if (panel?.IsValid()) panel.checked = autoBreakEnabled();
+      return;
+    }
+    setAutoBreakEnabledSaving(true);
+    applyAutoBreakEnabled(checked);
+    let completed = false;
+    const finish = success => {
+      if (completed) return;
+      completed = true;
+      libs.batch(() => {
+        applyAutoBreakEnabled(success ? checked : getEnabledFromText(player_key_values()?.[EQUIPMENT_AUTO_BREAK_ENABLED_KEY]?.value));
+        setAutoBreakEnabledSaving(false);
+      });
+      if (panel?.IsValid()) panel.checked = autoBreakEnabled();
+    };
     CallActionRequest("/v1/key/save", {
       type: EQUIPMENT_BREAK_KEY_TYPE,
       key: EQUIPMENT_AUTO_BREAK_ENABLED_KEY,
       value: checked ? "1" : "0"
-    }, () => {}, () => {
-      if (autoBreakEnabledSaveRequestID != requestID) return;
-      pendingAutoBreakEnabled = undefined;
-      setAutoBreakEnabled(previousChecked);
-      if (panel?.IsValid()) {
-        panel.checked = previousChecked;
-      }
-    }, false);
+    }, result => finish(result.code === 0 || result.code === 200), () => finish(false), false);
   };
   const submitAutoBreakConfig = (config, button) => {
     if (button?.IsValid()) {
@@ -246,12 +429,33 @@ const EquipBreak = () => {
   };
   const saveAutoBreakConfig = button => {
     const config = getCurrentAutoBreakConfig();
-    if (config.rarities.includes(6) || config.rarities.includes(7)) {
+    if (hasInvalidAutoBreakNumbers(config)) return;
+    if (Object.values(config.subEntryMaxValues).some(value => value === "invalid")) return;
+    if (Object.keys(config.subEntryMaxValues).some(id => config.subEntryComparisons[id] === "invalid")) return;
+    if (autoBreakMatchedCount() === undefined) return;
+    const source = player_equipments();
+    const highRarity = Object.values(source).filter(equip => equip.rarity >= 6 && isAutoBreakMatch(equip, config));
+    if (highRarity.length > 0) {
       CustomUIConfig.showPopup("CommonConfirm", {
-        text: "#Equipment_AutoBreakHighRarityConfirm",
-        title: "#Equipment_AutoBreak",
+        text: LocalizeWithVars("#Equipment_AutoBreakHighRarityConfirm", {
+          value: highRarity.length
+        }),
+        title: GetLocalization("#Equipment_AutoBreakTitle"),
+        size: "normal",
+        scrollItems: true,
+        items: highRarity.map(equip => ({
+          item_id: equip.equipment_item_id,
+          uid: equip.id,
+          rarity: equip.rarity
+        })),
         showCancel: true,
-        onconfirm: () => submitAutoBreakConfig(config, button)
+        onconfirm: () => {
+          if (source !== player_equipments()) {
+            saveAutoBreakConfig(button);
+            return;
+          }
+          submitAutoBreakConfig(config, button);
+        }
       });
       return;
     }
@@ -259,10 +463,7 @@ const EquipBreak = () => {
   };
   libs.createEffect(libs.on(player_key_values, data => {
     const nextEnabled = getEnabledFromText(data?.[EQUIPMENT_AUTO_BREAK_ENABLED_KEY]?.value);
-    if (pendingAutoBreakEnabled == undefined || pendingAutoBreakEnabled == nextEnabled) {
-      pendingAutoBreakEnabled = undefined;
-      setAutoBreakEnabled(nextEnabled);
-    }
+    if (!autoBreakEnabledSaving()) applyAutoBreakEnabled(nextEnabled);
     const nextConfigText = data?.[EQUIPMENT_AUTO_BREAK_CONFIG_KEY]?.value;
     if (appliedAutoBreakConfigText != nextConfigText) {
       appliedAutoBreakConfigText = nextConfigText;
@@ -271,8 +472,7 @@ const EquipBreak = () => {
   }));
   const resetAutoBreakStateFromSavedData = () => {
     const data = player_key_values();
-    pendingAutoBreakEnabled = undefined;
-    setAutoBreakEnabled(getEnabledFromText(data?.[EQUIPMENT_AUTO_BREAK_ENABLED_KEY]?.value));
+    if (!autoBreakEnabledSaving()) applyAutoBreakEnabled(getEnabledFromText(data?.[EQUIPMENT_AUTO_BREAK_ENABLED_KEY]?.value));
     applyAutoBreakConfig(getAutoBreakConfigFromText(data?.[EQUIPMENT_AUTO_BREAK_CONFIG_KEY]?.value));
   };
   const toggleAutoBreakWindow = () => {
@@ -342,77 +542,190 @@ const EquipBreak = () => {
   };
   const AutoBreakWindow = () => {
     let needLvFilter;
+    const initialNeedLvSelection = {
+      ...autoBreakNeedLv()
+    };
     const needLvText = libs.createMemo(() => getSelectedStrings(autoBreakNeedLv()).toString());
+    const matchedCountText = libs.createMemo(() => {
+      const count = autoBreakMatchedCount();
+      return count != undefined ? LocalizeWithVars("#Equipment_AutoBreakMatchedCount", {
+        value: count
+      }) : GetLocalization(autoBreakDetails().status === "loading" ? "#Equipment_AutoBreakDetailsLoading" : "#Equipment_AutoBreakDetailsUnavailable");
+    });
     libs.onMount(() => {
-      const scheduleID = $.Schedule(0.2, () => {
-        needLvFilter?.setSelect(autoBreakNeedLv());
-      });
-      libs.onCleanup(() => $.CancelScheduled(scheduleID));
+      needLvFilter?.setSelect(initialNeedLvSelection);
     });
     return (() => {
       const _el$ = libs.createElement("Panel", {
           id: "AutoBreakWindow"
-        }, null);
-        libs.createElement("Panel", {
+        }, null),
+        _el$2 = libs.createElement("Panel", {
           id: "AutoBreakHeader"
-        }, _el$);
-        const _el$3 = libs.createElement("Panel", {
-          id: "AutoBreakOptions"
         }, _el$),
+        _el$3 = libs.createElement("Label", {
+          id: "AutoBreakTitle",
+          get text() {
+            return GetLocalization("#Equipment_AutoBreakTitle");
+          }
+        }, _el$2),
         _el$4 = libs.createElement("Panel", {
+          id: "AutoBreakMode"
+        }, _el$),
+        _el$5 = libs.createElement("Label", {
+          id: "AutoBreakRuleHint",
+          get text() {
+            return GetLocalization(autoBreakAction() === "keep" ? "#Equipment_AutoBreakKeepHint" : "#Equipment_AutoBreakRuleHint");
+          }
+        }, _el$),
+        _el$6 = libs.createElement("Panel", {
+          id: "AutoBreakOptions",
+          "class": "VerticalScrollStyle",
+          scroll: "y"
+        }, _el$),
+        _el$7 = libs.createElement("Label", {
+          "class": "Subheading",
+          get text() {
+            return GetLocalization("#Equipment_AutoBreakParts");
+          }
+        }, _el$6);
+        libs.createElement("Panel", {
+          "class": "Separator FilterLine"
+        }, _el$6);
+        const _el$9 = libs.createElement("Panel", {
+          "class": "CheckBoxList"
+        }, _el$6),
+        _el$0 = libs.createElement("Panel", {
           id: "NeedLvFilter",
           "class": "Filter"
-        }, _el$3);
-        libs.createElement("Label", {
+        }, _el$6),
+        _el$1 = libs.createElement("Label", {
           id: "FilterType",
-          text: "#NeedLvFilter"
-        }, _el$4);
-        libs.createElement("Label", {
+          get text() {
+            return GetLocalization("#NeedLvFilter");
+          }
+        }, _el$0),
+        _el$10 = libs.createElement("Label", {
           "class": "Subheading",
-          text: "#Equipment_Rarity"
-        }, _el$3);
+          get text() {
+            return GetLocalization("#Equipment_Rarity");
+          }
+        }, _el$6);
         libs.createElement("Panel", {
           "class": "Separator FilterLine"
-        }, _el$3);
-        const _el$8 = libs.createElement("Panel", {
+        }, _el$6);
+        const _el$12 = libs.createElement("Panel", {
           id: "RarityFilterList",
           "class": "CheckBoxList"
-        }, _el$3),
-        _el$9 = libs.createElement("Label", {
+        }, _el$6),
+        _el$13 = libs.createElement("Label", {
           "class": "Subheading",
-          text: "#Equipment_Class"
-        }, _el$3);
+          get text() {
+            return GetLocalization("#Equipment_Class");
+          }
+        }, _el$6);
         libs.createElement("Panel", {
           "class": "Separator FilterLine"
-        }, _el$3);
-        const _el$1 = libs.createElement("Panel", {
+        }, _el$6);
+        const _el$15 = libs.createElement("Panel", {
           id: "ClassFilterList",
           "class": "CheckBoxList"
-        }, _el$3);
-        libs.createElement("Label", {
+        }, _el$6),
+        _el$16 = libs.createElement("Label", {
           "class": "Subheading",
-          text: "#Equipment_Suit"
-        }, _el$3);
+          get text() {
+            return GetLocalization("#Equipment_Suit");
+          }
+        }, _el$6);
         libs.createElement("Panel", {
           "class": "Separator FilterLine"
-        }, _el$3);
-        const _el$12 = libs.createElement("Panel", {
+        }, _el$6);
+        const _el$18 = libs.createElement("Panel", {
           id: "SuitFilterList",
           "class": "CheckBoxList"
-        }, _el$3),
-        _el$13 = libs.createElement("Panel", {
+        }, _el$6),
+        _el$19 = libs.createElement("Label", {
+          "class": "Subheading",
+          get text() {
+            return GetLocalization("#Equipment_AutoBreakSubTitle");
+          }
+        }, _el$6);
+        libs.createElement("Panel", {
+          "class": "Separator FilterLine"
+        }, _el$6);
+        const _el$21 = libs.createElement("Panel", {
+          id: "AutoBreakSubColumns"
+        }, _el$6);
+        libs.createElement("Panel", {
+          "class": "AutoBreakSubHeadingSpacer"
+        }, _el$21);
+        const _el$23 = libs.createElement("Label", {
+          "class": "AutoBreakThresholdHeading",
+          get text() {
+            return GetLocalization("#Equipment_AutoBreakThreshold");
+          }
+        }, _el$21),
+        _el$24 = libs.createElement("Panel", {
+          id: "AutoBreakSubEntryList"
+        }, _el$6),
+        _el$25 = libs.createElement("Label", {
+          id: "AutoBreakThresholdError",
+          get text() {
+            return GetLocalization("#Equipment_AutoBreakThresholdInvalid");
+          }
+        }, _el$6),
+        _el$26 = libs.createElement("Panel", {
           id: "AutoBreakFooter"
         }, _el$),
-        _el$14 = libs.createElement("Label", {
+        _el$27 = libs.createElement("Label", {
           id: "AutoBreakMatchedCount",
-          text: "#Equipment_AutoBreakMatchedCount",
-          get vars() {
-            return {
-              value: autoBreakMatchedCount()
-            };
+          get text() {
+            return matchedCountText();
           }
-        }, _el$13);
-      libs.insert(_el$4, libs.createComponent(EOM_MultiDropDown.EOM_MultiDropDown, {
+        }, _el$26),
+        _el$28 = libs.createElement("Panel", {
+          id: "AutoBreakActions"
+        }, _el$26);
+      libs.insert(_el$4, libs.createComponent(EOM_CheckBox.EOM_CheckBox2, {
+        get checked() {
+          return autoBreakAction() === "break";
+        },
+        get text() {
+          return GetLocalization("#Equipment_AutoBreakActionBreak");
+        },
+        onchecked: (_, panel) => {
+          panel.checked = true;
+          setAutoBreakAction("break");
+        }
+      }), null);
+      libs.insert(_el$4, libs.createComponent(EOM_CheckBox.EOM_CheckBox2, {
+        get checked() {
+          return autoBreakAction() === "keep";
+        },
+        get text() {
+          return GetLocalization("#Equipment_AutoBreakActionKeep");
+        },
+        onchecked: (_, panel) => {
+          panel.checked = true;
+          setAutoBreakAction("keep");
+        }
+      }), null);
+      libs.setProp(_el$6, "scroll", "y");
+      libs.insert(_el$9, libs.createComponent(libs.For, {
+        each: equipment_utils.EQUIP_PARTS,
+        children: part => libs.createComponent(EOM_CheckBox.EOM_CheckBox2, {
+          get checked() {
+            return autoBreakParts()[part] ?? false;
+          },
+          get text() {
+            return GetLocalization(`#Equipment_Part_${part}`);
+          },
+          onchecked: checked => setAutoBreakParts(prev => ({
+            ...prev,
+            [part]: checked
+          }))
+        })
+      }));
+      libs.insert(_el$0, libs.createComponent(EOM_MultiDropDown.EOM_MultiDropDown, {
         get placeholder() {
           return needLvText();
         },
@@ -423,7 +736,7 @@ const EquipBreak = () => {
         options: NEEDLV_LIST$1,
         onChange: value => setAutoBreakNeedLv(value)
       }), null);
-      libs.insert(_el$8, libs.createComponent(libs.For, {
+      libs.insert(_el$12, libs.createComponent(libs.For, {
         each: equipment_utils.EQUIP_RARITY_COLOR,
         children: (color, idx) => {
           const rarity = idx() + 1;
@@ -451,8 +764,7 @@ const EquipBreak = () => {
           });
         }
       }));
-      libs.setProp(_el$9, "tooltip", "#Equipment_Class_Desc");
-      libs.insert(_el$1, libs.createComponent(libs.For, {
+      libs.insert(_el$15, libs.createComponent(libs.For, {
         get each() {
           return Object.keys(GameUI.CustomUIConfig().equip_class_setting);
         },
@@ -479,7 +791,7 @@ const EquipBreak = () => {
           });
         }
       }));
-      libs.insert(_el$12, libs.createComponent(libs.For, {
+      libs.insert(_el$18, libs.createComponent(libs.For, {
         get each() {
           return Object.keys(KeyValues.equipment_suit_effect);
         },
@@ -505,15 +817,167 @@ const EquipBreak = () => {
           }
         })
       }));
-      libs.insert(_el$13, libs.createComponent(EOM_Button.EOM_Button, {
+      libs.insert(_el$24, libs.createComponent(libs.For, {
+        each: SUB_ENTRY_LIST,
+        children: entry => {
+          const selected = () => autoBreakSubEntries()[entry.entry_name] ?? false;
+          const limit = () => autoBreakSubEntryLimits()[entry.entry_name] ?? "";
+          const comparison = () => autoBreakSubEntryComparisons()[entry.entry_name] ?? (autoBreakAction() === "keep" ? "gte" : "lte");
+          const invalid = () => {
+            const config = getCurrentAutoBreakConfig();
+            return selected() && limit().trim() !== "" && (config.subEntryMaxValues[entry.entry_name] === "invalid" || comparison() === "invalid");
+          };
+          return (() => {
+            const _el$29 = libs.createElement("Panel", {
+                "class": "AutoBreakSubRule"
+              }, null),
+              _el$30 = libs.createElement("Panel", {
+                "class": "AutoBreakSubInfo"
+              }, _el$29),
+              _el$31 = libs.createElement("Panel", {
+                "class": "AutoBreakThresholdInput"
+              }, _el$29),
+              _el$32 = libs.createElement("Label", {
+                "class": "AutoBreakThresholdUnit",
+                get text() {
+                  return GetLocalization(`#property_${entry.entry_name}`).startsWith("%") ? "%" : "";
+                }
+              }, _el$31);
+            libs.insert(_el$30, libs.createComponent(EOM_CheckBox.EOM_CheckBox2, {
+              "class": "AutoBreakSubName",
+              get checked() {
+                return selected();
+              },
+              get text() {
+                return GetLocalization(`#property_${entry.entry_name}`).replace("%", "");
+              },
+              onchecked: checked => selectAutoBreakSubEntry(entry.entry_name, checked)
+            }));
+            libs.insert(_el$31, libs.createComponent(EOM_DropDown.EOM_DropDown, {
+              "class": "AutoBreakThresholdComparison",
+              type: "EquipmentDropDown",
+              menuClass: "AutoBreakComparisonMenu",
+              customWidth: "64px",
+              get index() {
+                return SUB_ENTRY_COMPARISONS.indexOf(comparison());
+              },
+              onChange: index => {
+                const next = SUB_ENTRY_COMPARISONS[index];
+                if (next) setAutoBreakSubEntryComparisons(prev => ({
+                  ...prev,
+                  [entry.entry_name]: next
+                }));
+              },
+              get children() {
+                return libs.createComponent(libs.For, {
+                  each: SUB_ENTRY_COMPARISONS,
+                  children: operator => (() => {
+                    const _el$33 = libs.createElement("Label", {
+                      get text() {
+                        return GetLocalization(`#Equipment_AutoBreakComparison_${operator}`);
+                      }
+                    }, null);
+                    libs.effect(_$p => libs.setProp(_el$33, "text", GetLocalization(`#Equipment_AutoBreakComparison_${operator}`), _$p));
+                    return _el$33;
+                  })()
+                });
+              }
+            }), _el$32);
+            libs.insert(_el$31, libs.createComponent(EOM_TextEntry.EOM_TextEntry, {
+              "class": "AutoBreakThresholdValue",
+              get text() {
+                return limit();
+              },
+              get placeholder() {
+                return GetLocalization("#Equipment_AutoBreakThresholdUnlimited");
+              },
+              onChange: (_, __, text) => libs.batch(() => {
+                setAutoBreakSubEntryLimits(prev => ({
+                  ...prev,
+                  [entry.entry_name]: text
+                }));
+                if (text.trim() !== "") selectAutoBreakSubEntry(entry.entry_name, true);
+              })
+            }), _el$32);
+            libs.effect(_p$ => {
+              const _v$12 = {
+                  Selected: selected(),
+                  Invalid: invalid()
+                },
+                _v$13 = GetLocalization(`#property_${entry.entry_name}`).startsWith("%") ? "%" : "";
+              _v$12 !== _p$._v$12 && (_p$._v$12 = libs.setProp(_el$29, "classList", _v$12, _p$._v$12));
+              _v$13 !== _p$._v$13 && (_p$._v$13 = libs.setProp(_el$32, "text", _v$13, _p$._v$13));
+              return _p$;
+            }, {
+              _v$12: undefined,
+              _v$13: undefined
+            });
+            return _el$29;
+          })();
+        }
+      }));
+      libs.insert(_el$28, libs.createComponent(EOM_Button.EOM_Button, {
         id: "AutoBreakSaveBtn",
+        get enabled() {
+          return libs.memo(() => !!!hasInvalidAutoBreakThreshold())() && autoBreakMatchedCount() !== undefined;
+        },
         size: "Small",
-        text: "#Equipment_AutoBreakSave",
+        get text() {
+          return GetLocalization("#Equipment_AutoBreakSave");
+        },
         onactivate: self => saveAutoBreakConfig(self)
       }), null);
-      libs.effect(_$p => libs.setProp(_el$14, "vars", {
-        value: autoBreakMatchedCount()
-      }, _$p));
+      libs.insert(_el$28, libs.createComponent(EOM_Button.EOM_Button, {
+        id: "AutoBreakCloseBtn",
+        size: "Small",
+        get text() {
+          return GetLocalization("#GameUI_Close");
+        },
+        onactivate: () => setShowAutoBreakWindow(false)
+      }), null);
+      libs.effect(_p$ => {
+        const _v$ = GetLocalization("#Equipment_AutoBreakTitle"),
+          _v$2 = GetLocalization(autoBreakAction() === "keep" ? "#Equipment_AutoBreakKeepHint" : "#Equipment_AutoBreakRuleHint"),
+          _v$3 = GetLocalization("#Equipment_AutoBreakParts"),
+          _v$4 = GetLocalization("#NeedLvFilter"),
+          _v$5 = GetLocalization("#Equipment_Rarity"),
+          _v$6 = GetLocalization("#Equipment_Class"),
+          _v$7 = GetLocalization("#Equipment_Class_Desc"),
+          _v$8 = GetLocalization("#Equipment_Suit"),
+          _v$9 = GetLocalization("#Equipment_AutoBreakSubTitle"),
+          _v$0 = GetLocalization("#Equipment_AutoBreakThreshold"),
+          _v$1 = hasInvalidAutoBreakThreshold(),
+          _v$10 = GetLocalization("#Equipment_AutoBreakThresholdInvalid"),
+          _v$11 = matchedCountText();
+        _v$ !== _p$._v$ && (_p$._v$ = libs.setProp(_el$3, "text", _v$, _p$._v$));
+        _v$2 !== _p$._v$2 && (_p$._v$2 = libs.setProp(_el$5, "text", _v$2, _p$._v$2));
+        _v$3 !== _p$._v$3 && (_p$._v$3 = libs.setProp(_el$7, "text", _v$3, _p$._v$3));
+        _v$4 !== _p$._v$4 && (_p$._v$4 = libs.setProp(_el$1, "text", _v$4, _p$._v$4));
+        _v$5 !== _p$._v$5 && (_p$._v$5 = libs.setProp(_el$10, "text", _v$5, _p$._v$5));
+        _v$6 !== _p$._v$6 && (_p$._v$6 = libs.setProp(_el$13, "text", _v$6, _p$._v$6));
+        _v$7 !== _p$._v$7 && (_p$._v$7 = libs.setProp(_el$13, "tooltip", _v$7, _p$._v$7));
+        _v$8 !== _p$._v$8 && (_p$._v$8 = libs.setProp(_el$16, "text", _v$8, _p$._v$8));
+        _v$9 !== _p$._v$9 && (_p$._v$9 = libs.setProp(_el$19, "text", _v$9, _p$._v$9));
+        _v$0 !== _p$._v$0 && (_p$._v$0 = libs.setProp(_el$23, "text", _v$0, _p$._v$0));
+        _v$1 !== _p$._v$1 && (_p$._v$1 = libs.setProp(_el$25, "visible", _v$1, _p$._v$1));
+        _v$10 !== _p$._v$10 && (_p$._v$10 = libs.setProp(_el$25, "text", _v$10, _p$._v$10));
+        _v$11 !== _p$._v$11 && (_p$._v$11 = libs.setProp(_el$27, "text", _v$11, _p$._v$11));
+        return _p$;
+      }, {
+        _v$: undefined,
+        _v$2: undefined,
+        _v$3: undefined,
+        _v$4: undefined,
+        _v$5: undefined,
+        _v$6: undefined,
+        _v$7: undefined,
+        _v$8: undefined,
+        _v$9: undefined,
+        _v$0: undefined,
+        _v$1: undefined,
+        _v$10: undefined,
+        _v$11: undefined
+      });
       return _el$;
     })();
   };
@@ -553,7 +1017,7 @@ const EquipBreak = () => {
       finalExp = finalExp - BREAK_LEVEL_EXP[tmp].exp;
       tmp++;
     }
-    const finalProgress = finalExp / BREAK_LEVEL_EXP[targetLv].exp * 100;
+    const finalProgress = targetLv >= MAX_LEVEL ? 100 : finalExp / BREAK_LEVEL_EXP[targetLv].exp * 100;
     return {
       finalStack,
       finalProgress,
@@ -664,7 +1128,7 @@ const EquipBreak = () => {
       const currentExp = player_account_levels().equip_break_level.extra_exp;
       const currentLv = player_account_levels().equip_break_level.level;
       const currentLvKv = BREAK_LEVEL_EXP[currentLv];
-      animStartProgress = currentExp / currentLvKv.exp * 100;
+      animStartProgress = currentLv >= MAX_LEVEL ? 100 : currentExp / currentLvKv.exp * 100;
       if (prevAddedExp === 0) {
         barProgress = animStartProgress;
       }
@@ -767,7 +1231,7 @@ const EquipBreak = () => {
       } else if (barProgress > currentTarget) {
         barProgress = currentTarget;
       }
-      const displayLv = currentLv() + curStack;
+      const displayLv = Math.min(MAX_LEVEL, currentLv() + curStack);
       const displayLvKv = BREAK_LEVEL_EXP[displayLv];
       displayLvKv.exp;
       if (barProgress >= currentTarget) {
@@ -801,9 +1265,12 @@ const EquipBreak = () => {
       if (expLabel) {
         if (realLvKv) {
           if (currentLv() < MAX_LEVEL) {
-            expLabel.text = `${realExp}/${realLvKv.exp}`;
+            expLabel.text = LocalizeWithVars("#Equipment_BreakExp", {
+              value: realExp,
+              max: realLvKv.exp
+            });
           } else {
-            expLabel.text = `${realExp}`;
+            expLabel.text = GetLocalization("#Equipment_MaxLv");
           }
         }
       }
@@ -815,32 +1282,32 @@ const EquipBreak = () => {
   return libs.createComponent(EOM_MenuLayout.EOM_MenuLayout_Content, {
     id: "EquipBreakRoot",
     get children() {
-      const _el$15 = libs.createElement("Panel", {
+      const _el$34 = libs.createElement("Panel", {
           id: "CenterBlock",
           hittest: false
         }, null),
-        _el$16 = libs.createElement("Panel", {
+        _el$35 = libs.createElement("Panel", {
           id: "ClickPanel"
-        }, _el$15),
-        _el$17 = libs.createElement("Panel", {
+        }, _el$34),
+        _el$36 = libs.createElement("Panel", {
           id: "EquipBreakWindow",
           get ["class"]() {
             return libs.classNames(getBreakWindowClass());
           }
-        }, _el$15),
-        _el$18 = libs.createElement("Panel", {
+        }, _el$34),
+        _el$37 = libs.createElement("Panel", {
           id: "BreakSelectionContainer"
-        }, _el$17),
-        _el$19 = libs.createElement("Panel", {
+        }, _el$36),
+        _el$38 = libs.createElement("Panel", {
           id: "BreakSlotsContainer"
-        }, _el$18),
-        _el$20 = libs.createElement("Panel", {
+        }, _el$37),
+        _el$39 = libs.createElement("Panel", {
           id: "BreakSlots"
-        }, _el$19),
-        _el$22 = libs.createElement("Panel", {
+        }, _el$38),
+        _el$41 = libs.createElement("Panel", {
           id: "CenterImage"
-        }, _el$19),
-        _el$23 = libs.createElement("DOTAParticleScenePanel", {
+        }, _el$38),
+        _el$42 = libs.createElement("DOTAParticleScenePanel", {
           id: "BreakForgeParticle",
           particleName: "particles/ui/game/ui_game_equipment_interface_02_fx.vpcf",
           cameraOrigin: "0 0 250",
@@ -848,101 +1315,90 @@ const EquipBreak = () => {
           lookAt: "0 0 0",
           hittest: false,
           squarePixels: true
-        }, _el$19),
-        _el$24 = libs.createElement("Panel", {
+        }, _el$38),
+        _el$43 = libs.createElement("Panel", {
           id: "LevelInfo"
-        }, _el$19),
-        _el$25 = libs.createElement("Panel", {
+        }, _el$38),
+        _el$44 = libs.createElement("Panel", {
           width: "100%",
           verticalAlign: "center",
           flowChildren: "down"
-        }, _el$24),
-        _el$26 = libs.createElement("Label", {
+        }, _el$43),
+        _el$45 = libs.createElement("Label", {
           verticalAlign: "center",
           text: "#Equipment_BreakLvTips"
-        }, _el$25),
-        _el$28 = libs.createElement("Panel", {
+        }, _el$44),
+        _el$47 = libs.createElement("Panel", {
           "class": "ToolTipInfo"
-        }, _el$24),
-        _el$29 = libs.createElement("Panel", {
+        }, _el$43),
+        _el$48 = libs.createElement("Panel", {
           id: "SelectedBreakItemsContainer"
-        }, _el$18),
-        _el$30 = libs.createElement("Label", {
+        }, _el$37),
+        _el$49 = libs.createElement("Label", {
           id: "SelectedBreakItemsTitle",
           get text() {
             return GetLocalization("#Equipment_BreakSelectedListTitle");
           }
-        }, _el$29),
-        _el$31 = libs.createElement("Label", {
+        }, _el$48),
+        _el$50 = libs.createElement("Label", {
           id: "SelectedBreakItemsCount",
           get text() {
             return LocalizeWithVars("#Equipment_BreakSelectedCount", {
               value: selectedCount()
             });
           }
-        }, _el$29),
-        _el$33 = libs.createElement("Panel", {
+        }, _el$48),
+        _el$52 = libs.createElement("Panel", {
           id: "BreakViewToggle"
-        }, _el$17),
-        _el$34 = libs.createElement("Label", {
+        }, _el$36),
+        _el$53 = libs.createElement("Label", {
           get text() {
             return GetLocalization("#Equipment_BreakListMode");
           }
-        }, _el$33),
-        _el$35 = libs.createElement("Panel", {
+        }, _el$52),
+        _el$54 = libs.createElement("Panel", {
           id: "FastAdd"
-        }, _el$17),
-        _el$39 = libs.createElement("Panel", {
+        }, _el$36),
+        _el$58 = libs.createElement("Panel", {
           id: "ExpBarContainer"
-        }, _el$17),
-        _el$40 = libs.createElement("Image", {
+        }, _el$36),
+        _el$59 = libs.createElement("Image", {
           id: "ExpAnimBar"
-        }, _el$39),
-        _el$41 = libs.createElement("Image", {
+        }, _el$58),
+        _el$60 = libs.createElement("Image", {
           id: "ExpBar"
-        }, _el$39),
-        _el$42 = libs.createElement("Label", {
+        }, _el$58),
+        _el$61 = libs.createElement("Label", {
           id: "CurExp"
-        }, _el$39),
-        _el$43 = libs.createElement("Label", {
+        }, _el$58),
+        _el$62 = libs.createElement("Label", {
           id: "AddexExp",
           get text() {
             return `+${addedExp()}`;
           }
-        }, _el$39),
-        _el$45 = libs.createElement("Panel", {
-          id: "BreakReward",
-          get ["class"]() {
-            return libs.classNames({
-              Show: rewardList().length > 0
-            });
-          }
-        }, _el$17);
-        libs.createElement("Label", {
-          id: "TipsText",
-          text: "#Equipment_Breakreward"
-        }, _el$45);
-        const _el$47 = libs.createElement("Panel", {
-          id: "BreakRewardList",
-          flowChildren: "right"
-        }, _el$45),
-        _el$48 = libs.createElement("Panel", {
+        }, _el$58),
+        _el$64 = libs.createElement("Panel", {
+          id: "BreakReward"
+        }, _el$36),
+        _el$68 = libs.createElement("Panel", {
+          id: "BreakActions"
+        }, _el$36),
+        _el$69 = libs.createElement("Panel", {
           "class": "BtnList"
-        }, _el$17),
-        _el$49 = libs.createElement("Panel", {
+        }, _el$68),
+        _el$70 = libs.createElement("Panel", {
           id: "AutoBreak",
-          visible: false,
           horizontalAlign: "center",
           flowChildren: "right"
-        }, _el$17),
-        _el$50 = libs.createElement("Panel", {
+        }, _el$68),
+        _el$71 = libs.createElement("Panel", {
           id: "AttributeLvInfo"
-        }, _el$15);
-      libs.setProp(_el$16, "onactivate", () => {
+        }, _el$34);
+      libs.setProp(_el$35, "onactivate", () => {
         setShowAutoBreakWindow(false);
         setSelectSlot(-1);
       });
-      libs.insert(_el$20, libs.createComponent(libs.For, {
+      libs.insert(_el$39, libs.createComponent(libs.For, {
         get each() {
           return Array(equipment_comp.BREAK_SLOT_NUM);
         },
@@ -957,7 +1413,7 @@ const EquipBreak = () => {
             return player_equipments()[id];
           };
           return (() => {
-            const _el$52 = libs.createElement("Panel", {
+            const _el$73 = libs.createElement("Panel", {
                 get id() {
                   return "BreakSlot" + idx();
                 },
@@ -969,17 +1425,17 @@ const EquipBreak = () => {
               }, null);
               libs.createElement("Panel", {
                 id: "Selected"
-              }, _el$52);
-            libs.setProp(_el$52, "onDragEnter", (pPanel, draggedPanel) => {
+              }, _el$73);
+            libs.setProp(_el$73, "onDragEnter", (pPanel, draggedPanel) => {
               const dragType = isHuntlootMode() ? "huntloot" : isGemMode() ? "gem" : "equip";
               if (LoadData(draggedPanel, dragType)) {
                 draggedPanel.AddClass("draggedPanel_drop_enter");
               }
             });
-            libs.setProp(_el$52, "onDragLeave", (pPanel, draggedPanel) => {
+            libs.setProp(_el$73, "onDragLeave", (pPanel, draggedPanel) => {
               draggedPanel.RemoveClass("draggedPanel_drop_enter");
             });
-            libs.setProp(_el$52, "onDragDrop", (panel, draggedPanel) => {
+            libs.setProp(_el$73, "onDragDrop", (panel, draggedPanel) => {
               if (isHuntlootMode()) {
                 const id = LoadData(draggedPanel, "huntloot");
                 const item = player_huntloots()[id];
@@ -1022,17 +1478,17 @@ const EquipBreak = () => {
                 });
               }
             });
-            libs.setProp(_el$52, "onactivate", () => {
+            libs.setProp(_el$73, "onactivate", () => {
               setSelectSlot(idx());
             });
-            libs.setProp(_el$52, "oncontextmenu", () => {
+            libs.setProp(_el$73, "oncontextmenu", () => {
               const slotIndex = idx();
               const id = selectedItemList()[slotIndex];
               if (id) {
                 setSelectedItemList(prev => prev.filter(i => i != id));
               }
             });
-            libs.insert(_el$52, libs.createComponent(libs.Show, {
+            libs.insert(_el$73, libs.createComponent(libs.Show, {
               get when() {
                 return slotData();
               },
@@ -1047,27 +1503,27 @@ const EquipBreak = () => {
               })
             }), null);
             libs.effect(_p$ => {
-              const _v$15 = "BreakSlot" + idx(),
-                _v$16 = libs.classNames("BreakSlot", {
+              const _v$30 = "BreakSlot" + idx(),
+                _v$31 = libs.classNames("BreakSlot", {
                   Select: idx() == selectSlot()
                 });
-              _v$15 !== _p$._v$15 && (_p$._v$15 = libs.setProp(_el$52, "id", _v$15, _p$._v$15));
-              _v$16 !== _p$._v$16 && (_p$._v$16 = libs.setProp(_el$52, "class", _v$16, _p$._v$16));
+              _v$30 !== _p$._v$30 && (_p$._v$30 = libs.setProp(_el$73, "id", _v$30, _p$._v$30));
+              _v$31 !== _p$._v$31 && (_p$._v$31 = libs.setProp(_el$73, "class", _v$31, _p$._v$31));
               return _p$;
             }, {
-              _v$15: undefined,
-              _v$16: undefined
+              _v$30: undefined,
+              _v$31: undefined
             });
-            return _el$52;
+            return _el$73;
           })();
         }
       }));
-      libs.insert(_el$19, libs.createComponent(libs.Show, {
+      libs.insert(_el$38, libs.createComponent(libs.Show, {
         get when() {
           return selectedCount() > equipment_comp.BREAK_SLOT_NUM;
         },
         get children() {
-          const _el$21 = libs.createElement("Label", {
+          const _el$40 = libs.createElement("Label", {
             id: "BreakSelectCount",
             hittest: false,
             get text() {
@@ -1080,80 +1536,80 @@ const EquipBreak = () => {
             }
           }, null);
           libs.effect(_p$ => {
-            const _v$ = GetLocalization("#Equipment_BreakSelectedCount"),
-              _v$2 = {
+            const _v$14 = GetLocalization("#Equipment_BreakSelectedCount"),
+              _v$15 = {
                 value: selectedCount()
               };
-            _v$ !== _p$._v$ && (_p$._v$ = libs.setProp(_el$21, "text", _v$, _p$._v$));
-            _v$2 !== _p$._v$2 && (_p$._v$2 = libs.setProp(_el$21, "vars", _v$2, _p$._v$2));
+            _v$14 !== _p$._v$14 && (_p$._v$14 = libs.setProp(_el$40, "text", _v$14, _p$._v$14));
+            _v$15 !== _p$._v$15 && (_p$._v$15 = libs.setProp(_el$40, "vars", _v$15, _p$._v$15));
             return _p$;
           }, {
-            _v$: undefined,
-            _v$2: undefined
+            _v$14: undefined,
+            _v$15: undefined
           });
-          return _el$21;
+          return _el$40;
         }
-      }), _el$22);
+      }), _el$41);
       const _ref$2 = breakParticle;
-      typeof _ref$2 === "function" ? libs.use(_ref$2, _el$23) : breakParticle = _el$23;
-      libs.setProp(_el$25, "width", "100%");
-      libs.setProp(_el$25, "verticalAlign", "center");
-      libs.setProp(_el$25, "flowChildren", "down");
-      libs.setProp(_el$26, "verticalAlign", "center");
-      libs.insert(_el$25, libs.createComponent(libs.Show, {
+      typeof _ref$2 === "function" ? libs.use(_ref$2, _el$42) : breakParticle = _el$42;
+      libs.setProp(_el$44, "width", "100%");
+      libs.setProp(_el$44, "verticalAlign", "center");
+      libs.setProp(_el$44, "flowChildren", "down");
+      libs.setProp(_el$45, "verticalAlign", "center");
+      libs.insert(_el$44, libs.createComponent(libs.Show, {
         get when() {
           return currentLv() == MAX_LEVEL;
         },
         get fallback() {
           return (() => {
-            const _el$55 = libs.createElement("Label", {
+            const _el$76 = libs.createElement("Label", {
               get text() {
                 return `Lv.${currentLv()}${addedLv() > 0 ? ToColor(`+${addedLv()}`, '#53b646') : ''}`;
               },
               html: true
             }, null);
-            libs.effect(_$p => libs.setProp(_el$55, "text", `Lv.${currentLv()}${addedLv() > 0 ? ToColor(`+${addedLv()}`, '#53b646') : ''}`, _$p));
-            return _el$55;
+            libs.effect(_$p => libs.setProp(_el$76, "text", `Lv.${currentLv()}${addedLv() > 0 ? ToColor(`+${addedLv()}`, '#53b646') : ''}`, _$p));
+            return _el$76;
           })();
         },
         get children() {
-          const _el$27 = libs.createElement("Label", {
+          const _el$46 = libs.createElement("Label", {
             get text() {
               return `Lv.${currentLv()}`;
             },
             html: true
           }, null);
-          libs.effect(_$p => libs.setProp(_el$27, "text", `Lv.${currentLv()}`, _$p));
-          return _el$27;
+          libs.effect(_$p => libs.setProp(_el$46, "text", `Lv.${currentLv()}`, _$p));
+          return _el$46;
         }
       }), null);
-      libs.setProp(_el$28, "tooltip_text", "#Equipment_BreakTips");
-      libs.insert(_el$29, libs.createComponent(libs.Show, {
+      libs.setProp(_el$47, "tooltip_text", "#Equipment_BreakTips");
+      libs.insert(_el$48, libs.createComponent(libs.Show, {
         get when() {
           return selectedCount() > 0;
         },
         get fallback() {
           return (() => {
-            const _el$56 = libs.createElement("Label", {
+            const _el$77 = libs.createElement("Label", {
               id: "SelectedBreakItemsEmpty",
               get text() {
                 return GetLocalization("#Equipment_BreakSelectedListEmpty");
               }
             }, null);
-            libs.effect(_$p => libs.setProp(_el$56, "text", GetLocalization("#Equipment_BreakSelectedListEmpty"), _$p));
-            return _el$56;
+            libs.effect(_$p => libs.setProp(_el$77, "text", GetLocalization("#Equipment_BreakSelectedListEmpty"), _$p));
+            return _el$77;
           })();
         },
         get children() {
-          const _el$32 = libs.createElement("Panel", {
+          const _el$51 = libs.createElement("Panel", {
             id: "SelectedBreakItemList",
             "class": "VerticalScrollStyle",
             flowChildren: "right-wrap",
             scroll: "y"
           }, null);
-          libs.setProp(_el$32, "flowChildren", "right-wrap");
-          libs.setProp(_el$32, "scroll", "y");
-          libs.insert(_el$32, libs.createComponent(libs.For, {
+          libs.setProp(_el$51, "flowChildren", "right-wrap");
+          libs.setProp(_el$51, "scroll", "y");
+          libs.insert(_el$51, libs.createComponent(libs.For, {
             get each() {
               return selectedItems();
             },
@@ -1165,14 +1621,14 @@ const EquipBreak = () => {
                 },
                 keyed: true,
                 children: data => (() => {
-                  const _el$57 = libs.createElement("Panel", {
+                  const _el$78 = libs.createElement("Panel", {
                       "class": "SelectedBreakItem"
                     }, null),
-                    _el$58 = libs.createElement("Panel", {
+                    _el$79 = libs.createElement("Panel", {
                       "class": "RemoveSelectedItemIcon",
                       hittest: false
-                    }, _el$57);
-                  libs.setProp(_el$57, "onmouseover", panel => {
+                    }, _el$78);
+                  libs.setProp(_el$78, "onmouseover", panel => {
                     if (isHuntlootMode()) {
                       huntloot_details.ShowServerHuntlootTooltip(panel, {
                         id1: id
@@ -1187,27 +1643,27 @@ const EquipBreak = () => {
                       });
                     }
                   });
-                  libs.setProp(_el$57, "onmouseout", panel => HideCustomTooltip(panel, tooltipType()));
-                  libs.setProp(_el$57, "onactivate", panel => removeSelectedItem(panel, id));
-                  libs.setProp(_el$57, "oncontextmenu", panel => removeSelectedItem(panel, id));
-                  libs.insert(_el$57, libs.createComponent(BreakItemIcon, {
+                  libs.setProp(_el$78, "onmouseout", panel => HideCustomTooltip(panel, tooltipType()));
+                  libs.setProp(_el$78, "onactivate", panel => removeSelectedItem(panel, id));
+                  libs.setProp(_el$78, "oncontextmenu", panel => removeSelectedItem(panel, id));
+                  libs.insert(_el$78, libs.createComponent(BreakItemIcon, {
                     data: data
-                  }), _el$58);
-                  return _el$57;
+                  }), _el$79);
+                  return _el$78;
                 })()
               });
             }
           }));
-          return _el$32;
+          return _el$51;
         }
       }), null);
-      libs.insert(_el$33, libs.createComponent(EOM_Switch.EOM_Switch, {
+      libs.insert(_el$52, libs.createComponent(EOM_Switch.EOM_Switch, {
         get selected() {
           return showSelectedItems();
         },
         onchange: (_, checked) => changeBreakView(checked)
       }), null);
-      libs.insert(_el$35, libs.createComponent(EOM_Breadcrumb.EOM_Breadcrumb, {
+      libs.insert(_el$54, libs.createComponent(EOM_Breadcrumb.EOM_Breadcrumb, {
         "class": "BreakTypeBreadcrumb",
         get list() {
           return [GetLocalization("#MenuTabButton_equipment"), GetLocalization("#MenuTabButton_gem"), GetLocalization("#MenuTabButton_huntloot")];
@@ -1217,7 +1673,7 @@ const EquipBreak = () => {
         },
         onChange: changeBreakType
       }), null);
-      libs.insert(_el$35, libs.createComponent(libs.Show, {
+      libs.insert(_el$54, libs.createComponent(libs.Show, {
         get when() {
           return isGemMode();
         },
@@ -1241,7 +1697,7 @@ const EquipBreak = () => {
                 children: (_, idx) => {
                   const rarity = idx() + 1;
                   return (() => {
-                    const _el$60 = libs.createElement("Label", {
+                    const _el$81 = libs.createElement("Label", {
                       get style() {
                         return {
                           color: equipment_utils.EQUIP_RARITY_COLOR[idx()]
@@ -1252,18 +1708,18 @@ const EquipBreak = () => {
                       }
                     }, null);
                     libs.effect(_p$ => {
-                      const _v$17 = {
+                      const _v$32 = {
                           color: equipment_utils.EQUIP_RARITY_COLOR[idx()]
                         },
-                        _v$18 = GetLocalization("#Equipment_Rarity_" + rarity);
-                      _v$17 !== _p$._v$17 && (_p$._v$17 = libs.setProp(_el$60, "style", _v$17, _p$._v$17));
-                      _v$18 !== _p$._v$18 && (_p$._v$18 = libs.setProp(_el$60, "text", _v$18, _p$._v$18));
+                        _v$33 = GetLocalization("#Equipment_Rarity_" + rarity);
+                      _v$32 !== _p$._v$32 && (_p$._v$32 = libs.setProp(_el$81, "style", _v$32, _p$._v$32));
+                      _v$33 !== _p$._v$33 && (_p$._v$33 = libs.setProp(_el$81, "text", _v$33, _p$._v$33));
                       return _p$;
                     }, {
-                      _v$17: undefined,
-                      _v$18: undefined
+                      _v$32: undefined,
+                      _v$33: undefined
                     });
-                    return _el$60;
+                    return _el$81;
                   })();
                 }
               })];
@@ -1315,7 +1771,7 @@ const EquipBreak = () => {
               return [libs.createElement("Label", {
                 text: "#ALL"
               }, null), (() => {
-                const _el$37 = libs.createElement("Label", {
+                const _el$56 = libs.createElement("Label", {
                   get style() {
                     return {
                       color: equipment_utils.EQUIP_RARITY_COLOR[4]
@@ -1326,20 +1782,20 @@ const EquipBreak = () => {
                   }
                 }, null);
                 libs.effect(_p$ => {
-                  const _v$3 = {
+                  const _v$16 = {
                       color: equipment_utils.EQUIP_RARITY_COLOR[4]
                     },
-                    _v$4 = GetLocalization("#Equipment_Rarity_5");
-                  _v$3 !== _p$._v$3 && (_p$._v$3 = libs.setProp(_el$37, "style", _v$3, _p$._v$3));
-                  _v$4 !== _p$._v$4 && (_p$._v$4 = libs.setProp(_el$37, "text", _v$4, _p$._v$4));
+                    _v$17 = GetLocalization("#Equipment_Rarity_5");
+                  _v$16 !== _p$._v$16 && (_p$._v$16 = libs.setProp(_el$56, "style", _v$16, _p$._v$16));
+                  _v$17 !== _p$._v$17 && (_p$._v$17 = libs.setProp(_el$56, "text", _v$17, _p$._v$17));
                   return _p$;
                 }, {
-                  _v$3: undefined,
-                  _v$4: undefined
+                  _v$16: undefined,
+                  _v$17: undefined
                 });
-                return _el$37;
+                return _el$56;
               })(), (() => {
-                const _el$38 = libs.createElement("Label", {
+                const _el$57 = libs.createElement("Label", {
                   get style() {
                     return {
                       color: equipment_utils.EQUIP_RARITY_COLOR[5]
@@ -1350,18 +1806,18 @@ const EquipBreak = () => {
                   }
                 }, null);
                 libs.effect(_p$ => {
-                  const _v$5 = {
+                  const _v$18 = {
                       color: equipment_utils.EQUIP_RARITY_COLOR[5]
                     },
-                    _v$6 = GetLocalization("#Equipment_Rarity_6");
-                  _v$5 !== _p$._v$5 && (_p$._v$5 = libs.setProp(_el$38, "style", _v$5, _p$._v$5));
-                  _v$6 !== _p$._v$6 && (_p$._v$6 = libs.setProp(_el$38, "text", _v$6, _p$._v$6));
+                    _v$19 = GetLocalization("#Equipment_Rarity_6");
+                  _v$18 !== _p$._v$18 && (_p$._v$18 = libs.setProp(_el$57, "style", _v$18, _p$._v$18));
+                  _v$19 !== _p$._v$19 && (_p$._v$19 = libs.setProp(_el$57, "text", _v$19, _p$._v$19));
                   return _p$;
                 }, {
-                  _v$5: undefined,
-                  _v$6: undefined
+                  _v$18: undefined,
+                  _v$19: undefined
                 });
-                return _el$38;
+                return _el$57;
               })()];
             }
           }), libs.createComponent(equipment_comp.EquipmentCommonBtn, {
@@ -1386,12 +1842,12 @@ const EquipBreak = () => {
         }
       }), null);
       const _ref$3 = expAnimBar;
-      typeof _ref$3 === "function" ? libs.use(_ref$3, _el$40) : expAnimBar = _el$40;
+      typeof _ref$3 === "function" ? libs.use(_ref$3, _el$59) : expAnimBar = _el$59;
       const _ref$4 = expBar;
-      typeof _ref$4 === "function" ? libs.use(_ref$4, _el$41) : expBar = _el$41;
+      typeof _ref$4 === "function" ? libs.use(_ref$4, _el$60) : expBar = _el$60;
       const _ref$5 = expLabel;
-      typeof _ref$5 === "function" ? libs.use(_ref$5, _el$42) : expLabel = _el$42;
-      libs.insert(_el$39, libs.createComponent(libs.Show, {
+      typeof _ref$5 === "function" ? libs.use(_ref$5, _el$61) : expLabel = _el$61;
+      libs.insert(_el$58, libs.createComponent(libs.Show, {
         get when() {
           return addedLv() > 0;
         },
@@ -1401,38 +1857,72 @@ const EquipBreak = () => {
           }, null);
         }
       }), null);
-      libs.setProp(_el$47, "flowChildren", "right");
-      libs.insert(_el$47, libs.createComponent(libs.For, {
-        get each() {
-          return rewardList();
+      libs.insert(_el$64, libs.createComponent(libs.Show, {
+        get when() {
+          return rewardList().length > 0;
         },
-        children: reward => {
+        get fallback() {
           return (() => {
-            const _el$61 = libs.createElement("Panel", {
-                "class": "RewardItem"
-              }, null),
-              _el$62 = libs.createElement("Label", {
-                get text() {
-                  return reward.amount;
-                }
-              }, _el$61);
-            libs.insert(_el$61, libs.createComponent(StoreItem.StoreItemImage, {
-              get itemid() {
-                return reward.itemID;
+            const _el$82 = libs.createElement("Label", {
+              id: "BreakEmptyHint",
+              get text() {
+                return GetLocalization(selectedCount() > 0 ? "#Equipment_BreakNoItemReward" : "#Equipment_BreakEmptyHint");
               }
-            }), _el$62);
-            libs.effect(_$p => libs.setProp(_el$62, "text", reward.amount, _$p));
-            return _el$61;
+            }, null);
+            libs.effect(_$p => libs.setProp(_el$82, "text", GetLocalization(selectedCount() > 0 ? "#Equipment_BreakNoItemReward" : "#Equipment_BreakEmptyHint"), _$p));
+            return _el$82;
           })();
+        },
+        get children() {
+          const _el$65 = libs.createElement("Panel", {
+              id: "BreakRewardContent"
+            }, null),
+            _el$66 = libs.createElement("Label", {
+              id: "TipsText",
+              get text() {
+                return GetLocalization("#Equipment_Breakreward");
+              }
+            }, _el$65),
+            _el$67 = libs.createElement("Panel", {
+              id: "BreakRewardList",
+              flowChildren: "right"
+            }, _el$65);
+          libs.setProp(_el$67, "flowChildren", "right");
+          libs.insert(_el$67, libs.createComponent(libs.For, {
+            get each() {
+              return rewardList();
+            },
+            children: reward => (() => {
+              const _el$83 = libs.createElement("Panel", {
+                  "class": "RewardItem"
+                }, null),
+                _el$84 = libs.createElement("Label", {
+                  get text() {
+                    return reward.amount;
+                  }
+                }, _el$83);
+              libs.insert(_el$83, libs.createComponent(StoreItem.StoreItemImage, {
+                get itemid() {
+                  return reward.itemID;
+                }
+              }), _el$84);
+              libs.effect(_$p => libs.setProp(_el$84, "text", reward.amount, _$p));
+              return _el$83;
+            })()
+          }));
+          libs.effect(_$p => libs.setProp(_el$66, "text", GetLocalization("#Equipment_Breakreward"), _$p));
+          return _el$65;
         }
       }));
-      libs.insert(_el$48, libs.createComponent(EOM_Button.EOM_Button, {
+      libs.insert(_el$69, libs.createComponent(EOM_Button.EOM_Button, {
         id: "ConfirmBtn",
         get enabled() {
           return libs.memo(() => selectedCount() > 0)() && !breakingHuntloots();
         },
         color: "Confirm",
-        text: "#Equipment_Break",
+        get text() {
+          return GetLocalization("#Equipment_Break");
+        },
         onactivate: () => {
           const list = selectedItemList().filter(d => d != null);
           if (list.length == 0) {
@@ -1492,17 +1982,22 @@ const EquipBreak = () => {
           }
         }
       }));
-      libs.setProp(_el$49, "horizontalAlign", "center");
-      libs.setProp(_el$49, "flowChildren", "right");
-      libs.insert(_el$49, libs.createComponent(EOM_CheckBox.EOM_CheckBox2, {
+      libs.setProp(_el$70, "horizontalAlign", "center");
+      libs.setProp(_el$70, "flowChildren", "right");
+      libs.insert(_el$70, libs.createComponent(EOM_CheckBox.EOM_CheckBox2, {
         id: "AutoBreakSwitch",
         get checked() {
           return autoBreakEnabled();
         },
-        text: "#Equipment_AutoBreak",
+        get enabled() {
+          return !autoBreakEnabledSaving();
+        },
+        get text() {
+          return GetLocalization("#Equipment_AutoBreakEnabled");
+        },
         onchecked: saveAutoBreakEnabled
       }), null);
-      libs.insert(_el$49, libs.createComponent(EOM_Button.EOM_Button, {
+      libs.insert(_el$70, libs.createComponent(EOM_Button.EOM_Button, {
         id: "AutoBreakBtn",
         size: "Small",
         get ["class"]() {
@@ -1511,17 +2006,19 @@ const EquipBreak = () => {
           });
         },
         onactivate: toggleAutoBreakWindow,
-        text: "#Equipment_AutoBreak"
+        get text() {
+          return GetLocalization("#Equipment_AutoBreak");
+        }
       }), null);
-      libs.insert(_el$15, libs.createComponent(libs.Show, {
+      libs.insert(_el$34, libs.createComponent(libs.Show, {
         get when() {
           return showAutoBreakWindow();
         },
         get children() {
           return libs.createComponent(AutoBreakWindow, {});
         }
-      }), _el$50);
-      libs.insert(_el$50, libs.createComponent(RecycleView.RecycleView, {
+      }), _el$71);
+      libs.insert(_el$71, libs.createComponent(RecycleView.RecycleView, {
         id: "LvInfoList",
         direction: "Vertical",
         handle: h => lvInfoListHandle = h,
@@ -1547,7 +2044,7 @@ const EquipBreak = () => {
             });
           });
           return (() => {
-            const _el$63 = libs.createElement("Panel", {
+            const _el$85 = libs.createElement("Panel", {
                 get style() {
                   return {
                     zIndex: MAX_LEVEL - dataAccessor().level
@@ -1561,64 +2058,64 @@ const EquipBreak = () => {
                   });
                 }
               }, null),
-              _el$64 = libs.createElement("Panel", {
+              _el$86 = libs.createElement("Panel", {
                 id: "LvInfo"
-              }, _el$63),
-              _el$65 = libs.createElement("Label", {
+              }, _el$85),
+              _el$87 = libs.createElement("Label", {
                 id: "Level",
                 get text() {
                   return dataAccessor().level;
                 }
-              }, _el$64),
-              _el$66 = libs.createElement("Panel", {
+              }, _el$86),
+              _el$88 = libs.createElement("Panel", {
                 align: "center center",
                 flowChildren: "down"
-              }, _el$64);
+              }, _el$86);
               libs.createElement("Panel", {
                 id: "Line"
-              }, _el$63);
-            libs.setProp(_el$66, "align", "center center");
-            libs.setProp(_el$66, "flowChildren", "down");
-            libs.insert(_el$66, libs.createComponent(libs.For, {
+              }, _el$85);
+            libs.setProp(_el$88, "align", "center center");
+            libs.setProp(_el$88, "flowChildren", "down");
+            libs.insert(_el$88, libs.createComponent(libs.For, {
               get each() {
                 return attrs();
               },
               children: attr => (() => {
-                const _el$68 = libs.createElement("Label", {
+                const _el$90 = libs.createElement("Label", {
                   id: "Attr",
                   get text() {
                     return GetPropertyLocalization(attr.name, attr.value);
                   },
                   html: true
                 }, null);
-                libs.effect(_$p => libs.setProp(_el$68, "text", GetPropertyLocalization(attr.name, attr.value), _$p));
-                return _el$68;
+                libs.effect(_$p => libs.setProp(_el$90, "text", GetPropertyLocalization(attr.name, attr.value), _$p));
+                return _el$90;
               })()
             }));
             libs.effect(_p$ => {
-              const _v$19 = {
+              const _v$34 = {
                   zIndex: MAX_LEVEL - dataAccessor().level
                 },
-                _v$20 = libs.classNames("LvInfoItemContainer", {
+                _v$35 = libs.classNames("LvInfoItemContainer", {
                   Unlock: currentLv() >= dataAccessor().level,
                   Currentlv: currentLv() == dataAccessor().level,
                   Last: dataAccessor().level == MAX_LEVEL
                 }),
-                _v$21 = dataAccessor().level;
-              _v$19 !== _p$._v$19 && (_p$._v$19 = libs.setProp(_el$63, "style", _v$19, _p$._v$19));
-              _v$20 !== _p$._v$20 && (_p$._v$20 = libs.setProp(_el$63, "class", _v$20, _p$._v$20));
-              _v$21 !== _p$._v$21 && (_p$._v$21 = libs.setProp(_el$65, "text", _v$21, _p$._v$21));
+                _v$36 = dataAccessor().level;
+              _v$34 !== _p$._v$34 && (_p$._v$34 = libs.setProp(_el$85, "style", _v$34, _p$._v$34));
+              _v$35 !== _p$._v$35 && (_p$._v$35 = libs.setProp(_el$85, "class", _v$35, _p$._v$35));
+              _v$36 !== _p$._v$36 && (_p$._v$36 = libs.setProp(_el$87, "text", _v$36, _p$._v$36));
               return _p$;
             }, {
-              _v$19: undefined,
-              _v$20: undefined,
-              _v$21: undefined
+              _v$34: undefined,
+              _v$35: undefined,
+              _v$36: undefined
             });
-            return _el$63;
+            return _el$85;
           })();
         }
       }), null);
-      libs.insert(_el$50, libs.createComponent(libs.Show, {
+      libs.insert(_el$71, libs.createComponent(libs.Show, {
         get when() {
           return addedAttr().length > 0;
         },
@@ -1627,73 +2124,71 @@ const EquipBreak = () => {
             id: "LvInfoSeparator",
             text: "#Equipment_AttributeLvInfo"
           }), (() => {
-            const _el$51 = libs.createElement("Panel", {
+            const _el$72 = libs.createElement("Panel", {
               id: "AddedAttrList",
               scroll: "y",
               "class": "VerticalScrollStyle"
             }, null);
-            libs.setProp(_el$51, "scroll", "y");
-            libs.insert(_el$51, libs.createComponent(libs.Index, {
+            libs.setProp(_el$72, "scroll", "y");
+            libs.insert(_el$72, libs.createComponent(libs.Index, {
               get each() {
                 return addedAttr();
               },
               children: data => {
                 return (() => {
-                  const _el$69 = libs.createElement("Label", {
+                  const _el$91 = libs.createElement("Label", {
                     "class": "AttrLabel",
                     get text() {
                       return GetPropertyLocalization(data().attrName, Number(data().value));
                     },
                     html: true
                   }, null);
-                  libs.effect(_$p => libs.setProp(_el$69, "text", GetPropertyLocalization(data().attrName, Number(data().value)), _$p));
-                  return _el$69;
+                  libs.effect(_$p => libs.setProp(_el$91, "text", GetPropertyLocalization(data().attrName, Number(data().value)), _$p));
+                  return _el$91;
                 })();
               }
             }));
-            return _el$51;
+            return _el$72;
           })()];
         }
       }), null);
       libs.effect(_p$ => {
-        const _v$7 = libs.classNames(getBreakWindowClass()),
-          _v$8 = !showSelectedItems(),
-          _v$9 = showSelectedItems(),
-          _v$0 = GetLocalization("#Equipment_BreakSelectedListTitle"),
-          _v$1 = LocalizeWithVars("#Equipment_BreakSelectedCount", {
+        const _v$20 = libs.classNames(getBreakWindowClass()),
+          _v$21 = !showSelectedItems(),
+          _v$22 = showSelectedItems(),
+          _v$23 = GetLocalization("#Equipment_BreakSelectedListTitle"),
+          _v$24 = LocalizeWithVars("#Equipment_BreakSelectedCount", {
             value: selectedCount()
           }),
-          _v$10 = GetLocalization("#Equipment_BreakListMode"),
-          _v$11 = addedExp() > 0,
-          _v$12 = `+${addedExp()}`,
-          _v$13 = libs.classNames({
-            Show: rewardList().length > 0
-          }),
-          _v$14 = hiddenItemList() && !showAutoBreakWindow();
-        _v$7 !== _p$._v$7 && (_p$._v$7 = libs.setProp(_el$17, "class", _v$7, _p$._v$7));
-        _v$8 !== _p$._v$8 && (_p$._v$8 = libs.setProp(_el$19, "visible", _v$8, _p$._v$8));
-        _v$9 !== _p$._v$9 && (_p$._v$9 = libs.setProp(_el$29, "visible", _v$9, _p$._v$9));
-        _v$0 !== _p$._v$0 && (_p$._v$0 = libs.setProp(_el$30, "text", _v$0, _p$._v$0));
-        _v$1 !== _p$._v$1 && (_p$._v$1 = libs.setProp(_el$31, "text", _v$1, _p$._v$1));
-        _v$10 !== _p$._v$10 && (_p$._v$10 = libs.setProp(_el$34, "text", _v$10, _p$._v$10));
-        _v$11 !== _p$._v$11 && (_p$._v$11 = libs.setProp(_el$43, "visible", _v$11, _p$._v$11));
-        _v$12 !== _p$._v$12 && (_p$._v$12 = libs.setProp(_el$43, "text", _v$12, _p$._v$12));
-        _v$13 !== _p$._v$13 && (_p$._v$13 = libs.setProp(_el$45, "class", _v$13, _p$._v$13));
-        _v$14 !== _p$._v$14 && (_p$._v$14 = libs.setProp(_el$50, "visible", _v$14, _p$._v$14));
+          _v$25 = GetLocalization("#Equipment_BreakListMode"),
+          _v$26 = addedExp() > 0,
+          _v$27 = `+${addedExp()}`,
+          _v$28 = selectedItemTab() === "equipment",
+          _v$29 = hiddenItemList() && !showAutoBreakWindow();
+        _v$20 !== _p$._v$20 && (_p$._v$20 = libs.setProp(_el$36, "class", _v$20, _p$._v$20));
+        _v$21 !== _p$._v$21 && (_p$._v$21 = libs.setProp(_el$38, "visible", _v$21, _p$._v$21));
+        _v$22 !== _p$._v$22 && (_p$._v$22 = libs.setProp(_el$48, "visible", _v$22, _p$._v$22));
+        _v$23 !== _p$._v$23 && (_p$._v$23 = libs.setProp(_el$49, "text", _v$23, _p$._v$23));
+        _v$24 !== _p$._v$24 && (_p$._v$24 = libs.setProp(_el$50, "text", _v$24, _p$._v$24));
+        _v$25 !== _p$._v$25 && (_p$._v$25 = libs.setProp(_el$53, "text", _v$25, _p$._v$25));
+        _v$26 !== _p$._v$26 && (_p$._v$26 = libs.setProp(_el$62, "visible", _v$26, _p$._v$26));
+        _v$27 !== _p$._v$27 && (_p$._v$27 = libs.setProp(_el$62, "text", _v$27, _p$._v$27));
+        _v$28 !== _p$._v$28 && (_p$._v$28 = libs.setProp(_el$70, "visible", _v$28, _p$._v$28));
+        _v$29 !== _p$._v$29 && (_p$._v$29 = libs.setProp(_el$71, "visible", _v$29, _p$._v$29));
         return _p$;
       }, {
-        _v$7: undefined,
-        _v$8: undefined,
-        _v$9: undefined,
-        _v$0: undefined,
-        _v$1: undefined,
-        _v$10: undefined,
-        _v$11: undefined,
-        _v$12: undefined,
-        _v$13: undefined,
-        _v$14: undefined
+        _v$20: undefined,
+        _v$21: undefined,
+        _v$22: undefined,
+        _v$23: undefined,
+        _v$24: undefined,
+        _v$25: undefined,
+        _v$26: undefined,
+        _v$27: undefined,
+        _v$28: undefined,
+        _v$29: undefined
       });
-      return _el$15;
+      return _el$34;
     }
   });
 };
@@ -10657,12 +11152,22 @@ const hasInvalidGemChaosRange = () => Object.values(filterGemChaosEntry()).some(
   const max = range.max.trim();
   return min !== "" && (!Number.isInteger(Number(min)) || Number(min) < 1) || max !== "" && (!Number.isInteger(Number(max)) || Number(max) < 1) || min !== "" && max !== "" && Number(min) > Number(max);
 });
+let filterGemMainRanges = () => ({});
+let setFilterGemMainRanges = () => ({});
+let filterGemSubRanges = () => ({});
+let setFilterGemSubRanges = () => ({});
+let filterGemChaosAny = () => false;
+let setFilterGemChaosAny = () => false;
+const hasInvalidGemValueRange = () => Object.keys(filterGemMainEntry()).some(id => filterGemMainEntry()[id] && !entry_range_inputs.isEntryFilterRangeValid(filterGemMainRanges()[id])) || Object.keys(filterGemSubEntry()).some(id => filterGemSubEntry()[id] === "include" && !entry_range_inputs.isEntryFilterRangeValid(filterGemSubRanges()[id]));
 let filteredGemIDs = () => undefined;
 let setFilteredGemIDs = () => undefined;
 let gemFilterRequesting = () => false;
 let setGemFilterRequesting = () => false;
 let filterEquipSubEntry = () => ({});
 let setFilterEquipSubEntry = () => ({});
+let filterEquipSubRanges = () => ({});
+let setFilterEquipSubRanges = () => ({});
+const hasInvalidEquipValueRange = () => Object.keys(filterEquipSubEntry()).some(id => filterEquipSubEntry()[id] === "include" && !entry_range_inputs.isEntryFilterRangeValid(filterEquipSubRanges()[id]));
 let filterHuntlootRarity = () => ({});
 let setFilterHuntlootRarity = () => ({});
 let filterHuntlootClass = () => ({});
@@ -10723,9 +11228,13 @@ function createEquipmentPageState() {
   [filterGemClass, setFilterGemClass] = libs.createSignal({});
   [filterGemSubEntry, setFilterGemSubEntry] = libs.createSignal({});
   [filterGemChaosEntry, setFilterGemChaosEntry] = libs.createSignal({});
+  [filterGemMainRanges, setFilterGemMainRanges] = libs.createSignal({});
+  [filterGemSubRanges, setFilterGemSubRanges] = libs.createSignal({});
+  [filterGemChaosAny, setFilterGemChaosAny] = libs.createSignal(false);
   [filteredGemIDs, setFilteredGemIDs] = libs.createSignal();
   [gemFilterRequesting, setGemFilterRequesting] = libs.createSignal(false);
   [filterEquipSubEntry, setFilterEquipSubEntry] = libs.createSignal({});
+  [filterEquipSubRanges, setFilterEquipSubRanges] = libs.createSignal({});
   [filterHuntlootRarity, setFilterHuntlootRarity] = libs.createSignal({});
   [filterHuntlootClass, setFilterHuntlootClass] = libs.createSignal({});
   [filterHuntlootAdverb, setFilterHuntlootAdverb] = libs.createSignal({});
@@ -12590,25 +13099,36 @@ function ItemsRoot() {
   const [equipmentDetailVersion, setEquipmentDetailVersion] = libs.createSignal(0);
   const [equipmentDetailsLoading, setEquipmentDetailsLoading] = libs.createSignal(false);
   let equipmentDataWithFreshDetails;
+  let equipmentFreshDetails = {};
   let gemFilterRequestVersion = 0;
-  libs.createEffect(() => {
-    const keyword = filterMythText().trim();
-    const hasSubEntryFilter = Object.values(filterEquipSubEntry()).some(mode => mode !== "default");
-    const equipmentData = player_equipments();
+  const [appliedGemFilter, setAppliedGemFilter] = libs.createSignal();
+  libs.createEffect(libs.on([player_equipments, filterMythText, filterEquipSubEntry, selectedItemTab, showFilter], ([equipmentData, keyword, subEntryFilter, tab]) => {
+    const hasSubEntryFilter = Object.values(subEntryFilter).some(mode => mode !== "default");
     const ids = Object.keys(equipmentData);
-    equipmentDetailVersion();
-    if (!keyword && !hasSubEntryFilter || ids.length === 0 || equipmentDetailsLoading() || equipmentDataWithFreshDetails === equipmentData) {
+    setEquipmentDetailsLoading(false);
+    if (tab !== "equipment" || !keyword.trim() && !hasSubEntryFilter || ids.length === 0 || equipmentDataWithFreshDetails === equipmentData) {
       return;
     }
+    let active = true;
     setEquipmentDetailsLoading(true);
-    equipment_utils.GetEquipmentDetail(ids, () => {
+    const request = equipment_utils.GetEquipmentDetail(ids, details => {
+      if (!active) return;
       libs.batch(() => {
         equipmentDataWithFreshDetails = equipmentData;
+        equipmentFreshDetails = details;
         setEquipmentDetailsLoading(false);
         setEquipmentDetailVersion(version => version + 1);
       });
-    }, true);
-  });
+    }, true, () => {
+      if (!active) return;
+      setEquipmentDetailsLoading(false);
+      ErrorMessage(GetLocalization("#Equipment_FilterRequestFailed"));
+    });
+    libs.onCleanup(() => {
+      active = false;
+      if (request) CancelRequest(request);
+    });
+  }));
   const showItemsRoot = () => {
     return SHOW_ITEM_LIST_MENU[menuName()];
   };
@@ -12620,6 +13140,7 @@ function ItemsRoot() {
     const suit_filter = filterSuit();
     const myth_text_filter = filterMythText().trim().toLowerCase();
     const sub_entry_filter = filterEquipSubEntry();
+    const sub_entry_ranges = filterEquipSubRanges();
     let res = Object.values(player_equipments());
     if (part_filter > 0) {
       res = res.filter(data => data.equip_part == part_filter);
@@ -12655,10 +13176,11 @@ function ItemsRoot() {
     }
     const needsEquipmentDetails = myth_text_filter !== "" || includedSubEntries.length > 0 || excludedSubEntries.length > 0;
     equipmentDetailVersion();
-    const equipmentDetailsReady = !needsEquipmentDetails || !equipmentDetailsLoading() && equipmentDataWithFreshDetails === player_equipments() && res.every(data => CustomUIConfig.EquipmentDetailCache[data.id] != undefined);
-    if (myth_text_filter && equipmentDetailsReady) {
+    const equipmentDetailsReady = !needsEquipmentDetails || !equipmentDetailsLoading() && equipmentDataWithFreshDetails === player_equipments() && res.every(data => equipmentFreshDetails[data.id] != undefined);
+    if (!equipmentDetailsReady || includedSubEntries.some(id => !entry_range_inputs.isEntryFilterRangeValid(sub_entry_ranges[id]))) return [];
+    if (myth_text_filter) {
       res = res.filter(data => {
-        const mythEntries = CustomUIConfig.EquipmentDetailCache[data.id]?.myth_entry_data ?? [];
+        const mythEntries = equipmentFreshDetails[data.id]?.myth_entry_data ?? [];
         return mythEntries?.some(entry => {
           const entryKv = KeyValues.equip_entry[entry.id];
           const description = GetPrivilegeDesc(entry.id, 1, {
@@ -12671,10 +13193,11 @@ function ItemsRoot() {
         });
       });
     }
-    if ((includedSubEntries.length > 0 || excludedSubEntries.length > 0) && equipmentDetailsReady) {
+    if (includedSubEntries.length > 0 || excludedSubEntries.length > 0) {
       res = res.filter(data => {
-        const entryIDs = new Set((CustomUIConfig.EquipmentDetailCache[data.id]?.adverb_entry_data ?? []).map(entry => entry.id));
-        return includedSubEntries.every(entryID => entryIDs.has(entryID)) && excludedSubEntries.every(entryID => !entryIDs.has(entryID));
+        const entries = equipmentFreshDetails[data.id]?.adverb_entry_data;
+        if (entries === undefined) return false;
+        return entry_range_inputs.matchesSelectedEntryRanges(entries, includedSubEntries, sub_entry_ranges) && excludedSubEntries.every(entryID => !entries.some(entry => entry.id === entryID));
       });
     }
     return res;
@@ -12765,7 +13288,7 @@ function ItemsRoot() {
     return [...meetList, ...notMeetList];
   });
   const applyGemEntryFilter = () => {
-    if (hasInvalidGemChaosRange()) return;
+    if (hasInvalidGemChaosRange() || hasInvalidGemValueRange()) return;
     const chaos = Object.entries(filterGemChaosEntry()).filter(([, range]) => range.selected).map(([id, range]) => ({
       id,
       ...(range.min.trim() !== "" ? {
@@ -12782,22 +13305,48 @@ function ItemsRoot() {
       if (mode === "include") include.push(entryID);
       if (mode === "exclude") exclude.push(entryID);
     }
+    libs.batch(() => {
+      setShowFilter(false);
+      setAppliedGemFilter(main.length || include.length || exclude.length || chaos.length ? {
+        main,
+        include,
+        exclude,
+        chaos,
+        chaosMatchAny: filterGemChaosAny(),
+        mainRanges: entry_range_inputs.serializeEntryFilterRanges(filterGemMainRanges(), main),
+        includeRanges: entry_range_inputs.serializeEntryFilterRanges(filterGemSubRanges(), include)
+      } : undefined);
+    });
+  };
+  libs.createEffect(libs.on([player_gems, appliedGemFilter], ([, filters]) => {
     const requestVersion = ++gemFilterRequestVersion;
-    setGemFilterRequesting(true);
-    setShowFilter(false);
-    ServerRequest("filter_gems", {
-      main,
-      include,
-      exclude,
-      chaos
-    }, result => {
+    if (filters === undefined) {
+      libs.batch(() => {
+        setFilteredGemIDs();
+        setGemFilterRequesting(false);
+      });
+      return;
+    }
+    libs.batch(() => {
+      setFilteredGemIDs([]);
+      setGemFilterRequesting(true);
+    });
+    const request = ServerRequest("filter_gems", filters, result => {
       if (requestVersion !== gemFilterRequestVersion) return;
       libs.batch(() => {
         setFilteredGemIDs(Object.values(result.ids ?? {}).map(Number).filter(Number.isFinite));
         setGemFilterRequesting(false);
       });
+    }, undefined, () => {
+      if (requestVersion !== gemFilterRequestVersion) return;
+      libs.batch(() => {
+        setGemFilterRequesting(false);
+        setShowFilter(true);
+      });
+      ErrorMessage(GetLocalization("#Gem_FilterRequestFailed"));
     });
-  };
+    libs.onCleanup(() => CancelRequest(request));
+  }));
   return (() => {
     const _el$72 = libs.createElement("Panel", {
         id: "ItemsRoot",
@@ -13515,7 +14064,7 @@ function ItemsRoot() {
     }), _el$78);
     libs.setProp(_el$78, "onactivate", () => {
       libs.batch(() => {
-        gemFilterRequestVersion += 1;
+        setAppliedGemFilter(undefined);
         setGemFilterRequesting(false);
         setFilterNeedLv({});
         setFilterRarity({});
@@ -13523,8 +14072,12 @@ function ItemsRoot() {
         setFilterGemClass({});
         setFilterGemSubEntry({});
         setFilterGemChaosEntry({});
+        setFilterGemChaosAny(false);
+        setFilterGemMainRanges({});
+        setFilterGemSubRanges({});
         setFilteredGemIDs();
         setFilterEquipSubEntry({});
+        setFilterEquipSubRanges({});
         setFilterHuntlootRarity({});
         setFilterHuntlootClass({});
         setFilterHuntlootAdverb({});
@@ -13715,77 +14268,84 @@ function FilterWindow() {
           },
           get fallback() {
             return (() => {
-              const _el$111 = libs.createElement("Panel", {
+              const _el$112 = libs.createElement("Panel", {
                   id: "GemFilterContent",
                   "class": "VerticalScrollStyle",
                   scroll: "y"
                 }, null),
-                _el$112 = libs.createElement("Label", {
+                _el$113 = libs.createElement("Label", {
                   id: "GemClassFilterLabel",
                   "class": "Subheading",
                   get text() {
                     return GetLocalization("#Gem_Class_Filter");
                   }
-                }, _el$111);
+                }, _el$112);
                 libs.createElement("Panel", {
                   "class": "Separator FilterLine"
-                }, _el$111);
-                const _el$114 = libs.createElement("Panel", {
+                }, _el$112);
+                const _el$115 = libs.createElement("Panel", {
                   id: "GemClassFilterList",
                   "class": "CheckBoxList"
-                }, _el$111);
-                libs.createElement("Label", {
+                }, _el$112),
+                _el$116 = libs.createElement("Label", {
                   id: "GemMainEntryFilterLabel",
                   "class": "Subheading",
-                  text: "#Equipment_SelectMainEntry"
-                }, _el$111);
+                  get text() {
+                    return GetLocalization("#Equipment_SelectMainEntry");
+                  }
+                }, _el$112);
                 libs.createElement("Panel", {
                   "class": "Separator FilterLine"
-                }, _el$111);
-                const _el$117 = libs.createElement("Panel", {
-                  id: "GemMainEntryFilterList",
-                  "class": "CheckBoxList"
-                }, _el$111),
-                _el$118 = libs.createElement("Label", {
+                }, _el$112);
+                const _el$118 = libs.createElement("Label", {
+                  "class": "GemChaosFilterError",
+                  get text() {
+                    return GetLocalization("#ItemFilter_InvalidRange");
+                  }
+                }, _el$112),
+                _el$119 = libs.createElement("Panel", {
+                  id: "GemMainEntryFilterList"
+                }, _el$112),
+                _el$120 = libs.createElement("Label", {
                   "class": "Subheading",
                   get text() {
                     return GetLocalization("#Gem_ChaosFilter_Title");
                   }
-                }, _el$111),
-                _el$119 = libs.createElement("Label", {
+                }, _el$112),
+                _el$121 = libs.createElement("Label", {
                   "class": "GemChaosFilterHint",
                   get text() {
                     return GetLocalization("#Gem_ChaosFilter_Hint");
                   }
-                }, _el$111),
-                _el$120 = libs.createElement("Label", {
+                }, _el$112),
+                _el$122 = libs.createElement("Label", {
                   "class": "GemChaosFilterError",
                   get text() {
                     return GetLocalization("#Gem_ChaosFilter_InvalidRange");
                   }
-                }, _el$111),
-                _el$121 = libs.createElement("Panel", {
+                }, _el$112),
+                _el$123 = libs.createElement("Panel", {
                   id: "GemChaosEntryFilterList"
-                }, _el$111),
-                _el$122 = libs.createElement("Panel", {
+                }, _el$112),
+                _el$124 = libs.createElement("Panel", {
                   id: "GemSubEntryFilterTitle"
-                }, _el$111);
+                }, _el$112);
                 libs.createElement("Panel", {
                   "class": "Separator"
-                }, _el$122);
+                }, _el$124);
                 libs.createElement("Label", {
                   text: "#Equipment_GemSubFilter_Title"
-                }, _el$122);
+                }, _el$124);
                 libs.createElement("Panel", {
                   "class": "Separator"
-                }, _el$122);
-                const _el$126 = libs.createElement("Panel", {
+                }, _el$124);
+                const _el$128 = libs.createElement("Panel", {
                   id: "GemSubEntryFilterList",
                   "class": "VerticalScrollStyle",
                   scroll: "y"
-                }, _el$111);
-              libs.setProp(_el$111, "scroll", "y");
-              libs.insert(_el$114, libs.createComponent(libs.For, {
+                }, _el$112);
+              libs.setProp(_el$112, "scroll", "y");
+              libs.insert(_el$115, libs.createComponent(libs.For, {
                 each: GEM_CLASSES,
                 children: gemClass => libs.createComponent(EOM_CheckBox.EOM_CheckBox2, {
                   get checked() {
@@ -13812,44 +14372,69 @@ function FilterWindow() {
                   }
                 })
               }));
-              libs.insert(_el$117, libs.createComponent(libs.For, {
+              libs.insert(_el$119, libs.createComponent(libs.For, {
                 each: GEM_MAIN_ENTRY_IDS,
-                children: entryID => libs.createComponent(EOM_CheckBox.EOM_CheckBox2, {
-                  get checked() {
-                    return filterGemMainEntry()[entryID] ?? false;
-                  },
-                  get text() {
-                    return GetLocalization("#property_" + entryID).replace("%", "");
-                  },
-                  onchecked: checked => {
-                    if (checked) {
-                      setFilterGemMainEntry(prev => ({
+                children: entryID => (() => {
+                  const _el$129 = libs.createElement("Panel", {
+                    "class": "GemEntryValueRow"
+                  }, null);
+                  libs.insert(_el$129, libs.createComponent(EOM_CheckBox.EOM_CheckBox2, {
+                    "class": "GemEntryValueName",
+                    get checked() {
+                      return filterGemMainEntry()[entryID] ?? false;
+                    },
+                    get text() {
+                      return GetLocalization("#property_" + entryID).replace("%", "");
+                    },
+                    onchecked: checked => setFilterGemMainEntry(prev => ({
+                      ...prev,
+                      [entryID]: checked
+                    }))
+                  }), null);
+                  libs.insert(_el$129, libs.createComponent(entry_range_inputs.EntryRangeInputs, {
+                    get range() {
+                      return filterGemMainRanges()[entryID];
+                    },
+                    get unit() {
+                      return GetLocalization(`#property_${entryID}`).startsWith("%") ? "%" : "";
+                    },
+                    onChange: range => libs.batch(() => {
+                      setFilterGemMainRanges(prev => ({
+                        ...prev,
+                        [entryID]: range
+                      }));
+                      if (range.min.trim() || range.max.trim()) setFilterGemMainEntry(prev => ({
                         ...prev,
                         [entryID]: true
                       }));
-                    } else {
-                      const next = {
-                        ...filterGemMainEntry()
-                      };
-                      delete next[entryID];
-                      setFilterGemMainEntry(next);
-                    }
-                  }
-                })
+                    })
+                  }), null);
+                  return _el$129;
+                })()
               }));
-              libs.insert(_el$121, libs.createComponent(libs.For, {
+              libs.insert(_el$112, libs.createComponent(EOM_CheckBox.EOM_CheckBox2, {
+                "class": "GemChaosMatchAny",
+                get checked() {
+                  return filterGemChaosAny();
+                },
+                get text() {
+                  return GetLocalization("#Gem_ChaosFilter_MatchAny");
+                },
+                onchecked: checked => setFilterGemChaosAny(checked)
+              }), _el$122);
+              libs.insert(_el$123, libs.createComponent(libs.For, {
                 each: chaosEntries,
                 children: entry => {
                   const range = () => filterGemChaosEntry()[entry.entry_id];
                   return (() => {
-                    const _el$127 = libs.createElement("Panel", {
+                    const _el$130 = libs.createElement("Panel", {
                         "class": "GemChaosEntryFilterRow"
                       }, null),
-                      _el$128 = libs.createElement("Label", {
+                      _el$131 = libs.createElement("Label", {
                         "class": "GemChaosRangeSeparator",
                         text: "~"
-                      }, _el$127);
-                    libs.insert(_el$127, libs.createComponent(EOM_CheckBox.EOM_CheckBox2, {
+                      }, _el$130);
+                    libs.insert(_el$130, libs.createComponent(EOM_CheckBox.EOM_CheckBox2, {
                       "class": "GemChaosEntryName",
                       get checked() {
                         return range()?.selected ?? false;
@@ -13860,8 +14445,8 @@ function FilterWindow() {
                       onchecked: selected => updateChaosRange(entry.entry_id, {
                         selected
                       })
-                    }), _el$128);
-                    libs.insert(_el$127, libs.createComponent(EOM_TextEntry.EOM_TextEntry, {
+                    }), _el$131);
+                    libs.insert(_el$130, libs.createComponent(EOM_TextEntry.EOM_TextEntry, {
                       "class": "GemChaosValue",
                       get text() {
                         return range()?.min ?? "";
@@ -13872,8 +14457,8 @@ function FilterWindow() {
                       onChange: (_, __, min) => updateChaosRange(entry.entry_id, {
                         min
                       })
-                    }), _el$128);
-                    libs.insert(_el$127, libs.createComponent(EOM_TextEntry.EOM_TextEntry, {
+                    }), _el$131);
+                    libs.insert(_el$130, libs.createComponent(EOM_TextEntry.EOM_TextEntry, {
                       "class": "GemChaosValue",
                       get text() {
                         return range()?.max ?? "";
@@ -13885,48 +14470,61 @@ function FilterWindow() {
                         max
                       })
                     }), null);
-                    return _el$127;
+                    return _el$130;
                   })();
                 }
               }));
-              libs.setProp(_el$126, "scroll", "y");
-              libs.insert(_el$126, libs.createComponent(libs.For, {
+              libs.setProp(_el$128, "scroll", "y");
+              libs.insert(_el$128, libs.createComponent(libs.For, {
                 each: GEM_SUB_ENTRY_IDS,
                 children: entryID => {
                   const mode = () => filterGemSubEntry()[entryID] ?? "default";
                   return (() => {
-                    const _el$129 = libs.createElement("Panel", {
-                        "class": "GemSubEntryFilterRow"
+                    const _el$132 = libs.createElement("Panel", {
+                        "class": "GemSubEntryRule"
                       }, null),
-                      _el$130 = libs.createElement("Label", {
+                      _el$133 = libs.createElement("Panel", {
+                        "class": "GemSubEntryFilterRow"
+                      }, _el$132),
+                      _el$134 = libs.createElement("Label", {
                         "class": "GemSubEntryName",
                         get text() {
-                          return GetLocalization("#property_" + entryID);
+                          return GetLocalization("#property_" + entryID).replace("%", "");
                         },
                         html: true
-                      }, _el$129),
-                      _el$131 = libs.createElement("Panel", {
+                      }, _el$133),
+                      _el$135 = libs.createElement("Panel", {
                         "class": "GemSubEntryMode"
-                      }, _el$129);
-                    libs.insert(_el$131, libs.createComponent(libs.For, {
+                      }, _el$133);
+                    libs.insert(_el$135, libs.createComponent(libs.For, {
                       each: GEM_SUB_ENTRY_FILTER_MODES,
                       children: (filterMode, index) => [(() => {
-                        const _el$132 = libs.createElement("Button", {
+                        const _el$136 = libs.createElement("Button", {
                             get ["class"]() {
                               return libs.classNames("GemSubEntryModeButton", filterMode, {
                                 Selected: mode() === filterMode
                               });
                             }
                           }, null),
-                          _el$133 = libs.createElement("Label", {
-                            text: `#Equipment_GemSubFilter_${filterMode}`
-                          }, _el$132);
-                        libs.setProp(_el$132, "onactivate", () => selectGemSubEntryFilter(entryID, filterMode));
-                        libs.setProp(_el$133, "text", `#Equipment_GemSubFilter_${filterMode}`);
-                        libs.effect(_$p => libs.setProp(_el$132, "class", libs.classNames("GemSubEntryModeButton", filterMode, {
-                          Selected: mode() === filterMode
-                        }), _$p));
-                        return _el$132;
+                          _el$137 = libs.createElement("Label", {
+                            get text() {
+                              return GetLocalization(`#Equipment_GemSubFilter_${filterMode}`);
+                            }
+                          }, _el$136);
+                        libs.setProp(_el$136, "onactivate", () => selectGemSubEntryFilter(entryID, filterMode));
+                        libs.effect(_p$ => {
+                          const _v$40 = libs.classNames("GemSubEntryModeButton", filterMode, {
+                              Selected: mode() === filterMode
+                            }),
+                            _v$41 = GetLocalization(`#Equipment_GemSubFilter_${filterMode}`);
+                          _v$40 !== _p$._v$40 && (_p$._v$40 = libs.setProp(_el$136, "class", _v$40, _p$._v$40));
+                          _v$41 !== _p$._v$41 && (_p$._v$41 = libs.setProp(_el$137, "text", _v$41, _p$._v$41));
+                          return _p$;
+                        }, {
+                          _v$40: undefined,
+                          _v$41: undefined
+                        });
+                        return _el$136;
                       })(), libs.createComponent(libs.Show, {
                         get when() {
                           return index() < GEM_SUB_ENTRY_FILTER_MODES.length - 1;
@@ -13939,31 +14537,59 @@ function FilterWindow() {
                         }
                       })]
                     }));
-                    libs.effect(_$p => libs.setProp(_el$130, "text", GetLocalization("#property_" + entryID), _$p));
-                    return _el$129;
+                    libs.insert(_el$132, libs.createComponent(libs.Show, {
+                      get when() {
+                        return mode() === "include";
+                      },
+                      get children() {
+                        return libs.createComponent(entry_range_inputs.EntryRangeInputs, {
+                          get range() {
+                            return filterGemSubRanges()[entryID];
+                          },
+                          get unit() {
+                            return GetLocalization(`#property_${entryID}`).startsWith("%") ? "%" : "";
+                          },
+                          onChange: range => setFilterGemSubRanges(prev => ({
+                            ...prev,
+                            [entryID]: range
+                          }))
+                        });
+                      }
+                    }), null);
+                    libs.effect(_$p => libs.setProp(_el$134, "text", GetLocalization("#property_" + entryID).replace("%", ""), _$p));
+                    return _el$132;
                   })();
                 }
               }));
               libs.effect(_p$ => {
-                const _v$30 = GetLocalization("#Gem_Class_Filter"),
-                  _v$31 = GetLocalization("#Gem_ChaosFilter_Title"),
-                  _v$32 = GetLocalization("#Gem_ChaosFilter_Hint"),
-                  _v$33 = hasInvalidGemChaosRange(),
-                  _v$34 = GetLocalization("#Gem_ChaosFilter_InvalidRange");
-                _v$30 !== _p$._v$30 && (_p$._v$30 = libs.setProp(_el$112, "text", _v$30, _p$._v$30));
-                _v$31 !== _p$._v$31 && (_p$._v$31 = libs.setProp(_el$118, "text", _v$31, _p$._v$31));
-                _v$32 !== _p$._v$32 && (_p$._v$32 = libs.setProp(_el$119, "text", _v$32, _p$._v$32));
-                _v$33 !== _p$._v$33 && (_p$._v$33 = libs.setProp(_el$120, "visible", _v$33, _p$._v$33));
-                _v$34 !== _p$._v$34 && (_p$._v$34 = libs.setProp(_el$120, "text", _v$34, _p$._v$34));
+                const _v$32 = GetLocalization("#Gem_Class_Filter"),
+                  _v$33 = GetLocalization("#Equipment_SelectMainEntry"),
+                  _v$34 = hasInvalidGemValueRange(),
+                  _v$35 = GetLocalization("#ItemFilter_InvalidRange"),
+                  _v$36 = GetLocalization("#Gem_ChaosFilter_Title"),
+                  _v$37 = GetLocalization("#Gem_ChaosFilter_Hint"),
+                  _v$38 = hasInvalidGemChaosRange(),
+                  _v$39 = GetLocalization("#Gem_ChaosFilter_InvalidRange");
+                _v$32 !== _p$._v$32 && (_p$._v$32 = libs.setProp(_el$113, "text", _v$32, _p$._v$32));
+                _v$33 !== _p$._v$33 && (_p$._v$33 = libs.setProp(_el$116, "text", _v$33, _p$._v$33));
+                _v$34 !== _p$._v$34 && (_p$._v$34 = libs.setProp(_el$118, "visible", _v$34, _p$._v$34));
+                _v$35 !== _p$._v$35 && (_p$._v$35 = libs.setProp(_el$118, "text", _v$35, _p$._v$35));
+                _v$36 !== _p$._v$36 && (_p$._v$36 = libs.setProp(_el$120, "text", _v$36, _p$._v$36));
+                _v$37 !== _p$._v$37 && (_p$._v$37 = libs.setProp(_el$121, "text", _v$37, _p$._v$37));
+                _v$38 !== _p$._v$38 && (_p$._v$38 = libs.setProp(_el$122, "visible", _v$38, _p$._v$38));
+                _v$39 !== _p$._v$39 && (_p$._v$39 = libs.setProp(_el$122, "text", _v$39, _p$._v$39));
                 return _p$;
               }, {
-                _v$30: undefined,
-                _v$31: undefined,
                 _v$32: undefined,
                 _v$33: undefined,
-                _v$34: undefined
+                _v$34: undefined,
+                _v$35: undefined,
+                _v$36: undefined,
+                _v$37: undefined,
+                _v$38: undefined,
+                _v$39: undefined
               });
-              return _el$111;
+              return _el$112;
             })();
           },
           get children() {
@@ -14039,7 +14665,13 @@ function FilterWindow() {
               libs.createElement("Panel", {
                 "class": "Separator FilterLine"
               }, _el$93);
-              const _el$110 = libs.createElement("Panel", {
+              const _el$110 = libs.createElement("Label", {
+                "class": "EquipmentFilterError",
+                get text() {
+                  return GetLocalization("#ItemFilter_InvalidRange");
+                }
+              }, _el$93),
+              _el$111 = libs.createElement("Panel", {
                 id: "EquipmentSubEntryFilterList"
               }, _el$93);
             libs.setProp(_el$93, "scroll", "y");
@@ -14154,44 +14786,47 @@ function FilterWindow() {
               placeholder: "#Equipment_MythFilter_Placeholder",
               onChange: (_, __, text) => setFilterMythText(text)
             }));
-            libs.insert(_el$110, libs.createComponent(libs.For, {
+            libs.insert(_el$111, libs.createComponent(libs.For, {
               each: EQUIP_SUB_ENTRY_LIST,
               children: entry => {
                 const mode = () => filterEquipSubEntry()[entry.entry_name] ?? "default";
                 return (() => {
-                  const _el$135 = libs.createElement("Panel", {
-                      "class": "EquipmentSubEntryFilterRow"
+                  const _el$139 = libs.createElement("Panel", {
+                      "class": "EquipmentSubEntryRule"
                     }, null),
-                    _el$136 = libs.createElement("Label", {
+                    _el$140 = libs.createElement("Panel", {
+                      "class": "EquipmentSubEntryFilterRow"
+                    }, _el$139),
+                    _el$141 = libs.createElement("Label", {
                       html: true,
                       "class": "EquipmentSubEntryName",
                       get text() {
                         return GetLocalization(`#property_${entry.entry_name}`).replace("%", "");
                       }
-                    }, _el$135),
-                    _el$137 = libs.createElement("Panel", {
+                    }, _el$140),
+                    _el$142 = libs.createElement("Panel", {
                       "class": "EquipmentSubEntryMode"
-                    }, _el$135);
-                  libs.insert(_el$137, libs.createComponent(libs.For, {
+                    }, _el$140);
+                  libs.insert(_el$142, libs.createComponent(libs.For, {
                     each: EQUIP_SUB_ENTRY_FILTER_MODES,
                     children: (filterMode, index) => (() => {
-                      const _el$138 = libs.createElement("Panel", {
+                      const _el$143 = libs.createElement("Panel", {
                           "class": "EquipmentSubEntryModeOption"
                         }, null),
-                        _el$139 = libs.createElement("Button", {
+                        _el$144 = libs.createElement("Button", {
                           get ["class"]() {
                             return libs.classNames("EquipmentSubEntryModeButton", filterMode, {
                               Selected: mode() === filterMode
                             });
                           }
-                        }, _el$138),
-                        _el$140 = libs.createElement("Label", {
+                        }, _el$143),
+                        _el$145 = libs.createElement("Label", {
                           get text() {
                             return GetLocalization(`#Equipment_GemSubFilter_${filterMode}`);
                           }
-                        }, _el$139);
-                      libs.setProp(_el$139, "onactivate", () => selectEquipSubEntryFilter(entry.entry_name, filterMode));
-                      libs.insert(_el$138, libs.createComponent(libs.Show, {
+                        }, _el$144);
+                      libs.setProp(_el$144, "onactivate", () => selectEquipSubEntryFilter(entry.entry_name, filterMode));
+                      libs.insert(_el$143, libs.createComponent(libs.Show, {
                         get when() {
                           return index() < EQUIP_SUB_ENTRY_FILTER_MODES.length - 1;
                         },
@@ -14203,34 +14838,59 @@ function FilterWindow() {
                         }
                       }), null);
                       libs.effect(_p$ => {
-                        const _v$35 = libs.classNames("EquipmentSubEntryModeButton", filterMode, {
+                        const _v$42 = libs.classNames("EquipmentSubEntryModeButton", filterMode, {
                             Selected: mode() === filterMode
                           }),
-                          _v$36 = GetLocalization(`#Equipment_GemSubFilter_${filterMode}`);
-                        _v$35 !== _p$._v$35 && (_p$._v$35 = libs.setProp(_el$139, "class", _v$35, _p$._v$35));
-                        _v$36 !== _p$._v$36 && (_p$._v$36 = libs.setProp(_el$140, "text", _v$36, _p$._v$36));
+                          _v$43 = GetLocalization(`#Equipment_GemSubFilter_${filterMode}`);
+                        _v$42 !== _p$._v$42 && (_p$._v$42 = libs.setProp(_el$144, "class", _v$42, _p$._v$42));
+                        _v$43 !== _p$._v$43 && (_p$._v$43 = libs.setProp(_el$145, "text", _v$43, _p$._v$43));
                         return _p$;
                       }, {
-                        _v$35: undefined,
-                        _v$36: undefined
+                        _v$42: undefined,
+                        _v$43: undefined
                       });
-                      return _el$138;
+                      return _el$143;
                     })()
                   }));
-                  libs.effect(_$p => libs.setProp(_el$136, "text", GetLocalization(`#property_${entry.entry_name}`).replace("%", ""), _$p));
-                  return _el$135;
+                  libs.insert(_el$139, libs.createComponent(libs.Show, {
+                    get when() {
+                      return mode() === "include";
+                    },
+                    get children() {
+                      return libs.createComponent(entry_range_inputs.EntryRangeInputs, {
+                        get range() {
+                          return filterEquipSubRanges()[entry.entry_name];
+                        },
+                        get unit() {
+                          return GetLocalization(`#property_${entry.entry_name}`).startsWith("%") ? "%" : "";
+                        },
+                        onChange: range => setFilterEquipSubRanges(prev => ({
+                          ...prev,
+                          [entry.entry_name]: range
+                        }))
+                      });
+                    }
+                  }), null);
+                  libs.effect(_$p => libs.setProp(_el$141, "text", GetLocalization(`#property_${entry.entry_name}`).replace("%", ""), _$p));
+                  return _el$139;
                 })();
               }
             }));
             libs.effect(_p$ => {
               const _v$28 = GetLocalization("#Equipment_MythFilter"),
-                _v$29 = GetLocalization("#Equipment_GemSubFilter_Title");
+                _v$29 = GetLocalization("#Equipment_GemSubFilter_Title"),
+                _v$30 = hasInvalidEquipValueRange(),
+                _v$31 = GetLocalization("#ItemFilter_InvalidRange");
               _v$28 !== _p$._v$28 && (_p$._v$28 = libs.setProp(_el$105, "text", _v$28, _p$._v$28));
               _v$29 !== _p$._v$29 && (_p$._v$29 = libs.setProp(_el$108, "text", _v$29, _p$._v$29));
+              _v$30 !== _p$._v$30 && (_p$._v$30 = libs.setProp(_el$110, "visible", _v$30, _p$._v$30));
+              _v$31 !== _p$._v$31 && (_p$._v$31 = libs.setProp(_el$110, "text", _v$31, _p$._v$31));
               return _p$;
             }, {
               _v$28: undefined,
-              _v$29: undefined
+              _v$29: undefined,
+              _v$30: undefined,
+              _v$31: undefined
             });
             return _el$93;
           }
@@ -14497,14 +15157,14 @@ function EquipForge() {
         hittest: false,
         squarePixels: true
       }, null), (() => {
-        const _el$143 = libs.createElement("Panel", {
+        const _el$148 = libs.createElement("Panel", {
             id: "CenterBlock",
             hittest: false
           }, null);
           libs.createElement("Panel", {
             id: "ForgeImage"
-          }, _el$143);
-          const _el$145 = libs.createElement("Panel", {
+          }, _el$148);
+          const _el$150 = libs.createElement("Panel", {
             id: "LeftArea",
             get ["class"]() {
               return libs.classNames({
@@ -14512,21 +15172,21 @@ function EquipForge() {
                 HuntlootDevourMode: showHuntlootDisplayData() && forgeChildTab() === "Devour"
               });
             }
-          }, _el$143);
-        libs.setProp(_el$143, "onDragEnter", (pPanel, draggedPanel) => {
+          }, _el$148);
+        libs.setProp(_el$148, "onDragEnter", (pPanel, draggedPanel) => {
           if (LoadData(draggedPanel, "equip")) {
             pPanel.AddClass("potential_drop_target");
           }
         });
-        libs.setProp(_el$143, "onDragLeave", (pPanel, draggedPanel) => {
+        libs.setProp(_el$148, "onDragLeave", (pPanel, draggedPanel) => {
           pPanel.RemoveClass("potential_drop_target");
         });
-        libs.setProp(_el$143, "onDragDrop", (panel, draggedPanel) => {
+        libs.setProp(_el$148, "onDragDrop", (panel, draggedPanel) => {
           let equip = LoadData(draggedPanel, "equip");
           if (!equip) return;
           setSelectedItemID(equip);
         });
-        libs.insert(_el$145, libs.createComponent(libs.Switch, {
+        libs.insert(_el$150, libs.createComponent(libs.Switch, {
           get children() {
             return [libs.createComponent(libs.Match, {
               get when() {
@@ -14539,16 +15199,16 @@ function EquipForge() {
                   },
                   get fallback() {
                     return (() => {
-                      const _el$153 = libs.createElement("Panel", {
+                      const _el$158 = libs.createElement("Panel", {
                           id: "EmptyState"
                         }, null);
                         libs.createElement("Panel", {
                           id: "EmptyIcon"
-                        }, _el$153);
+                        }, _el$158);
                         libs.createElement("Label", {
                           text: "#Huntloot_SelectEmpty"
-                        }, _el$153);
-                      return _el$153;
+                        }, _el$158);
+                      return _el$158;
                     })();
                   },
                   get children() {
@@ -14558,19 +15218,19 @@ function EquipForge() {
                       },
                       get fallback() {
                         return [(() => {
-                          const _el$156 = libs.createElement("Panel", {
+                          const _el$161 = libs.createElement("Panel", {
                               id: "SelectEquipContainer"
                             }, null),
-                            _el$157 = libs.createElement("Panel", {
+                            _el$162 = libs.createElement("Panel", {
                               horizontalAlign: "center",
                               flowChildren: "right"
-                            }, _el$156),
-                            _el$158 = libs.createElement("Panel", {
+                            }, _el$161),
+                            _el$163 = libs.createElement("Panel", {
                               id: "SelectedEquipmentArea",
                               flowChildren: "down"
-                            }, _el$157),
-                            _el$159 = libs.createElement("Panel", {}, _el$158),
-                            _el$160 = libs.createElement("DOTAParticleScenePanel", {
+                            }, _el$162),
+                            _el$164 = libs.createElement("Panel", {}, _el$163),
+                            _el$165 = libs.createElement("DOTAParticleScenePanel", {
                               id: "ForgeParticle",
                               particleName: "particles/ui/game/ui_game_equipment_interface_02_fx.vpcf",
                               cameraOrigin: "0 0 350",
@@ -14578,12 +15238,12 @@ function EquipForge() {
                               lookAt: "0 0 0",
                               hittest: false,
                               squarePixels: true
-                            }, _el$156);
-                          libs.setProp(_el$156, "onload", () => Game.EmitSound("ui.blacksmith_background"));
-                          libs.setProp(_el$157, "horizontalAlign", "center");
-                          libs.setProp(_el$157, "flowChildren", "right");
-                          libs.setProp(_el$158, "flowChildren", "down");
-                          libs.setProp(_el$159, "onmouseover", p => {
+                            }, _el$161);
+                          libs.setProp(_el$161, "onload", () => Game.EmitSound("ui.blacksmith_background"));
+                          libs.setProp(_el$162, "horizontalAlign", "center");
+                          libs.setProp(_el$162, "flowChildren", "right");
+                          libs.setProp(_el$163, "flowChildren", "down");
+                          libs.setProp(_el$164, "onmouseover", p => {
                             const data = selectedHuntloot();
                             if (data) {
                               huntloot_details.ShowServerHuntlootTooltip(p, {
@@ -14591,11 +15251,11 @@ function EquipForge() {
                               });
                             }
                           });
-                          libs.setProp(_el$159, "onmouseout", p => HideCustomTooltip(p, "server_huntloot"));
-                          libs.insert(_el$159, libs.createComponent(server_huntloot.Huntloot, libs.mergeProps$1(() => selectedHuntloot())));
+                          libs.setProp(_el$164, "onmouseout", p => HideCustomTooltip(p, "server_huntloot"));
+                          libs.insert(_el$164, libs.createComponent(server_huntloot.Huntloot, libs.mergeProps$1(() => selectedHuntloot())));
                           const _ref$4 = forgeParticle;
-                          typeof _ref$4 === "function" ? libs.use(_ref$4, _el$160) : forgeParticle = _el$160;
-                          return _el$156;
+                          typeof _ref$4 === "function" ? libs.use(_ref$4, _el$165) : forgeParticle = _el$165;
+                          return _el$161;
                         })(), libs.createComponent(libs.Show, {
                           get when() {
                             return !forgeChildTab();
@@ -14604,10 +15264,10 @@ function EquipForge() {
                             return leftExtraContent();
                           },
                           get children() {
-                            const _el$161 = libs.createElement("Panel", {
+                            const _el$166 = libs.createElement("Panel", {
                               id: "NewBtnListContainer"
                             }, null);
-                            libs.insert(_el$161, libs.createComponent(libs.For, {
+                            libs.insert(_el$166, libs.createComponent(libs.For, {
                               get each() {
                                 return newTabs();
                               },
@@ -14621,7 +15281,7 @@ function EquipForge() {
                                 });
                                 const isTabEnabled = () => disableReasons().length === 0;
                                 return (() => {
-                                  const _el$162 = libs.createElement("Panel", {
+                                  const _el$167 = libs.createElement("Panel", {
                                       get ["class"]() {
                                         return libs.classNames("OperateBtn", tab);
                                       },
@@ -14632,30 +15292,30 @@ function EquipForge() {
                                         return 0.03 * index() + "s, 0.5s";
                                       }
                                     }, null),
-                                    _el$163 = libs.createElement("Panel", {
+                                    _el$168 = libs.createElement("Panel", {
                                       id: "BtnImg"
-                                    }, _el$162),
-                                    _el$164 = libs.createElement("Panel", {
+                                    }, _el$167),
+                                    _el$169 = libs.createElement("Panel", {
                                       id: "TabName"
-                                    }, _el$162),
-                                    _el$165 = libs.createElement("Label", {
+                                    }, _el$167),
+                                    _el$170 = libs.createElement("Label", {
                                       get text() {
                                         return GetLocalization("#Equipment_" + tab);
                                       }
-                                    }, _el$164);
+                                    }, _el$169);
                                     libs.createElement("Panel", {
                                       id: "Border",
                                       hittest: false
-                                    }, _el$162);
+                                    }, _el$167);
                                     libs.createElement("Panel", {
                                       id: "LockIcon",
                                       hittest: false
-                                    }, _el$162);
-                                  libs.setProp(_el$162, "onactivate", () => {
+                                    }, _el$167);
+                                  libs.setProp(_el$167, "onactivate", () => {
                                     if (!isTabEnabled()) return;
                                     setForgeChildTab(tab);
                                   });
-                                  libs.setProp(_el$163, "onmouseover", p => {
+                                  libs.setProp(_el$168, "onmouseover", p => {
                                     const tipsKey = tabTipsMap[tab];
                                     const parts = [];
                                     if (tipsKey) parts.push(GetLocalization(tipsKey));
@@ -14669,33 +15329,33 @@ function EquipForge() {
                                       });
                                     }
                                   });
-                                  libs.setProp(_el$163, "onmouseout", p => {
+                                  libs.setProp(_el$168, "onmouseout", p => {
                                     HideCustomTooltip(p, "text");
                                   });
                                   libs.effect(_p$ => {
-                                    const _v$37 = libs.classNames("OperateBtn", tab),
-                                      _v$38 = "0s," + 0.03 * index() + "s",
-                                      _v$39 = 0.03 * index() + "s, 0.5s",
-                                      _v$40 = isTabEnabled(),
-                                      _v$41 = GetLocalization("#Equipment_" + tab);
-                                    _v$37 !== _p$._v$37 && (_p$._v$37 = libs.setProp(_el$162, "class", _v$37, _p$._v$37));
-                                    _v$38 !== _p$._v$38 && (_p$._v$38 = libs.setProp(_el$162, "animationDelay", _v$38, _p$._v$38));
-                                    _v$39 !== _p$._v$39 && (_p$._v$39 = libs.setProp(_el$162, "animationDuration", _v$39, _p$._v$39));
-                                    _v$40 !== _p$._v$40 && (_p$._v$40 = libs.setProp(_el$162, "enabled", _v$40, _p$._v$40));
-                                    _v$41 !== _p$._v$41 && (_p$._v$41 = libs.setProp(_el$165, "text", _v$41, _p$._v$41));
+                                    const _v$44 = libs.classNames("OperateBtn", tab),
+                                      _v$45 = "0s," + 0.03 * index() + "s",
+                                      _v$46 = 0.03 * index() + "s, 0.5s",
+                                      _v$47 = isTabEnabled(),
+                                      _v$48 = GetLocalization("#Equipment_" + tab);
+                                    _v$44 !== _p$._v$44 && (_p$._v$44 = libs.setProp(_el$167, "class", _v$44, _p$._v$44));
+                                    _v$45 !== _p$._v$45 && (_p$._v$45 = libs.setProp(_el$167, "animationDelay", _v$45, _p$._v$45));
+                                    _v$46 !== _p$._v$46 && (_p$._v$46 = libs.setProp(_el$167, "animationDuration", _v$46, _p$._v$46));
+                                    _v$47 !== _p$._v$47 && (_p$._v$47 = libs.setProp(_el$167, "enabled", _v$47, _p$._v$47));
+                                    _v$48 !== _p$._v$48 && (_p$._v$48 = libs.setProp(_el$170, "text", _v$48, _p$._v$48));
                                     return _p$;
                                   }, {
-                                    _v$37: undefined,
-                                    _v$38: undefined,
-                                    _v$39: undefined,
-                                    _v$40: undefined,
-                                    _v$41: undefined
+                                    _v$44: undefined,
+                                    _v$45: undefined,
+                                    _v$46: undefined,
+                                    _v$47: undefined,
+                                    _v$48: undefined
                                   });
-                                  return _el$162;
+                                  return _el$167;
                                 })();
                               }
                             }));
-                            return _el$161;
+                            return _el$166;
                           }
                         })];
                       },
@@ -14725,27 +15385,27 @@ function EquipForge() {
                   },
                   get fallback() {
                     return (() => {
-                      const _el$168 = libs.createElement("Panel", {
+                      const _el$173 = libs.createElement("Panel", {
                           id: "EmptyState"
                         }, null);
                         libs.createElement("Panel", {
                           id: "EmptyIcon"
-                        }, _el$168);
-                        const _el$170 = libs.createElement("Label", {
+                        }, _el$173);
+                        const _el$175 = libs.createElement("Label", {
                           get text() {
                             return showGemDisplayData() ? "#Gem_SelectEmpty" : "#Equipment_SelectEmpty";
                           }
-                        }, _el$168);
-                      libs.effect(_$p => libs.setProp(_el$170, "text", showGemDisplayData() ? "#Gem_SelectEmpty" : "#Equipment_SelectEmpty", _$p));
-                      return _el$168;
+                        }, _el$173);
+                      libs.effect(_$p => libs.setProp(_el$175, "text", showGemDisplayData() ? "#Gem_SelectEmpty" : "#Equipment_SelectEmpty", _$p));
+                      return _el$173;
                     })();
                   },
                   get children() {
                     return [(() => {
-                      const _el$146 = libs.createElement("Panel", {
+                      const _el$151 = libs.createElement("Panel", {
                           id: "SelectEquipContainer"
                         }, null),
-                        _el$148 = libs.createElement("DOTAParticleScenePanel", {
+                        _el$153 = libs.createElement("DOTAParticleScenePanel", {
                           id: "ForgeParticle",
                           particleName: "particles/ui/game/ui_game_equipment_interface_02_fx.vpcf",
                           cameraOrigin: "0 0 350",
@@ -14753,15 +15413,15 @@ function EquipForge() {
                           lookAt: "0 0 0",
                           hittest: false,
                           squarePixels: true
-                        }, _el$146);
-                      libs.setProp(_el$146, "onload", () => Game.EmitSound("ui.blacksmith_background"));
-                      libs.insert(_el$146, libs.createComponent(libs.Show, {
+                        }, _el$151);
+                      libs.setProp(_el$151, "onload", () => Game.EmitSound("ui.blacksmith_background"));
+                      libs.insert(_el$151, libs.createComponent(libs.Show, {
                         get when() {
                           return showGemDisplayData();
                         },
                         get fallback() {
                           return (() => {
-                            const _el$171 = libs.createElement("Panel", {
+                            const _el$176 = libs.createElement("Panel", {
                                 get ["class"]() {
                                   return libs.classNames({
                                     FusionSelection: forgeChildTab() == "Fusion" || forgeChildTab() == "Inlay" && displayGemData() != undefined && displayGemData() != "undefined",
@@ -14771,14 +15431,14 @@ function EquipForge() {
                                 horizontalAlign: "center",
                                 flowChildren: "right"
                               }, null),
-                              _el$172 = libs.createElement("Panel", {
+                              _el$177 = libs.createElement("Panel", {
                                 id: "SelectedEquipmentArea",
                                 flowChildren: "down"
-                              }, _el$171);
-                            libs.setProp(_el$171, "horizontalAlign", "center");
-                            libs.setProp(_el$171, "flowChildren", "right");
-                            libs.setProp(_el$172, "flowChildren", "down");
-                            libs.insert(_el$172, libs.createComponent(server_equipment.Equipment, libs.mergeProps$1(() => displayData(), {
+                              }, _el$176);
+                            libs.setProp(_el$176, "horizontalAlign", "center");
+                            libs.setProp(_el$176, "flowChildren", "right");
+                            libs.setProp(_el$177, "flowChildren", "down");
+                            libs.insert(_el$177, libs.createComponent(server_equipment.Equipment, libs.mergeProps$1(() => displayData(), {
                               onmouseover: p => {
                                 const data = displayData();
                                 if (data) {
@@ -14790,15 +15450,15 @@ function EquipForge() {
                               },
                               onmouseout: p => HideCustomTooltip(p, "server_equip")
                             })), null);
-                            libs.insert(_el$172, libs.createComponent(libs.Show, {
+                            libs.insert(_el$177, libs.createComponent(libs.Show, {
                               get when() {
                                 return InlayType() == "Inlay";
                               },
                               get children() {
-                                const _el$173 = libs.createElement("Panel", {
+                                const _el$178 = libs.createElement("Panel", {
                                   id: "ForgeGemSlotList"
                                 }, null);
-                                libs.insert(_el$173, libs.createComponent(libs.For, {
+                                libs.insert(_el$178, libs.createComponent(libs.For, {
                                   get each() {
                                     return Array.from({
                                       length: inlayGemData().length
@@ -14827,7 +15487,7 @@ function EquipForge() {
                                       });
                                     };
                                     return (() => {
-                                      const _el$181 = libs.createElement("Panel", {
+                                      const _el$186 = libs.createElement("Panel", {
                                         get ["class"]() {
                                           return libs.classNames("GemSlot", {
                                             EmptySlot: emptySlot(),
@@ -14835,7 +15495,7 @@ function EquipForge() {
                                           });
                                         }
                                       }, null);
-                                      libs.setProp(_el$181, "onmouseover", p => {
+                                      libs.setProp(_el$186, "onmouseover", p => {
                                         if (!slotGemId()) {
                                           if (buildEmbeddedGemData()) {
                                             ShowCustomTooltip(p, "server_gem", {
@@ -14851,14 +15511,14 @@ function EquipForge() {
                                           });
                                         }
                                       });
-                                      libs.setProp(_el$181, "onmouseout", p => HideCustomTooltip(p, "server_gem"));
-                                      libs.setProp(_el$181, "onactivate", () => {
+                                      libs.setProp(_el$186, "onmouseout", p => HideCustomTooltip(p, "server_gem"));
+                                      libs.setProp(_el$186, "onactivate", () => {
                                         if (displayData()?.in_check === "gem_fusion") return;
                                         if (forgeChildTab() == "Fusion" && !fusionEligible()) return;
                                         setSelectGemSlot(index());
                                         setSelectedGemList([]);
                                       });
-                                      libs.insert(_el$181, libs.createComponent(libs.Show, {
+                                      libs.insert(_el$186, libs.createComponent(libs.Show, {
                                         get when() {
                                           return !emptySlot();
                                         },
@@ -14867,26 +15527,26 @@ function EquipForge() {
                                         }
                                       }));
                                       libs.effect(_p$ => {
-                                        const _v$45 = libs.classNames("GemSlot", {
+                                        const _v$52 = libs.classNames("GemSlot", {
                                             EmptySlot: emptySlot(),
                                             Selected: forgeChildTab() == "Fusion" && selectGemSlot() == index()
                                           }),
-                                          _v$46 = forgeChildTab() != "Fusion" || fusionEligible();
-                                        _v$45 !== _p$._v$45 && (_p$._v$45 = libs.setProp(_el$181, "class", _v$45, _p$._v$45));
-                                        _v$46 !== _p$._v$46 && (_p$._v$46 = libs.setProp(_el$181, "enabled", _v$46, _p$._v$46));
+                                          _v$53 = forgeChildTab() != "Fusion" || fusionEligible();
+                                        _v$52 !== _p$._v$52 && (_p$._v$52 = libs.setProp(_el$186, "class", _v$52, _p$._v$52));
+                                        _v$53 !== _p$._v$53 && (_p$._v$53 = libs.setProp(_el$186, "enabled", _v$53, _p$._v$53));
                                         return _p$;
                                       }, {
-                                        _v$45: undefined,
-                                        _v$46: undefined
+                                        _v$52: undefined,
+                                        _v$53: undefined
                                       });
-                                      return _el$181;
+                                      return _el$186;
                                     })();
                                   }
                                 }));
-                                return _el$173;
+                                return _el$178;
                               }
                             }), null);
-                            libs.insert(_el$172, libs.createComponent(libs.Show, {
+                            libs.insert(_el$177, libs.createComponent(libs.Show, {
                               get when() {
                                 return canChooseFusionLock();
                               },
@@ -14899,7 +15559,7 @@ function EquipForge() {
                                 });
                               }
                             }), null);
-                            libs.insert(_el$171, libs.createComponent(libs.Show, {
+                            libs.insert(_el$176, libs.createComponent(libs.Show, {
                               get when() {
                                 return forgeChildTab() == "Fusion";
                               },
@@ -14908,19 +15568,19 @@ function EquipForge() {
                                   id: "FusionArrow",
                                   "class": "GemSwapArrow Reverse"
                                 }, null), (() => {
-                                  const _el$175 = libs.createElement("Panel", {
+                                  const _el$180 = libs.createElement("Panel", {
                                       id: "FusionMaterialArea"
                                     }, null),
-                                    _el$176 = libs.createElement("Panel", {
+                                    _el$181 = libs.createElement("Panel", {
                                       id: "FusionMaterialSlot"
-                                    }, _el$175),
-                                    _el$177 = libs.createElement("Label", {
+                                    }, _el$180),
+                                    _el$182 = libs.createElement("Label", {
                                       id: "FusionEmptyText",
                                       get text() {
                                         return GetLocalization("#Equipment_GemFusion_SelectMaterial");
                                       }
-                                    }, _el$175);
-                                  libs.setProp(_el$176, "onmouseover", panel => {
+                                    }, _el$180);
+                                  libs.setProp(_el$181, "onmouseover", panel => {
                                     const material = fusionMaterialDisplayData();
                                     if (!material) return;
                                     if (currentFusionResult()) {
@@ -14935,12 +15595,12 @@ function EquipForge() {
                                       });
                                     }
                                   });
-                                  libs.setProp(_el$176, "onmouseout", panel => HideCustomTooltip(panel, "server_gem"));
-                                  libs.setProp(_el$176, "onactivate", () => {
+                                  libs.setProp(_el$181, "onmouseout", panel => HideCustomTooltip(panel, "server_gem"));
+                                  libs.setProp(_el$181, "onactivate", () => {
                                     if (displayData()?.in_check === "gem_fusion") return;
                                     setSelectedGemList([]);
                                   });
-                                  libs.insert(_el$176, libs.createComponent(libs.Show, {
+                                  libs.insert(_el$181, libs.createComponent(libs.Show, {
                                     get when() {
                                       return fusionMaterialDisplayData();
                                     },
@@ -14953,7 +15613,7 @@ function EquipForge() {
                                       return libs.createComponent(server_equipment.Gem, libs.mergeProps$1(() => fusionMaterialDisplayData()));
                                     }
                                   }));
-                                  libs.insert(_el$175, libs.createComponent(libs.Show, {
+                                  libs.insert(_el$180, libs.createComponent(libs.Show, {
                                     get when() {
                                       return canChooseFusionLock();
                                     },
@@ -14967,25 +15627,25 @@ function EquipForge() {
                                     }
                                   }), null);
                                   libs.effect(_p$ => {
-                                    const _v$42 = {
+                                    const _v$49 = {
                                         Empty: !fusionMaterialDisplayData()
                                       },
-                                      _v$43 = fusionMaterialDisplayData() == undefined,
-                                      _v$44 = GetLocalization("#Equipment_GemFusion_SelectMaterial");
-                                    _v$42 !== _p$._v$42 && (_p$._v$42 = libs.setProp(_el$176, "classList", _v$42, _p$._v$42));
-                                    _v$43 !== _p$._v$43 && (_p$._v$43 = libs.setProp(_el$177, "visible", _v$43, _p$._v$43));
-                                    _v$44 !== _p$._v$44 && (_p$._v$44 = libs.setProp(_el$177, "text", _v$44, _p$._v$44));
+                                      _v$50 = fusionMaterialDisplayData() == undefined,
+                                      _v$51 = GetLocalization("#Equipment_GemFusion_SelectMaterial");
+                                    _v$49 !== _p$._v$49 && (_p$._v$49 = libs.setProp(_el$181, "classList", _v$49, _p$._v$49));
+                                    _v$50 !== _p$._v$50 && (_p$._v$50 = libs.setProp(_el$182, "visible", _v$50, _p$._v$50));
+                                    _v$51 !== _p$._v$51 && (_p$._v$51 = libs.setProp(_el$182, "text", _v$51, _p$._v$51));
                                     return _p$;
                                   }, {
-                                    _v$42: undefined,
-                                    _v$43: undefined,
-                                    _v$44: undefined
+                                    _v$49: undefined,
+                                    _v$50: undefined,
+                                    _v$51: undefined
                                   });
-                                  return _el$175;
+                                  return _el$180;
                                 })()];
                               }
                             }), null);
-                            libs.insert(_el$171, libs.createComponent(libs.Show, {
+                            libs.insert(_el$176, libs.createComponent(libs.Show, {
                               get when() {
                                 return libs.memo(() => !!(forgeChildTab() == "Inlay" && displayGemData() != undefined))() && displayGemData() != "undefined";
                               },
@@ -14994,35 +15654,35 @@ function EquipForge() {
                                   id: "FusionArrow",
                                   "class": "GemSwapArrow Reverse"
                                 }, null), (() => {
-                                  const _el$179 = libs.createElement("Panel", {
+                                  const _el$184 = libs.createElement("Panel", {
                                       id: "FusionMaterialArea"
                                     }, null),
-                                    _el$180 = libs.createElement("Panel", {
+                                    _el$185 = libs.createElement("Panel", {
                                       id: "FusionMaterialSlot"
-                                    }, _el$179);
-                                  libs.setProp(_el$180, "onmouseover", panel => {
+                                    }, _el$184);
+                                  libs.setProp(_el$185, "onmouseover", panel => {
                                     const gem = displayGemData();
                                     equipment_utils.ShowServerGemTooltip(panel, {
                                       id1: gem.id
                                     });
                                   });
-                                  libs.setProp(_el$180, "onmouseout", panel => HideCustomTooltip(panel, "server_gem"));
-                                  libs.setProp(_el$180, "onactivate", () => setSelectedGemList([]));
-                                  libs.insert(_el$180, libs.createComponent(server_equipment.Gem, libs.mergeProps$1(() => displayGemData())));
-                                  return _el$179;
+                                  libs.setProp(_el$185, "onmouseout", panel => HideCustomTooltip(panel, "server_gem"));
+                                  libs.setProp(_el$185, "onactivate", () => setSelectedGemList([]));
+                                  libs.insert(_el$185, libs.createComponent(server_equipment.Gem, libs.mergeProps$1(() => displayGemData())));
+                                  return _el$184;
                                 })()];
                               }
                             }), null);
-                            libs.effect(_$p => libs.setProp(_el$171, "class", libs.classNames({
+                            libs.effect(_$p => libs.setProp(_el$176, "class", libs.classNames({
                               FusionSelection: forgeChildTab() == "Fusion" || forgeChildTab() == "Inlay" && displayGemData() != undefined && displayGemData() != "undefined",
                               HasFusionLockOptions: canChooseFusionLock()
                             }), _$p));
-                            return _el$171;
+                            return _el$176;
                           })();
                         },
                         get children() {
-                          const _el$147 = libs.createElement("Panel", {}, null);
-                          libs.setProp(_el$147, "onmouseover", p => {
+                          const _el$152 = libs.createElement("Panel", {}, null);
+                          libs.setProp(_el$152, "onmouseover", p => {
                             const gem = displayGemData();
                             if (gem && gem != "undefined") {
                               equipment_utils.ShowServerGemTooltip(p, {
@@ -15030,17 +15690,17 @@ function EquipForge() {
                               });
                             }
                           });
-                          libs.setProp(_el$147, "onmouseout", p => HideCustomTooltip(p, "server_gem"));
-                          libs.insert(_el$147, libs.createComponent(server_equipment.Gem, libs.mergeProps$1(() => displayGemData())));
-                          return _el$147;
+                          libs.setProp(_el$152, "onmouseout", p => HideCustomTooltip(p, "server_gem"));
+                          libs.insert(_el$152, libs.createComponent(server_equipment.Gem, libs.mergeProps$1(() => displayGemData())));
+                          return _el$152;
                         }
-                      }), _el$148);
+                      }), _el$153);
                       const _ref$2 = forgeParticle;
-                      typeof _ref$2 === "function" ? libs.use(_ref$2, _el$148) : forgeParticle = _el$148;
-                      libs.effect(_$p => libs.setProp(_el$146, "classList", {
+                      typeof _ref$2 === "function" ? libs.use(_ref$2, _el$153) : forgeParticle = _el$153;
+                      libs.effect(_$p => libs.setProp(_el$151, "classList", {
                         GemFusionLockMode: canChooseFusionLock()
                       }, _$p));
-                      return _el$146;
+                      return _el$151;
                     })(), libs.createComponent(libs.Show, {
                       get when() {
                         return !forgeChildTab();
@@ -15049,10 +15709,10 @@ function EquipForge() {
                         return leftExtraContent();
                       },
                       get children() {
-                        const _el$149 = libs.createElement("Panel", {
+                        const _el$154 = libs.createElement("Panel", {
                           id: "NewBtnListContainer"
                         }, null);
-                        libs.insert(_el$149, libs.createComponent(libs.For, {
+                        libs.insert(_el$154, libs.createComponent(libs.For, {
                           get each() {
                             return newTabs();
                           },
@@ -15074,7 +15734,7 @@ function EquipForge() {
                             });
                             const isTabEnabled = () => disableReasons().length === 0;
                             return (() => {
-                              const _el$183 = libs.createElement("Panel", {
+                              const _el$188 = libs.createElement("Panel", {
                                   get ["class"]() {
                                     return libs.classNames("OperateBtn", tab);
                                   },
@@ -15085,26 +15745,26 @@ function EquipForge() {
                                     return 0.03 * index() + "s, 0.5s";
                                   }
                                 }, null),
-                                _el$184 = libs.createElement("Panel", {
+                                _el$189 = libs.createElement("Panel", {
                                   id: "BtnImg"
-                                }, _el$183),
-                                _el$185 = libs.createElement("Panel", {
+                                }, _el$188),
+                                _el$190 = libs.createElement("Panel", {
                                   id: "TabName"
-                                }, _el$183),
-                                _el$186 = libs.createElement("Label", {
+                                }, _el$188),
+                                _el$191 = libs.createElement("Label", {
                                   get text() {
                                     return GetLocalization("#Equipment_" + tab);
                                   }
-                                }, _el$185);
+                                }, _el$190);
                                 libs.createElement("Panel", {
                                   id: "Border",
                                   hittest: false
-                                }, _el$183);
+                                }, _el$188);
                                 libs.createElement("Panel", {
                                   id: "LockIcon",
                                   hittest: false
-                                }, _el$183);
-                              libs.setProp(_el$183, "onactivate", () => {
+                                }, _el$188);
+                              libs.setProp(_el$188, "onactivate", () => {
                                 if (!isTabEnabled()) return;
                                 if (tab == "Fusion") {
                                   const eligibleSlots = inlayGemData().map((gem, slotIndex) => hasGemChaosEntries(gem) ? slotIndex : -1).filter(slotIndex => slotIndex >= 0);
@@ -15115,7 +15775,7 @@ function EquipForge() {
                                 }
                                 setForgeChildTab(tab);
                               });
-                              libs.setProp(_el$184, "onmouseover", p => {
+                              libs.setProp(_el$189, "onmouseover", p => {
                                 const tipsKey = tabTipsMap[tab];
                                 const parts = [];
                                 if (tipsKey) parts.push(GetLocalization(tipsKey));
@@ -15129,33 +15789,33 @@ function EquipForge() {
                                   });
                                 }
                               });
-                              libs.setProp(_el$184, "onmouseout", p => {
+                              libs.setProp(_el$189, "onmouseout", p => {
                                 HideCustomTooltip(p, "text");
                               });
                               libs.effect(_p$ => {
-                                const _v$47 = libs.classNames("OperateBtn", tab),
-                                  _v$48 = "0s," + 0.03 * index() + "s",
-                                  _v$49 = 0.03 * index() + "s, 0.5s",
-                                  _v$50 = isTabEnabled(),
-                                  _v$51 = GetLocalization("#Equipment_" + tab);
-                                _v$47 !== _p$._v$47 && (_p$._v$47 = libs.setProp(_el$183, "class", _v$47, _p$._v$47));
-                                _v$48 !== _p$._v$48 && (_p$._v$48 = libs.setProp(_el$183, "animationDelay", _v$48, _p$._v$48));
-                                _v$49 !== _p$._v$49 && (_p$._v$49 = libs.setProp(_el$183, "animationDuration", _v$49, _p$._v$49));
-                                _v$50 !== _p$._v$50 && (_p$._v$50 = libs.setProp(_el$183, "enabled", _v$50, _p$._v$50));
-                                _v$51 !== _p$._v$51 && (_p$._v$51 = libs.setProp(_el$186, "text", _v$51, _p$._v$51));
+                                const _v$54 = libs.classNames("OperateBtn", tab),
+                                  _v$55 = "0s," + 0.03 * index() + "s",
+                                  _v$56 = 0.03 * index() + "s, 0.5s",
+                                  _v$57 = isTabEnabled(),
+                                  _v$58 = GetLocalization("#Equipment_" + tab);
+                                _v$54 !== _p$._v$54 && (_p$._v$54 = libs.setProp(_el$188, "class", _v$54, _p$._v$54));
+                                _v$55 !== _p$._v$55 && (_p$._v$55 = libs.setProp(_el$188, "animationDelay", _v$55, _p$._v$55));
+                                _v$56 !== _p$._v$56 && (_p$._v$56 = libs.setProp(_el$188, "animationDuration", _v$56, _p$._v$56));
+                                _v$57 !== _p$._v$57 && (_p$._v$57 = libs.setProp(_el$188, "enabled", _v$57, _p$._v$57));
+                                _v$58 !== _p$._v$58 && (_p$._v$58 = libs.setProp(_el$191, "text", _v$58, _p$._v$58));
                                 return _p$;
                               }, {
-                                _v$47: undefined,
-                                _v$48: undefined,
-                                _v$49: undefined,
-                                _v$50: undefined,
-                                _v$51: undefined
+                                _v$54: undefined,
+                                _v$55: undefined,
+                                _v$56: undefined,
+                                _v$57: undefined,
+                                _v$58: undefined
                               });
-                              return _el$183;
+                              return _el$188;
                             })();
                           }
                         }));
-                        return _el$149;
+                        return _el$154;
                       }
                     })];
                   }
@@ -15164,7 +15824,7 @@ function EquipForge() {
             })];
           }
         }), null);
-        libs.insert(_el$145, libs.createComponent(libs.Show, {
+        libs.insert(_el$150, libs.createComponent(libs.Show, {
           get when() {
             return equipTabs.includes(forgeChildTab() ?? "") || gemTabs.includes(forgeChildTab() ?? "");
           },
@@ -15184,15 +15844,15 @@ function EquipForge() {
             });
           }
         }), null);
-        libs.insert(_el$143, libs.createComponent(libs.Show, {
+        libs.insert(_el$148, libs.createComponent(libs.Show, {
           get when() {
             return libs.memo(() => !!showGemDisplayData())() ? displayGemData() != undefined : displayData() != undefined;
           },
           get children() {
-            const _el$150 = libs.createElement("Panel", {
+            const _el$155 = libs.createElement("Panel", {
               id: "EquipInfoContainer"
             }, null);
-            libs.insert(_el$150, libs.createComponent(libs.Switch, {
+            libs.insert(_el$155, libs.createComponent(libs.Switch, {
               get children() {
                 return [libs.createComponent(libs.Match, {
                   get when() {
@@ -15311,17 +15971,17 @@ function EquipForge() {
                 })];
               }
             }));
-            libs.effect(_$p => libs.setProp(_el$150, "visible", hiddenItemList(), _$p));
-            return _el$150;
+            libs.effect(_$p => libs.setProp(_el$155, "visible", hiddenItemList(), _$p));
+            return _el$155;
           }
         }), null);
-        libs.effect(_$p => libs.setProp(_el$145, "class", libs.classNames({
+        libs.effect(_$p => libs.setProp(_el$150, "class", libs.classNames({
           ShowAnimState: showAnim(),
           HuntlootDevourMode: showHuntlootDisplayData() && forgeChildTab() === "Devour"
         }), _$p));
-        return _el$143;
+        return _el$148;
       })(), (() => {
-        const _el$151 = libs.createElement("DOTAParticleScenePanel", {
+        const _el$156 = libs.createElement("DOTAParticleScenePanel", {
           id: "Chuizi",
           cameraOrigin: "0 0 750",
           fov: 120,
@@ -15338,8 +15998,8 @@ function EquipForge() {
           squarePixels: true
         }, null);
         const _ref$3 = chuiziParticle;
-        typeof _ref$3 === "function" ? libs.use(_ref$3, _el$151) : chuiziParticle = _el$151;
-        return _el$151;
+        typeof _ref$3 === "function" ? libs.use(_ref$3, _el$156) : chuiziParticle = _el$156;
+        return _el$156;
       })(), libs.createElement("DOTAParticleScenePanel", {
         id: "BottomParticle",
         particleName: "particles/ui/game/ui_game_equipment_interface_01_1_fx",
@@ -15352,4 +16012,4 @@ function EquipForge() {
     }
   });
 }
-libs.render(() => libs.createComponent(HudEquipment, {}), $.GetContextPanel());
+libs.render(() => libs.createComponent(HudEquipment, {}), $.GetContextPanel());

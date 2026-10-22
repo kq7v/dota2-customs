@@ -170,4 +170,4 @@ if (timer !== undefined) {
 }
 else {
     CustomUIConfig.Timer = new CPanoramaScript_Timer();
-}
+}

@@ -2144,4 +2144,4 @@ const FishGameUI = props => {
     return _el$53;
   })();
 };
-libs.render(FishRoot, $.GetContextPanel());
+libs.render(FishRoot, $.GetContextPanel());

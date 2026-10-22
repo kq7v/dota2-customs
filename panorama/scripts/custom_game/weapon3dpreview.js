@@ -112,4 +112,4 @@ const Weapon3DPreview = props => {
   })();
 };
 
-exports.Weapon3DPreview = Weapon3DPreview;
+exports.Weapon3DPreview = Weapon3DPreview;

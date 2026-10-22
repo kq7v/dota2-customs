@@ -59,7 +59,7 @@ GameUI.CustomUIConfig().hero_talent = {
 	a6_1: {
 		talent_id: "a6_1",
 		hero: 224,
-		max_level: 20,
+		max_level: 100,
 		x: 360,
 		y: 390,
 		requires: "a6:3"
@@ -90,7 +90,7 @@ GameUI.CustomUIConfig().hero_talent = {
 	a9_1: {
 		talent_id: "a9_1",
 		hero: 224,
-		max_level: 20,
+		max_level: 100,
 		x: 940,
 		y: 285,
 		requires: "a9:3"
@@ -121,7 +121,7 @@ GameUI.CustomUIConfig().hero_talent = {
 	a12_1: {
 		talent_id: "a12_1",
 		hero: 224,
-		max_level: 20,
+		max_level: 100,
 		x: 225,
 		y: 735,
 		requires: "a12:3"
@@ -152,7 +152,7 @@ GameUI.CustomUIConfig().hero_talent = {
 	a15_1: {
 		talent_id: "a15_1",
 		hero: 224,
-		max_level: 20,
+		max_level: 100,
 		x: 650,
 		y: 810,
 		requires: "a15:3"
@@ -183,7 +183,7 @@ GameUI.CustomUIConfig().hero_talent = {
 	a18_1: {
 		talent_id: "a18_1",
 		hero: 224,
-		max_level: 20,
+		max_level: 100,
 		x: 890,
 		y: 735,
 		requires: "a18:3"
@@ -238,7 +238,7 @@ GameUI.CustomUIConfig().hero_talent = {
 	b6_1: {
 		talent_id: "b6_1",
 		hero: 225,
-		max_level: 20,
+		max_level: 100,
 		x: 360,
 		y: 390,
 		requires: "b6:3"
@@ -269,7 +269,7 @@ GameUI.CustomUIConfig().hero_talent = {
 	b9_1: {
 		talent_id: "b9_1",
 		hero: 225,
-		max_level: 20,
+		max_level: 100,
 		x: 940,
 		y: 285,
 		requires: "b9:3"
@@ -300,7 +300,7 @@ GameUI.CustomUIConfig().hero_talent = {
 	b12_1: {
 		talent_id: "b12_1",
 		hero: 225,
-		max_level: 20,
+		max_level: 100,
 		x: 225,
 		y: 735,
 		requires: "b12:3"
@@ -331,7 +331,7 @@ GameUI.CustomUIConfig().hero_talent = {
 	b15_1: {
 		talent_id: "b15_1",
 		hero: 225,
-		max_level: 20,
+		max_level: 100,
 		x: 650,
 		y: 810,
 		requires: "b15:3"
@@ -362,7 +362,7 @@ GameUI.CustomUIConfig().hero_talent = {
 	b18_1: {
 		talent_id: "b18_1",
 		hero: 225,
-		max_level: 20,
+		max_level: 100,
 		x: 890,
 		y: 735,
 		requires: "b18:3"
@@ -417,7 +417,7 @@ GameUI.CustomUIConfig().hero_talent = {
 	c6_1: {
 		talent_id: "c6_1",
 		hero: 226,
-		max_level: 20,
+		max_level: 100,
 		x: 360,
 		y: 390,
 		requires: "c6:3"
@@ -448,7 +448,7 @@ GameUI.CustomUIConfig().hero_talent = {
 	c9_1: {
 		talent_id: "c9_1",
 		hero: 226,
-		max_level: 20,
+		max_level: 100,
 		x: 940,
 		y: 285,
 		requires: "c9:3"
@@ -479,7 +479,7 @@ GameUI.CustomUIConfig().hero_talent = {
 	c12_1: {
 		talent_id: "c12_1",
 		hero: 226,
-		max_level: 20,
+		max_level: 100,
 		x: 225,
 		y: 735,
 		requires: "c12:3"
@@ -510,7 +510,7 @@ GameUI.CustomUIConfig().hero_talent = {
 	c15_1: {
 		talent_id: "c15_1",
 		hero: 226,
-		max_level: 20,
+		max_level: 100,
 		x: 650,
 		y: 810,
 		requires: "c15:3"
@@ -541,7 +541,7 @@ GameUI.CustomUIConfig().hero_talent = {
 	c18_1: {
 		talent_id: "c18_1",
 		hero: 226,
-		max_level: 20,
+		max_level: 100,
 		x: 890,
 		y: 735,
 		requires: "c18:3"
@@ -596,7 +596,7 @@ GameUI.CustomUIConfig().hero_talent = {
 	d6_1: {
 		talent_id: "d6_1",
 		hero: 227,
-		max_level: 20,
+		max_level: 100,
 		x: 360,
 		y: 390,
 		requires: "d6:3"
@@ -627,7 +627,7 @@ GameUI.CustomUIConfig().hero_talent = {
 	d9_1: {
 		talent_id: "d9_1",
 		hero: 227,
-		max_level: 20,
+		max_level: 100,
 		x: 940,
 		y: 285,
 		requires: "d9:3"
@@ -658,7 +658,7 @@ GameUI.CustomUIConfig().hero_talent = {
 	d12_1: {
 		talent_id: "d12_1",
 		hero: 227,
-		max_level: 20,
+		max_level: 100,
 		x: 225,
 		y: 735,
 		requires: "d12:3"
@@ -689,7 +689,7 @@ GameUI.CustomUIConfig().hero_talent = {
 	d15_1: {
 		talent_id: "d15_1",
 		hero: 227,
-		max_level: 20,
+		max_level: 100,
 		x: 650,
 		y: 810,
 		requires: "d15:3"
@@ -720,7 +720,7 @@ GameUI.CustomUIConfig().hero_talent = {
 	d18_1: {
 		talent_id: "d18_1",
 		hero: 227,
-		max_level: 20,
+		max_level: 100,
 		x: 890,
 		y: 735,
 		requires: "d18:3"

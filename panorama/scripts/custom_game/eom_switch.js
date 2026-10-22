@@ -53,4 +53,4 @@ function EOM_Switch(props) {
   })();
 }
 
-exports.EOM_Switch = EOM_Switch;
+exports.EOM_Switch = EOM_Switch;

@@ -29,9 +29,9 @@ var RecycleView = require('./RecycleView.js');
 var StoreItem = require('./StoreItem.js');
 var portraitsFullBodyLoadout = require('./portraitsFullBodyLoadout.js');
 var upgrade_box = require('./upgrade_box.js');
+require('./EOM_HotKeyDisplay.js');
 require('./hotkey_label.js');
 require('./EOM_GamePad.js');
-require('./EOM_HotKeyDisplay.js');
 require('./service_netdata_helper.js');
 require('./EOM_Countdown.js');
 require('./EOM_ImageNumber.js');
@@ -5424,6 +5424,8 @@ const UnitInfo = props => {
       const healthLabel = toFiniteNumber(Math.max(minHealth, Math.floor(healthPct * maxHealth)));
       const maxHealthLabel = toFiniteNumber(Math.floor(maxHealth));
       const stableAbilities = isSameAbilityList(unitInfo.abilities, abilities) ? unitInfo.abilities : abilities;
+      const itemSnapshot = getCachedNetDataKey("unit", entIndex.toString());
+      const items = (itemSnapshot?.items ?? []).map(item => getUnitItemNetData(entIndex, item));
       setUnitInfo({
         entIndex: entIndex,
         name: `${Entities.GetUnitName(entIndex)} (${GetLocalization("#" + Entities.GetUnitName(entIndex))})`,
@@ -5445,9 +5447,7 @@ const UnitInfo = props => {
         modifiers: [...Array(Entities.GetNumBuffs(entIndex))].map((_, index) => {
           return Buffs.GetName(entIndex, Entities.GetBuff(entIndex, index)) + "," + Buffs.GetStackCount(entIndex, Entities.GetBuff(entIndex, index));
         }),
-        items: (getNetDataKey("unit", entIndex.toString()) ?? {
-          items: []
-        }).items
+        items
       });
     }
   };
@@ -7049,4 +7049,4 @@ function Demo() {
   });
 }
 print("Demo loaded 2");
-libs.render(() => libs.createComponent(Demo, {}), $.GetContextPanel());
+libs.render(() => libs.createComponent(Demo, {}), $.GetContextPanel());

@@ -203,6 +203,45 @@
 	background-image: url("s2r://panorama/images/status_icons/loadingthrobber_round_psd.vtex");
 }
 
+.EOM_HotKeyDisplay:not(.IsImage)
+{
+	min-width: 24px;
+}
+
+.EOM_HotKeyDisplay.IsImage
+{
+	min-height: 24px;
+}
+
+.EOM_HotKeyDisplay.Filp
+{
+	transform: rotateY(-180deg);
+}
+
+.EOM_HotKeyDisplay .EOM_HotKeyDisplayText
+{
+	align: center center;
+	font-size: 12px;
+	color: #D5C8A8;
+	text-align: center;
+	margin: 0px 5px;
+}
+
+.EOM_HotKeyDisplay .EOM_HotKeyDisplayImage
+{
+	align: center center;
+}
+
+.EOM_HotKeyDisplay .EOM_HotKeyDisplayBorder
+{
+	width: 100%;
+	border-image-source: url("s2r://panorama/images/custom_game/hud/h_key_bg_png.vtex");
+	border-width: 24px 5px 0px 5px;
+	border-image-slice: 100% 5px 0px 5px;
+	border-image-repeat: stretch;
+	border-color: none;
+}
+
 .EOM_GamePad
 {
 	flow-children: none;
@@ -522,45 +561,6 @@
 	background-size: 100%;
 }
 
-.EOM_HotKeyDisplay:not(.IsImage)
-{
-	min-width: 24px;
-}
-
-.EOM_HotKeyDisplay.IsImage
-{
-	min-height: 24px;
-}
-
-.EOM_HotKeyDisplay.Filp
-{
-	transform: rotateY(-180deg);
-}
-
-.EOM_HotKeyDisplay .EOM_HotKeyDisplayText
-{
-	align: center center;
-	font-size: 12px;
-	color: #D5C8A8;
-	text-align: center;
-	margin: 0px 5px;
-}
-
-.EOM_HotKeyDisplay .EOM_HotKeyDisplayImage
-{
-	align: center center;
-}
-
-.EOM_HotKeyDisplay .EOM_HotKeyDisplayBorder
-{
-	width: 100%;
-	border-image-source: url("s2r://panorama/images/custom_game/hud/h_key_bg_png.vtex");
-	border-width: 24px 5px 0px 5px;
-	border-image-slice: 100% 5px 0px 5px;
-	border-image-repeat: stretch;
-	border-color: none;
-}
-
 .SectIcon
 {
 	width: 32px;
@@ -818,6 +818,7 @@
 {
 	width: 100%;
 	flow-children: right;
+	margin-bottom: 4px;
 }
 
 .CommonBox .CommonInfo .CommonNameRow .CommonName
@@ -825,7 +826,6 @@
 	font-size: 22px;
 	font-weight: bold;
 	text-align: left;
-	margin-bottom: 4px;
 	text-shadow: 2px 2px 4px #000000;
 }
 

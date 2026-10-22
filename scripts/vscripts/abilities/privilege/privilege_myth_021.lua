@@ -137,9 +137,6 @@ function l.prototype.SporeThink(self, q, n)
 		self:RemoveSummon(q)
 		return
 	end
-	self:StartThink(0.3, q.thinkName, function()
-		self:SporeThink(q, n)
-	end)
 end
 function l.prototype.RemoveSummon(self, q)
 	self:StartThink(-1, q.thinkName)

@@ -378,4 +378,4 @@ exports.MenuTabButton = MenuTabButton;
 exports.calculateAttributeData = calculateAttributeData;
 exports.createEquipDetailSignal = createEquipDetailSignal;
 exports.createGemDetailSignal = createGemDetailSignal;
-exports.useEquipmentStore = useEquipmentStore;
+exports.useEquipmentStore = useEquipmentStore;

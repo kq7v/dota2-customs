@@ -1274,7 +1274,7 @@ GameUI.CustomUIConfig().ability_upgrades_service = {
 		"Note": "<HotkeyOnly|Attack/><Ability|vespera_attack/>伤害额外再增加%damage_pct_z%%%",
 		"ability_name": "vespera_attack",
 		"AbilityValues": {
-			"damage_pct_z": "2 4 6 8 10 12 14 16 18 20 22 24 26 28 30 32 34 36 38 40"
+			"damage_pct_z": "2 4 6 8 10 12 14 16 18 20 22 24 26 28 30 32 34 36 38 40 41 42 43 44 45 46 47 48 49 50 51 52 53 54 55 56 57 58 59 60 61 62 63 64 65 66 67 68 69 70 71 72 73 74 75 76 77 78 79 80 81 82 83 84 85 86 87 88 89 90 91 92 93 94 95 96 97 98 99 100 101 102 103 104 105 106 107 108 109 110 111 112 113 114 115 116 117 118 119 120"
 		},
 		"AbilityValueMultipliers": {
 			"last_hit_damage": "damage_pct_z"
@@ -1284,7 +1284,7 @@ GameUI.CustomUIConfig().ability_upgrades_service = {
 		"Note": "<HotkeyOnly|Skill/><Ability|vespera_1/>伤害额外再增加%damage_pct_z%%%",
 		"ability_name": "vespera_1",
 		"AbilityValues": {
-			"damage_pct_z": "2 4 6 8 10 12 14 16 18 20 22 24 26 28 30 32 34 36 38 40"
+			"damage_pct_z": "2 4 6 8 10 12 14 16 18 20 22 24 26 28 30 32 34 36 38 40 41 42 43 44 45 46 47 48 49 50 51 52 53 54 55 56 57 58 59 60 61 62 63 64 65 66 67 68 69 70 71 72 73 74 75 76 77 78 79 80 81 82 83 84 85 86 87 88 89 90 91 92 93 94 95 96 97 98 99 100 101 102 103 104 105 106 107 108 109 110 111 112 113 114 115 116 117 118 119 120"
 		},
 		"AbilityValueMultipliers": {
 			"damage": "damage_pct_z"
@@ -1294,7 +1294,7 @@ GameUI.CustomUIConfig().ability_upgrades_service = {
 		"Note": "<HotkeyOnly|Dodge/><Ability|vespera_2/>伤害额外再增加%dash_damage_pct_z%%%",
 		"ability_name": "vespera_2",
 		"AbilityValues": {
-			"dash_damage_pct_z": "2 4 6 8 10 12 14 16 18 20 22 24 26 28 30 32 34 36 38 40"
+			"dash_damage_pct_z": "2 4 6 8 10 12 14 16 18 20 22 24 26 28 30 32 34 36 38 40 41 42 43 44 45 46 47 48 49 50 51 52 53 54 55 56 57 58 59 60 61 62 63 64 65 66 67 68 69 70 71 72 73 74 75 76 77 78 79 80 81 82 83 84 85 86 87 88 89 90 91 92 93 94 95 96 97 98 99 100 101 102 103 104 105 106 107 108 109 110 111 112 113 114 115 116 117 118 119 120"
 		},
 		"AbilityValueMultipliers": {
 			"dash_damage": "dash_damage_pct_z"
@@ -1304,7 +1304,7 @@ GameUI.CustomUIConfig().ability_upgrades_service = {
 		"Note": "<HotkeyOnly|Defense/><Ability|vespera_3/>期间提供的攻击力额外+%effect_attack_pct_z%%%",
 		"ability_name": "vespera_3",
 		"AbilityValues": {
-			"effect_attack_pct_z": "2 4 6 8 10 12 14 16 18 20 22 24 26 28 30 32 34 36 38 40"
+			"effect_attack_pct_z": "2 4 6 8 10 12 14 16 18 20 22 24 26 28 30 32 34 36 38 40 41 42 43 44 45 46 47 48 49 50 51 52 53 54 55 56 57 58 59 60 61 62 63 64 65 66 67 68 69 70 71 72 73 74 75 76 77 78 79 80 81 82 83 84 85 86 87 88 89 90 91 92 93 94 95 96 97 98 99 100 101 102 103 104 105 106 107 108 109 110 111 112 113 114 115 116 117 118 119 120"
 		},
 		"AbilityValueMultipliers": {
 			"effect_attack": "effect_attack_pct_z"
@@ -1314,7 +1314,7 @@ GameUI.CustomUIConfig().ability_upgrades_service = {
 		"Note": "<HotkeyOnly|Ultimate/><Ability|vespera_4/>飞镖伤害额外再增加%damage_pct_z%%%",
 		"ability_name": "vespera_4",
 		"AbilityValues": {
-			"damage_pct_z": "2 4 6 8 10 12 14 16 18 20 22 24 26 28 30 32 34 36 38 40"
+			"damage_pct_z": "2 4 6 8 10 12 14 16 18 20 22 24 26 28 30 32 34 36 38 40 41 42 43 44 45 46 47 48 49 50 51 52 53 54 55 56 57 58 59 60 61 62 63 64 65 66 67 68 69 70 71 72 73 74 75 76 77 78 79 80 81 82 83 84 85 86 87 88 89 90 91 92 93 94 95 96 97 98 99 100 101 102 103 104 105 106 107 108 109 110 111 112 113 114 115 116 117 118 119 120"
 		},
 		"AbilityValueMultipliers": {
 			"damage": "damage_pct_z"
@@ -1324,7 +1324,7 @@ GameUI.CustomUIConfig().ability_upgrades_service = {
 		"Note": "<HotkeyOnly|Attack/><Ability|vexis_attack/>伤害额外再增加%damage_amplify_pct_z%%%",
 		"ability_name": "vexis_attack",
 		"AbilityValues": {
-			"damage_amplify_pct_z": "2 4 6 8 10 12 14 16 18 20 22 24 26 28 30 32 34 36 38 40"
+			"damage_amplify_pct_z": "2 4 6 8 10 12 14 16 18 20 22 24 26 28 30 32 34 36 38 40 41 42 43 44 45 46 47 48 49 50 51 52 53 54 55 56 57 58 59 60 61 62 63 64 65 66 67 68 69 70 71 72 73 74 75 76 77 78 79 80 81 82 83 84 85 86 87 88 89 90 91 92 93 94 95 96 97 98 99 100 101 102 103 104 105 106 107 108 109 110 111 112 113 114 115 116 117 118 119 120"
 		},
 		"AbilityValueMultipliers": {
 			"damage_amplify": "damage_amplify_pct_z"
@@ -1334,7 +1334,7 @@ GameUI.CustomUIConfig().ability_upgrades_service = {
 		"Note": "<HotkeyOnly|Skill/><Ability|vexis_1/>伤害额外再增加%damage_pct_z%%%",
 		"ability_name": "vexis_1",
 		"AbilityValues": {
-			"damage_pct_z": "2 4 6 8 10 12 14 16 18 20 22 24 26 28 30 32 34 36 38 40"
+			"damage_pct_z": "2 4 6 8 10 12 14 16 18 20 22 24 26 28 30 32 34 36 38 40 41 42 43 44 45 46 47 48 49 50 51 52 53 54 55 56 57 58 59 60 61 62 63 64 65 66 67 68 69 70 71 72 73 74 75 76 77 78 79 80 81 82 83 84 85 86 87 88 89 90 91 92 93 94 95 96 97 98 99 100 101 102 103 104 105 106 107 108 109 110 111 112 113 114 115 116 117 118 119 120"
 		},
 		"AbilityValueMultipliers": {
 			"damage": "damage_pct_z"
@@ -1344,7 +1344,7 @@ GameUI.CustomUIConfig().ability_upgrades_service = {
 		"Note": "<HotkeyOnly|Dodge/><Ability|vexis_2/>伤害额外再增加%damage_pct_z%%%",
 		"ability_name": "vexis_2",
 		"AbilityValues": {
-			"damage_pct_z": "2 4 6 8 10 12 14 16 18 20 22 24 26 28 30 32 34 36 38 40"
+			"damage_pct_z": "2 4 6 8 10 12 14 16 18 20 22 24 26 28 30 32 34 36 38 40 41 42 43 44 45 46 47 48 49 50 51 52 53 54 55 56 57 58 59 60 61 62 63 64 65 66 67 68 69 70 71 72 73 74 75 76 77 78 79 80 81 82 83 84 85 86 87 88 89 90 91 92 93 94 95 96 97 98 99 100 101 102 103 104 105 106 107 108 109 110 111 112 113 114 115 116 117 118 119 120"
 		},
 		"AbilityValueMultipliers": {
 			"dash_damage": "damage_pct_z"
@@ -1354,7 +1354,7 @@ GameUI.CustomUIConfig().ability_upgrades_service = {
 		"Note": "<HotkeyOnly|Defense/><Ability|vexis_3/>伤害额外再增加%damage_pct_z%%%",
 		"ability_name": "vexis_3",
 		"AbilityValues": {
-			"damage_pct_z": "2 4 6 8 10 12 14 16 18 20 22 24 26 28 30 32 34 36 38 40"
+			"damage_pct_z": "2 4 6 8 10 12 14 16 18 20 22 24 26 28 30 32 34 36 38 40 41 42 43 44 45 46 47 48 49 50 51 52 53 54 55 56 57 58 59 60 61 62 63 64 65 66 67 68 69 70 71 72 73 74 75 76 77 78 79 80 81 82 83 84 85 86 87 88 89 90 91 92 93 94 95 96 97 98 99 100 101 102 103 104 105 106 107 108 109 110 111 112 113 114 115 116 117 118 119 120"
 		},
 		"AbilityValueMultipliers": {
 			"damage": "damage_pct_z"
@@ -1364,7 +1364,7 @@ GameUI.CustomUIConfig().ability_upgrades_service = {
 		"Note": "<HotkeyOnly|Ultimate/><Ability|vexis_4/>伤害额外再增加%damage_pct_z%%%",
 		"ability_name": "vexis_4",
 		"AbilityValues": {
-			"damage_pct_z": "2 4 6 8 10 12 14 16 18 20 22 24 26 28 30 32 34 36 38 40"
+			"damage_pct_z": "2 4 6 8 10 12 14 16 18 20 22 24 26 28 30 32 34 36 38 40 41 42 43 44 45 46 47 48 49 50 51 52 53 54 55 56 57 58 59 60 61 62 63 64 65 66 67 68 69 70 71 72 73 74 75 76 77 78 79 80 81 82 83 84 85 86 87 88 89 90 91 92 93 94 95 96 97 98 99 100 101 102 103 104 105 106 107 108 109 110 111 112 113 114 115 116 117 118 119 120"
 		},
 		"AbilityValueMultipliers": {
 			"damage": "damage_pct_z"
@@ -1374,7 +1374,7 @@ GameUI.CustomUIConfig().ability_upgrades_service = {
 		"Note": "<HotkeyOnly|Attack/><Ability|solthra_attack/>伤害额外再增加%damage_pct_z%%%",
 		"ability_name": "solthra_attack",
 		"AbilityValues": {
-			"damage_pct_z": "2 4 6 8 10 12 14 16 18 20 22 24 26 28 30 32 34 36 38 40"
+			"damage_pct_z": "2 4 6 8 10 12 14 16 18 20 22 24 26 28 30 32 34 36 38 40 41 42 43 44 45 46 47 48 49 50 51 52 53 54 55 56 57 58 59 60 61 62 63 64 65 66 67 68 69 70 71 72 73 74 75 76 77 78 79 80 81 82 83 84 85 86 87 88 89 90 91 92 93 94 95 96 97 98 99 100 101 102 103 104 105 106 107 108 109 110 111 112 113 114 115 116 117 118 119 120"
 		},
 		"AbilityValueMultipliers": {
 			"damage": "damage_pct_z"
@@ -1384,7 +1384,7 @@ GameUI.CustomUIConfig().ability_upgrades_service = {
 		"Note": "<HotkeyOnly|Skill/><Ability|solthra_1/>伤害额外再增加%damage_pct_z%%%",
 		"ability_name": "solthra_1",
 		"AbilityValues": {
-			"damage_pct_z": "2 4 6 8 10 12 14 16 18 20 22 24 26 28 30 32 34 36 38 40"
+			"damage_pct_z": "2 4 6 8 10 12 14 16 18 20 22 24 26 28 30 32 34 36 38 40 41 42 43 44 45 46 47 48 49 50 51 52 53 54 55 56 57 58 59 60 61 62 63 64 65 66 67 68 69 70 71 72 73 74 75 76 77 78 79 80 81 82 83 84 85 86 87 88 89 90 91 92 93 94 95 96 97 98 99 100 101 102 103 104 105 106 107 108 109 110 111 112 113 114 115 116 117 118 119 120"
 		},
 		"AbilityValueMultipliers": {
 			"damage": "damage_pct_z"
@@ -1394,7 +1394,7 @@ GameUI.CustomUIConfig().ability_upgrades_service = {
 		"Note": "<HotkeyOnly|Dodge/><Ability|solthra_2/>伤害额外再增加%damage_pct_z%%%",
 		"ability_name": "solthra_2",
 		"AbilityValues": {
-			"damage_pct_z": "2 4 6 8 10 12 14 16 18 20 22 24 26 28 30 32 34 36 38 40"
+			"damage_pct_z": "2 4 6 8 10 12 14 16 18 20 22 24 26 28 30 32 34 36 38 40 41 42 43 44 45 46 47 48 49 50 51 52 53 54 55 56 57 58 59 60 61 62 63 64 65 66 67 68 69 70 71 72 73 74 75 76 77 78 79 80 81 82 83 84 85 86 87 88 89 90 91 92 93 94 95 96 97 98 99 100 101 102 103 104 105 106 107 108 109 110 111 112 113 114 115 116 117 118 119 120"
 		},
 		"AbilityValueMultipliers": {
 			"damage": "damage_pct_z"
@@ -1404,7 +1404,7 @@ GameUI.CustomUIConfig().ability_upgrades_service = {
 		"Note": "<HotkeyOnly|Defense/><Ability|solthra_3/>伤害额外再增加%damage_pct_z%%%",
 		"ability_name": "solthra_3",
 		"AbilityValues": {
-			"damage_pct_z": "2 4 6 8 10 12 14 16 18 20 22 24 26 28 30 32 34 36 38 40"
+			"damage_pct_z": "2 4 6 8 10 12 14 16 18 20 22 24 26 28 30 32 34 36 38 40 41 42 43 44 45 46 47 48 49 50 51 52 53 54 55 56 57 58 59 60 61 62 63 64 65 66 67 68 69 70 71 72 73 74 75 76 77 78 79 80 81 82 83 84 85 86 87 88 89 90 91 92 93 94 95 96 97 98 99 100 101 102 103 104 105 106 107 108 109 110 111 112 113 114 115 116 117 118 119 120"
 		},
 		"AbilityValueMultipliers": {
 			"damage": "damage_pct_z"
@@ -1414,7 +1414,7 @@ GameUI.CustomUIConfig().ability_upgrades_service = {
 		"Note": "<HotkeyOnly|Ultimate/><Ability|solthra_4/>伤害额外再增加%damage_pct_z%%%",
 		"ability_name": "solthra_4",
 		"AbilityValues": {
-			"damage_pct_z": "2 4 6 8 10 12 14 16 18 20 22 24 26 28 30 32 34 36 38 40"
+			"damage_pct_z": "2 4 6 8 10 12 14 16 18 20 22 24 26 28 30 32 34 36 38 40 41 42 43 44 45 46 47 48 49 50 51 52 53 54 55 56 57 58 59 60 61 62 63 64 65 66 67 68 69 70 71 72 73 74 75 76 77 78 79 80 81 82 83 84 85 86 87 88 89 90 91 92 93 94 95 96 97 98 99 100 101 102 103 104 105 106 107 108 109 110 111 112 113 114 115 116 117 118 119 120"
 		},
 		"AbilityValueMultipliers": {
 			"damage": "damage_pct_z"
@@ -1424,7 +1424,7 @@ GameUI.CustomUIConfig().ability_upgrades_service = {
 		"Note": "<HotkeyOnly|Attack/><Ability|seraphon_attack/>伤害额外再增加%damage_pct_z%%%",
 		"ability_name": "seraphon_attack",
 		"AbilityValues": {
-			"damage_pct_z": "2 4 6 8 10 12 14 16 18 20 22 24 26 28 30 32 34 36 38 40"
+			"damage_pct_z": "2 4 6 8 10 12 14 16 18 20 22 24 26 28 30 32 34 36 38 40 41 42 43 44 45 46 47 48 49 50 51 52 53 54 55 56 57 58 59 60 61 62 63 64 65 66 67 68 69 70 71 72 73 74 75 76 77 78 79 80 81 82 83 84 85 86 87 88 89 90 91 92 93 94 95 96 97 98 99 100 101 102 103 104 105 106 107 108 109 110 111 112 113 114 115 116 117 118 119 120"
 		},
 		"AbilityValueMultipliers": {
 			"last_hit_damage": "damage_pct_z"
@@ -1434,7 +1434,7 @@ GameUI.CustomUIConfig().ability_upgrades_service = {
 		"Note": "<HotkeyOnly|Skill/><Ability|seraphon_1/>伤害额外再增加%damage_pct_z%%%",
 		"ability_name": "seraphon_1",
 		"AbilityValues": {
-			"damage_pct_z": "2 4 6 8 10 12 14 16 18 20 22 24 26 28 30 32 34 36 38 40"
+			"damage_pct_z": "2 4 6 8 10 12 14 16 18 20 22 24 26 28 30 32 34 36 38 40 41 42 43 44 45 46 47 48 49 50 51 52 53 54 55 56 57 58 59 60 61 62 63 64 65 66 67 68 69 70 71 72 73 74 75 76 77 78 79 80 81 82 83 84 85 86 87 88 89 90 91 92 93 94 95 96 97 98 99 100 101 102 103 104 105 106 107 108 109 110 111 112 113 114 115 116 117 118 119 120"
 		},
 		"AbilityValueMultipliers": {
 			"damage": "damage_pct_z"
@@ -1444,7 +1444,7 @@ GameUI.CustomUIConfig().ability_upgrades_service = {
 		"Note": "<HotkeyOnly|Dodge/><Ability|seraphon_2/>伤害额外再增加%damage_pct_z%%%",
 		"ability_name": "seraphon_2",
 		"AbilityValues": {
-			"damage_pct_z": "2 4 6 8 10 12 14 16 18 20 22 24 26 28 30 32 34 36 38 40"
+			"damage_pct_z": "2 4 6 8 10 12 14 16 18 20 22 24 26 28 30 32 34 36 38 40 41 42 43 44 45 46 47 48 49 50 51 52 53 54 55 56 57 58 59 60 61 62 63 64 65 66 67 68 69 70 71 72 73 74 75 76 77 78 79 80 81 82 83 84 85 86 87 88 89 90 91 92 93 94 95 96 97 98 99 100 101 102 103 104 105 106 107 108 109 110 111 112 113 114 115 116 117 118 119 120"
 		},
 		"AbilityValueMultipliers": {
 			"damage": "damage_pct_z"
@@ -1454,7 +1454,7 @@ GameUI.CustomUIConfig().ability_upgrades_service = {
 		"Note": "<HotkeyOnly|Defense/><Ability|seraphon_3/>伤害额外再增加%damage_pct_z%%%",
 		"ability_name": "seraphon_3",
 		"AbilityValues": {
-			"damage_pct_z": "2 4 6 8 10 12 14 16 18 20 22 24 26 28 30 32 34 36 38 40"
+			"damage_pct_z": "2 4 6 8 10 12 14 16 18 20 22 24 26 28 30 32 34 36 38 40 41 42 43 44 45 46 47 48 49 50 51 52 53 54 55 56 57 58 59 60 61 62 63 64 65 66 67 68 69 70 71 72 73 74 75 76 77 78 79 80 81 82 83 84 85 86 87 88 89 90 91 92 93 94 95 96 97 98 99 100 101 102 103 104 105 106 107 108 109 110 111 112 113 114 115 116 117 118 119 120"
 		},
 		"AbilityValueMultipliers": {
 			"damage": "damage_pct_z"
@@ -1464,10 +1464,10 @@ GameUI.CustomUIConfig().ability_upgrades_service = {
 		"Note": "<HotkeyOnly|Ultimate/><Ability|seraphon_4/>伤害额外再增加%damage_pct_z%%%",
 		"ability_name": "seraphon_4",
 		"AbilityValues": {
-			"damage_pct_z": "2 4 6 8 10 12 14 16 18 20 22 24 26 28 30 32 34 36 38 40"
+			"damage_pct_z": "2 4 6 8 10 12 14 16 18 20 22 24 26 28 30 32 34 36 38 40 41 42 43 44 45 46 47 48 49 50 51 52 53 54 55 56 57 58 59 60 61 62 63 64 65 66 67 68 69 70 71 72 73 74 75 76 77 78 79 80 81 82 83 84 85 86 87 88 89 90 91 92 93 94 95 96 97 98 99 100 101 102 103 104 105 106 107 108 109 110 111 112 113 114 115 116 117 118 119 120"
 		},
 		"AbilityValueMultipliers": {
 			"damage": "damage_pct_z"
 		}
 	}
-};
+};

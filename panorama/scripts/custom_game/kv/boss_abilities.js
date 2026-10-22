@@ -1963,4 +1963,4 @@ GameUI.CustomUIConfig().boss_abilities = {
 			"radius": 300
 		}
 	}
-};
+};

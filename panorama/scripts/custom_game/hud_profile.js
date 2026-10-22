@@ -462,7 +462,7 @@ const Essences = () => {
   });
 };
 
-const TALENT_NODE_POSITIONS = [[0, -294], [-108, -200], [108, -200], [-65, -114], [65, -114], [-108, -28], [108, -28], [-65, 58], [65, 58], [-108, 146], [108, 146], [0, 210], [0, 360]];
+const TALENT_NODE_POSITIONS = [[0, -294], [-108, -200], [108, -200], [-65, -114], [65, -114], [-108, -28], [108, -28], [-65, 58], [65, 58], [-108, 146], [108, 146], [0, 210], [0, 360], [132, 285]];
 const CONNECTION_LINES = {
   "01": {
     to: 1,
@@ -593,6 +593,16 @@ const CONNECTION_LINES = {
       height: "150.0px",
       transform: "rotateZ(0.0deg)"
     }
+  },
+  "1213": {
+    to: 13,
+    style: {
+      x: "66.0px",
+      y: "322.5px",
+      width: "4px",
+      height: "151.8px",
+      transform: "rotateZ(60.4deg)"
+    }
   }
 };
 const TALENT_CONFIG = KeyValues.talent ?? {};
@@ -704,7 +714,7 @@ function getTalentsByCategory(category, talentLevels, accountLevel, playerTokens
     return [];
   }
   const normalNodes = [];
-  let finalNode;
+  const finalNodes = [];
   const categoryTalents = TALENTS_BY_CATEGORY[category] ?? [];
   for (const key of categoryTalents) {
     const cfg = getTalentConfig(key);
@@ -721,8 +731,8 @@ function getTalentsByCategory(category, talentLevels, accountLevel, playerTokens
       maxLevel: cfg.max_level,
       canAfford
     };
-    if (cfg.type == 4) {
-      finalNode = node;
+    if (cfg.type == 4 || cfg.type == 5) {
+      finalNodes.push(node);
     } else {
       normalNodes.push(node);
     }
@@ -733,9 +743,7 @@ function getTalentsByCategory(category, talentLevels, accountLevel, playerTokens
     if (lockA != lockB) return lockA - lockB;
     return a.y - b.y;
   });
-  if (finalNode != null) {
-    normalNodes.push(finalNode);
-  }
+  normalNodes.push(...finalNodes.sort((a, b) => a.type - b.type));
   return normalNodes;
 }
 function getTalentColumnViewData(category, talentLevels, accountLevel, playerTokens, savedCost) {
@@ -1292,4 +1300,4 @@ function Profile() {
     }
   });
 }
-libs.render(() => libs.createComponent(Profile, {}), $.GetContextPanel());
+libs.render(() => libs.createComponent(Profile, {}), $.GetContextPanel());

@@ -1181,6 +1181,7 @@ function Popup_CommonConfirm(props) {
             hittest: false
           }, null),
           _el$2 = libs.createElement("Panel", {
+            "class": "ConfirmContent",
             align: "center center",
             flowChildren: "down"
           }, _el$),
@@ -1202,7 +1203,10 @@ function Popup_CommonConfirm(props) {
           },
           get children() {
             const _el$4 = libs.createElement("Panel", {
-              id: "ItemList"
+              id: "ItemList",
+              get scroll() {
+                return props.scrollItems ? "y" : undefined;
+              }
             }, null);
             libs.insert(_el$4, libs.createComponent(libs.For, {
               get each() {
@@ -1225,26 +1229,43 @@ function Popup_CommonConfirm(props) {
                 });
               }
             }));
+            libs.effect(_p$ => {
+              const _v$ = {
+                  VerticalScrollStyle: props.scrollItems === true
+                },
+                _v$2 = props.scrollItems ? "y" : undefined;
+              _v$ !== _p$._v$ && (_p$._v$ = libs.setProp(_el$4, "classList", _v$, _p$._v$));
+              _v$2 !== _p$._v$2 && (_p$._v$2 = libs.setProp(_el$4, "scroll", _v$2, _p$._v$2));
+              return _p$;
+            }, {
+              _v$: undefined,
+              _v$2: undefined
+            });
             return _el$4;
           }
         }), null);
         libs.effect(_p$ => {
-          const _v$ = {
+          const _v$3 = {
               HideConfirm: props.hideconfirm == true
             },
-            _v$2 = props.text,
-            _v$3 = props.vars,
-            _v$4 = props.text != "";
-          _v$ !== _p$._v$ && (_p$._v$ = libs.setProp(_el$, "classList", _v$, _p$._v$));
-          _v$2 !== _p$._v$2 && (_p$._v$2 = libs.setProp(_el$3, "text", _v$2, _p$._v$2));
-          _v$3 !== _p$._v$3 && (_p$._v$3 = libs.setProp(_el$3, "vars", _v$3, _p$._v$3));
-          _v$4 !== _p$._v$4 && (_p$._v$4 = libs.setProp(_el$3, "visible", _v$4, _p$._v$4));
+            _v$4 = {
+              Scrollable: props.scrollItems === true
+            },
+            _v$5 = props.text,
+            _v$6 = props.vars,
+            _v$7 = props.text != "";
+          _v$3 !== _p$._v$3 && (_p$._v$3 = libs.setProp(_el$, "classList", _v$3, _p$._v$3));
+          _v$4 !== _p$._v$4 && (_p$._v$4 = libs.setProp(_el$2, "classList", _v$4, _p$._v$4));
+          _v$5 !== _p$._v$5 && (_p$._v$5 = libs.setProp(_el$3, "text", _v$5, _p$._v$5));
+          _v$6 !== _p$._v$6 && (_p$._v$6 = libs.setProp(_el$3, "vars", _v$6, _p$._v$6));
+          _v$7 !== _p$._v$7 && (_p$._v$7 = libs.setProp(_el$3, "visible", _v$7, _p$._v$7));
           return _p$;
         }, {
-          _v$: undefined,
-          _v$2: undefined,
           _v$3: undefined,
-          _v$4: undefined
+          _v$4: undefined,
+          _v$5: undefined,
+          _v$6: undefined,
+          _v$7: undefined
         });
         return _el$;
       })(), (() => {
@@ -5870,4 +5891,4 @@ const Popups = () => {
     return _el$;
   })();
 };
-libs.render(() => Popups(), $.GetContextPanel());
+libs.render(() => Popups(), $.GetContextPanel());

@@ -101,7 +101,7 @@ GameUI.CustomUIConfig().equip_class_setting = {
 	},
 	"10": {
 		equip_class: 10,
-		need_level: 25,
+		need_level: 22,
 		main_bonus: 0.7,
 		adverb_bonus: 0.7,
 		adverb_weight: "0|0|0|33|37|25|5|0|0|0|0",
@@ -112,7 +112,7 @@ GameUI.CustomUIConfig().equip_class_setting = {
 	},
 	"11": {
 		equip_class: 11,
-		need_level: 30,
+		need_level: 24,
 		main_bonus: 0.8,
 		adverb_bonus: 0.8,
 		adverb_weight: "0|0|0|20|40|30|10|0|0|0|0",
@@ -123,7 +123,7 @@ GameUI.CustomUIConfig().equip_class_setting = {
 	},
 	"12": {
 		equip_class: 12,
-		need_level: 35,
+		need_level: 26,
 		main_bonus: 0.9,
 		adverb_bonus: 0.9,
 		adverb_weight: "0|0|0|15|35|40|10|0|0|0|0",
@@ -134,7 +134,7 @@ GameUI.CustomUIConfig().equip_class_setting = {
 	},
 	"13": {
 		equip_class: 13,
-		need_level: 40,
+		need_level: 28,
 		main_bonus: 0.95,
 		adverb_bonus: 0.95,
 		adverb_weight: "0|0|0|10|30|45|15|0|0|0|0",
@@ -145,7 +145,7 @@ GameUI.CustomUIConfig().equip_class_setting = {
 	},
 	"14": {
 		equip_class: 14,
-		need_level: 45,
+		need_level: 30,
 		main_bonus: 1,
 		adverb_bonus: 1,
 		adverb_weight: "0|0|0|5|25|50|20|0|0|0|0",
@@ -156,7 +156,7 @@ GameUI.CustomUIConfig().equip_class_setting = {
 	},
 	"15": {
 		equip_class: 15,
-		need_level: 50,
+		need_level: 32,
 		main_bonus: 1.05,
 		adverb_bonus: 1.05,
 		adverb_weight: "0|0|0|0|40|80|32|8|4|2|1",
@@ -167,7 +167,7 @@ GameUI.CustomUIConfig().equip_class_setting = {
 	},
 	"16": {
 		equip_class: 16,
-		need_level: 55,
+		need_level: 34,
 		main_bonus: 1.1,
 		adverb_bonus: 1.1,
 		adverb_weight: "0|0|0|0|40|80|32|8|4|2|1",
@@ -178,7 +178,7 @@ GameUI.CustomUIConfig().equip_class_setting = {
 	},
 	"17": {
 		equip_class: 17,
-		need_level: 60,
+		need_level: 36,
 		main_bonus: 1.15,
 		adverb_bonus: 1.15,
 		adverb_weight: "0|0|0|0|40|80|32|8|4|2|1",
@@ -189,7 +189,7 @@ GameUI.CustomUIConfig().equip_class_setting = {
 	},
 	"18": {
 		equip_class: 18,
-		need_level: 65,
+		need_level: 38,
 		main_bonus: 1.2,
 		adverb_bonus: 1.2,
 		adverb_weight: "0|0|0|0|40|80|32|8|4|2|1",
@@ -200,7 +200,7 @@ GameUI.CustomUIConfig().equip_class_setting = {
 	},
 	"19": {
 		equip_class: 19,
-		need_level: 70,
+		need_level: 40,
 		main_bonus: 1.25,
 		adverb_bonus: 1.25,
 		adverb_weight: "0|0|0|0|40|80|32|8|4|2|1",

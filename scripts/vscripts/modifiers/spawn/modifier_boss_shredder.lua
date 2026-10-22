@@ -109,6 +109,7 @@ function m.prototype.OnCreated(self, k)
 			else
 				self:Stage1()
 			end
+			return 0
 		end)
 	end
 end

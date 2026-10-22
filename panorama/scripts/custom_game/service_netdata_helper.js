@@ -52,11 +52,9 @@ function getShopItemUpgradeInfo(heroIndex, itemName) {
   if (targetGroup == "" || targetRank <= 0) {
     return undefined;
   }
-  const unitData = getNetDataKey("unit", String(heroIndex)) ?? {
-    items: []
-  };
+  const unitData = getCachedNetDataKey("unit", String(heroIndex));
   let owned;
-  for (const item of unitData.items ?? []) {
+  for (const item of unitData?.items ?? []) {
     const ownedKV = KeyValues.npc_items_custom[item.itemName];
     if (String(ownedKV?.UpgradeGroup ?? "") != targetGroup) {
       continue;
@@ -65,7 +63,7 @@ function getShopItemUpgradeInfo(heroIndex, itemName) {
     if (owned == undefined || rank > owned.rank) {
       owned = {
         itemName: item.itemName,
-        level: item.level,
+        level: getUnitItemNetData(heroIndex, item).level,
         rank
       };
     }
@@ -268,4 +266,4 @@ exports.usePlayerAchievements = usePlayerAchievements;
 exports.usePlayerCouriers = usePlayerCouriers;
 exports.usePlayerMaxAbyssalDiff = usePlayerMaxAbyssalDiff;
 exports.usePlayerMaxDiff = usePlayerMaxDiff;
-exports.useTalentLevels = useTalentLevels;
+exports.useTalentLevels = useTalentLevels;

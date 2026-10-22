@@ -315,4 +315,4 @@ exports.createServiceNetData = createServiceNetData;
 exports.createServiceNetTableDataStore = createServiceNetTableDataStore;
 exports.createToggleWindowSignal = createToggleWindowSignal;
 exports.parseTokenCosts = parseTokenCosts;
-exports.resetStore = resetStore;
+exports.resetStore = resetStore;

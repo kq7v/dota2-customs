@@ -725,93 +725,6 @@
 	margin-right: -5px;
 }
 
-#FilterWindow #EquipmentSubEntryFilterList,#FilterWindow .HuntlootEntryFilterList
-{
-	width: 100%;
-	height: fit-children;
-	margin-top: 11px;
-	padding-bottom: 12px;
-	flow-children: down;
-}
-
-#FilterWindow #EquipmentSubEntryFilterList .EquipmentSubEntryFilterRow,#FilterWindow .HuntlootEntryFilterList .EquipmentSubEntryFilterRow
-{
-	width: 100%;
-	height: fit-children;
-	min-height: 30px;
-	flow-children: right;
-}
-
-#FilterWindow #EquipmentSubEntryFilterList .EquipmentSubEntryFilterRow .EquipmentSubEntryName,#FilterWindow .HuntlootEntryFilterList .EquipmentSubEntryFilterRow .EquipmentSubEntryName
-{
-	width: fill-parent-flow(1);
-	vertical-align: center;
-	font-size: 17px;
-	color: #B9B1A6;
-	text-overflow: shrink;
-}
-
-#FilterWindow #EquipmentSubEntryFilterList .EquipmentSubEntryFilterRow .EquipmentSubEntryMode,#FilterWindow .HuntlootEntryFilterList .EquipmentSubEntryFilterRow .EquipmentSubEntryMode
-{
-	width: 188px;
-	height: fit-children;
-	min-height: 30px;
-	flow-children: right-wrap;
-	horizontal-align: right;
-}
-
-#FilterWindow #EquipmentSubEntryFilterList .EquipmentSubEntryFilterRow .EquipmentSubEntryMode Label,#FilterWindow .HuntlootEntryFilterList .EquipmentSubEntryFilterRow .EquipmentSubEntryMode Label
-{
-	vertical-align: center;
-	font-size: 16px;
-}
-
-#FilterWindow #EquipmentSubEntryFilterList .EquipmentSubEntryFilterRow .EquipmentSubEntryMode .EquipmentSubEntryModeOption,#FilterWindow .HuntlootEntryFilterList .EquipmentSubEntryFilterRow .EquipmentSubEntryMode .EquipmentSubEntryModeOption
-{
-	height: fit-children;
-	min-height: 30px;
-	flow-children: right;
-}
-
-#FilterWindow #EquipmentSubEntryFilterList .EquipmentSubEntryFilterRow .EquipmentSubEntryMode .EquipmentSubEntryModeOption .EquipmentSubEntryModeButton,#FilterWindow .HuntlootEntryFilterList .EquipmentSubEntryFilterRow .EquipmentSubEntryMode .EquipmentSubEntryModeOption .EquipmentSubEntryModeButton
-{
-	max-width: 150px;
-	height: fit-children;
-	min-height: 30px;
-}
-
-#FilterWindow #EquipmentSubEntryFilterList .EquipmentSubEntryFilterRow .EquipmentSubEntryMode .EquipmentSubEntryModeOption .EquipmentSubEntryModeButton Label,#FilterWindow .HuntlootEntryFilterList .EquipmentSubEntryFilterRow .EquipmentSubEntryMode .EquipmentSubEntryModeOption .EquipmentSubEntryModeButton Label
-{
-	max-width: 150px;
-	height: fit-children;
-	vertical-align: center;
-	text-align: center;
-	white-space: normal;
-	color: #766F69;
-	text-overflow: shrink;
-}
-
-#FilterWindow #EquipmentSubEntryFilterList .EquipmentSubEntryFilterRow .EquipmentSubEntryMode .EquipmentSubEntryModeOption .EquipmentSubEntryModeButton.Selected Label,#FilterWindow .HuntlootEntryFilterList .EquipmentSubEntryFilterRow .EquipmentSubEntryMode .EquipmentSubEntryModeOption .EquipmentSubEntryModeButton.Selected Label
-{
-	color: #F1E7D0;
-}
-
-#FilterWindow #EquipmentSubEntryFilterList .EquipmentSubEntryFilterRow .EquipmentSubEntryMode .EquipmentSubEntryModeOption .EquipmentSubEntryModeButton.include.Selected Label,#FilterWindow .HuntlootEntryFilterList .EquipmentSubEntryFilterRow .EquipmentSubEntryMode .EquipmentSubEntryModeOption .EquipmentSubEntryModeButton.include.Selected Label
-{
-	color: #86C985;
-}
-
-#FilterWindow #EquipmentSubEntryFilterList .EquipmentSubEntryFilterRow .EquipmentSubEntryMode .EquipmentSubEntryModeOption .EquipmentSubEntryModeButton.exclude.Selected Label,#FilterWindow .HuntlootEntryFilterList .EquipmentSubEntryFilterRow .EquipmentSubEntryMode .EquipmentSubEntryModeOption .EquipmentSubEntryModeButton.exclude.Selected Label
-{
-	color: #DD7770;
-}
-
-#FilterWindow #EquipmentSubEntryFilterList .EquipmentSubEntryFilterRow .EquipmentSubEntryMode .EquipmentSubEntryModeOption .EquipmentSubEntryModeSeparator,#FilterWindow .HuntlootEntryFilterList .EquipmentSubEntryFilterRow .EquipmentSubEntryMode .EquipmentSubEntryModeOption .EquipmentSubEntryModeSeparator
-{
-	margin: 0px 2px;
-	color: #766F69;
-}
-
 #FilterWindow #GemFilterContent
 {
 	width: 100%;
@@ -824,6 +737,43 @@
 #FilterWindow #GemFilterContent VerticalScrollBar
 {
 	margin-right: -5px;
+}
+
+#FilterWindow #GemMainEntryFilterList
+{
+	width: 100%;
+	flow-children: down;
+}
+
+#FilterWindow .GemEntryValueRow
+{
+	width: 100%;
+	min-height: 38px;
+	flow-children: right;
+}
+
+#FilterWindow .GemEntryValueRow .GemEntryValueName
+{
+	width: fill-parent-flow(1);
+	margin-right: 8px;
+	vertical-align: center;
+}
+
+#FilterWindow .GemSubEntryRule
+{
+	width: 100%;
+	flow-children: down;
+}
+
+#FilterWindow .GemSubEntryRule .EntryRangeInputs
+{
+	horizontal-align: right;
+	margin-bottom: 6px;
+}
+
+#FilterWindow .GemChaosMatchAny
+{
+	margin: 4px 0px 10px 0px;
 }
 
 #FilterWindow #GemChaosEntryFilterList
@@ -960,6 +910,111 @@
 }
 
 #FilterWindow #GemSubEntryFilterList .GemSubEntryFilterRow .GemSubEntryMode .GemSubEntryModeSeparator
+{
+	margin: 0px 2px;
+	color: #766F69;
+}
+
+#FilterWindow .EquipmentFilterError
+{
+	color: #DD7770;
+	font-size: 16px;
+}
+
+#FilterWindow .EquipmentSubEntryRule
+{
+	width: 100%;
+	flow-children: down;
+}
+
+#FilterWindow .EquipmentSubEntryRule .EntryRangeInputs
+{
+	horizontal-align: right;
+	margin-bottom: 6px;
+}
+
+#FilterWindow #EquipmentSubEntryFilterList,#FilterWindow .HuntlootEntryFilterList
+{
+	width: 100%;
+	height: fit-children;
+	margin-top: 11px;
+	padding-bottom: 12px;
+	flow-children: down;
+}
+
+#FilterWindow #EquipmentSubEntryFilterList .EquipmentSubEntryFilterRow,#FilterWindow .HuntlootEntryFilterList .EquipmentSubEntryFilterRow
+{
+	width: 100%;
+	height: fit-children;
+	min-height: 30px;
+	flow-children: right;
+}
+
+#FilterWindow #EquipmentSubEntryFilterList .EquipmentSubEntryFilterRow .EquipmentSubEntryName,#FilterWindow .HuntlootEntryFilterList .EquipmentSubEntryFilterRow .EquipmentSubEntryName
+{
+	width: fill-parent-flow(1);
+	vertical-align: center;
+	font-size: 17px;
+	color: #B9B1A6;
+	text-overflow: shrink;
+}
+
+#FilterWindow #EquipmentSubEntryFilterList .EquipmentSubEntryFilterRow .EquipmentSubEntryMode,#FilterWindow .HuntlootEntryFilterList .EquipmentSubEntryFilterRow .EquipmentSubEntryMode
+{
+	width: 188px;
+	height: fit-children;
+	min-height: 30px;
+	flow-children: right-wrap;
+	horizontal-align: right;
+}
+
+#FilterWindow #EquipmentSubEntryFilterList .EquipmentSubEntryFilterRow .EquipmentSubEntryMode Label,#FilterWindow .HuntlootEntryFilterList .EquipmentSubEntryFilterRow .EquipmentSubEntryMode Label
+{
+	vertical-align: center;
+	font-size: 16px;
+}
+
+#FilterWindow #EquipmentSubEntryFilterList .EquipmentSubEntryFilterRow .EquipmentSubEntryMode .EquipmentSubEntryModeOption,#FilterWindow .HuntlootEntryFilterList .EquipmentSubEntryFilterRow .EquipmentSubEntryMode .EquipmentSubEntryModeOption
+{
+	height: fit-children;
+	min-height: 30px;
+	flow-children: right;
+}
+
+#FilterWindow #EquipmentSubEntryFilterList .EquipmentSubEntryFilterRow .EquipmentSubEntryMode .EquipmentSubEntryModeOption .EquipmentSubEntryModeButton,#FilterWindow .HuntlootEntryFilterList .EquipmentSubEntryFilterRow .EquipmentSubEntryMode .EquipmentSubEntryModeOption .EquipmentSubEntryModeButton
+{
+	max-width: 150px;
+	height: fit-children;
+	min-height: 30px;
+}
+
+#FilterWindow #EquipmentSubEntryFilterList .EquipmentSubEntryFilterRow .EquipmentSubEntryMode .EquipmentSubEntryModeOption .EquipmentSubEntryModeButton Label,#FilterWindow .HuntlootEntryFilterList .EquipmentSubEntryFilterRow .EquipmentSubEntryMode .EquipmentSubEntryModeOption .EquipmentSubEntryModeButton Label
+{
+	max-width: 150px;
+	height: fit-children;
+	vertical-align: center;
+	text-align: center;
+	white-space: normal;
+	color: #766F69;
+	text-overflow: shrink;
+}
+
+#FilterWindow #EquipmentSubEntryFilterList .EquipmentSubEntryFilterRow .EquipmentSubEntryMode .EquipmentSubEntryModeOption .EquipmentSubEntryModeButton.Selected Label,#FilterWindow .HuntlootEntryFilterList .EquipmentSubEntryFilterRow .EquipmentSubEntryMode .EquipmentSubEntryModeOption .EquipmentSubEntryModeButton.Selected Label
+{
+	color: #F1E7D0;
+}
+
+#FilterWindow #EquipmentSubEntryFilterList .EquipmentSubEntryFilterRow .EquipmentSubEntryMode .EquipmentSubEntryModeOption .EquipmentSubEntryModeButton.include.Selected Label,#FilterWindow .HuntlootEntryFilterList .EquipmentSubEntryFilterRow .EquipmentSubEntryMode .EquipmentSubEntryModeOption .EquipmentSubEntryModeButton.include.Selected Label
+{
+	color: #86C985;
+}
+
+#FilterWindow #EquipmentSubEntryFilterList .EquipmentSubEntryFilterRow .EquipmentSubEntryMode .EquipmentSubEntryModeOption .EquipmentSubEntryModeButton.exclude.Selected Label,#FilterWindow .HuntlootEntryFilterList .EquipmentSubEntryFilterRow .EquipmentSubEntryMode .EquipmentSubEntryModeOption .EquipmentSubEntryModeButton.exclude.Selected Label
+{
+	color: #DD7770;
+}
+
+#FilterWindow #EquipmentSubEntryFilterList .EquipmentSubEntryFilterRow .EquipmentSubEntryMode .EquipmentSubEntryModeOption .EquipmentSubEntryModeSeparator,#FilterWindow .HuntlootEntryFilterList .EquipmentSubEntryFilterRow .EquipmentSubEntryMode .EquipmentSubEntryModeOption .EquipmentSubEntryModeSeparator
 {
 	margin: 0px 2px;
 	color: #766F69;
@@ -1906,6 +1961,46 @@
 	
 }
 
+.EOM_TextEntry
+{
+	width: 160px;
+	font-size: 16px;
+	height: 32px;
+	padding-top: 7px;
+}
+
+.EOM_TextEntry #PlaceholderText
+{
+	margin-top: 0px;
+	font-size: 16px;
+	color: #555555;
+}
+
+.EntryRangeInputs
+{
+	flow-children: right;
+	vertical-align: center;
+}
+
+.EntryRangeInputs .EntryRangeValue
+{
+	width: 80px;
+	vertical-align: center;
+}
+
+.EntryRangeInputs .EntryRangeSeparator,.EntryRangeInputs .EntryRangeUnit
+{
+	vertical-align: center;
+	font-size: 16px;
+	color: #C9BFA8;
+	margin: 0px 4px;
+}
+
+.EntryRangeInputs.Invalid .EntryRangeValue
+{
+	border: 1px solid #DD7770;
+}
+
 .EOM_BaseButton
 {
 	background-size: 100%;
@@ -2554,21 +2649,6 @@
 .EOM_MultiDropDownMenuItem.Selected #OptionIcon #SelectedIcon
 {
 	opacity: 1;
-}
-
-.EOM_TextEntry
-{
-	width: 160px;
-	font-size: 16px;
-	height: 32px;
-	padding-top: 7px;
-}
-
-.EOM_TextEntry #PlaceholderText
-{
-	margin-top: 0px;
-	font-size: 16px;
-	color: #555555;
 }
 
 .AspectRatio4x3 .EOM_PopupMain.large
@@ -7366,6 +7446,11 @@
 	font-size: 18px;
 }
 
+.EOM_DropDownMenu.AutoBreakComparisonMenu VerticalScrollBar
+{
+	opacity: 0;
+}
+
 #EquipBreakRoot #CenterBlock
 {
 	align: center center;
@@ -7376,7 +7461,7 @@
 #EquipBreakRoot #EquipBreakWindow
 {
 	margin-left: 218px;
-	margin-top: 57px;
+	margin-top: 43px;
 	width: 704px;
 	flow-children: down;
 }
@@ -7740,15 +7825,17 @@
 #EquipBreakRoot #ExpBarContainer #CurExp
 {
 	align: center center;
+	max-width: 430px;
 	font-size: 16px;
 	color: #E1E1E1;
+	text-overflow: shrink;
 	text-shadow: 0px 0px 3px 3 #000000;
 }
 
 #EquipBreakRoot #ExpBarContainer #AddexExp
 {
 	align: right center;
-	margin-right: 210px;
+	margin-right: 36px;
 	color: #53b646;
 	text-shadow: 0px 0px 3px 3 #000000;
 }
@@ -7769,36 +7856,46 @@
 #EquipBreakRoot #BreakReward
 {
 	horizontal-align: center;
-	margin-top: 11px;
+	margin-top: 8px;
 	width: 656px;
-	height: 78px;
+	height: 64px;
 	background-image: url("s2r://panorama/images/custom_game/e1_smithy/e1_smithy_word_png.vtex");
 	background-size: 100%;
-	opacity: 0;
 }
 
-#EquipBreakRoot #BreakReward.Show
+#EquipBreakRoot #BreakReward #BreakEmptyHint
 {
-	opacity: 1;
+	align: center center;
+	max-width: 600px;
+	font-size: 18px;
+	color: #B9B1A6;
+	text-align: center;
+}
+
+#EquipBreakRoot #BreakReward #BreakRewardContent
+{
+	align: center center;
+	flow-children: right;
 }
 
 #EquipBreakRoot #BreakReward #TipsText
 {
 	vertical-align: center;
-	margin-left: 27px;
+	margin-right: 20px;
 	color: #B9B1A6;
 	font-size: 20px;
 }
 
 #EquipBreakRoot #BreakReward #BreakRewardList
 {
-	align: center center;
+	vertical-align: center;
 	flow-children: right;
 }
 
 #EquipBreakRoot #BreakReward #BreakRewardList .RewardItem
 {
 	flow-children: right;
+	margin-right: 12px;
 }
 
 #EquipBreakRoot #BreakReward #BreakRewardList .RewardItem .StoreItemImage
@@ -7817,10 +7914,12 @@
 	margin-left: 4px;
 }
 
-#EquipBreakRoot #ConfirmBtn
+#EquipBreakRoot #BreakActions
 {
 	horizontal-align: center;
-	margin-top: 16px;
+	margin-top: 8px;
+	padding-bottom: 20px;
+	flow-children: down;
 }
 
 #EquipBreakRoot #BreakSelectCount
@@ -7967,15 +8066,15 @@
 
 #EquipBreakRoot #AutoBreakWindow
 {
-	horizontal-align: right;
+	align: right top;
 	margin-right: 52px;
-	margin-top: 75px;
+	margin-top: 52px;
 	width: 488px;
-	height: 762px;
+	height: 820px;
+	padding: 24px 24px 24px 24px;
+	flow-children: down;
 	background-image: url("s2r://panorama/images/custom_game/e1_equipment/e1_panel_itembg_png.vtex");
 	background-size: 100%;
-	flow-children: down;
-	padding: 26px 22px;
 	animation-name: OpacityShow, SlideInBottomSlow;
 	animation-duration: 0.4s;
 	animation-timing-function: ease-out;
@@ -7984,24 +8083,75 @@
 #EquipBreakRoot #AutoBreakWindow #AutoBreakHeader
 {
 	width: 100%;
+	height: 48px;
+	min-height: 48px;
+	margin-bottom: 10px;
 	flow-children: right;
+}
+
+#EquipBreakRoot #AutoBreakWindow #AutoBreakTitle
+{
+	horizontal-align: center;
+	font-size: 24px;
+	color: #E7D5A5;
+	text-overflow: shrink;
+}
+
+#EquipBreakRoot #AutoBreakWindow #AutoBreakCloseBtn
+{
+	vertical-align: center;
+	margin-left: 12px;
+	min-width: 154px;
+	min-height: 44px;
+}
+
+#EquipBreakRoot #AutoBreakWindow #AutoBreakRuleHint
+{
+	width: 100%;
+	margin-bottom: 12px;
+	font-size: 17px;
+	line-height: 23px;
+	color: #B9B1A6;
+}
+
+#EquipBreakRoot #AutoBreakWindow #AutoBreakMode
+{
+	horizontal-align: center;
+	min-height: 32px;
+	margin-bottom: 8px;
+	flow-children: right;
+}
+
+#EquipBreakRoot #AutoBreakWindow #AutoBreakMode .EOM_CheckBox2
+{
+	width: 180px;
 }
 
 #EquipBreakRoot #AutoBreakWindow #AutoBreakOptions
 {
 	width: 100%;
+	height: fill-parent-flow(1);
+	min-height: 0px;
+	padding-right: 12px;
+	padding-bottom: 12px;
 	flow-children: down;
+}
+
+#EquipBreakRoot #AutoBreakWindow #AutoBreakOptions VerticalScrollBar
+{
+	opacity: 0;
 }
 
 #EquipBreakRoot #AutoBreakWindow .Filter
 {
 	flow-children: right;
-	margin-top: 18px;
+	margin-top: 6px;
 }
 
 #EquipBreakRoot #AutoBreakWindow #FilterType
 {
 	margin-right: 11px;
+	max-width: 200px;
 	vertical-align: center;
 	font-size: 20px;
 	color: #B9B1A6;
@@ -8010,15 +8160,13 @@
 #EquipBreakRoot #AutoBreakWindow .Subheading
 {
 	font-size: 20px;
-	margin-top: 28px;
+	margin-top: 20px;
 	color: #B9B1A6;
 }
 
 #EquipBreakRoot #AutoBreakWindow .FilterLine
 {
 	margin-top: 8px;
-	margin-left: -11px;
-	margin-right: -11px;
 }
 
 #EquipBreakRoot #AutoBreakWindow .CheckBoxList
@@ -8030,29 +8178,143 @@
 
 #EquipBreakRoot #AutoBreakWindow .CheckBoxList .EOM_CheckBox2
 {
-	width: 145px;
+	width: 136px;
 	margin: 6px 0px;
 }
 
 #EquipBreakRoot #AutoBreakWindow #AutoBreakFooter
 {
 	width: 100%;
-	margin-top: 28px;
-	flow-children: right;
+	height: 100px;
+	min-height: 100px;
+	margin-top: 12px;
+	flow-children: down;
 }
 
 #EquipBreakRoot #AutoBreakWindow #AutoBreakFooter #AutoBreakMatchedCount
 {
-	vertical-align: center;
-	width: fill-parent-flow(1);
-	font-size: 20px;
+	horizontal-align: center;
+	width: 100%;
+	text-align: center;
+	font-size: 18px;
 	color: #E7D5A5;
 	text-shadow: 0px 0px 3px 3 #000000;
 }
 
-#EquipBreakRoot #AutoBreakWindow #AutoBreakFooter #AutoBreakSaveBtn
+#EquipBreakRoot #AutoBreakWindow #AutoBreakFooter #AutoBreakActions
+{
+	horizontal-align: center;
+	margin-top: 12px;
+	flow-children: right;
+}
+
+#EquipBreakRoot #AutoBreakWindow #AutoBreakSubColumns
+{
+	width: 100%;
+	margin-top: 8px;
+	flow-children: right;
+}
+
+#EquipBreakRoot #AutoBreakWindow #AutoBreakSubColumns Label
+{
+	font-size: 16px;
+	color: #B9B1A6;
+}
+
+#EquipBreakRoot #AutoBreakWindow #AutoBreakSubColumns .AutoBreakSubHeadingSpacer
+{
+	width: fill-parent-flow(1);
+}
+
+#EquipBreakRoot #AutoBreakWindow #AutoBreakSubColumns .AutoBreakThresholdHeading
+{
+	width: 167px;
+	text-align: center;
+}
+
+#EquipBreakRoot #AutoBreakWindow #AutoBreakSubEntryList
+{
+	width: 100%;
+	margin-top: 8px;
+	padding-bottom: 8px;
+	flow-children: down;
+}
+
+#EquipBreakRoot #AutoBreakWindow .AutoBreakSubRule
+{
+	width: 100%;
+	min-height: 44px;
+	padding: 5px 0px;
+	border-bottom: 1px solid #7b674740;
+	flow-children: right;
+}
+
+#EquipBreakRoot #AutoBreakWindow .AutoBreakSubRule .AutoBreakSubInfo
+{
+	width: fill-parent-flow(1);
+	margin-right: 8px;
+	vertical-align: center;
+	flow-children: right;
+}
+
+#EquipBreakRoot #AutoBreakWindow .AutoBreakSubRule .AutoBreakSubName
+{
+	width: 100%;
+}
+
+#EquipBreakRoot #AutoBreakWindow .AutoBreakSubRule .AutoBreakSubName .CheckLabel
+{
+	width: fill-parent-flow(1);
+	white-space: nowrap;
+	text-overflow: shrink;
+}
+
+#EquipBreakRoot #AutoBreakWindow .AutoBreakSubRule .AutoBreakThresholdInput
 {
 	vertical-align: center;
+	flow-children: right;
+	opacity: 0.6;
+}
+
+#EquipBreakRoot #AutoBreakWindow .AutoBreakSubRule .AutoBreakThresholdComparison
+{
+	width: 64px;
+	min-width: 64px;
+	height: 32px;
+	margin-right: 6px;
+	vertical-align: center;
+}
+
+#EquipBreakRoot #AutoBreakWindow .AutoBreakSubRule .AutoBreakThresholdValue
+{
+	width: 80px;
+	vertical-align: center;
+}
+
+#EquipBreakRoot #AutoBreakWindow .AutoBreakSubRule .AutoBreakThresholdUnit
+{
+	width: 17px;
+	vertical-align: center;
+	font-size: 16px;
+	color: #E7D5A5;
+	text-align: center;
+}
+
+#EquipBreakRoot #AutoBreakWindow .AutoBreakSubRule.Selected .AutoBreakThresholdInput
+{
+	opacity: 1;
+}
+
+#EquipBreakRoot #AutoBreakWindow .AutoBreakSubRule.Invalid .EOM_TextEntry
+{
+	border: 1px solid #C45B50;
+}
+
+#EquipBreakRoot #AutoBreakWindow #AutoBreakThresholdError
+{
+	width: 100%;
+	font-size: 16px;
+	color: #E38B7A;
 }
 
 #EquipBreakRoot .BtnList
@@ -8063,7 +8325,12 @@
 
 #EquipBreakRoot #AutoBreak
 {
-	visibility: collapse;
+	margin-top: 6px;
+}
+
+#EquipBreakRoot #AutoBreak #AutoBreakSwitch
+{
+	margin-right: 16px;
 }
 
 #EquipBreakRoot #AutoBreak .EOM_Button,#EquipBreakRoot #AutoBreak .EOM_CheckBox2

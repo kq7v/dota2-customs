@@ -73,4 +73,4 @@ const EOM_FilterChip = props => {
   })();
 };
 
-exports.EOM_FilterChip = EOM_FilterChip;
+exports.EOM_FilterChip = EOM_FilterChip;

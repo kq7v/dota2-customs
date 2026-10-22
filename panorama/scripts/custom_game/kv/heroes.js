@@ -207,4 +207,4 @@ GameUI.CustomUIConfig().heroes = {
 		"Model2D": "models/eom/hero/paladin_1_2d/paladin_1_2d.vmdl",
 		"ModelScale": 0.9
 	}
-};
+};

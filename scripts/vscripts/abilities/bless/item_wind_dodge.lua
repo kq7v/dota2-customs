@@ -27,6 +27,7 @@ function j.prototype.EventListener(self)
 				self:SetStackCount(1, false)
 				self:StartThink(self:GetSpecialValueFor("duration"), "duration", function()
 					self:SetStackCount(0, false)
+					return -1
 				end)
 			end
 		end,
@@ -35,6 +36,7 @@ function j.prototype.EventListener(self)
 				self:SetStackCount(1, false)
 				self:StartThink(self:GetSpecialValueFor("duration"), "duration", function()
 					self:SetStackCount(0, false)
+					return -1
 				end)
 			end
 		end,

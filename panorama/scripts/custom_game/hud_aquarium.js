@@ -1325,4 +1325,4 @@ function AquariumRoot() {
     }
   });
 }
-libs.render(() => libs.createComponent(AquariumRoot, {}), $.GetContextPanel());
+libs.render(() => libs.createComponent(AquariumRoot, {}), $.GetContextPanel());

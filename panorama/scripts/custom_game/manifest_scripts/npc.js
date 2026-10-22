@@ -395,4 +395,4 @@ else {
 // 	$.Msg("  6. 使用 CustomUIConfig.NpcManager.GetNpcList() 获取完整NPC列表");
 // 	$.Msg("  7. 使用 CustomUIConfig.NpcManager.DestroyAllParticles() 销毁所有粒子");
 // 	$.Msg("  8. NPC粒子配置在 npc.ts 的 npcConfigs 中定义");
-// }
+// }

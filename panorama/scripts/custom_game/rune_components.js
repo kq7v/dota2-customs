@@ -954,4 +954,4 @@ exports.RuneBondItem = RuneBondItem;
 exports.RuneDetailCard = RuneDetailCard;
 exports.RuneDetailEngravingRow = RuneDetailEngravingRow;
 exports.RuneEngravingSlots = RuneEngravingSlots;
-exports.RuneSlotItem = RuneSlotItem;
+exports.RuneSlotItem = RuneSlotItem;

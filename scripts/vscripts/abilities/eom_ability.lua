@@ -191,6 +191,9 @@ e.registerEOMAbility = function(A, E)
 			if M ~= nil then
 				M(self)
 			end
+			if IsServer() and not self:IsItem() then
+				self:UpdateRuntimeNetData()
+			end
 		end
 		local N = H[F].OnSpellStart
 		H[F].OnSpellStart = function(self)

@@ -57,4 +57,4 @@ const EOM_ProgressBar = props => {
   })();
 };
 
-exports.EOM_ProgressBar = EOM_ProgressBar;
+exports.EOM_ProgressBar = EOM_ProgressBar;

@@ -39,9 +39,9 @@ require('./EOM_CostLabel.js');
 require('./EOM_ImageNumber.js');
 require('./equipment_utils.js');
 require('./EOM_Icon.js');
+require('./EOM_HotKeyDisplay.js');
 require('./hotkey_label.js');
 require('./EOM_GamePad.js');
-require('./EOM_HotKeyDisplay.js');
 require('./RecycleView.js');
 require('./EOM_TextEntry.js');
 
@@ -3376,4 +3376,4 @@ function Book() {
     }
   });
 }
-libs.render(() => libs.createComponent(Book, {}), $.GetContextPanel());
+libs.render(() => libs.createComponent(Book, {}), $.GetContextPanel());

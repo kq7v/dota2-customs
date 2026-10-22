@@ -504,4 +504,4 @@ const EmptyFallback = () => {
     return _el$23;
   })();
 };
-libs.render(() => libs.createComponent(Mail, {}), $.GetContextPanel());
+libs.render(() => libs.createComponent(Mail, {}), $.GetContextPanel());

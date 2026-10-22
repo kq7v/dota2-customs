@@ -1582,4 +1582,4 @@ GameUI.CustomUIConfig().ability_upgrades = {
 			"interval": 0.3
 		}
 	}
-};
+};

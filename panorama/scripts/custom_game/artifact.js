@@ -16,10 +16,10 @@ var FeatureTag = require('./FeatureTag.js');
 var tooltip_base = require('./tooltip_base.js');
 var common_box = require('./common_box.js');
 require('./EOM_Icon.js');
+require('./EOM_HotKeyDisplay.js');
 require('./hotkey_label.js');
 require('./solid_utils.js');
 require('./EOM_GamePad.js');
-require('./EOM_HotKeyDisplay.js');
 require('./service_netdata_helper.js');
 require('./common_item.js');
 
@@ -69,4 +69,4 @@ function SetupTooltip() {
 (function () {
   tooltip_base.InitTooltipStyle(root, "EmptyTooltip");
   root.SetPanelEvent("ontooltiploaded", SetupTooltip);
-})();
+})();

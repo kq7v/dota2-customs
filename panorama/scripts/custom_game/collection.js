@@ -536,4 +536,4 @@ const Collection = props => {
   });
 };
 
-exports.Collection = Collection;
+exports.Collection = Collection;

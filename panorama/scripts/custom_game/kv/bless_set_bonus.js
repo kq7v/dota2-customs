@@ -118,4 +118,4 @@ GameUI.CustomUIConfig().bless_set_bonus = {
 			}
 		}
 	}
-};
+};

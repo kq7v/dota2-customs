@@ -230,4 +230,4 @@ GameUI.CustomUIConfig().courier_abilities = {
 			"crit_chance_pct": "2.5 5 7.5 10 12.5 15"
 		}
 	}
-};
+};

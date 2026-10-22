@@ -138,4 +138,4 @@ exports.formatInteger = formatInteger;
 exports.formatMultiplier = formatMultiplier;
 exports.formatPercent = formatPercent;
 exports.formatSeconds = formatSeconds;
-exports.getComboTimeRemaining = getComboTimeRemaining;
+exports.getComboTimeRemaining = getComboTimeRemaining;

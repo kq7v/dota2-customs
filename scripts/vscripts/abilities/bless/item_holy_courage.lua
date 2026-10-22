@@ -25,7 +25,7 @@ function j.prototype.EventListener(self)
 		dungeon_room_start = function(k, l)
 			if l.room:IsCombatRoom() then
 				self:SetStackCount(1, false)
-				if #self.__ParticleIDs <= 0 then
+				if self.__ParticleIDs == nil or #self.__ParticleIDs <= 0 then
 					local m = ParticleManager:CreateParticle(
 						"particles/items2_fx/medallion_of_courage_friend.vpcf",
 						PATTACH_OVERHEAD_FOLLOW,

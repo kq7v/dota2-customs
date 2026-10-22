@@ -280,4 +280,4 @@ function TooltipContents() {
   root.GetParent().style.overflow = "noclip";
   root.GetParent().GetParent().style.overflow = "noclip";
   root.SetPanelEvent("ontooltiploaded", SetupTooltip);
-})();
+})();

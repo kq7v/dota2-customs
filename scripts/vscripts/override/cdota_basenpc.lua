@@ -286,6 +286,7 @@ if IsServer() then
 			a0:SetLevel(_)
 		end
 		a0:__OnCreated()
+		self:UpdateAbilityNetData()
 		return a0
 	end
 	if CDOTA_BaseNPC.RemoveAbility_Engine == nil then
@@ -306,6 +307,7 @@ if IsServer() then
 				a0:__OnDestroy()
 			end
 			self:RemoveAbilityByHandle_Engine(a0)
+			self:UpdateAbilityNetData()
 		end
 	end
 	CDOTA_BaseNPC.GetAttachmentPosition = function(self, a1)
@@ -897,17 +899,17 @@ if IsServer() then
 		end)
 	end
 	CDOTA_BaseNPC.UpdateAbilityNetData = function(self)
+		if not self:IsRealHero() then
+			return
+		end
 		if self.__items == nil then
 			self.__items = {}
 		end
 		g(self.__items, function(bd, aP)
 			local b8 = EntIndexToHScript(aP.entIndex)
-			aP.stackCount = b8.__StackCount or 0
-			aP.charge = b8.__Charge or 0
-			aP.maxCharge = b8:GetMaxCharges()
-			aP.chargeRestoreTime = b8.__ChargeRestoreTime or 0
-			aP.isChargeCooldownFrozen = b8:IsChargeCooldownFrozen()
-			aP.chargeFrozenCooldownRemaining = b8:GetChargeCooldownRemaining()
+			if IsValid(b8) then
+				b8:UpdateRuntimeNetData()
+			end
 		end)
 		local bg = {}
 		local bh = self:GetAbilityByTag(AbilityTag.Attack)
@@ -930,25 +932,18 @@ if IsServer() then
 		if bl then
 			bg[#bg + 1] = bl
 		end
-		if not self:IsRealHero() then
-			return
-		end
+		g(bg, function(bd, a0)
+			return a0:UpdateRuntimeNetData()
+		end)
 		CustomNetTables:SetNetData(
 			"unit",
 			tostring(self:entindex()),
 			{
-				items = self.__items,
+				items = h(self.__items, function(bd, b8)
+					return { entIndex = b8.entIndex, itemName = b8.itemName }
+				end),
 				abilities = h(bg, function(bd, a0)
-					return {
-						entIndex = a0:entindex() or -1,
-						stackCount = a0.__StackCount or 0,
-						abilityName = a0:GetAbilityName(),
-						charge = a0.__Charge or 0,
-						maxCharge = a0:GetMaxCharges(),
-						chargeRestoreTime = a0.__ChargeRestoreTime or 0,
-						isChargeCooldownFrozen = a0:IsChargeCooldownFrozen(),
-						chargeFrozenCooldownRemaining = a0:GetChargeCooldownRemaining(),
-					}
+					return { entIndex = a0:entindex() or -1, abilityName = a0:GetAbilityName() }
 				end),
 			}
 		)

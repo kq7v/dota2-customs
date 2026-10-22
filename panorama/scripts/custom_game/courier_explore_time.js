@@ -46,4 +46,4 @@ exports.formatCourierExploreDurationTime = formatCourierExploreDurationTime;
 exports.formatCourierExploreElapsedTime = formatCourierExploreElapsedTime;
 exports.getCourierExploreMaxDurationSeconds = getCourierExploreMaxDurationSeconds;
 exports.getCurrentServerTime = getCurrentServerTime;
-exports.isCourierExploreDurationMaxed = isCourierExploreDurationMaxed;
+exports.isCourierExploreDurationMaxed = isCourierExploreDurationMaxed;

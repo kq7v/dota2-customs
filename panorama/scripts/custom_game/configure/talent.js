@@ -172,6 +172,16 @@ GameUI.CustomUIConfig().talent = {
 			a11: 2
 		}
 	},
+	a14: {
+		talent_id: "a14",
+		name: "物伤精研",
+		max_level: 100,
+		type: 5,
+		category: 1,
+		requires: {
+			a13: 20
+		}
+	},
 	b0: {
 		talent_id: "b0",
 		name: "|+1复活次数",
@@ -335,6 +345,16 @@ GameUI.CustomUIConfig().talent = {
 			b11: 2
 		}
 	},
+	b14: {
+		talent_id: "b14",
+		name: "生命精研",
+		max_level: 100,
+		type: 5,
+		category: 2,
+		requires: {
+			b13: 20
+		}
+	},
 	c0: {
 		talent_id: "c0",
 		name: "祝福可以放弃选择",
@@ -496,6 +516,16 @@ GameUI.CustomUIConfig().talent = {
 			c9: 1,
 			c10: 2,
 			c11: 2
+		}
+	},
+	c14: {
+		talent_id: "c14",
+		name: "法伤精研",
+		max_level: 100,
+		type: 5,
+		category: 3,
+		requires: {
+			c13: 20
 		}
 	}
 };

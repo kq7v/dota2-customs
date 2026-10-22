@@ -587,4 +587,4 @@ GameUI.CustomUIConfig().enemy_abilities = {
 		"AbilityCastRange": 500,
 		"AbilityBehavior": "DOTA_ABILITY_BEHAVIOR_POINT"
 	}
-};
+};

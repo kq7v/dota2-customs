@@ -139,4 +139,4 @@ GameUI.CustomUIConfig().attack_abilities = {
 		"AbilityUnitTargetTeam": "DOTA_UNIT_TARGET_TEAM_ENEMY",
 		"AbilityTag": "Ultimate"
 	}
-};
+};

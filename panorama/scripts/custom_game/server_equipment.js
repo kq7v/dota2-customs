@@ -254,4 +254,4 @@ function EquipmentIcon(props) {
 exports.Equipment = Equipment;
 exports.EquipmentIcon = EquipmentIcon;
 exports.Gem = Gem;
-exports.SuitIcon = SuitIcon;
+exports.SuitIcon = SuitIcon;

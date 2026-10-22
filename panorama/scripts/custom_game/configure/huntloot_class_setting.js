@@ -11,25 +11,25 @@
 GameUI.CustomUIConfig().huntloot_class_setting = {
 	"1": {
 		huntloot_class: 1,
-		need_level: 55,
+		need_level: 34,
 		adverb_bonus: 0,
 		spell_bonus: 0
 	},
 	"2": {
 		huntloot_class: 2,
-		need_level: 60,
+		need_level: 36,
 		adverb_bonus: 0.05,
 		spell_bonus: 0.05
 	},
 	"3": {
 		huntloot_class: 3,
-		need_level: 61,
+		need_level: 38,
 		adverb_bonus: 0.1,
 		spell_bonus: 0.1
 	},
 	"4": {
 		huntloot_class: 4,
-		need_level: 62,
+		need_level: 40,
 		adverb_bonus: 0.15,
 		spell_bonus: 0.15
 	}

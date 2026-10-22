@@ -106,6 +106,7 @@ function p.prototype.OnCreated(self, n)
 				return 1
 			end
 			self:Patrol()
+			return 0.5
 		end)
 		self:StartThink(0, "StageThink", function()
 			if o:HasState(StateEnum.AI_DISABLED) then
@@ -120,6 +121,7 @@ function p.prototype.OnCreated(self, n)
 			elseif self.currentStage == 2 then
 				self:Stage2()
 			end
+			return 0
 		end)
 		local r = ParticleManager:CreateParticleForce(
 			"particles/econ/items/lion/dungeon_poacher/dungeon_poacher_arms_ambient.vpcf",

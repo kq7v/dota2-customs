@@ -60,7 +60,7 @@ function k.prototype.TryAddStack(self)
 end
 function k.prototype.OnThink(self, o)
 	if o ~= "expire_check" then
-		return
+		return -1
 	end
 	local p = GameRules:GetGameTime()
 	local q = false
@@ -79,10 +79,8 @@ function k.prototype.OnThink(self, o)
 		self:RefreshStaticProperty()
 	end
 	if #self.stackExpireTimes == 0 then
-		self:StartThink(-1, o)
-		return
+		return -1
 	end
-	self:StartThink(0.3, o)
 end
 k = f({ j(nil) }, k)
 return g

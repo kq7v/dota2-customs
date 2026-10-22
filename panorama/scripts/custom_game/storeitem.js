@@ -877,4 +877,4 @@ exports.GetStoreItemImageTooltipData = GetStoreItemImageTooltipData;
 exports.StoreItem = StoreItem;
 exports.StoreItemBlock = StoreItemBlock;
 exports.StoreItemCard = StoreItemCard;
-exports.StoreItemImage = StoreItemImage;
+exports.StoreItemImage = StoreItemImage;

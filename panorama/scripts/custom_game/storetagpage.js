@@ -117,4 +117,4 @@ function createStoreTagRedPointData(tag) {
 
 exports.StoreTagPage = StoreTagPage;
 exports.createStoreTagRedPointData = createStoreTagRedPointData;
-exports.hasFreeStoreTagItem = hasFreeStoreTagItem;
+exports.hasFreeStoreTagItem = hasFreeStoreTagItem;

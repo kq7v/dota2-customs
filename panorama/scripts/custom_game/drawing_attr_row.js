@@ -116,4 +116,4 @@ function DrawingAttrRow(props) {
 exports.DrawingAttrRow = DrawingAttrRow;
 exports.getDrawingMainEntry = getDrawingMainEntry;
 exports.getDrawingMainEntryText = getDrawingMainEntryText;
-exports.parseDrawingEntries = parseDrawingEntries;
+exports.parseDrawingEntries = parseDrawingEntries;

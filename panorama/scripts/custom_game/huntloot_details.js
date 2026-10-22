@@ -792,4 +792,4 @@ exports.MAX_HUNTLOOT_RARITY = MAX_HUNTLOOT_RARITY;
 exports.ParseHuntlootDevourCosts = ParseHuntlootDevourCosts;
 exports.ServerHuntlootDetail = ServerHuntlootDetail;
 exports.ShowServerHuntlootTooltip = ShowServerHuntlootTooltip;
-exports.createHuntlootDetailSignal = createHuntlootDetailSignal;
+exports.createHuntlootDetailSignal = createHuntlootDetailSignal;

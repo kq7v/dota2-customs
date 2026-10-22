@@ -2251,4 +2251,4 @@ function ShowRoomPage() {
     }
   });
 }
-libs.render(() => libs.createComponent(ShowRoomRoot, {}), $.GetContextPanel());
+libs.render(() => libs.createComponent(ShowRoomRoot, {}), $.GetContextPanel());

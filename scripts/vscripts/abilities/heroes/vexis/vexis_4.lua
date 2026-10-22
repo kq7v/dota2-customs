@@ -63,6 +63,7 @@ function n.prototype.AddStack(self, x)
 	local y = self:GetSpecialValueFor("attackspeed_duration")
 	self:StartThink(y, x, function()
 		self:SetStackCount(0)
+		return -1
 	end)
 end
 function n.prototype.StaticProperty(self)

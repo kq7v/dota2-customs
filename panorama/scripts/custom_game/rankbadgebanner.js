@@ -134,4 +134,4 @@ const PlayerRankBadgeBanner = props => {
 };
 
 exports.PlayerHeroRankBadge = PlayerHeroRankBadge;
-exports.PlayerRankBadgeBanner = PlayerRankBadgeBanner;
+exports.PlayerRankBadgeBanner = PlayerRankBadgeBanner;

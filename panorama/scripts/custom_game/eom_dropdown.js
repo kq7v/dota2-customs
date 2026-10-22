@@ -49,7 +49,7 @@ const EOM_DropDown = props => {
   }, props, {
     class: libs.classNames("EOM_DropDown", props.class, props.type)
   });
-  const [local, others] = libs.splitProps(mergerd, ["children", "width", "index", "placeholder", "onSelect", "onChange", "onClear", "type", "id", "menuPosition", "hasClear"]);
+  const [local, others] = libs.splitProps(mergerd, ["children", "width", "index", "placeholder", "onSelect", "onChange", "onClear", "type", "menuClass", "id", "menuPosition", "hasClear"]);
   const getCustomWidth = () => {
     if (props.customWidth == undefined) {
       return undefined;
@@ -129,6 +129,7 @@ const EOM_DropDown = props => {
       myMenu = $.CreatePanel("Panel", selfRef, `${local.id}_DropDownMenu`);
       myMenu.AddClass("EOM_DropDownMenu");
       if (local.type) myMenu.AddClass(local.type);
+      if (local.menuClass) myMenu.AddClass(local.menuClass);
       myMenu.visible = true;
       const childrens = libs.runWithOwner(owner, () => {
         return libs.children(() => local.children).toArray();
@@ -262,4 +263,4 @@ const EOM_DropDown = props => {
   })();
 };
 
-exports.EOM_DropDown = EOM_DropDown;
+exports.EOM_DropDown = EOM_DropDown;

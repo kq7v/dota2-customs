@@ -951,4 +951,4 @@ else {
     CustomUIConfig.Camera = new CPanoramaScript_Camera();
     CustomUIConfig.Camera.LogDebug("Create new camera instance");
     CustomUIConfig.Camera.Start();
-}
+}

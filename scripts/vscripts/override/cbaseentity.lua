@@ -48,7 +48,7 @@ BaseEntity.StopTimer = function(self, g)
 end
 if IsServer() then
 	CBaseEntity.StartThink = function(self, j, k, l)
-		if type(k) == "function" and l == nil then
+		if type(k) == "function" then
 			l = k
 			k = nil
 		end
@@ -65,22 +65,27 @@ if IsServer() then
 				Timer:StopTimer(self._ThinkList[n])
 				self._ThinkList[n] = nil
 			end
-			return
+			return n
 		end
 		if self._ThinkList[n] ~= nil then
 			Timer:StopTimer(self._ThinkList[n])
 		end
-		local o = Timer:StartIntervalThink(self, j, function()
+		local o
+		o = Timer:StartIntervalThink(self, j, function()
 			local p
 			if l ~= nil then
 				p = l(self, n)
 			elseif self.OnThink ~= nil then
 				p = self:OnThink(n)
 			end
+			if self._ThinkList[n] ~= o then
+				return -1
+			end
 			if p == -1 then
 				Timer:StopTimer(self._ThinkList[n])
 				self._ThinkList[n] = nil
 			end
+			return p
 		end)
 		self._ThinkList[n] = o
 		return n

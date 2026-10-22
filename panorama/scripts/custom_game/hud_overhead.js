@@ -1162,4 +1162,4 @@ function getOverheadComponent(type, entIndex) {
     recycleBin.RemoveAndDeleteChildren();
   }
   update();
-})();
+})();

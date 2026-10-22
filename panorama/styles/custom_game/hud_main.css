@@ -316,6 +316,45 @@
 	background-image: url("s2r://panorama/images/status_icons/loadingthrobber_round_psd.vtex");
 }
 
+.EOM_HotKeyDisplay:not(.IsImage)
+{
+	min-width: 24px;
+}
+
+.EOM_HotKeyDisplay.IsImage
+{
+	min-height: 24px;
+}
+
+.EOM_HotKeyDisplay.Filp
+{
+	transform: rotateY(-180deg);
+}
+
+.EOM_HotKeyDisplay .EOM_HotKeyDisplayText
+{
+	align: center center;
+	font-size: 12px;
+	color: #D5C8A8;
+	text-align: center;
+	margin: 0px 5px;
+}
+
+.EOM_HotKeyDisplay .EOM_HotKeyDisplayImage
+{
+	align: center center;
+}
+
+.EOM_HotKeyDisplay .EOM_HotKeyDisplayBorder
+{
+	width: 100%;
+	border-image-source: url("s2r://panorama/images/custom_game/hud/h_key_bg_png.vtex");
+	border-width: 24px 5px 0px 5px;
+	border-image-slice: 100% 5px 0px 5px;
+	border-image-repeat: stretch;
+	border-color: none;
+}
+
 .EOM_GamePad
 {
 	flow-children: none;
@@ -635,45 +674,6 @@
 	background-size: 100%;
 }
 
-.EOM_HotKeyDisplay:not(.IsImage)
-{
-	min-width: 24px;
-}
-
-.EOM_HotKeyDisplay.IsImage
-{
-	min-height: 24px;
-}
-
-.EOM_HotKeyDisplay.Filp
-{
-	transform: rotateY(-180deg);
-}
-
-.EOM_HotKeyDisplay .EOM_HotKeyDisplayText
-{
-	align: center center;
-	font-size: 12px;
-	color: #D5C8A8;
-	text-align: center;
-	margin: 0px 5px;
-}
-
-.EOM_HotKeyDisplay .EOM_HotKeyDisplayImage
-{
-	align: center center;
-}
-
-.EOM_HotKeyDisplay .EOM_HotKeyDisplayBorder
-{
-	width: 100%;
-	border-image-source: url("s2r://panorama/images/custom_game/hud/h_key_bg_png.vtex");
-	border-width: 24px 5px 0px 5px;
-	border-image-slice: 100% 5px 0px 5px;
-	border-image-repeat: stretch;
-	border-color: none;
-}
-
 .SectIcon
 {
 	width: 32px;
@@ -931,6 +931,7 @@
 {
 	width: 100%;
 	flow-children: right;
+	margin-bottom: 4px;
 }
 
 .CommonBox .CommonInfo .CommonNameRow .CommonName
@@ -938,7 +939,6 @@
 	font-size: 22px;
 	font-weight: bold;
 	text-align: left;
-	margin-bottom: 4px;
 	text-shadow: 2px 2px 4px #000000;
 }
 
@@ -1561,6 +1561,47 @@
 	line-height: 20px;
 	background-image: url("s2r://panorama/images/custom_game/eom_design/icon/gold_png.vtex");
 	background-size: 20px;
+}
+
+.EOM_Breadcrumb
+{
+	flow-children: right;
+}
+
+.EOM_Breadcrumb .EOM_BreadcrumbSeparator
+{
+	font-size: 20px;
+	color: #939da022;
+	margin: 0px 12px;
+}
+
+.EOM_Breadcrumb > TabButton Label
+{
+	margin-top: 2px;
+	color: #939da044;
+	transition-property: color;
+	transition-duration: 0.2s;
+}
+
+.EOM_Breadcrumb > TabButton:selected Label
+{
+	color: white;
+	sound: "ui_rollover_micro";
+}
+
+.EOM_Breadcrumb > TabButton:hover Label
+{
+	color: #CCCCCC;
+}
+
+.EOM_Breadcrumb > TabButton:active
+{
+	transform: translateY(2px);
+}
+
+.EOM_Breadcrumb > TabButton:active:selected
+{
+	transform: translateY(0px);
 }
 
 .EOM_Loading.Wave
@@ -3252,10 +3293,41 @@
 	color: #BFAA82;
 }
 
+#AttributeSummary #AttributeCategoryTabs
+{
+	margin: 0px 28px 10px;
+}
+
+#AttributeSummary .AttributeGroup
+{
+	width: 100%;
+	flow-children: down;
+}
+
+#AttributeSummary .AttributeGroupHeader
+{
+	width: 100%;
+	flow-children: right;
+	margin: 10px 0px 5px;
+}
+
+#AttributeSummary .AttributeGroupHeader Label
+{
+	font-size: 16px;
+	color: #C2AB65;
+}
+
+#AttributeSummary .AttributeGroupHeader .Separator
+{
+	width: fill-parent-flow(1);
+	vertical-align: center;
+	margin: 0px 0px 0px 10px;
+}
+
 #AttributeSummary #Attributes
 {
 	width: 100%;
-	height: 560px;
+	height: 520px;
 	padding: 0px 28px;
 	horizontal-align: center;
 	flow-children: down;
@@ -6044,9 +6116,15 @@
 	padding: 3px 0px;
 }
 
-.UpgradeBox .UpgradeInfo .UpgradeName
+.UpgradeBox .UpgradeInfo .UpgradeNameRow
 {
 	width: 100%;
+	flow-children: right;
+}
+
+.UpgradeBox .UpgradeInfo .UpgradeName
+{
+	width: fit-children;
 	font-size: 28px;
 	color: #CABEA2;
 	text-align: left;

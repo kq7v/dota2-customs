@@ -43,4 +43,4 @@ GameUI.CustomUIConfig().trap = {
 		"VisionNighttimeRange": 0,
 		"BoundsHullName": "DOTA_HULL_SIZE_SMALL"
 	}
-};
+};

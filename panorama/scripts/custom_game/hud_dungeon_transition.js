@@ -55,4 +55,4 @@ function DungeonTransition() {
     }
   });
 }
-libs.render(() => libs.createComponent(DungeonTransition, {}), $.GetContextPanel());
+libs.render(() => libs.createComponent(DungeonTransition, {}), $.GetContextPanel());

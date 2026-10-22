@@ -2643,11 +2643,11 @@ const open_store = solid_utils.createServiceNetData("open_shop", {
 });
 const [targetPrivilegeItem, setTargetPrivilegeItem] = libs.createSignal();
 let targetPrivilegeItemKey = 0;
-const separatedStoreTags = new Set(["Fish", "Explore", "Flowers", "StarStone", "BoardSlotGift", "BoardSlot", "MiningGift", "Mining", "pvp_shop", "MoonDraw"]);
-const staticStoreMenus = ["collection_vip", "collection_treasure"];
+const separatedStoreTags = new Set(["Fish", "Explore", "Flowers", "StarStone", "BoardSlotGift", "BoardSlot", "MiningGift", "Mining", "pvp_shop"]);
+const staticStoreMenus = ["collection_vip", "collection_treasure", "MoonDraw"];
 const seaMysteryPoolID = "3001";
 const hasSeaMysteryPool = () => KeyValues.drawcards[seaMysteryPoolID] != undefined;
-const storeMenuOrder = ["Privilege", "Hot", "Gift", "Resource", "collection_vip", "collection_treasure", "Moon", "Universe"];
+const storeMenuOrder = ["Privilege", "Hot", "Gift", "Resource", "MoonDraw", "collection_vip", "collection_treasure", "Moon", "Universe"];
 const getStoreMenuOrder = tag => {
   const order = storeMenuOrder.indexOf(tag);
   return order == -1 ? storeMenuOrder.length : order;
@@ -2752,6 +2752,9 @@ function Store() {
   const playerTokens = solid_utils.createServiceNetData("player_tokens", {});
   const [seaMysteryCurrencyValues, setSeaMysteryCurrencyValues] = libs.createSignal();
   const tokenIDs = libs.createMemo(() => {
+    if (menuName() == "MoonDraw") {
+      return [110001, 110026];
+    }
     if (menuName() == "Active") {
       return [110001, 110005];
     }
@@ -2923,4 +2926,4 @@ if (!CustomUIConfig.__LocalISOCode) {
     uid,
     response_key: sCommand
   });
-}
+}

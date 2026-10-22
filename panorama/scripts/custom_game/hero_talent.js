@@ -399,4 +399,4 @@ function SetupTooltip() {
   tooltip_base.InitTooltipStyle(root);
   root.style.padding = "-27px";
   root.SetPanelEvent("ontooltiploaded", SetupTooltip);
-})();
+})();

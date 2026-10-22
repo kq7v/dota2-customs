@@ -25,8 +25,8 @@ local n = l.GetHuntFieldBuffConfig
 local o = l.GetHuntFieldEffectError
 local p = require("mechanics.hunt_field_effects")
 local q = p.CHuntFieldEffects
-local r = require("modifiers.hunt_boss.modifier_hunt_potion")
-local s = r.GetHuntPotionController
+local r = require("mechanics.hunt_field_buff")
+local s = r.CHuntPotionSupply
 local t = require("class.dungeon_helper")
 local u = t.AnalyzeCenterPositions
 k.CHuntEffectTestSession = c()
@@ -53,7 +53,7 @@ function v.Catalog(self)
 end
 function v.prototype.Has(self, A)
 	if A == "potion" then
-		return IsValid(self.potion)
+		return self.potion ~= nil and not self.potion:IsDisposed()
 	end
 	local C = m[A]
 	if C ~= nil then
@@ -152,16 +152,13 @@ function v.prototype.Remove(self, A, I)
 	if A == "potion" then
 		local J = self.potion
 		self.potion = nil
-		if IsValid(J) then
+		if J ~= nil and not J:IsDisposed() then
 			if I then
-				J:RemoveModifierByName("modifier_hunt_potion")
+				J:Dispose()
 			else
-				local K = s(nil, J)
-				if K ~= nil then
-					K:SetStackCount(2)
-				end
-				local L = self.endingPotions
-				L[#L + 1] = J
+				J:Stop()
+				local K = self.endingPotions
+				K[#K + 1] = J
 			end
 		end
 	end
@@ -173,8 +170,8 @@ function v.prototype.Remove(self, A, I)
 		else
 			G:Stop()
 			if not G:IsDisposed() then
-				local M = self.endingEffects
-				M[#M + 1] = G
+				local L = self.endingEffects
+				L[#L + 1] = G
 			end
 		end
 	end
@@ -197,21 +194,19 @@ function v.prototype.Clear(self, I)
 		end
 		self.endingEffects = {}
 		for z, J in ipairs(self.endingPotions) do
-			if IsValid(J) then
-				J:RemoveModifierByName("modifier_hunt_potion")
-			end
+			J:Dispose()
 		end
 		self.endingPotions = {}
 	end
 	self:CleanupFinishedEffects()
 end
 function v.prototype.Snapshot(self)
-	local N = k.CHuntEffectTestSession:Catalog()
+	local M = k.CHuntEffectTestSession:Catalog()
 	return {
 		hero_ent_index = self.hero:entindex(),
-		effects = N,
+		effects = M,
 		active_ids = e(
-			h(N, function(z, G)
+			h(M, function(z, G)
 				return self:Has(G.id)
 			end),
 			function(z, G)
@@ -222,6 +217,13 @@ function v.prototype.Snapshot(self)
 	}
 end
 function v.prototype.Maintain(self)
+	local N = self.potion
+	if N ~= nil then
+		N:Update()
+	end
+	for z, J in ipairs(self.endingPotions) do
+		J:Update()
+	end
 	self:CleanupFinishedEffects()
 	if (#d(self.randomEffects) > 0 or #self.endingEffects > 0) and IsValid(self.hero) and self.hero:IsAlive() then
 		self:EnsureTarget()
@@ -232,11 +234,11 @@ function v.prototype.CleanupFinishedEffects(self)
 		return not G:IsDisposed()
 	end)
 	self.endingPotions = h(self.endingPotions, function(z, J)
-		return IsValid(J) and J:HasModifier("modifier_hunt_potion")
+		return not J:IsDisposed()
 	end)
 	if #d(self.randomEffects) == 0 and #self.endingEffects == 0 then
 		self:RemoveTarget()
-		if not IsValid(self.potion) and #self.endingPotions == 0 then
+		if not self:Has("potion") and #self.endingPotions == 0 then
 			i(self.validGridPositions, 0)
 			self.center = nil
 		end
@@ -314,37 +316,14 @@ function v.prototype.AddPotion(self, B)
 		return false
 	end
 	self:EnsurePositions()
-	local J = CreateModifierThinker(
-		self.hero,
-		nil,
-		"modifier_hunt_potion",
-		{
-			firstDelay = B.time,
-			interval = T.Interval,
-			count = T.Count,
-			lifetime = T.Lifetime,
-			item_health_potion_1 = T.item_health_potion_1 or 0,
-			item_health_potion_2 = T.item_health_potion_2 or 0,
-			item_health_potion_3 = T.item_health_potion_3 or 0,
-			testPlayerID = self.playerID,
-		},
-		self.center,
-		DOTA_TEAM_NEUTRALS,
-		false
-	)
-	if not IsValid(J) then
-		return false
-	end
-	local U = s(nil, J)
-	if U == nil then
-		UTIL_Remove(J)
-		return false
-	end
-	U:SetSpawnContext(self.validGridPositions, function()
+	local J = f(s, B, self.validGridPositions, function()
 		return IsValid(self.hero) and { self.hero } or {}
 	end)
+	if J:IsDisposed() then
+		return false
+	end
 	self.potion = J
-	U:SetStackCount(1)
+	J:SetPaused(false)
 	return true
 end
 function v.prototype.EnsurePositions(self)
@@ -357,11 +336,11 @@ function v.prototype.EnsurePositions(self)
 	self:Log((("positions center=" .. VectorToString(self.center)) .. " grids=") .. tostring(#self.validGridPositions))
 end
 function v.prototype.LogTargetFailure(self, H)
-	local V = GameRules:GetGameTime()
-	if V < self.nextTargetLogAt then
+	local U = GameRules:GetGameTime()
+	if U < self.nextTargetLogAt then
 		return
 	end
-	self.nextTargetLogAt = V + 5
+	self.nextTargetLogAt = U + 5
 	self:Log("target blocked: " .. H)
 end
 function v.prototype.Log(self, H)

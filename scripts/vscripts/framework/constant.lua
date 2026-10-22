@@ -91,6 +91,7 @@ SHOP_REFRESH_BASE_COST = 50
 SHOP_REFRESH_COST_INCREMENT = 10
 BLESS_GIVEUP_REWARD = 10
 BLESS_GIVEUP_RARITY_REWARD = 5
+SELECTION_KEY_FUNCTIONS = { KeyFunction.Option1, KeyFunction.Option2, KeyFunction.Option3 }
 DEFAULT_KEYBOARD_BINDINGS = {
 	[KeyFunction.Up] = "W",
 	[KeyFunction.Down] = "S",
@@ -104,6 +105,9 @@ DEFAULT_KEYBOARD_BINDINGS = {
 	[KeyFunction.Interact] = "E",
 	[KeyFunction.Attribute] = "`",
 	[KeyFunction.Upgrade] = "Q",
+	[KeyFunction.Option1] = "scancode30",
+	[KeyFunction.Option2] = "scancode31",
+	[KeyFunction.Option3] = "scancode32",
 }
 DEFAULT_KEYBOARD_BINDINGS_LEFT_CLICK = c(
 	{},

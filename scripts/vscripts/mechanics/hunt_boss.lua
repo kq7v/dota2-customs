@@ -40,10 +40,13 @@ local C = "abyss"
 local D = "gem_dungeon_enter"
 local E = 64
 local F = 30
-local G = c()
-G.name = "CHuntBossBattle"
-d(G, CModule)
-function G.prototype.____constructor(self, ...)
+local G = 0.1
+local H = 1
+local I = 4096
+local J = c()
+J.name = "CHuntBossBattle"
+d(J, CModule)
+function J.prototype.____constructor(self, ...)
 	CModule.prototype.____constructor(self, ...)
 	self.logPrefix = "[HuntBossBattle]"
 	self.runId = 0
@@ -72,108 +75,108 @@ function G.prototype.____constructor(self, ...)
 	self.bossSlots = {}
 	self.fieldBuffManager = e(A)
 end
-function G.prototype.init(self, H)
+function J.prototype.init(self, K)
 	self:UnregisterEvents()
 	self.startEventId = Event:Register("hunt_boss_start", self.Start, self)
-	self.stopEventId = Event:Register("hunt_boss_stop", function(I, J)
-		local K
-		local L
-		L = J.reason
-		K = J.unloadScene
-		return self:Stop(L, K ~= false)
+	self.stopEventId = Event:Register("hunt_boss_stop", function(L, M)
+		local N
+		local O
+		O = M.reason
+		N = M.unloadScene
+		return self:Stop(O, N ~= false)
 	end, self)
-	self.playerReviveFailedEventId = Event:Register("hunt_boss_player_revive_failed", function(I, M)
-		return self:OnPlayerReviveFailed(M.playerID)
+	self.playerReviveFailedEventId = Event:Register("hunt_boss_player_revive_failed", function(L, P)
+		return self:OnPlayerReviveFailed(P.playerID)
 	end, self)
-	self.intermissionReadyEventId = CustomUIEvent("hunt_boss_intermission_ready", function(M)
-		return self:OnIntermissionReady(M.PlayerID)
+	self.intermissionReadyEventId = CustomUIEvent("hunt_boss_intermission_ready", function(P)
+		return self:OnIntermissionReady(P.PlayerID)
 	end)
-	self.intermissionRetreatEventId = CustomUIEvent("hunt_boss_intermission_retreat", function(M)
-		return self:OnIntermissionRetreat(M.PlayerID)
+	self.intermissionRetreatEventId = CustomUIEvent("hunt_boss_intermission_retreat", function(P)
+		return self:OnIntermissionRetreat(P.PlayerID)
 	end)
-	if not H then
+	if not K then
 		self:ClearRuntimeState()
 	end
 end
-function G.prototype.DebugStartHuntBoss(self, N)
+function J.prototype.DebugStartHuntBoss(self, Q)
 	if not IsInToolsMode() then
 		return
 	end
-	local O = GameModeManager:GetModeDifficultyProfile(GameModeEnum.HuntBoss)
-	local P = O and O.configuredDifficulties
-	if not (P and f(O and O.configuredDifficulties, N)) then
-		self:error((self.logPrefix .. " invalid hunt difficulty=") .. tostring(N))
+	local R = GameModeManager:GetModeDifficultyProfile(GameModeEnum.HuntBoss)
+	local S = R and R.configuredDifficulties
+	if not (S and f(R and R.configuredDifficulties, Q)) then
+		self:error((self.logPrefix .. " invalid hunt difficulty=") .. tostring(Q))
 		return
 	end
-	local Q = toFiniteNumber
-	local R = KeyValues.hunt_intelligence
-	local S = R and R[tostring(N)]
-	if S ~= nil then
-		S = S.dungeon_diff
+	local T = toFiniteNumber
+	local U = KeyValues.hunt_intelligence
+	local V = U and U[tostring(Q)]
+	if V ~= nil then
+		V = V.dungeon_diff
 	end
-	local T = Q(S, 0)
-	self:DebugPrepareHuntSave(T, function(I, U, V)
-		local W = {}
-		self.debugPrepareRequest = W
-		local X
-		X = function(I, Y)
-			if self.debugPrepareRequest ~= W then
+	local W = T(V, 0)
+	self:DebugPrepareHuntSave(W, function(L, X, Y)
+		local Z = {}
+		self.debugPrepareRequest = Z
+		local _
+		_ = function(L, a0)
+			if self.debugPrepareRequest ~= Z then
 				return
 			end
-			if Y >= #U then
+			if a0 >= #X then
 				self.debugPrepareRequest = nil
-				local Z = self:StartPreparedHuntBoss(U[1], N, V)
-				if not Z.success then
+				local a1 = self:StartPreparedHuntBoss(X[1], Q, Y)
+				if not a1.success then
 					self:error(
 						(
 							(
-								(((self.logPrefix .. " debug start difficulty=") .. tostring(N)) .. " code=")
-								.. tostring(Z.code or "none")
+								(((self.logPrefix .. " debug start difficulty=") .. tostring(Q)) .. " code=")
+								.. tostring(a1.code or "none")
 							) .. " reason="
-						) .. (Z.reason or "none")
+						) .. (a1.reason or "none")
 					)
 				end
 				return
 			end
-			local _ = U[Y + 1]
-			local a0 = math.max(0, 100 - PlayerData:GetServiceItemCount(_, "110025"))
-			if a0 == 0 then
-				X(nil, Y + 1)
+			local a2 = X[a0 + 1]
+			local a3 = math.max(0, 100 - PlayerData:GetServiceItemCount(a2, "110025"))
+			if a3 == 0 then
+				_(nil, a0 + 1)
 				return
 			end
 			CommonService:CallAction(
 				"/v1/gm/add_item",
-				_,
-				{ add_items = { { item_id = 110025, amounts = a0 } } },
-				function(I, a1, a2)
-					if self.debugPrepareRequest ~= W then
+				a2,
+				{ add_items = { { item_id = 110025, amounts = a3 } } },
+				function(L, a4, a5)
+					if self.debugPrepareRequest ~= Z then
 						return
 					end
-					if a2.code ~= 0 and a2.code ~= 200 then
+					if a5.code ~= 0 and a5.code ~= 200 then
 						self.debugPrepareRequest = nil
 						self:error(
 							(
 								(
 									(
-										((self.logPrefix .. " debug intelligence failed player=") .. tostring(_))
+										((self.logPrefix .. " debug intelligence failed player=") .. tostring(a2))
 										.. " code="
-									) .. tostring(a2.code)
+									) .. tostring(a5.code)
 								) .. " message="
-							) .. (a2.message or "")
+							) .. (a5.message or "")
 						)
-						ErrorMessage("DemoHuntBoss_AddIntelligenceFailed", _)
+						ErrorMessage("DemoHuntBoss_AddIntelligenceFailed", a2)
 						return
 					end
-					CommonService:CommonCallback(_, a2, false)
-					X(nil, Y + 1)
+					CommonService:CommonCallback(a2, a5, false)
+					_(nil, a0 + 1)
 				end,
 				false
 			)
 		end
-		X(nil, 0)
-	end, N)
+		_(nil, 0)
+	end, Q)
 end
-function G.prototype.DebugPrepareHuntSave(self, T, a3, a4)
+function J.prototype.DebugPrepareHuntSave(self, W, a6, a7)
 	if not IsInToolsMode() or self.debugPrepareRequest ~= nil then
 		return
 	end
@@ -181,59 +184,59 @@ function G.prototype.DebugPrepareHuntSave(self, T, a3, a4)
 		self:error(self.logPrefix .. " finish the current game mode before preparing debug hunt saves")
 		return
 	end
-	if not g(T) or T ~= math.floor(T) or T < 1 or T > MAX_DIFFICULTY or KeyValues.difficulty[tostring(T)] == nil then
-		self:error((self.logPrefix .. " invalid common difficulty=") .. tostring(T))
+	if not g(W) or W ~= math.floor(W) or W < 1 or W > MAX_DIFFICULTY or KeyValues.difficulty[tostring(W)] == nil then
+		self:error((self.logPrefix .. " invalid common difficulty=") .. tostring(W))
 		return
 	end
-	local U = {}
-	Game:EachPlayer(function(I, _)
-		U[#U + 1] = _
+	local X = {}
+	Game:EachPlayer(function(L, a2)
+		X[#X + 1] = a2
 	end)
-	if #U == 0 then
+	if #X == 0 then
 		return
 	end
-	local W = { sourceKey = self:SelectDebugSourceKey() }
-	self.debugPrepareRequest = W
-	local V = {}
-	local X
-	X = function(I, Y)
-		if self.debugPrepareRequest ~= W then
+	local Z = { sourceKey = self:SelectDebugSourceKey() }
+	self.debugPrepareRequest = Z
+	local Y = {}
+	local _
+	_ = function(L, a0)
+		if self.debugPrepareRequest ~= Z then
 			return
 		end
-		if Y >= #U then
-			local function a5()
+		if a0 >= #X then
+			local function a8()
 				self.debugPrepareRequest = nil
-				if a3 ~= nil then
-					a3(nil, U, V)
+				if a6 ~= nil then
+					a6(nil, X, Y)
 				end
 			end
-			if W.commonMatchID ~= nil then
-				self:PrepareDebugMatchID(a5)
+			if Z.commonMatchID ~= nil then
+				self:PrepareDebugMatchID(a8)
 			else
-				a5(nil)
+				a8(nil)
 			end
 			return
 		end
-		local _ = U[Y + 1]
-		self:EnsureDebugHuntSave(_, T, function(I, a6)
-			if self.debugPrepareRequest ~= W then
+		local a2 = X[a0 + 1]
+		self:EnsureDebugHuntSave(a2, W, function(L, a9)
+			if self.debugPrepareRequest ~= Z then
 				return
 			end
-			if a6 == nil then
+			if a9 == nil then
 				self.debugPrepareRequest = nil
 				return
 			end
-			V[_] = a6
-			X(nil, Y + 1)
-		end, a4)
+			Y[a2] = a9
+			_(nil, a0 + 1)
+		end, a7)
 	end
 	self:PrepareDebugMatchID(function()
-		return X(nil, 0)
+		return _(nil, 0)
 	end)
 end
-function G.prototype.PrepareDebugMatchID(self, a3)
-	local W = self.debugPrepareRequest
-	if not IsInToolsMode() or W == nil then
+function J.prototype.PrepareDebugMatchID(self, a6)
+	local Z = self.debugPrepareRequest
+	if not IsInToolsMode() or Z == nil then
 		return
 	end
 	if Match:AdvanceMatchID() == nil then
@@ -241,293 +244,293 @@ function G.prototype.PrepareDebugMatchID(self, a3)
 		self:error(self.logPrefix .. " debug match ID sequence allocation failed")
 		return
 	end
-	a3(nil)
+	a6(nil)
 end
-function G.prototype.SelectDebugSourceKey(self)
-	local a7 = {}
-	Game:EachPlayer(function(I, a8)
-		local a9 = CommonService:GetPlayerServiceNetTable(a8, "player_keys") or {}
-		for aa, ab in pairs(a9) do
+function J.prototype.SelectDebugSourceKey(self)
+	local aa = {}
+	Game:EachPlayer(function(L, ab)
+		local ac = CommonService:GetPlayerServiceNetTable(ab, "player_keys") or {}
+		for ad, ae in pairs(ac) do
 			do
-				if ab.id <= 0 then
-					goto ac
+				if ae.id <= 0 then
+					goto af
 				end
-				a7[#a7 + 1] = { key = ab.id, owner_id = a8, key_data = ab }
+				aa[#aa + 1] = { key = ae.id, owner_id = ab, key_data = ae }
 			end
-			::ac::
+			::af::
 		end
 	end)
-	local ad = h(a7, function(I, ae)
-		return ae.key_data.intensity >= 1 and ae.key_data.intensity <= 3
+	local ag = h(aa, function(L, ah)
+		return ah.key_data.intensity >= 1 and ah.key_data.intensity <= 3
 	end)
-	local af = #ad > 0 and ad or a7
-	return #af > 0 and af[RandomInt(0, #af - 1) + 1] or nil
+	local ai = #ag > 0 and ag or aa
+	return #ai > 0 and ai[RandomInt(0, #ai - 1) + 1] or nil
 end
-function G.prototype.GetPlayerHuntSaves(self, a8)
-	local ag = CommonService:GetPlayerServiceNetTable(a8, "player_hunt_save_datas") or {}
-	local ah = {}
-	for aa, ai in pairs(ag) do
+function J.prototype.GetPlayerHuntSaves(self, ab)
+	local aj = CommonService:GetPlayerServiceNetTable(ab, "player_hunt_save_datas") or {}
+	local ak = {}
+	for ad, al in pairs(aj) do
 		do
-			if ai.diff <= 0 or ai.data == "" then
-				goto aj
+			if al.diff <= 0 or al.data == "" then
+				goto am
 			end
-			ah[tostring(ai.slot_id)] = ai
+			ak[tostring(al.slot_id)] = al
 		end
-		::aj::
+		::am::
 	end
-	return ah
+	return ak
 end
-function G.prototype.EnsureDebugHuntSave(self, a8, T, a3, a4)
-	local W = self.debugPrepareRequest
-	local ak
-	if a4 ~= nil then
-		ak = HuntSaveArchive:GetAutoSelectSlotID(a8, a4)
+function J.prototype.EnsureDebugHuntSave(self, ab, W, a6, a7)
+	local Z = self.debugPrepareRequest
+	local an
+	if a7 ~= nil then
+		an = HuntSaveArchive:GetAutoSelectSlotID(ab, a7)
 	else
-		ak = nil
+		an = nil
 	end
-	local al = ak
-	if al ~= nil then
-		a3(nil, al)
+	local ao = an
+	if ao ~= nil then
+		a6(nil, ao)
 		return
 	end
-	local function am(I, L, an)
-		if an == nil then
-			an = "DemoHuntBoss_SaveFailed"
+	local function ap(L, O, aq)
+		if aq == nil then
+			aq = "DemoHuntBoss_SaveFailed"
 		end
-		self:error((((self.logPrefix .. " debug save player=") .. tostring(a8)) .. " failed: ") .. L)
-		ErrorMessage(an, a8)
-		a3(nil)
+		self:error((((self.logPrefix .. " debug save player=") .. tostring(ab)) .. " failed: ") .. O)
+		ErrorMessage(aq, ab)
+		a6(nil)
 	end
-	local ah = self:GetPlayerHuntSaves(a8)
-	local a6 = 1
-	while a6 <= 5 and ah[tostring(a6)] ~= nil do
-		a6 = a6 + 1
+	local ak = self:GetPlayerHuntSaves(ab)
+	local a9 = 1
+	while a9 <= 5 and ak[tostring(a9)] ~= nil do
+		a9 = a9 + 1
 	end
-	if a6 > 5 then
-		am(nil, "all five save slots are occupied", "DemoHuntBoss_SaveSlotsFull")
+	if a9 > 5 then
+		ap(nil, "all five save slots are occupied", "DemoHuntBoss_SaveSlotsFull")
 		return
 	end
-	local ao = Player:GetHero(a8)
-	if not IsValid(ao) then
-		am(nil, "hero is not selected")
+	local ar = Player:GetHero(ab)
+	if not IsValid(ar) then
+		ap(nil, "hero is not selected")
 		return
 	end
-	local ap = math.floor(Login:GetServiceTimestamp())
-	local aq = W and W.sourceKey
-	local ar = aq and aq.key_data.intensity or 0
-	local as = ao:GetUnitName()
-	local at = math.floor
-	local au = DamageCounter:GetPlayerDamageCount(a8)
-	local av = {
-		time = ap,
-		strength = ar,
-		hero_name = as,
-		total_damage = at(au and au.totalDamage or 0),
-		blessings = Bless:GetPlayerBlessDetails(a8),
+	local as = math.floor(Login:GetServiceTimestamp())
+	local at = Z and Z.sourceKey
+	local au = at and at.key_data.intensity or 0
+	local av = ar:GetUnitName()
+	local aw = math.floor
+	local ax = DamageCounter:GetPlayerDamageCount(ab)
+	local ay = {
+		time = as,
+		strength = au,
+		hero_name = av,
+		total_damage = aw(ax and ax.totalDamage or 0),
+		blessings = Bless:GetPlayerBlessDetails(ab),
 		artifacts = i(
-			h(ao:GetAllItems(), function(I, aw)
-				return IsValid(aw) and KeyValues.artifact[aw:GetAbilityName()] ~= nil
+			h(ar:GetAllItems(), function(L, az)
+				return IsValid(az) and KeyValues.artifact[az:GetAbilityName()] ~= nil
 			end),
-			function(I, aw)
-				return { item_name = aw:GetAbilityName(), level = aw:GetLevel() }
+			function(L, az)
+				return { item_name = az:GetAbilityName(), level = az:GetLevel() }
 			end
 		),
 		ability_upgrades = i(
-			h(AbilityUpgrade:GetAbilityUpgrades(ao), function(I, ax)
-				return not AbilityUpgrade:IsServiceUpgrade(ax.name)
+			h(AbilityUpgrade:GetAbilityUpgrades(ar), function(L, aA)
+				return not AbilityUpgrade:IsServiceUpgrade(aA.name)
 			end),
-			function(I, ax)
-				return { name = ax.name, level = ax.level }
+			function(L, aA)
+				return { name = aA.name, level = aA.level }
 			end
 		),
-		attributes = HuntSaveArchive:GetAttributes(a8),
+		attributes = HuntSaveArchive:GetAttributes(ab),
 	}
-	for I, ay in ipairs(Bless:DrawBless(a8, 3) or {}) do
-		local az = av.blessings
-		az[#az + 1] = { name = ay.name, rarity = ay.rarity }
+	for L, aB in ipairs(Bless:DrawBless(ab, 3) or {}) do
+		local aC = ay.blessings
+		aC[#aC + 1] = { name = aB.name, rarity = aB.rarity }
 	end
-	local aA = i(av.artifacts, function(I, aB)
-		return aB.item_name
+	local aD = i(ay.artifacts, function(L, aE)
+		return aE.item_name
 	end)
-	for I, aB in ipairs(Artifact:DrawArtifact(a8, 3, aA) or {}) do
-		local aC = av.artifacts
-		aC[#aC + 1] = { item_name = aB.name, level = aB.rarity }
+	for L, aE in ipairs(Artifact:DrawArtifact(ab, 3, aD) or {}) do
+		local aF = ay.artifacts
+		aF[#aF + 1] = { item_name = aE.name, level = aE.rarity }
 	end
-	local aD = {}
-	for aE, aF in pairs(AbilityUpgrade.kv) do
+	local aG = {}
+	for aH, aI in pairs(AbilityUpgrade.kv) do
 		do
-			if type(aF) ~= "table" then
-				goto aG
+			if type(aI) ~= "table" then
+				goto aJ
 			end
-			if toFiniteNumber(aF.Hidden, 0) == 1 or AbilityUpgrade:IsServiceUpgrade(aE) then
-				goto aG
+			if toFiniteNumber(aI.Hidden, 0) == 1 or AbilityUpgrade:IsServiceUpgrade(aH) then
+				goto aJ
 			end
 			if
-				not AbilityUpgrade:CanApplyAbilityUpgrade(ao, aE)
-				or j(av.ability_upgrades, function(I, ax)
-					return ax.name == aE
+				not AbilityUpgrade:CanApplyAbilityUpgrade(ar, aH)
+				or j(ay.ability_upgrades, function(L, aA)
+					return aA.name == aH
 				end)
 			then
-				goto aG
+				goto aJ
 			end
-			aD[#aD + 1] = aE
+			aG[#aG + 1] = aH
 		end
-		::aG::
+		::aJ::
 	end
 	do
-		local Y = 0
-		while Y < 3 and #aD > 0 do
-			local aH = RandomInt(0, #aD - 1)
-			local aI = av.ability_upgrades
-			aI[#aI + 1] = { name = aD[aH + 1], level = 1 }
-			k(aD, aH, 1)
-			Y = Y + 1
+		local a0 = 0
+		while a0 < 3 and #aG > 0 do
+			local aK = RandomInt(0, #aG - 1)
+			local aL = ay.ability_upgrades
+			aL[#aL + 1] = { name = aG[aK + 1], level = 1 }
+			k(aG, aK, 1)
+			a0 = a0 + 1
 		end
 	end
-	local aJ = Match:GetMatchID()
-	local function ai()
-		local aK = { match_id = aJ, slot_id = a6, data = json.encode(av) }
-		CommonService:CallAction("/v1/hunt/save_data", a8, aK, function(I, aL, aM)
-			if self.debugPrepareRequest ~= W then
+	local aM = Match:GetMatchID()
+	local function al()
+		local aN = { match_id = aM, slot_id = a9, data = json.encode(ay) }
+		CommonService:CallAction("/v1/hunt/save_data", ab, aN, function(L, aO, aP)
+			if self.debugPrepareRequest ~= Z then
 				return
 			end
-			if aM.code ~= 0 and aM.code ~= 200 then
-				am(nil, (("save_data code=" .. tostring(aM.code)) .. " message=") .. (aM.message or ""))
+			if aP.code ~= 0 and aP.code ~= 200 then
+				ap(nil, (("save_data code=" .. tostring(aP.code)) .. " message=") .. (aP.message or ""))
 				return
 			end
-			CommonService:CommonCallback(a8, aM, false)
-			a3(nil, a6)
+			CommonService:CommonCallback(ab, aP, false)
+			a6(nil, a9)
 		end, false)
 	end
-	if (W and W.commonMatchID) == aJ then
-		ai(nil)
+	if (Z and Z.commonMatchID) == aM then
+		al(nil)
 		return
 	end
-	local aN = {}
-	Game:EachPlayer(function(I, _)
-		aN[tostring(PlayerResource:GetSteamAccountID(_))] = { hero_id = PlayerResource:GetSelectedHeroID(_) }
+	local aQ = {}
+	Game:EachPlayer(function(L, a2)
+		aQ[tostring(PlayerResource:GetSteamAccountID(a2))] = { hero_id = PlayerResource:GetSelectedHeroID(a2) }
 	end)
-	local aO = { diff = T }
-	if (W and W.sourceKey) ~= nil then
-		aO.key_id = W.sourceKey.key
-		aO.key_owner_uid = PlayerResource:GetSteamAccountID(W.sourceKey.owner_id)
+	local aR = { diff = W }
+	if (Z and Z.sourceKey) ~= nil then
+		aR.key_id = Z.sourceKey.key
+		aR.key_owner_uid = PlayerResource:GetSteamAccountID(Z.sourceKey.owner_id)
 	end
-	local aP = false
+	local aS = false
 	Match:SendMatchBeginRequest(
-		{ match_id = aJ, match_type = "common", player_details = aN, common_match_detail = aO },
-		function(I, aQ, aR, aS)
-			if aP or self.debugPrepareRequest ~= W then
+		{ match_id = aM, match_type = "common", player_details = aQ, common_match_detail = aR },
+		function(L, aT, aU, aV)
+			if aS or self.debugPrepareRequest ~= Z then
 				return
 			end
-			aP = true
-			if not aQ then
-				am(nil, (("common match_begin code=" .. tostring(aR or "unknown")) .. " message=") .. (aS or ""))
+			aS = true
+			if not aT then
+				ap(nil, (("common match_begin code=" .. tostring(aU or "unknown")) .. " message=") .. (aV or ""))
 				return
 			end
-			if Match:GetMatchID() ~= aJ then
-				am(nil, "match_id changed while preparing the source match")
+			if Match:GetMatchID() ~= aM then
+				ap(nil, "match_id changed while preparing the source match")
 				return
 			end
-			if W ~= nil then
-				W.commonMatchID = aJ
+			if Z ~= nil then
+				Z.commonMatchID = aM
 			end
-			ai(nil)
+			al(nil)
 		end
 	)
 end
-function G.prototype.StartPreparedHuntBoss(self, a8, N, aT)
+function J.prototype.StartPreparedHuntBoss(self, ab, Q, aW)
 	if not IsInToolsMode() then
 		return { success = false, reason = "Hunt debug start requires tools mode." }
 	end
-	local U = {}
-	Game:EachPlayer(function(I, _)
-		U[#U + 1] = _
+	local X = {}
+	Game:EachPlayer(function(L, a2)
+		X[#X + 1] = a2
 	end)
-	if not f(U, a8) then
+	if not f(X, ab) then
 		return {
 			success = false,
-			reason = ((("Initiator " .. tostring(a8)) .. " is no longer online; players=[") .. table.concat(U, ","))
+			reason = ((("Initiator " .. tostring(ab)) .. " is no longer online; players=[") .. table.concat(X, ","))
 				.. "].",
 		}
 	end
 	if GameModeManager:IsModeRunning() or GameModeManager:IsModeStarting() then
 		return { success = false, reason = "Finish the current game mode before starting a debug hunt." }
 	end
-	local V = {}
-	for I, _ in ipairs(U) do
-		local ao = Player:GetHero(_)
-		if not IsValid(ao) then
-			return { success = false, reason = ("Player " .. tostring(_)) .. " must select a hero first." }
+	local Y = {}
+	for L, a2 in ipairs(X) do
+		local ar = Player:GetHero(a2)
+		if not IsValid(ar) then
+			return { success = false, reason = ("Player " .. tostring(a2)) .. " must select a hero first." }
 		end
-		local aU = aT and aT[_] or HuntSaveArchive:GetAutoSelectSlotID(_, N)
-		if aU == nil then
-			return { success = false, reason = ("Player " .. tostring(_)) .. " hunt save is not ready." }
+		local aX = aW and aW[a2] or HuntSaveArchive:GetAutoSelectSlotID(a2, Q)
+		if aX == nil then
+			return { success = false, reason = ("Player " .. tostring(a2)) .. " hunt save is not ready." }
 		end
-		V[_] = aU
+		Y[a2] = aX
 	end
-	local aV = GameModeManager:SelectMode(GameModeEnum.HuntBoss, a8)
-	if not aV.success then
-		return l({}, aV, { reason = "SelectMode: " .. (aV.reason or "request rejected") })
+	local aY = GameModeManager:SelectMode(GameModeEnum.HuntBoss, ab)
+	if not aY.success then
+		return l({}, aY, { reason = "SelectMode: " .. (aY.reason or "request rejected") })
 	end
-	for I, _ in ipairs(U) do
-		local Z = GameModeManager:SelectDifficulty(_, N)
-		if not Z.success then
+	for L, a2 in ipairs(X) do
+		local a1 = GameModeManager:SelectDifficulty(a2, Q)
+		if not a1.success then
 			return l(
 				{},
-				Z,
-				{ reason = (("SelectDifficulty player=" .. tostring(_)) .. ": ") .. (Z.reason or "request rejected") }
+				a1,
+				{ reason = (("SelectDifficulty player=" .. tostring(a2)) .. ": ") .. (a1.reason or "request rejected") }
 			)
 		end
 	end
-	local aW = GameModeManager:StartSelectedMode(0, { huntSlotIDs = V })
-	return aW.success and aW or l({}, aW, { reason = "StartSelectedMode: " .. (aW.reason or "request rejected") })
+	local aZ = GameModeManager:StartSelectedMode(0, { huntSlotIDs = Y })
+	return aZ.success and aZ or l({}, aZ, { reason = "StartSelectedMode: " .. (aZ.reason or "request rejected") })
 end
-function G.prototype.reset(self)
+function J.prototype.reset(self)
 	self.debugPrepareRequest = nil
 	self:Stop("Reset", true)
 end
-function G.prototype.Start(self, M)
+function J.prototype.Start(self, P)
 	self:Stop("Restart", true)
-	if not self:LoadConfigs(M.difficulty, #M.participantPlayerIds) then
+	if not self:LoadConfigs(P.difficulty, #P.participantPlayerIds) then
 		return
 	end
-	local aX, aY = self, "runId"
-	local aZ = aX[aY] + 1
-	aX[aY] = aZ
-	local a_ = aZ
-	self.currentDifficulty = M.difficulty
-	self:CaptureSaveKeyIntensities(M)
+	local a_, b0 = self, "runId"
+	local b1 = a_[b0] + 1
+	a_[b0] = b1
+	local b2 = b1
+	self.currentDifficulty = P.difficulty
+	self:CaptureSaveKeyIntensities(P)
 	self.isLoading = true
 	self.phase = "loading"
-	self.participantPlayerIds = m(M.participantPlayerIds)
-	self.activeParticipantPlayerIds = m(M.participantPlayerIds)
-	local b0 = Entities:FindByName(nil, C)
-	if not IsValid(b0) then
+	self.participantPlayerIds = m(P.participantPlayerIds)
+	self.activeParticipantPlayerIds = m(P.participantPlayerIds)
+	local b3 = Entities:FindByName(nil, C)
+	if not IsValid(b3) then
 		self:error(((self.logPrefix .. " load point '") .. C) .. "' not found")
 		self:Stop("LoadPointMissing", true)
 		return
 	end
 	DungeonManager:ShowLoadingScreen()
-	local b1 = b0:GetAbsOrigin()
-	self.spawnGroup = DOTA_SpawnMapAtPosition(B, b1, true, function(b2)
-		if self:IsActiveRun(a_) then
-			ManuallyTriggerSpawnGroupCompletion(b2)
+	local b4 = b3:GetAbsOrigin()
+	self.spawnGroup = DOTA_SpawnMapAtPosition(B, b4, true, function(b5)
+		if self:IsActiveRun(b2) then
+			ManuallyTriggerSpawnGroupCompletion(b5)
 		end
 	end, function()
-		if self:IsActiveRun(a_) then
-			self:OnMapLoaded(a_)
+		if self:IsActiveRun(b2) then
+			self:OnMapLoaded(b2)
 			DungeonManager:HideLoadingScreen()
 		end
 	end, nil)
 end
-function G.prototype.OnMapLoaded(self, a_)
-	local b3 = self:FindInfoTarget(D)
-	if not IsValid(b3) then
+function J.prototype.OnMapLoaded(self, b2)
+	local b6 = self:FindInfoTarget(D)
+	if not IsValid(b6) then
 		self:error(((self.logPrefix .. " prefab entry '") .. D) .. "' not found")
 		self:Stop("EnterPointMissing", true)
 		return
 	end
-	self.battleCenter = b3:GetAbsOrigin()
+	self.battleCenter = b6:GetAbsOrigin()
 	self:CaptureEntryPositions()
 	self:TeleportPlayers(self.battleCenter)
 	self.fieldBuffManager:StartRun(self:GetParticipantHeroes(), self.battleCenter, function()
@@ -537,84 +540,95 @@ function G.prototype.OnMapLoaded(self, a_)
 	self.isRunning = true
 	self.phase = "battle"
 	self:RegisterKillListener()
-	self:StartLevel(a_, 1)
+	self:StartLevel(b2, 1)
+	if self.isRunning then
+		self:StartBattleThink(b2)
+	end
 end
-function G.prototype.StartLevel(self, a_, b4)
-	local aF = self.levelConfigByNumber[b4]
-	if not self:IsActiveRun(a_) or not self.isRunning or aF == nil then
+function J.prototype.StartLevel(self, b2, b7)
+	local aI = self.levelConfigByNumber[b7]
+	if not self:IsActiveRun(b2) or not self.isRunning or aI == nil then
 		self:FinishBattle("LevelConfigMissing")
 		return
 	end
 	self.phase = "battle"
-	self.currentLevel = b4
+	self.currentLevel = b7
 	self.currentWave = 0
-	if not self.fieldBuffManager:PrepareLevel(b4) then
+	if not self.fieldBuffManager:PrepareLevel(b7) then
 		self:FinishBattle("FieldBuffConfigInvalid")
 		return
 	end
 	self:SyncState()
-	self:StartNextWave(a_, aF)
+	self:StartNextWave(b2, aI)
 end
-function G.prototype.StartNextWave(self, a_, b5)
-	local b6 = b5.waves
-	local b7, b8 = self, "currentWave"
-	local b9 = b7[b8]
-	b7[b8] = b9 + 1
-	local ba = b6[b9 + 1]
-	if ba == nil then
-		self:OnLevelCleared(a_)
+function J.prototype.StartNextWave(self, b2, b8)
+	local b9 = b8.waves
+	local ba, bb = self, "currentWave"
+	local bc = ba[bb]
+	ba[bb] = bc + 1
+	local bd = b9[bc + 1]
+	if bd == nil then
+		self:OnLevelCleared(b2)
 		return
 	end
-	if self.battleCenter == nil or ba.enemyPoolWeights.ValidCount <= 0 then
+	if self.battleCenter == nil or bd.enemyPoolWeights.ValidCount <= 0 then
 		self:FinishBattle("WaveConfigInvalid")
 		return
 	end
-	local bb = ba.enemyPoolWeights:Random()
-	local bc
-	if bb == nil then
-		bc = {}
+	local be = bd.enemyPoolWeights:Random()
+	local bf
+	if be == nil then
+		bf = {}
 	else
-		local bd = self.enemyPools[bb]
-		bc = bd and bd:MultipleRandomWithoutReplacement(ba.enemyCount) or {}
+		local bg = self.enemyPools[be]
+		bf = bg and bg:MultipleRandomWithoutReplacement(bd.enemyCount) or {}
 	end
-	local be = bc
-	if #be ~= ba.enemyCount then
+	local bh = bf
+	if #bh ~= bd.enemyCount then
 		self:FinishBattle("EnemyPoolRollFailed")
 		return
 	end
 	self.fieldBuffManager:StartOrResumeBattle()
-	local bf, bg = self, "waveSpawnId"
-	local bh = bf[bg] + 1
-	bf[bg] = bh
-	local bi = bh
-	self.pendingEnemySpawnCount = ba.enemyCount
+	local bi, bj = self, "waveSpawnId"
+	local bk = bi[bj] + 1
+	bi[bj] = bk
+	local bl = bk
+	self.pendingEnemySpawnCount = bd.enemyCount
 	self.bossSlots = {}
 	self:SyncState()
 	do
-		local Y = 0
-		while Y < ba.enemyCount do
-			self:SpawnBoss(a_, bi, Y, be[Y + 1], self:GetBossSpawnPosition(self.battleCenter, Y, ba.enemyCount), b5, ba)
-			Y = Y + 1
+		local a0 = 0
+		while a0 < bd.enemyCount do
+			self:SpawnBoss(
+				b2,
+				bl,
+				a0,
+				bh[a0 + 1],
+				self:GetBossSpawnPosition(self.battleCenter, a0, bd.enemyCount),
+				b8,
+				bd
+			)
+			a0 = a0 + 1
 		end
 	end
 end
-function G.prototype.SpawnBoss(self, a_, bi, aU, bj, bk, b5, ba)
-	CreateUnitByNameAsync(bj, bk, true, nil, nil, DOTA_TEAM_BADGUYS, function(bl)
-		if IsValid(bl) then
-			bl:AddNewModifier(bl, nil, "modifier_summon_disabled", {})
+function J.prototype.SpawnBoss(self, b2, bl, aX, bm, bn, b8, bd)
+	CreateUnitByNameAsync(bm, bn, true, nil, nil, DOTA_TEAM_BADGUYS, function(bo)
+		if IsValid(bo) then
+			bo:AddNewModifier(bo, nil, "modifier_summon_disabled", {})
 		end
-		local bm = GameRules:GetGameTime() + 5
+		local bp = GameRules:GetGameTime() + 5
 		Timer:GameTimer(0, function()
-			if not self:IsActiveRun(a_) or not self.isRunning or self.waveSpawnId ~= bi then
-				self:RemoveUnit(bl)
+			if not self:IsActiveRun(b2) or not self.isRunning or self.waveSpawnId ~= bl then
+				self:RemoveUnit(bo)
 				return
 			end
-			if not IsValid(bl) then
+			if not IsValid(bo) then
 				self:FinishBattle("BossSpawnFailed")
 				return
 			end
-			if not bl.__isNotFirstSpawn or not bl:HasModifier("modifier_common") then
-				if GameRules:GetGameTime() >= bm then
+			if not bo.__isNotFirstSpawn or not bo:HasModifier("modifier_common") then
+				if GameRules:GetGameTime() >= bp then
 					self:error(
 						(
 							(
@@ -631,80 +645,80 @@ function G.prototype.SpawnBoss(self, a_, bi, aU, bj, bk, b5, ba)
 																		(
 																			self.logPrefix
 																			.. " boss initialization timed out unit="
-																		) .. bj
+																		) .. bm
 																	) .. " entIndex="
-																) .. tostring(bl:entindex())
+																) .. tostring(bo:entindex())
 															) .. " alive="
-														) .. tostring(bl:IsAlive())
+														) .. tostring(bo:IsAlive())
 													) .. " firstSpawn="
-												) .. tostring(bl.__isNotFirstSpawn)
+												) .. tostring(bo.__isNotFirstSpawn)
 											) .. " common="
-										) .. tostring(bl:HasModifier("modifier_common"))
+										) .. tostring(bo:HasModifier("modifier_common"))
 									) .. " engineHealth="
-								) .. tostring(bl:GetHealth_Engine())
+								) .. tostring(bo:GetHealth_Engine())
 							) .. " engineMaxHealth="
-						) .. tostring(bl:GetMaxHealth_Engine())
+						) .. tostring(bo:GetMaxHealth_Engine())
 					)
-					self:RemoveUnit(bl)
+					self:RemoveUnit(bo)
 					self:FinishBattle("BossInitializationFailed")
 					return
 				end
 				return 0.03
 			end
 			self.pendingEnemySpawnCount = math.max(0, self.pendingEnemySpawnCount - 1)
-			FindClearSpaceForUnit(bl, bk, true)
-			bl:SetForwardVector(RandomVector(1))
-			self:ApplyBossModifiers(bl, b5, ba)
+			FindClearSpaceForUnit(bo, bn, true)
+			bo:SetForwardVector(RandomVector(1))
+			self:ApplyBossModifiers(bo, b8, bd)
 			do
-				local Y = 0
-				while Y < bl:GetAbilityCount() do
+				local a0 = 0
+				while a0 < bo:GetAbilityCount() do
 					do
-						local bn = bl:GetAbilityByIndex(Y)
-						if not IsValid(bn) then
-							goto bo
+						local bq = bo:GetAbilityByIndex(a0)
+						if not IsValid(bq) then
+							goto br
 						end
-						bn:EndCooldown()
-						bn:StartCooldown(1)
+						bq:EndCooldown()
+						bq:StartCooldown(1)
 					end
-					::bo::
-					Y = Y + 1
+					::br::
+					a0 = a0 + 1
 				end
 			end
-			LargeNumberHealth:Refresh(bl)
-			bl:SetHealth(bl:GetMaxHealth())
-			local bp = self.enemies
-			bp[#bp + 1] = bl
-			self.bossSlots[aU + 1] = bl
+			LargeNumberHealth:Refresh(bo)
+			bo:SetHealth(bo:GetMaxHealth())
+			local bs = self.enemies
+			bs[#bs + 1] = bo
+			self.bossSlots[aX + 1] = bo
 			self:SyncState()
-			self:TryCompleteCurrentWave(a_)
+			self:TryCompleteCurrentWave(b2)
 		end)
 	end)
 end
-function G.prototype.TryCompleteCurrentWave(self, a_)
+function J.prototype.TryCompleteCurrentWave(self, b2)
 	if not self.isRunning or self.pendingEnemySpawnCount > 0 or #self.enemies > 0 then
 		return
 	end
-	local b5 = self.levelConfigByNumber[self.currentLevel]
-	if b5 == nil then
+	local b8 = self.levelConfigByNumber[self.currentLevel]
+	if b8 == nil then
 		self:FinishBattle("LevelConfigMissing")
-	elseif self.currentWave < #b5.waves then
+	elseif self.currentWave < #b8.waves then
 		self.fieldBuffManager:PauseBattle()
-		self:StartNextWave(a_, b5)
+		self:StartNextWave(b2, b8)
 	else
-		self:OnLevelCleared(a_)
+		self:OnLevelCleared(b2)
 	end
 end
-function G.prototype.OnLevelCleared(self, a_)
+function J.prototype.OnLevelCleared(self, b2)
 	self.fieldBuffManager:EndLevel()
 	Match:SettleHunt(self.currentLevel, self.activeParticipantPlayerIds)
 	if self.currentLevel >= self.maxLevel then
 		self:FinishBattle("Completed")
 	else
-		self:BeginIntermission(a_)
+		self:BeginIntermission(b2)
 	end
 end
-function G.prototype.BeginIntermission(self, a_)
-	if not self:IsActiveRun(a_) or not self.isRunning then
+function J.prototype.BeginIntermission(self, b2)
+	if not self:IsActiveRun(b2) or not self.isRunning then
 		return
 	end
 	if #self.activeParticipantPlayerIds <= 0 then
@@ -718,21 +732,21 @@ function G.prototype.BeginIntermission(self, a_)
 	self.phase = "intermission"
 	self.intermissionReadyPlayerIds = {}
 	self.intermissionEndTime = GameRules:GetGameTime() + F
-	self:ScheduleIntermissionTimer(a_)
+	self:ScheduleIntermissionTimer(b2)
 	self:SyncState()
 end
-function G.prototype.OnIntermissionReady(self, a8)
+function J.prototype.OnIntermissionReady(self, ab)
 	if
 		not self.isRunning
 		or self.phase ~= "intermission"
-		or not f(self.activeParticipantPlayerIds, a8)
-		or self.intermissionReadyPlayerIds[tostring(a8)]
+		or not f(self.activeParticipantPlayerIds, ab)
+		or self.intermissionReadyPlayerIds[tostring(ab)]
 	then
 		return
 	end
-	self.intermissionReadyPlayerIds[tostring(a8)] = true
-	local bq = math.max(0, (self.intermissionEndTime or GameRules:GetGameTime()) - GameRules:GetGameTime())
-	self.intermissionEndTime = GameRules:GetGameTime() + bq * 0.5
+	self.intermissionReadyPlayerIds[tostring(ab)] = true
+	local bt = math.max(0, (self.intermissionEndTime or GameRules:GetGameTime()) - GameRules:GetGameTime())
+	self.intermissionEndTime = GameRules:GetGameTime() + bt * 0.5
 	if self:AreAllActivePlayersReady() then
 		self:StartNextLevel(self.runId)
 		return
@@ -740,17 +754,17 @@ function G.prototype.OnIntermissionReady(self, a8)
 	self:ScheduleIntermissionTimer(self.runId)
 	self:SyncState()
 end
-function G.prototype.OnIntermissionRetreat(self, a8)
-	if not self.isRunning or self.phase ~= "intermission" or not f(self.activeParticipantPlayerIds, a8) then
+function J.prototype.OnIntermissionRetreat(self, ab)
+	if not self.isRunning or self.phase ~= "intermission" or not f(self.activeParticipantPlayerIds, ab) then
 		return
 	end
-	if not self:ReturnPlayerToLobby(a8) then
-		self:error(((self.logPrefix .. " retreat failed player=") .. tostring(a8)) .. ": lobby position unavailable")
+	if not self:ReturnPlayerToLobby(ab) then
+		self:error(((self.logPrefix .. " retreat failed player=") .. tostring(ab)) .. ": lobby position unavailable")
 		return
 	end
-	k(self.activeParticipantPlayerIds, n(self.activeParticipantPlayerIds, a8), 1)
-	o(self.intermissionReadyPlayerIds, tostring(a8))
-	Event:Fire("hunt_boss_player_retreated", { playerID = a8, level = self.currentLevel })
+	k(self.activeParticipantPlayerIds, n(self.activeParticipantPlayerIds, ab), 1)
+	o(self.intermissionReadyPlayerIds, tostring(ab))
+	Event:Fire("hunt_boss_player_retreated", { playerID = ab, level = self.currentLevel })
 	if #self.activeParticipantPlayerIds <= 0 then
 		self:FinishBattle("AllPlayersRetreated")
 		return
@@ -761,20 +775,20 @@ function G.prototype.OnIntermissionRetreat(self, a8)
 	end
 	self:SyncState()
 end
-function G.prototype.OnPlayerReviveFailed(self, a8)
+function J.prototype.OnPlayerReviveFailed(self, ab)
 	if
 		not self.isRunning
 		or self.phase ~= "battle" and self.phase ~= "intermission"
-		or not f(self.activeParticipantPlayerIds, a8)
-		or not GameModeHuntBoss:IsParticipantActive(a8)
+		or not f(self.activeParticipantPlayerIds, ab)
+		or not GameModeHuntBoss:IsParticipantActive(ab)
 	then
 		return
 	end
-	k(self.activeParticipantPlayerIds, n(self.activeParticipantPlayerIds, a8), 1)
-	o(self.intermissionReadyPlayerIds, tostring(a8))
-	Event:Fire("hunt_boss_player_failed", { playerID = a8, level = self.currentLevel })
-	if not self:ReturnPlayerToLobby(a8, true) then
-		self:error((self.logPrefix .. " failed player return to lobby unavailable player=") .. tostring(a8))
+	k(self.activeParticipantPlayerIds, n(self.activeParticipantPlayerIds, ab), 1)
+	o(self.intermissionReadyPlayerIds, tostring(ab))
+	Event:Fire("hunt_boss_player_failed", { playerID = ab, level = self.currentLevel })
+	if not self:ReturnPlayerToLobby(ab, true) then
+		self:error((self.logPrefix .. " failed player return to lobby unavailable player=") .. tostring(ab))
 	end
 	if #self.activeParticipantPlayerIds <= 0 then
 		self:FinishBattle("AllPlayersDead")
@@ -786,29 +800,29 @@ function G.prototype.OnPlayerReviveFailed(self, a8)
 	end
 	self:SyncState()
 end
-function G.prototype.AreAllActivePlayersReady(self)
-	return p(self.activeParticipantPlayerIds, function(I, a8)
-		return self.intermissionReadyPlayerIds[tostring(a8)] == true
+function J.prototype.AreAllActivePlayersReady(self)
+	return p(self.activeParticipantPlayerIds, function(L, ab)
+		return self.intermissionReadyPlayerIds[tostring(ab)] == true
 	end)
 end
-function G.prototype.ScheduleIntermissionTimer(self, a_)
+function J.prototype.ScheduleIntermissionTimer(self, b2)
 	if self.intermissionTimerId ~= nil then
 		Timer:StopTimer(self.intermissionTimerId)
 	end
-	local br = math.max(0, (self.intermissionEndTime or GameRules:GetGameTime()) - GameRules:GetGameTime())
-	self.intermissionTimerId = Timer:GameTimer(br, function()
+	local bu = math.max(0, (self.intermissionEndTime or GameRules:GetGameTime()) - GameRules:GetGameTime())
+	self.intermissionTimerId = Timer:GameTimer(bu, function()
 		self.intermissionTimerId = nil
-		if not self:IsActiveRun(a_) or not self.isRunning or self.phase ~= "intermission" then
+		if not self:IsActiveRun(b2) or not self.isRunning or self.phase ~= "intermission" then
 			return
 		end
-		for I, a8 in ipairs(self.activeParticipantPlayerIds) do
-			self.intermissionReadyPlayerIds[tostring(a8)] = true
+		for L, ab in ipairs(self.activeParticipantPlayerIds) do
+			self.intermissionReadyPlayerIds[tostring(ab)] = true
 		end
-		self:StartNextLevel(a_)
+		self:StartNextLevel(b2)
 	end)
 end
-function G.prototype.StartNextLevel(self, a_)
-	if not self:IsActiveRun(a_) or not self.isRunning or self.phase ~= "intermission" then
+function J.prototype.StartNextLevel(self, b2)
+	if not self:IsActiveRun(b2) or not self.isRunning or self.phase ~= "intermission" then
 		return
 	end
 	if self.intermissionTimerId ~= nil then
@@ -816,49 +830,50 @@ function G.prototype.StartNextLevel(self, a_)
 		self.intermissionTimerId = nil
 	end
 	self.intermissionEndTime = nil
-	self:StartLevel(a_, self.currentLevel + 1)
+	self:StartLevel(b2, self.currentLevel + 1)
 end
-function G.prototype.ApplyBossModifiers(self, bl, b5, ba)
-	bl:AddNewModifier(bl, nil, "modifier_boss_custom", { control_immune = 1 })
+function J.prototype.ApplyBossModifiers(self, bo, b8, bd)
+	bo:AddNewModifier(bo, nil, "modifier_boss_custom", { control_immune = 1 })
 	if self.difficultyCooldownReduction ~= 0 then
-		bl:AddProperty(PropertyFunction.COOLDOWN_REDUCTION, self.difficultyCooldownReduction)
+		bo:AddProperty(PropertyFunction.COOLDOWN_REDUCTION, self.difficultyCooldownReduction)
 	end
 	if self.difficultyBossGapAmplify ~= 0 then
-		bl:AddProperty(PropertyFunction.BOSS_GAP_AMPLIFY, self.difficultyBossGapAmplify)
+		bo:AddProperty(PropertyFunction.BOSS_GAP_AMPLIFY, self.difficultyBossGapAmplify)
 	end
-	local bs = self.healthFactor * b5.healthFactor * ba.healthFactor
-	local bt = self.damageFactor * b5.damageFactor
-	if bs ~= 1 then
-		bl:AddProperty(PropertyFunction.HEALTH_AMPLIFY, (bs - 1) * 100)
+	local bv = self.healthFactor * b8.healthFactor * bd.healthFactor
+	local bw = self.damageFactor * b8.damageFactor
+	if bv ~= 1 then
+		bo:AddProperty(PropertyFunction.HEALTH_AMPLIFY, (bv - 1) * 100)
 	end
-	if bt ~= 1 then
-		bl:AddProperty(PropertyFunction.ATTACK_AMPLIFY, (bt - 1) * 100)
+	if bw ~= 1 then
+		bo:AddProperty(PropertyFunction.ATTACK_AMPLIFY, (bw - 1) * 100)
 	end
 end
-function G.prototype.FinishBattle(self, L)
+function J.prototype.FinishBattle(self, O)
 	if self.isFinished then
 		return
 	end
 	self.isFinished = true
 	self.isRunning = false
 	self.phase = "finished"
-	self.finishReason = L
+	self:StopBattleThink()
+	self.finishReason = O
 	self.waveSpawnId = self.waveSpawnId + 1
 	if self.intermissionTimerId ~= nil then
 		Timer:StopTimer(self.intermissionTimerId)
 		self.intermissionTimerId = nil
 	end
 	self.intermissionEndTime = nil
-	for I, bl in ipairs(self.enemies) do
-		self:RemoveUnit(bl)
+	for L, bo in ipairs(self.enemies) do
+		self:RemoveUnit(bo)
 	end
 	self.enemies = {}
 	self.bossSlots = {}
 	self.fieldBuffManager:Reset()
 	self:SyncState()
-	Event:Fire("hunt_boss_battle_finished", { reason = L, level = self.currentLevel })
+	Event:Fire("hunt_boss_battle_finished", { reason = O, level = self.currentLevel })
 end
-function G.prototype.RegisterKillListener(self)
+function J.prototype.RegisterKillListener(self)
 	if self.killEventListenerId ~= nil then
 		StopGameEvent(self.killEventListenerId)
 	end
@@ -866,272 +881,323 @@ function G.prototype.RegisterKillListener(self)
 		return self:OnEntityKilled(...)
 	end, self)
 end
-function G.prototype.OnEntityKilled(self, M)
+function J.prototype.OnEntityKilled(self, P)
 	if not self.isRunning then
 		return
 	end
-	local bu = EntIndexToHScript(M.entindex_killed)
-	local Y = IsValid(bu) and n(self.enemies, bu) or -1
-	if Y >= 0 then
-		k(self.enemies, Y, 1)
-		local aU = n(self.bossSlots, bu)
-		if aU >= 0 then
-			self.bossSlots[aU + 1] = nil
+	local bx = EntIndexToHScript(P.entindex_killed)
+	local a0 = IsValid(bx) and n(self.enemies, bx) or -1
+	if a0 >= 0 then
+		k(self.enemies, a0, 1)
+		local aX = n(self.bossSlots, bx)
+		if aX >= 0 then
+			self.bossSlots[aX + 1] = nil
 		end
 		self:SyncState()
 		self:TryCompleteCurrentWave(self.runId)
 	end
 end
-function G.prototype.LoadConfigs(self, N, bv)
+function J.prototype.LoadConfigs(self, Q, by)
 	self.enemyPools = {}
 	self.levelConfigByNumber = {}
-	if not self.fieldBuffManager:LoadConfigs(N) then
+	if not self.fieldBuffManager:LoadConfigs(Q) then
 		return false
 	end
-	local bw = KeyValues.hunt_enemy_pools
-	local bx = bw.EnemyPools
-	if bx == nil then
+	local bz = KeyValues.hunt_enemy_pools
+	local bA = bz.EnemyPools
+	if bA == nil then
 		self:error(self.logPrefix .. " hunt_enemy_pools missing")
 		return false
 	end
-	for bb, by in pairs(bx) do
+	for be, bB in pairs(bA) do
 		do
-			local bz = e(w)
-			if by == nil then
-				goto bA
+			local bC = e(w)
+			if bB == nil then
+				goto bD
 			end
-			for bj, bB in pairs(by) do
-				bz:Set(tostring(bj), toFiniteNumber(bB, 0))
+			for bm, bE in pairs(bB) do
+				bC:Set(tostring(bm), toFiniteNumber(bE, 0))
 			end
-			if bz.ValidCount > 0 then
-				self.enemyPools[tostring(bb)] = bz
+			if bC.ValidCount > 0 then
+				self.enemyPools[tostring(be)] = bC
 			end
 		end
-		::bA::
+		::bD::
 	end
-	local bC = KeyValues.hunt_levels
-	if bC == nil then
+	local bF = KeyValues.hunt_levels
+	if bF == nil then
 		self:error(self.logPrefix .. " hunt_levels missing")
 		return false
 	end
-	for bD, bE in pairs(bC) do
+	for bG, bH in pairs(bF) do
 		do
-			local ae = tostring(bD)
-			if not q(ae, "level_") then
-				goto bF
+			local ah = tostring(bG)
+			if not q(ah, "level_") then
+				goto bI
 			end
-			local b4 = toFiniteNumber(r(ae, #"level_"), 0)
-			local bG = {}
-			if bE == nil then
-				goto bF
+			local b7 = toFiniteNumber(r(ah, #"level_"), 0)
+			local bJ = {}
+			if bH == nil then
+				goto bI
 			end
-			local bH = bE.WaveList
+			local bK = bH.WaveList
 			do
-				local bI = 1
-				while (bH and bH[tostring(bI)]) ~= nil do
+				local bL = 1
+				while (bK and bK[tostring(bL)]) ~= nil do
 					do
-						local bJ = bH[tostring(bI)]
-						if bJ == nil then
-							goto bK
+						local bM = bK[tostring(bL)]
+						if bM == nil then
+							goto bN
 						end
-						local bL = e(w)
-						for bb, bB in pairs(bJ.EnemyPoolWeights or {}) do
-							local aE = tostring(bb)
-							if self.enemyPools[aE] == nil then
+						local bO = e(w)
+						for be, bE in pairs(bM.EnemyPoolWeights or {}) do
+							local aH = tostring(be)
+							if self.enemyPools[aH] == nil then
 								self:error(
 									(
 										(
 											(
-												((self.logPrefix .. " invalid pool reference level=") .. tostring(b4))
+												((self.logPrefix .. " invalid pool reference level=") .. tostring(b7))
 												.. " wave="
-											) .. tostring(bI)
+											) .. tostring(bL)
 										) .. " pool="
-									) .. aE
+									) .. aH
 								)
 								return false
 							end
-							bL:Set(aE, toFiniteNumber(bB, 0))
+							bO:Set(aH, toFiniteNumber(bE, 0))
 						end
-						local bM = math.floor(toFiniteNumber(bJ.EnemyCount, 0))
-						if bL.ValidCount <= 0 or bM <= 0 then
+						local bP = math.floor(toFiniteNumber(bM.EnemyCount, 0))
+						if bO.ValidCount <= 0 or bP <= 0 then
 							self:error(
-								(((self.logPrefix .. " invalid wave level=") .. tostring(b4)) .. " wave=")
-									.. tostring(bI)
+								(((self.logPrefix .. " invalid wave level=") .. tostring(b7)) .. " wave=")
+									.. tostring(bL)
 							)
 							return false
 						end
-						bG[#bG + 1] = {
-							enemyPoolWeights = bL,
-							enemyCount = bM,
-							healthFactor = math.max(0.01, toFiniteNumber(bJ.HealthFactor, 1)),
+						bJ[#bJ + 1] = {
+							enemyPoolWeights = bO,
+							enemyCount = bP,
+							healthFactor = math.max(0.01, toFiniteNumber(bM.HealthFactor, 1)),
 						}
 					end
-					::bK::
-					bI = bI + 1
+					::bN::
+					bL = bL + 1
 				end
 			end
-			if b4 >= 1 and #bG > 0 then
-				self.levelConfigByNumber[b4] = {
-					healthFactor = math.max(0.01, toFiniteNumber(bE.HealthFactor, 1)),
-					damageFactor = math.max(0.01, toFiniteNumber(bE.DamageFactor, 1)),
-					waves = bG,
+			if b7 >= 1 and #bJ > 0 then
+				self.levelConfigByNumber[b7] = {
+					healthFactor = math.max(0.01, toFiniteNumber(bH.HealthFactor, 1)),
+					damageFactor = math.max(0.01, toFiniteNumber(bH.DamageFactor, 1)),
+					waves = bJ,
 				}
 			end
 		end
-		::bF::
+		::bI::
 	end
-	local bN = KeyValues.hunt_difficulty
-	local bO = bN and bN[tostring(N)]
-	if bO == nil then
-		self:error((self.logPrefix .. " hunt_difficulty missing difficulty=") .. tostring(N))
+	local bQ = KeyValues.hunt_difficulty
+	local bR = bQ and bQ[tostring(Q)]
+	if bR == nil then
+		self:error((self.logPrefix .. " hunt_difficulty missing difficulty=") .. tostring(Q))
 		return false
 	end
-	local bP = KeyValues.hunt_intelligence
-	local bQ = bP and bP[tostring(N)]
-	local bR = toFiniteNumber
-	local bS
-	if bQ ~= nil then
-		bS = bQ.level_max
+	local bS = KeyValues.hunt_intelligence
+	local bT = bS and bS[tostring(Q)]
+	local bU = toFiniteNumber
+	local bV
+	if bT ~= nil then
+		bV = bT.level_max
 	end
-	self.maxLevel = bR(bS, 0)
+	self.maxLevel = bU(bV, 0)
 	if self.maxLevel <= 0 or self.maxLevel ~= math.floor(self.maxLevel) then
-		self:error((self.logPrefix .. " hunt_intelligence invalid level_max difficulty=") .. tostring(N))
+		self:error((self.logPrefix .. " hunt_intelligence invalid level_max difficulty=") .. tostring(Q))
 		return false
 	end
 	do
-		local b4 = 1
-		while b4 <= self.maxLevel do
-			if self.levelConfigByNumber[b4] == nil then
+		local b7 = 1
+		while b7 <= self.maxLevel do
+			if self.levelConfigByNumber[b7] == nil then
 				self:error(
 					(
 						(
 							(self.logPrefix .. " hunt_levels missing valid level configuration difficulty=")
-							.. tostring(N)
+							.. tostring(Q)
 						) .. " level="
-					) .. tostring(b4)
+					) .. tostring(b7)
 				)
 				return false
 			end
-			b4 = b4 + 1
+			b7 = b7 + 1
 		end
 	end
-	local bT = math.min(math.max(bv, 1), 4)
-	self.healthFactor = toFiniteNumber(bO.HealthFactor, 1)
-		* (bT >= 2 and toFiniteNumber(bO[("Player" .. tostring(bT)) .. "HealthFactor"], 1) or 1)
-	self.damageFactor = toFiniteNumber(bO.DamageFactor, 1)
-		* (bT >= 2 and toFiniteNumber(bO[("Player" .. tostring(bT)) .. "DamageFactor"], 1) or 1)
-	self.difficultyCooldownReduction = math.min(99, math.max(0, toFiniteNumber(bO.BossCooldownReduction, 0)))
+	local bW = math.min(math.max(by, 1), 4)
+	self.healthFactor = toFiniteNumber(bR.HealthFactor, 1)
+		* (bW >= 2 and toFiniteNumber(bR[("Player" .. tostring(bW)) .. "HealthFactor"], 1) or 1)
+	self.damageFactor = toFiniteNumber(bR.DamageFactor, 1)
+		* (bW >= 2 and toFiniteNumber(bR[("Player" .. tostring(bW)) .. "DamageFactor"], 1) or 1)
+	self.difficultyCooldownReduction = math.min(99, math.max(0, toFiniteNumber(bR.BossCooldownReduction, 0)))
 	self.difficultyBossGapAmplify = -self.difficultyCooldownReduction
 	return true
 end
-function G.prototype.GetBossSpawnPosition(self, bU, Y, bV)
-	return Vector(bU.x + (Y - (bV - 1) / 2) * 720, bU.y + 480, bU.z)
+function J.prototype.GetBossSpawnPosition(self, bX, a0, bY)
+	return Vector(bX.x + (a0 - (bY - 1) / 2) * 720, bX.y + 480, bX.z)
 end
-function G.prototype.Stop(self, L, K)
-	local bW = self.isLoading
+function J.prototype.Stop(self, O, N)
+	local bZ = self.isLoading
 	self.runId = self.runId + 1
 	self.waveSpawnId = self.waveSpawnId + 1
 	if self.killEventListenerId ~= nil then
 		StopGameEvent(self.killEventListenerId)
 		self.killEventListenerId = nil
 	end
-	for I, bl in ipairs(self.enemies) do
-		self:RemoveUnit(bl)
+	for L, bo in ipairs(self.enemies) do
+		self:RemoveUnit(bo)
 	end
-	if K and self.spawnGroup ~= nil then
+	if N and self.spawnGroup ~= nil then
 		UnloadSpawnGroupByHandle(self.spawnGroup)
 	end
 	self:ClearRuntimeState()
-	if bW then
+	if bZ then
 		DungeonManager:HideLoadingScreen()
 	end
 end
-function G.prototype.TeleportPlayers(self, bk)
-	local bX = self:GetParticipantHeroes()
+function J.prototype.TeleportPlayers(self, bn)
+	local b_ = self:GetParticipantHeroes()
 	do
-		local bY = 0
-		while bY < #bX do
-			local bZ = Vector(bk.x + (bY - (#bX - 1) / 2) * E, bk.y, bk.z)
-			FindClearSpaceForUnit(bX[bY + 1], bZ, true)
-			bX[bY + 1]:SetForwardVector(vec3_top)
-			bY = bY + 1
+		local c0 = 0
+		while c0 < #b_ do
+			local c1 = Vector(bn.x + (c0 - (#b_ - 1) / 2) * E, bn.y, bn.z)
+			self:TeleportHero(b_[c0 + 1], c1)
+			c0 = c0 + 1
 		end
 	end
 end
-function G.prototype.ReturnPlayerToLobby(self, a8, b_)
-	if b_ == nil then
-		b_ = false
+function J.prototype.TeleportHero(self, ar, bn)
+	FindClearSpaceForUnit(ar, bn, true)
+	ar:SetForwardVector(vec3_top)
+	Event:Fire("teleport", { caster = ar, target = "hunt_boss" })
+end
+function J.prototype.StartBattleThink(self, b2)
+	self:StopBattleThink()
+	local c2 = {}
+	local c3 = GameRules:GetGameTime() + H
+	self.battleThinkTimerId = Timer:GameTimer(G, function()
+		local bX = self.battleCenter
+		if
+			not self:IsActiveRun(b2)
+			or not self.isRunning
+			or bX == nil
+			or self.phase ~= "battle" and self.phase ~= "intermission"
+		then
+			return
+		end
+		self.fieldBuffManager:Update()
+		local c4 = GameRules:GetGameTime()
+		if c4 < c3 then
+			return G
+		end
+		c3 = c4 + H
+		for L, ar in ipairs(self:GetParticipantHeroes()) do
+			do
+				local ab = ar:GetPlayerOwnerID()
+				local ah = tostring(ab)
+				if not f(self.activeParticipantPlayerIds, ab) or not ar:IsAlive() or CalcDistance(ar, bX) <= I then
+					o(c2, ah)
+					goto c5
+				end
+				if c2[ah] and GridNav:IsValidPosition(bX) then
+					self:TeleportHero(ar, bX)
+					o(c2, ah)
+				else
+					c2[ah] = true
+				end
+			end
+			::c5::
+		end
+		return G
+	end)
+end
+function J.prototype.StopBattleThink(self)
+	if self.battleThinkTimerId == nil then
+		return
 	end
-	local ao = PlayerResource:GetSelectedHeroEntity(a8)
-	if not IsValid(ao) then
+	Timer:StopTimer(self.battleThinkTimerId)
+	self.battleThinkTimerId = nil
+end
+function J.prototype.ReturnPlayerToLobby(self, ab, c6)
+	if c6 == nil then
+		c6 = false
+	end
+	local ar = PlayerResource:GetSelectedHeroEntity(ab)
+	if not IsValid(ar) then
 		return false
 	end
-	local bk = self.entryPositionsByPlayerId[tostring(a8)]
-	if bk == nil then
+	local bn = self.entryPositionsByPlayerId[tostring(ab)]
+	if bn == nil then
 		return false
 	end
-	self.fieldBuffManager:RemoveHero(ao)
-	ao:SetRespawnPosition(bk)
-	Npc:SetPlayerArea(a8, "lobby")
-	if b_ and not ao:IsAlive() then
-		ao:RespawnHero(false, false)
+	self.fieldBuffManager:RemoveHero(ar)
+	ar:SetRespawnPosition(bn)
+	Npc:SetPlayerArea(ab, "lobby")
+	if c6 and not ar:IsAlive() then
+		ar:RespawnHero(false, false)
 	end
-	FindClearSpaceForUnit(ao, bk, true)
-	Event:Fire("teleport", { caster = ao, target = "lobby" })
+	FindClearSpaceForUnit(ar, bn, true)
+	Event:Fire("teleport", { caster = ar, target = "lobby" })
 	return true
 end
-function G.prototype.CaptureSaveKeyIntensities(self, M)
+function J.prototype.CaptureSaveKeyIntensities(self, P)
 	self.keyIntensitiesByPlayerId = {}
-	for I, a8 in ipairs(M.participantPlayerIds) do
+	for L, ab in ipairs(P.participantPlayerIds) do
 		do
-			local c0 = M.huntSlotIDs
-			local a6 = c0 and c0[a8]
-			if a6 == nil then
-				goto c1
+			local c7 = P.huntSlotIDs
+			local a9 = c7 and c7[ab]
+			if a9 == nil then
+				goto c8
 			end
-			local ai = HuntSaveArchive:GetSelectedSave(a8, a6)
-			if ai == nil then
-				goto c1
+			local al = HuntSaveArchive:GetSelectedSave(ab, a9)
+			if al == nil then
+				goto c8
 			end
-			local c2 = json.decode(ai.data)
-			local av = c2
-			if (av and av.strength) == nil then
-				goto c1
+			local c9 = json.decode(al.data)
+			local ay = c9
+			if (ay and ay.strength) == nil then
+				goto c8
 			end
-			local c3 = toFiniteNumber(av.strength, -1)
-			if c3 >= 0 then
-				self.keyIntensitiesByPlayerId[tostring(a8)] = math.floor(c3)
+			local ca = toFiniteNumber(ay.strength, -1)
+			if ca >= 0 then
+				self.keyIntensitiesByPlayerId[tostring(ab)] = math.floor(ca)
 			end
 		end
-		::c1::
+		::c8::
 	end
 end
-function G.prototype.CaptureEntryPositions(self)
+function J.prototype.CaptureEntryPositions(self)
 	self.entryPositionsByPlayerId = {}
-	for I, a8 in ipairs(self.participantPlayerIds) do
-		local ao = PlayerResource:GetSelectedHeroEntity(a8)
-		if IsValid(ao) then
-			self.entryPositionsByPlayerId[tostring(a8)] = ao:GetAbsOrigin()
+	for L, ab in ipairs(self.participantPlayerIds) do
+		local ar = PlayerResource:GetSelectedHeroEntity(ab)
+		if IsValid(ar) then
+			self.entryPositionsByPlayerId[tostring(ab)] = ar:GetAbsOrigin()
 		end
 	end
 end
-function G.prototype.SyncState(self)
-	local c4 = {}
-	local c5 = {}
-	for I, a8 in ipairs(self.activeParticipantPlayerIds) do
-		c4[tostring(a8)] = self.intermissionReadyPlayerIds[tostring(a8)] == true
+function J.prototype.SyncState(self)
+	local cb = {}
+	local cc = {}
+	for L, ab in ipairs(self.activeParticipantPlayerIds) do
+		cb[tostring(ab)] = self.intermissionReadyPlayerIds[tostring(ab)] == true
 	end
 	do
-		local aU = 0
-		while aU < #self.bossSlots do
-			local c6 = self.bossSlots[aU + 1]
-			if c6 ~= nil and IsValid(c6) then
-				c5[#c5 + 1] = { slot = aU, ent_index = c6:entindex() }
+		local aX = 0
+		while aX < #self.bossSlots do
+			local cd = self.bossSlots[aX + 1]
+			if cd ~= nil and IsValid(cd) then
+				cc[#cc + 1] = { slot = aX, ent_index = cd:entindex() }
 			end
-			aU = aU + 1
+			aX = aX + 1
 		end
 	end
-	local c7 = {
+	local ce = {
 		phase = self.phase,
 		finish_reason = self.finishReason,
 		difficulty = self.currentDifficulty,
@@ -1139,51 +1205,52 @@ function G.prototype.SyncState(self)
 		level = self.currentLevel,
 		wave = self.currentWave,
 		active_player_ids = self.activeParticipantPlayerIds,
-		ready_player_ids = c4,
+		ready_player_ids = cb,
 		intermission_end_time = self.intermissionEndTime or 0,
 		intermission_duration = F,
-		bosses = c5,
+		bosses = cc,
 		fixed_buffs = self.fieldBuffManager:GetFixedBuffs(),
 		current_level_buffs = self.fieldBuffManager:GetCurrentLevelBuffs(),
 		next_level_buffs = self.phase == "intermission" and self.fieldBuffManager:GetNextLevelBuffs() or {},
 	}
-	CustomNetTables:SetNetData("hunt_boss", "state", c7)
+	CustomNetTables:SetNetData("hunt_boss", "state", ce)
 end
-function G.prototype.GetParticipantHeroes(self)
-	local bX = {}
-	for I, c8 in ipairs(self.participantPlayerIds) do
-		local ao = PlayerResource:GetSelectedHeroEntity(c8)
-		if IsValid(ao) and ao:IsRealHero() and ao:GetTeamNumber() == DOTA_TEAM_GOODGUYS then
-			bX[#bX + 1] = ao
+function J.prototype.GetParticipantHeroes(self)
+	local b_ = {}
+	for L, cf in ipairs(self.participantPlayerIds) do
+		local ar = PlayerResource:GetSelectedHeroEntity(cf)
+		if IsValid(ar) and ar:IsRealHero() and ar:GetTeamNumber() == DOTA_TEAM_GOODGUYS then
+			b_[#b_ + 1] = ar
 		end
 	end
-	return bX
+	return b_
 end
-function G.prototype.FindInfoTarget(self, aE)
+function J.prototype.FindInfoTarget(self, aH)
 	if self.spawnGroup == nil then
 		return nil
 	end
-	for I, c9 in ipairs(Entities:FindAllByClassname("info_target")) do
-		if c9:GetSpawnGroupHandle() == self.spawnGroup and s(c9:GetName(), aE) then
-			return c9
+	for L, cg in ipairs(Entities:FindAllByClassname("info_target")) do
+		if cg:GetSpawnGroupHandle() == self.spawnGroup and s(cg:GetName(), aH) then
+			return cg
 		end
 	end
 	return nil
 end
-function G.prototype.IsActiveRun(self, a_)
-	return self.runId == a_
+function J.prototype.IsActiveRun(self, b2)
+	return self.runId == b2
 end
-function G.prototype.RemoveUnit(self, ca)
-	if not IsValid(ca) then
+function J.prototype.RemoveUnit(self, ch)
+	if not IsValid(ch) then
 		return
 	end
-	ca:ForceKill(false)
-	ca:MakeIllusion()
-	ca:AddNoDraw()
-	ca:CallAbilityDestroy()
-	UTIL_Remove(ca)
+	ch:ForceKill(false)
+	ch:MakeIllusion()
+	ch:AddNoDraw()
+	ch:CallAbilityDestroy()
+	UTIL_Remove(ch)
 end
-function G.prototype.ClearRuntimeState(self)
+function J.prototype.ClearRuntimeState(self)
+	self:StopBattleThink()
 	self.fieldBuffManager:Reset()
 	if self.intermissionTimerId ~= nil then
 		Timer:StopTimer(self.intermissionTimerId)
@@ -1217,7 +1284,7 @@ function G.prototype.ClearRuntimeState(self)
 	self.spawnGroup = nil
 	self:SyncState()
 end
-function G.prototype.UnregisterEvents(self)
+function J.prototype.UnregisterEvents(self)
 	if self.startEventId ~= nil then
 		Event:Unregister(self.startEventId)
 	end
@@ -1239,8 +1306,8 @@ function G.prototype.UnregisterEvents(self)
 	self.intermissionReadyEventId = nil
 	self.intermissionRetreatEventId = nil
 end
-G = t({ y }, G)
+J = t({ y }, J)
 if HuntBossBattle == nil then
-	HuntBossBattle = e(G)
+	HuntBossBattle = e(J)
 end
 return u

@@ -104,4 +104,4 @@ function DungeonUpgrade() {
     }
   });
 }
-libs.render(() => libs.createComponent(DungeonUpgrade, {}), $.GetContextPanel());
+libs.render(() => libs.createComponent(DungeonUpgrade, {}), $.GetContextPanel());

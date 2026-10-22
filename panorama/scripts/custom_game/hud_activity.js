@@ -7897,7 +7897,7 @@ function GrowthFund(params) {
   switch (activityID()) {
     case "301":
       Math.min(Math.floor(progress() / 2), currentFundMaxValue);
-      currentMaxProgress = Object.keys(KeyValues.hero_level_exp).length;
+      currentMaxProgress = currentFundMaxValue;
       break;
   }
   return (() => {
@@ -10334,4 +10334,4 @@ function ActivityRoot() {
     }
   });
 }
-libs.render(() => libs.createComponent(ActivityRoot, {}), $.GetContextPanel());
+libs.render(() => libs.createComponent(ActivityRoot, {}), $.GetContextPanel());

@@ -23,4 +23,4 @@ function InitTooltipStyle(tooltip, styleName = "BaseTooltip") {
   }
 }
 
-exports.InitTooltipStyle = InitTooltipStyle;
+exports.InitTooltipStyle = InitTooltipStyle;

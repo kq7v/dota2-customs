@@ -19,24 +19,27 @@ local h = b.__TS__ArraySort
 local i = b.__TS__ArrayIncludes
 local j = b.__TS__ArrayFilter
 local k = b.__TS__ObjectValues
-local l = {}
-local m = require("class.weight_pool")
-local n = m.CWeightPool
-local o = require("modifiers.hunt_boss.modifier_hunt_potion")
-local p = o.GetHuntPotionController
-local q = require("mechanics.hunt_field_effects")
-local r = q.CHuntFieldEffects
-local s = require("mechanics.hunt_field_config")
-local t = s.HUNT_FIXED_MODIFIERS
-local u = s.GetHuntFieldBuffConfig
-local v = s.GetHuntFieldEffectError
-local w = s.ParseHuntFixedAffixes
-local x = require("class.dungeon_helper")
-local y = x.AnalyzeCenterPositions
-l.CHuntBossFieldBuffManager = c()
-local z = l.CHuntBossFieldBuffManager
-z.name = "CHuntBossFieldBuffManager"
-function z.prototype.____constructor(self)
+local l = b.__TS__ArraySplice
+local m = b.__TS__ArrayFind
+local n = b.__TS__ArrayEvery
+local o = {}
+local p = require("class.weight_pool")
+local q = p.CWeightPool
+local r = require("class.drop_item")
+local s = r.DropItem
+local t = require("mechanics.hunt_field_effects")
+local u = t.CHuntFieldEffects
+local v = require("mechanics.hunt_field_config")
+local w = v.HUNT_FIXED_MODIFIERS
+local x = v.GetHuntFieldBuffConfig
+local y = v.GetHuntFieldEffectError
+local z = v.ParseHuntFixedAffixes
+local A = require("class.dungeon_helper")
+local B = A.AnalyzeCenterPositions
+o.CHuntBossFieldBuffManager = c()
+local C = o.CHuntBossFieldBuffManager
+C.name = "CHuntBossFieldBuffManager"
+function C.prototype.____constructor(self)
 	self.logPrefix = "[HuntBossFieldBuff]"
 	self.buffConfigById = {}
 	self.previousRandomAffixIds = {}
@@ -49,124 +52,124 @@ function z.prototype.____constructor(self)
 		return {}
 	end
 end
-function z.prototype.LoadConfigs(self, A)
+function C.prototype.LoadConfigs(self, D)
 	self:Reset()
 	self.buffConfigById = self:ParseFieldBuffConfigs()
-	local B = KeyValues.hunt_difficulty_affix
-	if B ~= nil then
-		B = B[tostring(A)]
+	local E = KeyValues.hunt_difficulty_affix
+	if E ~= nil then
+		E = E[tostring(D)]
 	end
-	local C = B
-	if C == nil then
-		self:Error("missing difficulty affix config difficulty=" .. tostring(A))
-		return false
-	end
-	local D = w
-	local E = tostring
-	local F = C.FixedAffixes
+	local F = E
 	if F == nil then
-		F = ""
-	end
-	local G = D(nil, E(F))
-	if G == nil then
-		self:Error("invalid or duplicate fixed affix levels difficulty=" .. tostring(A))
+		self:Error("missing difficulty affix config difficulty=" .. tostring(D))
 		return false
 	end
-	local H = d(G, function(I, J)
-		return J.id
+	local G = z
+	local H = tostring
+	local I = F.FixedAffixes
+	if I == nil then
+		I = ""
+	end
+	local J = G(nil, H(I))
+	if J == nil then
+		self:Error("invalid or duplicate fixed affix levels difficulty=" .. tostring(D))
+		return false
+	end
+	local K = d(J, function(L, M)
+		return M.id
 	end)
-	for I, K in ipairs(G) do
-		local L = K.id
-		local M = K.level
-		local N = u(nil, L, M)
-		local O = self.buffConfigById[L]
-		if (O and O.type) ~= 1 or N == nil or L ~= "potion" and t[L] == nil then
+	for L, N in ipairs(J) do
+		local O = N.id
+		local P = N.level
+		local Q = x(nil, O, P)
+		local R = self.buffConfigById[O]
+		if (R and R.type) ~= 1 or Q == nil or O ~= "potion" and w[O] == nil then
 			self:Error(
-				(((("invalid fixed affix difficulty=" .. tostring(A)) .. " id=") .. L) .. " level=") .. tostring(M)
+				(((("invalid fixed affix difficulty=" .. tostring(D)) .. " id=") .. O) .. " level=") .. tostring(P)
 			)
 			return false
 		end
-		self.buffConfigById[L] = N
+		self.buffConfigById[O] = Q
 	end
-	local P = math.floor(toFiniteNumber(C.FieldBuffCount, -1))
-	local Q = self:GetRandomPool().ValidCount
-	if P < 0 or P > Q then
+	local S = math.floor(toFiniteNumber(F.FieldBuffCount, -1))
+	local T = self:GetRandomPool().ValidCount
+	if S < 0 or S > T then
 		self:Error(
 			(
-				((("invalid random affix count difficulty=" .. tostring(A)) .. " count=") .. tostring(P))
+				((("invalid random affix count difficulty=" .. tostring(D)) .. " count=") .. tostring(S))
 				.. " candidates="
-			) .. tostring(Q)
+			) .. tostring(T)
 		)
 		return false
 	end
-	if P > 0 and P == Q then
+	if S > 0 and S == T then
 		self:Error(
-			(("random affix candidates permit only one combination difficulty=" .. tostring(A)) .. " count=")
-				.. tostring(P)
+			(("random affix candidates permit only one combination difficulty=" .. tostring(D)) .. " count=")
+				.. tostring(S)
 		)
 		return false
 	end
-	self.difficultyAffix = { fixedAffixIds = H, fieldBuffCount = P }
+	self.difficultyAffix = { fixedAffixIds = K, fieldBuffCount = S }
 	return true
 end
-function z.prototype.PrepareNextLevel(self, M)
-	local R = self.nextLevelSelection
-	if (R and R.level) == M then
+function C.prototype.PrepareNextLevel(self, P)
+	local U = self.nextLevelSelection
+	if (U and U.level) == P then
 		return true
 	end
 	if self.difficultyAffix == nil then
 		self:Error("PrepareNextLevel called before LoadConfigs")
 		return false
 	end
-	local S = self:DrawRandomAffixes(self.difficultyAffix.fieldBuffCount)
-	if S == nil then
+	local V = self:DrawRandomAffixes(self.difficultyAffix.fieldBuffCount)
+	if V == nil then
 		return false
 	end
-	self.nextLevelSelection = { level = M, ids = S }
+	self.nextLevelSelection = { level = P, ids = V }
 	return true
 end
-function z.prototype.GetNextLevelBuffs(self)
-	local T = self.GetBuffPreviews
-	local U = self.nextLevelSelection
-	return T(self, U and U.ids or {})
+function C.prototype.GetNextLevelBuffs(self)
+	local W = self.GetBuffPreviews
+	local X = self.nextLevelSelection
+	return W(self, X and X.ids or {})
 end
-function z.prototype.GetFixedBuffs(self)
-	local V = self.GetBuffPreviews
-	local W = self.difficultyAffix
-	return V(self, W and W.fixedAffixIds or {})
+function C.prototype.GetFixedBuffs(self)
+	local Y = self.GetBuffPreviews
+	local Z = self.difficultyAffix
+	return Y(self, Z and Z.fixedAffixIds or {})
 end
-function z.prototype.GetCurrentLevelBuffs(self)
+function C.prototype.GetCurrentLevelBuffs(self)
 	return self:GetBuffPreviews(self.currentRandomAffixIds)
 end
-function z.prototype.GetBuffPreviews(self, S)
-	return d(S, function(I, L)
-		local N = self.buffConfigById[L]
-		return { id = L, level = N.level }
+function C.prototype.GetBuffPreviews(self, V)
+	return d(V, function(L, O)
+		local Q = self.buffConfigById[O]
+		return { id = O, level = Q.level }
 	end)
 end
-function z.prototype.PrepareLevel(self, M)
+function C.prototype.PrepareLevel(self, P)
 	if self.difficultyAffix == nil then
 		self:Error("PrepareLevel called before LoadConfigs")
 		return false
 	end
 	self:EndLevel()
-	if not self:PrepareNextLevel(M) then
+	if not self:PrepareNextLevel(P) then
 		return false
 	end
-	local X = self.nextLevelSelection.ids
+	local _ = self.nextLevelSelection.ids
 	self.nextLevelSelection = nil
-	self.currentLevel = M
+	self.currentLevel = P
 	self.currentFixedAffixIds = e(self.difficultyAffix.fixedAffixIds)
-	self.currentRandomAffixIds = X
-	self.previousRandomAffixIds = e(X)
+	self.currentRandomAffixIds = _
+	self.previousRandomAffixIds = e(_)
 	if self.battleCenter == nil then
 		self:EndLevel()
 		return false
 	end
 	self.fieldEffects = f(
-		r,
-		d(X, function(I, L)
-			return self.buffConfigById[L]
+		u,
+		d(_, function(L, O)
+			return self.buffConfigById[O]
 		end),
 		{
 			center = self.battleCenter,
@@ -184,88 +187,97 @@ function z.prototype.PrepareLevel(self, M)
 	self:Print(
 		(
 			(
-				((("prepared level=" .. tostring(M)) .. " fixed=[") .. table.concat(self.currentFixedAffixIds, ","))
+				((("prepared level=" .. tostring(P)) .. " fixed=[") .. table.concat(self.currentFixedAffixIds, ","))
 				.. "] random=["
 			) .. table.concat(self.currentRandomAffixIds, ",")
 		) .. "]"
 	)
 	return true
 end
-function z.prototype.StartRun(self, Y, Z, _)
+function C.prototype.StartRun(self, a0, a1, a2)
 	self:RemoveFixedAffixModifiers()
-	self.fixedAffixHeroes = e(Y)
-	self.battleCenter = Z
-	self.validGridPositions = y(nil, { center = Z, rings = 3, gridSize = GRID_SIZE })
+	self.fixedAffixHeroes = e(a0)
+	self.battleCenter = a1
+	self.validGridPositions = B(nil, { center = a1, rings = 3, gridSize = GRID_SIZE })
 	self:Print("grid analyzed count=" .. tostring(#self.validGridPositions))
-	self.getBattleEnemies = _
-	local a0 = self.difficultyAffix
-	for I, a1 in ipairs(a0 and a0.fixedAffixIds or {}) do
+	self.getBattleEnemies = a2
+	local a3 = self.difficultyAffix
+	for L, a4 in ipairs(a3 and a3.fixedAffixIds or {}) do
 		do
-			local N = self.buffConfigById[a1]
-			if N == nil or N.time > 0 then
-				goto a2
+			local Q = self.buffConfigById[a4]
+			if Q == nil or Q.time > 0 then
+				goto a5
 			end
-			for I, a3 in ipairs(self.fixedAffixHeroes) do
+			for L, a6 in ipairs(self.fixedAffixHeroes) do
 				do
-					if not IsValid(a3) then
-						goto a4
+					if not IsValid(a6) then
+						goto a7
 					end
-					local a5 = t[a1]
-					if a5 ~= nil then
-						a3:AddNewModifier(
-							a3,
+					local a8 = w[a4]
+					if a8 ~= nil then
+						a6:AddNewModifier(
+							a6,
 							nil,
-							a5,
-							{ reducePct = N.params.ReducePct or 0, freezePct = N.params.FreezePct or 400 }
+							a8,
+							{ reducePct = Q.params.ReducePct or 0, freezePct = Q.params.FreezePct or 400 }
 						)
 					end
 				end
-				::a4::
+				::a7::
 			end
 		end
-		::a2::
+		::a5::
 	end
 end
-function z.prototype.StartOrResumeBattle(self)
+function C.prototype.StartOrResumeBattle(self)
 	if self.currentLevel == nil or self.isBattleActive then
 		return
 	end
 	self.isBattleActive = true
-	self:SetPotionPaused(false)
-	local a6 = self.fieldEffects
-	if a6 ~= nil then
-		a6:SetPaused(false)
+	local a9 = self.potion
+	if a9 ~= nil then
+		a9:SetPaused(false)
+	end
+	local aa = self.fieldEffects
+	if aa ~= nil then
+		aa:SetPaused(false)
 	end
 	self:Print("resumed level=" .. tostring(self.currentLevel))
 end
-function z.prototype.PauseBattle(self)
+function C.prototype.PauseBattle(self)
 	if not self.isBattleActive then
 		return
 	end
 	self.isBattleActive = false
-	self:SetPotionPaused(true)
-	local a7 = self.fieldEffects
-	if a7 ~= nil then
-		a7:SetPaused(true)
+	local ab = self.potion
+	if ab ~= nil then
+		ab:SetPaused(true)
+	end
+	local ac = self.fieldEffects
+	if ac ~= nil then
+		ac:SetPaused(true)
 	end
 	self:Print("paused level=" .. tostring(self.currentLevel))
 end
-function z.prototype.EndLevel(self)
+function C.prototype.EndLevel(self)
 	if self.currentLevel ~= nil then
 		self:Print("cleared level=" .. tostring(self.currentLevel))
 	end
 	self.isBattleActive = false
-	local a8 = self.fieldEffects
+	local ad = self.fieldEffects
 	self.fieldEffects = nil
-	if a8 ~= nil then
-		a8:Dispose()
+	if ad ~= nil then
+		ad:Dispose()
 	end
-	self:DestroyPotionEffect()
+	local ae = self.potion
+	if ae ~= nil then
+		ae:SetPaused(true)
+	end
 	self.currentLevel = nil
 	self.currentFixedAffixIds = {}
 	self.currentRandomAffixIds = {}
 end
-function z.prototype.Reset(self)
+function C.prototype.Reset(self)
 	self:RemoveFixedAffixModifiers()
 	self.difficultyAffix = nil
 	self.buffConfigById = {}
@@ -276,209 +288,302 @@ function z.prototype.Reset(self)
 		return {}
 	end
 	self:EndLevel()
+	local af = self.potion
+	if af ~= nil then
+		af:Dispose()
+	end
+	self.potion = nil
 	g(self.validGridPositions, 0)
 end
-function z.prototype.GetCurrentFixedAffixIds(self)
+function C.prototype.GetCurrentFixedAffixIds(self)
 	return self.currentFixedAffixIds
 end
-function z.prototype.GetCurrentRandomAffixIds(self)
+function C.prototype.Update(self)
+	local ag = self.potion
+	if ag ~= nil then
+		ag:Update()
+	end
+end
+function C.prototype.GetCurrentRandomAffixIds(self)
 	return self.currentRandomAffixIds
 end
-function z.prototype.ParseFieldBuffConfigs(self)
-	local a9 = {}
-	local aa = KeyValues.hunt_field_buff
-	local ab = pairs
-	local ac = aa
-	if ac == nil then
-		ac = {}
+function C.prototype.ParseFieldBuffConfigs(self)
+	local ah = {}
+	local ai = KeyValues.hunt_field_buff
+	local aj = pairs
+	local ak = ai
+	if ak == nil then
+		ak = {}
 	end
-	for ad in ab(ac) do
+	for al in aj(ak) do
 		do
-			local L = tostring(ad)
-			local N = u(nil, L)
-			if N == nil then
-				self:Error("invalid buff configuration id=" .. L)
-				goto ae
+			local O = tostring(al)
+			local Q = x(nil, O)
+			if Q == nil then
+				self:Error("invalid buff configuration id=" .. O)
+				goto am
 			end
-			if N.weight < 0 or N.type == 1 and N.weight ~= 0 then
+			if Q.weight < 0 or Q.type == 1 and Q.weight ~= 0 then
 				self:Error(
-					(((("invalid buff weight id=" .. L) .. " type=") .. tostring(N.type)) .. " weight=")
-						.. tostring(N.weight)
+					(((("invalid buff weight id=" .. O) .. " type=") .. tostring(Q.type)) .. " weight=")
+						.. tostring(Q.weight)
 				)
-				goto ae
+				goto am
 			end
-			if N.type == 2 and not self:ValidateRandomEffect(L, N.params) then
-				goto ae
+			if Q.type == 2 and not self:ValidateRandomEffect(O, Q.params) then
+				goto am
 			end
-			a9[L] = N
+			ah[O] = Q
 		end
-		::ae::
+		::am::
 	end
-	return a9
+	return ah
 end
-function z.prototype.ValidateRandomEffect(self, L, af)
-	local ag = v(nil, L, af)
-	if not r:Supports(L) or ag ~= nil then
-		self:Error((("invalid random effect parameters id=" .. L) .. ": ") .. (ag or "unsupported effect"))
+function C.prototype.ValidateRandomEffect(self, O, an)
+	local ao = y(nil, O, an)
+	if not u:Supports(O) or ao ~= nil then
+		self:Error((("invalid random effect parameters id=" .. O) .. ": ") .. (ao or "unsupported effect"))
 		return false
 	end
 	return true
 end
-function z.prototype.GetRandomPool(self)
-	local ah = f(n)
-	for L, N in pairs(self.buffConfigById) do
-		if N.type == 2 and N.weight > 0 then
-			ah:Set(L, N.weight)
+function C.prototype.GetRandomPool(self)
+	local ap = f(q)
+	for O, Q in pairs(self.buffConfigById) do
+		if Q.type == 2 and Q.weight > 0 then
+			ap:Set(O, Q.weight)
 		end
 	end
-	return ah
+	return ap
 end
-function z.prototype.DrawRandomAffixes(self, ai)
-	if ai == 0 then
+function C.prototype.DrawRandomAffixes(self, aq)
+	if aq == 0 then
 		return {}
 	end
-	local ah = self:GetRandomPool()
-	if ah.ValidCount < ai then
+	local ap = self:GetRandomPool()
+	if ap.ValidCount < aq then
 		self:Error(
-			(("insufficient random candidates count=" .. tostring(ai)) .. " candidates=") .. tostring(ah.ValidCount)
+			(("insufficient random candidates count=" .. tostring(aq)) .. " candidates=") .. tostring(ap.ValidCount)
 		)
 		return nil
 	end
-	local aj = #self.previousRandomAffixIds == ai
+	local ar = #self.previousRandomAffixIds == aq
 	do
-		local ak = 1
-		while ak <= 16 do
-			local al = h(ah:MultipleRandomWithoutReplacement(ai))
-			if not aj or not self:IsSameCombination(al, self.previousRandomAffixIds) then
-				return al
+		local as = 1
+		while as <= 16 do
+			local at = h(ap:MultipleRandomWithoutReplacement(aq))
+			if not ar or not self:IsSameCombination(at, self.previousRandomAffixIds) then
+				return at
 			end
-			ak = ak + 1
+			as = as + 1
 		end
 	end
 	self:Error("unable to draw a combination distinct from previous level")
 	return nil
 end
-function z.prototype.IsSameCombination(self, am, an)
-	if #am ~= #an then
+function C.prototype.IsSameCombination(self, au, av)
+	if #au ~= #av then
 		return false
 	end
 	do
-		local ao = 0
-		while ao < #am do
-			if am[ao + 1] ~= an[ao + 1] then
+		local aw = 0
+		while aw < #au do
+			if au[aw + 1] ~= av[aw + 1] then
 				return false
 			end
-			ao = ao + 1
+			aw = aw + 1
 		end
 	end
 	return true
 end
-function z.prototype.CreatePotionEffect(self)
+function C.prototype.CreatePotionEffect(self)
 	if not i(self.currentFixedAffixIds, "potion") then
 		return true
 	end
-	local N = self.buffConfigById.potion
-	if N == nil or self.battleCenter == nil then
+	if self.potion ~= nil and not self.potion:IsDisposed() then
+		return true
+	end
+	local Q = self.buffConfigById.potion
+	if Q == nil or self.battleCenter == nil then
 		self:Error("missing potion configuration")
 		return false
 	end
-	local ap = N.params.Interval or 0
-	local ai = math.floor(N.params.Count or 0)
-	local aq = N.params.Lifetime or 0
-	local ar = #j({ "item_health_potion_1", "item_health_potion_2", "item_health_potion_3" }, function(I, as)
-		return (N.params[as] or 0) > 0 and KeyValues.items[as] ~= nil
-	end)
-	if ap <= 0 or ai <= 0 or aq <= 0 or ar <= 0 then
-		self:Error(
-			(
-				(
-					(
-						((("invalid potion parameters interval=" .. tostring(ap)) .. " count=") .. tostring(ai))
-						.. " lifetime="
-					) .. tostring(aq)
-				) .. " items="
-			) .. tostring(ar)
-		)
-		return false
-	end
-	local at = CreateModifierThinker(
-		nil,
-		nil,
-		"modifier_hunt_potion",
-		{
-			firstDelay = N.time,
-			interval = ap,
-			count = ai,
-			lifetime = aq,
-			item_health_potion_1 = N.params.item_health_potion_1 or 0,
-			item_health_potion_2 = N.params.item_health_potion_2 or 0,
-			item_health_potion_3 = N.params.item_health_potion_3 or 0,
-		},
-		self.battleCenter,
-		DOTA_TEAM_NEUTRALS,
-		false
-	)
-	if not IsValid(at) then
-		self:Error("potion thinker creation failed")
-		return false
-	end
-	local au = p(nil, at)
-	if au == nil then
-		UTIL_Remove(at)
-		return false
-	end
-	au:SetSpawnContext(self.validGridPositions, function()
+	self.potion = f(o.CHuntPotionSupply, Q, self.validGridPositions, function()
 		return self.fixedAffixHeroes
 	end)
-	self.potionThinker = at
-	return true
+	return not self.potion:IsDisposed()
 end
-function z.prototype.SetPotionPaused(self, av)
-	if not IsValid(self.potionThinker) then
-		return
-	end
-	local aw = p(nil, self.potionThinker)
-	if aw ~= nil then
-		aw:SetStackCount(av and 0 or 1)
-	end
-end
-function z.prototype.DestroyPotionEffect(self)
-	local at = self.potionThinker
-	self.potionThinker = nil
-	if not IsValid(at) then
-		return
-	end
-	at:RemoveModifierByName("modifier_hunt_potion")
-end
-function z.prototype.RemoveHero(self, a3)
-	self.fixedAffixHeroes = j(self.fixedAffixHeroes, function(I, ax)
-		return ax ~= a3
+function C.prototype.RemoveHero(self, a6)
+	self.fixedAffixHeroes = j(self.fixedAffixHeroes, function(L, ax)
+		return ax ~= a6
 	end)
-	if not IsValid(a3) then
+	if not IsValid(a6) then
 		return
 	end
-	for I, a5 in ipairs(k(t)) do
-		a3:RemoveModifierByName(a5)
+	for L, a8 in ipairs(k(w)) do
+		a6:RemoveModifierByName(a8)
 	end
 end
-function z.prototype.RemoveFixedAffixModifiers(self)
-	for I, a3 in ipairs(self.fixedAffixHeroes) do
+function C.prototype.RemoveFixedAffixModifiers(self)
+	for L, a6 in ipairs(self.fixedAffixHeroes) do
 		do
-			if not IsValid(a3) then
+			if not IsValid(a6) then
 				goto ay
 			end
-			for I, a5 in ipairs(k(t)) do
-				a3:RemoveModifierByName(a5)
+			for L, a8 in ipairs(k(w)) do
+				a6:RemoveModifierByName(a8)
 			end
 		end
 		::ay::
 	end
 	self.fixedAffixHeroes = {}
 end
-function z.prototype.Print(self, az)
+function C.prototype.Print(self, az)
 	print((self.logPrefix .. " ") .. az)
 end
-function z.prototype.Error(self, az)
+function C.prototype.Error(self, az)
 	print((self.logPrefix .. " ERROR ") .. az)
 end
-return l
+local aA = 200
+local aB = 240
+o.CHuntPotionSupply = c()
+local aC = o.CHuntPotionSupply
+aC.name = "CHuntPotionSupply"
+function aC.prototype.____constructor(self, Q, aD, a0)
+	self.paused = true
+	self.stopped = false
+	self.disposed = false
+	self.elapsedTime = 0
+	self.lastUpdateTime = GameRules:GetGameTime()
+	self.nextRetryTime = 0
+	self.pendingCount = 0
+	self.itemPool = f(q)
+	self.drops = {}
+	self.positions = aD
+	self.heroes = a0
+	self.interval = Q.params.Interval or 0
+	self.count = math.floor(Q.params.Count or 0)
+	self.lifetime = Q.params.Lifetime or 0
+	self.nextTriggerTime = Q.time
+	for L, aE in ipairs({ "item_health_potion_1", "item_health_potion_2", "item_health_potion_3" }) do
+		local aF = Q.params[aE] or 0
+		if aF > 0 and KeyValues.items[aE] ~= nil then
+			self.itemPool:Set(aE, aF)
+		end
+	end
+	if self.interval <= 0 or self.count <= 0 or self.lifetime <= 0 or self.itemPool.ValidCount <= 0 then
+		self:Dispose()
+		return
+	end
+end
+function aC.prototype.IsDisposed(self)
+	return self.disposed
+end
+function aC.prototype.SetPaused(self, aG)
+	self.paused = aG
+	self.lastUpdateTime = GameRules:GetGameTime()
+end
+function aC.prototype.Stop(self)
+	self.stopped = true
+	self:SetPaused(false)
+	if #self.drops == 0 then
+		self:Dispose()
+	end
+end
+function aC.prototype.Update(self)
+	local aH = GameRules:GetGameTime()
+	local aI = math.max(0, aH - self.lastUpdateTime)
+	self.lastUpdateTime = aH
+	if self.disposed or self.paused then
+		return
+	end
+	self.elapsedTime = self.elapsedTime + aI
+	if not self.stopped then
+		while self.elapsedTime >= self.nextTriggerTime do
+			self.pendingCount = self.pendingCount + self.count
+			self.nextTriggerTime = self.nextTriggerTime + self.interval
+		end
+		if self.pendingCount > 0 and self.elapsedTime >= self.nextRetryTime then
+			self:SpawnBatch()
+			self.nextRetryTime = self.elapsedTime + 0.5
+		end
+	end
+	local a0 = j(self:heroes(), function(L, a6)
+		return IsValid(a6) and a6:IsAlive() and a6:IsRealHero()
+	end)
+	do
+		local aw = #self.drops - 1
+		while aw >= 0 do
+			do
+				local aJ = self.drops[aw + 1]
+				local aK = aJ.dropItem
+				if aK.isDispose or not IsValid(aK.entity) or self.elapsedTime >= aJ.expiresAt then
+					aK:dispose()
+					l(self.drops, aw, 1)
+					goto aL
+				end
+				if not aK:IsLanded() then
+					goto aL
+				end
+				local a6 = m(a0, function(L, a6)
+					return CalcDistance(a6, aK.entity) <= aA
+				end)
+				if a6 == nil then
+					goto aL
+				end
+				a6:AddItemByName(aK.itemName)
+				if self.disposed then
+					return
+				end
+				aK:dispose()
+				l(self.drops, aw, 1)
+			end
+			::aL::
+			aw = aw - 1
+		end
+	end
+	if self.stopped and #self.drops == 0 then
+		self:Dispose()
+	end
+end
+function aC.prototype.Dispose(self)
+	if self.disposed then
+		return
+	end
+	self.disposed = true
+	for L, aJ in ipairs(self.drops) do
+		aJ.dropItem:dispose()
+	end
+	self.drops = {}
+end
+function aC.prototype.SpawnBatch(self)
+	local a0 = j(self:heroes(), function(L, a6)
+		return IsValid(a6) and a6:IsAlive()
+	end)
+	local aM = math.min(self.pendingCount, self.count)
+	do
+		local aw = 0
+		while aw < aM do
+			local aN = GetRandomElement(j(self.positions, function(L, aN)
+				return GridNav:IsValidPosition(aN)
+					and n(a0, function(L, a6)
+						return CalcDistance(aN, a6) >= aB
+					end)
+					and n(self.drops, function(L, aJ)
+						return aJ.dropItem.isDispose or CalcDistance(aN, aJ.dropItem.position) >= 96
+					end)
+			end))
+			local aE = self.itemPool:Random()
+			if aN == nil or aE == nil then
+				break
+			end
+			local aO = GetGroundPosition(aN, nil)
+			local aP = f(s, aE, aO)
+			local aQ = self.drops
+			aQ[#aQ + 1] = { dropItem = aP, expiresAt = self.elapsedTime + self.lifetime }
+			self.pendingCount = self.pendingCount - 1
+			aw = aw + 1
+		end
+	end
+end
+return o

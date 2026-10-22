@@ -28,7 +28,7 @@ function l.prototype.OnCreated(self)
 end
 function l.prototype.OnThink(self, m)
 	if m ~= "BleedShock" then
-		return
+		return -1
 	end
 	local n = self:GetSpecialValueFor("distance")
 	local o = self:GetSpecialValueFor("radius")
@@ -37,7 +37,6 @@ function l.prototype.OnThink(self, m)
 	if not IsValid(q) then
 		self.moveDistance = 0
 		self.lastOrigin = nil
-		self:StartThink(0.2, m)
 		return
 	end
 	local r = q:GetAbsOrigin()
@@ -61,7 +60,6 @@ function l.prototype.OnThink(self, m)
 		ParticleManager:ReleaseParticleIndex(v)
 		q:EmitSound("Blink_Layer.Overwhelming")
 	end
-	self:StartThink(0.2, m)
 end
 l = e({ h, k(nil) }, l)
 return f

@@ -23,6 +23,7 @@ d(j, h)
 function j.prototype.OnCreated(self)
 	self:StartThink(0, function()
 		self:OnSpellStart()
+		return -1
 	end)
 end
 function j.prototype.OnSpellStart(self)

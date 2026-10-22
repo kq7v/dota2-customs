@@ -439,4 +439,4 @@ const HeroSelection = () => {
     return _el$;
   })();
 };
-libs.render(() => libs.createComponent(HeroSelection, {}), $.GetContextPanel());
+libs.render(() => libs.createComponent(HeroSelection, {}), $.GetContextPanel());

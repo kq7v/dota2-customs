@@ -3068,6 +3068,37 @@
 	margin-right: 1px;
 }
 
+.TalentNodeContainer .TalentNode.type5
+{
+	width: 100px;
+	height: 116px;
+}
+
+.TalentNodeContainer .TalentNode.type5 .TalentNodeBg
+{
+	width: 92px;
+	height: 86px;
+}
+
+.TalentNodeContainer .TalentNode.type5 .TalentNodeLvBg
+{
+	width: 100px;
+	height: 100px;
+}
+
+.TalentNodeContainer .TalentNode.type5 .TalentNodeLevel
+{
+	width: 80px;
+	margin-bottom: 0px;
+	background-image: url("s2r://panorama/images/custom_game/t1_talent/t1_frame_txt_png.vtex");
+	background-size: 100%;
+}
+
+.TalentNodeContainer .TalentNode.type5 .TalentNodeLockTag
+{
+	margin-bottom: 20px;
+}
+
 .TalentNodeContainer .TalentNode .TalentNodeBg
 {
 	align: center center;

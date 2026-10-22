@@ -100,4 +100,4 @@ function CourierCard(props) {
   }));
 }
 
-exports.CourierCard = CourierCard;
+exports.CourierCard = CourierCard;

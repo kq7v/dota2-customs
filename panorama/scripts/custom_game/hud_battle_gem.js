@@ -212,4 +212,4 @@ const HUDBattleGem = () => {
     return _el$4;
   })();
 };
-libs.render(() => libs.createComponent(HUDBattleGem, {}), $.GetContextPanel());
+libs.render(() => libs.createComponent(HUDBattleGem, {}), $.GetContextPanel());

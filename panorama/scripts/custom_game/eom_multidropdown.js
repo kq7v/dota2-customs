@@ -51,7 +51,7 @@ const EOM_MultiDropDown = props => {
     });
     return res;
   })();
-  const [selectList, setSelectList] = libs.createSignal(defaultSelection);
+  const [selectList, setSelectList] = libs.createSignal(Object.fromEntries(Object.values(local.options).map((option, index) => [option, local.index?.includes(index) ?? false])));
   libs.createEffect(() => {
     if (local.onChange) {
       local.onChange(selectList());
@@ -59,6 +59,8 @@ const EOM_MultiDropDown = props => {
   });
   libs.createEffect(libs.on(() => local.reset, () => {
     setSelectList(defaultSelection);
+  }, {
+    defer: true
   }));
   const toggleMenu = pBtn => {
     if (!pBtn?.IsValid()) return;
@@ -250,4 +252,4 @@ const EOM_MultiDropDown = props => {
   }));
 };
 
-exports.EOM_MultiDropDown = EOM_MultiDropDown;
+exports.EOM_MultiDropDown = EOM_MultiDropDown;

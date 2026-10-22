@@ -447,4 +447,4 @@ GameUI.CustomUIConfig().hero_abilities = {
 			"last_hit_damage": 150
 		}
 	}
-};
+};

@@ -641,4 +641,4 @@ const EOM_MenuLayout_Content = props => {
 
 exports.EOM_MenuLayout = EOM_MenuLayout;
 exports.EOM_MenuLayout_Content = EOM_MenuLayout_Content;
-exports.createMenuLayout = createMenuLayout;
+exports.createMenuLayout = createMenuLayout;

@@ -12,364 +12,371 @@ local a = "abilities/eom_privilege"
 local b = require("lualib_bundle")
 local c = b.__TS__Class
 local d = b.__TS__ArrayIncludes
-local e = b.__TS__New
-local f = b.__TS__ObjectKeys
-local g = {}
-local h, i
-function h(self, j, k)
-	if i[j] then
+local e = b.__TS__Delete
+local f = b.__TS__New
+local g = b.__TS__ObjectKeys
+local h = {}
+local i, j
+function i(self, k, l)
+	if j[k] then
 	end
-	i[j] = k
+	j[k] = l
 end
-local l = {}
-local function m(self, n, o, p)
-	local q = n.name or tostring(n)
-	local r = l[q]
-	if r == nil then
-		r = {}
-		l[q] = r
+local m = {}
+local function n(self, o, p, q)
+	local r = o.name or tostring(o)
+	local s = m[r]
+	if s == nil then
+		s = {}
+		m[r] = s
 	end
-	local s = -1
+	local t = -1
 	do
-		local t = 0
-		while t < #r do
-			if r[t + 1].propertyKey == o then
-				s = t
+		local u = 0
+		while u < #s do
+			if s[u + 1].propertyKey == p then
+				t = u
 				break
 			end
-			t = t + 1
+			u = u + 1
 		end
 	end
-	if s ~= -1 then
-		r[s + 1].specialValueKey = p
+	if t ~= -1 then
+		s[t + 1].specialValueKey = q
 	else
-		r[#r + 1] = { propertyKey = o, specialValueKey = p }
+		s[#s + 1] = { propertyKey = p, specialValueKey = q }
 	end
 end
-function g.collectPrivilegeValueEntries(self, n)
-	local u = {}
-	local v = n
-	while v ~= nil do
-		local q = v.name or tostring(v)
-		local r = l[q]
-		if r ~= nil then
+function h.collectPrivilegeValueEntries(self, o)
+	local v = {}
+	local w = o
+	while w ~= nil do
+		local r = w.name or tostring(w)
+		local s = m[r]
+		if s ~= nil then
 			do
-				local t = 0
-				while t < #r do
-					local w = r[t + 1]
-					local x = false
+				local u = 0
+				while u < #s do
+					local x = s[u + 1]
+					local y = false
 					do
-						local y = 0
-						while y < #u do
-							if u[y + 1].propertyKey == w.propertyKey then
-								x = true
+						local z = 0
+						while z < #v do
+							if v[z + 1].propertyKey == x.propertyKey then
+								y = true
 								break
 							end
-							y = y + 1
+							z = z + 1
 						end
 					end
-					if not x then
-						u[#u + 1] = w
+					if not y then
+						v[#v + 1] = x
 					end
-					t = t + 1
+					u = u + 1
 				end
 			end
 		end
-		v = v.____super
+		w = w.____super
 	end
-	return u
+	return v
 end
-function g.PrivilegeValue(self, p)
-	return function(z, A, o)
-		local B = o
-		local C = p or B
-		local n = A.constructor
-		if n ~= nil then
-			m(nil, n, B, C)
+function h.PrivilegeValue(self, q)
+	return function(A, B, p)
+		local C = p
+		local D = q or C
+		local o = B.constructor
+		if o ~= nil then
+			n(nil, o, C, D)
 		end
 	end
 end
-g.EOMPrivilege = c()
-local D = g.EOMPrivilege
-D.name = "EOMPrivilege"
-function D.prototype.____constructor(self, E, F, G, H, I)
+h.EOMPrivilege = c()
+local E = h.EOMPrivilege
+E.name = "EOMPrivilege"
+function E.prototype.____constructor(self, F, G, H, I, J)
 	self.lastUseTime = 0
 	self._bAlreadyDestroyed = false
 	self._timerInterval = -1
 	self._ThinkList = {}
-	self.privilegeName = E
-	self.playerID = G
-	self.level = F
-	self.caster = H
-	self.specialValueOverrides = I
-	self.__PrivilegeValueEntries = g.collectPrivilegeValueEntries(nil, self.constructor)
-	local J = self:GetCaster()
+	self.privilegeName = F
+	self.playerID = H
+	self.level = G
+	self.caster = I
+	self.specialValueOverrides = J
+	self.__PrivilegeValueEntries = h.collectPrivilegeValueEntries(nil, self.constructor)
+	local K = self:GetCaster()
 	if IsServer() then
 		if self.EventListener ~= nil then
 			if self.__EventIDList == nil then
 				self.__EventIDList = {}
 			end
-			for K, L in pairs(self:EventListener()) do
-				local M = self.__EventIDList
-				M[#M + 1] = Event:RegisterWithPriority(K, L, self:GetPriority())
+			for L, M in pairs(self:EventListener()) do
+				local N = self.__EventIDList
+				N[#N + 1] = Event:RegisterWithPriority(L, M, self:GetPriority())
 			end
 		end
-		if J and self.StaticProperty ~= nil then
-			for N, O in pairs(self:StaticProperty()) do
-				if PROPERTY_MAP_REVERSE[N] then
-					PropertySystem:AddStaticProperty(J:entindex(), PROPERTY_MAP_REVERSE[N], self.privilegeName, O)
+		if K and self.StaticProperty ~= nil then
+			for O, P in pairs(self:StaticProperty()) do
+				if PROPERTY_MAP_REVERSE[O] then
+					PropertySystem:AddStaticProperty(K:entindex(), PROPERTY_MAP_REVERSE[O], self.privilegeName, P)
 				end
 			end
 		end
-		if J and self.DynamicProperty ~= nil then
-			for N, P in pairs(self:DynamicProperty()) do
-				if PROPERTY_MAP_REVERSE[N] then
-					PropertySystem:RegisterDynamicProperty(J:entindex(), PROPERTY_MAP_REVERSE[N], self.privilegeName, P)
+		if K and self.DynamicProperty ~= nil then
+			for O, Q in pairs(self:DynamicProperty()) do
+				if PROPERTY_MAP_REVERSE[O] then
+					PropertySystem:RegisterDynamicProperty(K:entindex(), PROPERTY_MAP_REVERSE[O], self.privilegeName, Q)
 				end
 			end
 		end
 	end
 	self:RefreshPrivilegeValues()
 end
-function D.prototype.OnCreated(self) end
-function D.prototype.OnRefresh(self)
+function E.prototype.OnCreated(self) end
+function E.prototype.OnRefresh(self)
 	self:RefreshPrivilegeValues()
 end
-function D.prototype.RefreshPrivilegeValues(self)
+function E.prototype.RefreshPrivilegeValues(self)
 	if self.__PrivilegeValueEntries ~= nil then
-		for z, w in ipairs(self.__PrivilegeValueEntries) do
-			self[w.propertyKey] = self:GetSpecialValueFor(w.specialValueKey)
+		for A, x in ipairs(self.__PrivilegeValueEntries) do
+			self[x.propertyKey] = self:GetSpecialValueFor(x.specialValueKey)
 		end
 	end
 end
-function D.prototype.OnDestroy(self)
-	local H = self:GetCaster()
-	if H then
-		PropertySystem:RemoveStaticProperty(H:entindex(), self.privilegeName)
-		PropertySystem:UnregisterDynamicProperty(H:entindex(), self.privilegeName)
+function E.prototype.OnDestroy(self)
+	local I = self:GetCaster()
+	if I then
+		PropertySystem:RemoveStaticProperty(I:entindex(), self.privilegeName)
+		PropertySystem:UnregisterDynamicProperty(I:entindex(), self.privilegeName)
 	end
 	if self.__EventIDList ~= nil then
-		for t, Q in ipairs(self.__EventIDList) do
-			Event:Unregister(Q)
+		for u, R in ipairs(self.__EventIDList) do
+			Event:Unregister(R)
 		end
 		self.__EventIDList = nil
 	end
 	self:StopAllThinks()
 	self._bAlreadyDestroyed = true
 end
-function D.prototype.StartCooldown(self, R)
-	self.lastUseTime = GameRules:GetGameTime() + R
+function E.prototype.StartCooldown(self, S)
+	self.lastUseTime = GameRules:GetGameTime() + S
 end
-function D.prototype.IsCooldownReady(self)
+function E.prototype.IsCooldownReady(self)
 	if self.lastUseTime == 0 then
 		return true
 	end
 	return GameRules:GetGameTime() >= self.lastUseTime
 end
-function D.prototype.GetCooldownTimeRemaining(self)
+function E.prototype.GetCooldownTimeRemaining(self)
 	if self.lastUseTime == 0 then
 		return 0
 	end
-	local S = GameRules:GetGameTime()
-	local T = self.lastUseTime - S
-	return math.max(0, T)
+	local T = GameRules:GetGameTime()
+	local U = self.lastUseTime - T
+	return math.max(0, U)
 end
-function D.prototype.ResetCooldown(self)
+function E.prototype.ResetCooldown(self)
 	self.lastUseTime = 0
 end
-function D.prototype.IncrementStackCount(self, U, V)
+function E.prototype.IncrementStackCount(self, V, W)
 	if self.__StackCount == nil then
 		self.__StackCount = 0
 	end
-	self.__StackCount = self.__StackCount + (U or 1)
+	self.__StackCount = self.__StackCount + (V or 1)
 	self:RefreshStaticProperty()
 end
-function D.prototype.DecrementStackCount(self, U, V)
+function E.prototype.DecrementStackCount(self, V, W)
 	if self.__StackCount == nil then
 		self.__StackCount = 0
 	end
-	self.__StackCount = self.__StackCount - (U or 1)
+	self.__StackCount = self.__StackCount - (V or 1)
 	self:RefreshStaticProperty()
 end
-function D.prototype.SetStackCount(self, W, V)
-	self.__StackCount = W
+function E.prototype.SetStackCount(self, X, W)
+	self.__StackCount = X
 	self:RefreshStaticProperty()
 end
-function D.prototype.GetStackCount(self)
+function E.prototype.GetStackCount(self)
 	return self.__StackCount or 0
 end
-function D.prototype.PRD(self, X, Y)
-	return PRD(nil, self, X, Y or self.privilegeName)
+function E.prototype.PRD(self, Y, Z)
+	return PRD(nil, self, Y, Z or self.privilegeName)
 end
-function D.prototype.RefreshStaticProperty(self)
-	local H = self:GetCaster()
-	if not H then
+function E.prototype.RefreshStaticProperty(self)
+	local I = self:GetCaster()
+	if not I then
 		return
 	end
 	if self.StaticProperty ~= nil then
-		for N, O in pairs(self:StaticProperty()) do
-			if PROPERTY_MAP_REVERSE[N] then
-				PropertySystem:AddStaticProperty(H:entindex(), PROPERTY_MAP_REVERSE[N], self.privilegeName, O)
+		for O, P in pairs(self:StaticProperty()) do
+			if PROPERTY_MAP_REVERSE[O] then
+				PropertySystem:AddStaticProperty(I:entindex(), PROPERTY_MAP_REVERSE[O], self.privilegeName, P)
 			end
 		end
 	end
 end
-function D.prototype.GetCaster(self)
+function E.prototype.GetCaster(self)
 	if self.caster ~= nil and IsValid(self.caster) then
 		return self.caster
 	end
 	return PlayerResource:GetSelectedHeroEntity(self.playerID)
 end
-function D.prototype.GetPlayerID(self)
+function E.prototype.GetPlayerID(self)
 	return self.playerID
 end
-function D.prototype.SetLevel(self, Z)
-	self.level = Z
+function E.prototype.SetLevel(self, _)
+	self.level = _
 	self:OnRefresh()
 end
-function D.prototype.GetSpecialValueFor(self, _)
-	local a0 = self.specialValueOverrides
-	local a1 = a0 and a0[_]
-	if a1 ~= nil then
-		return a1
+function E.prototype.GetSpecialValueFor(self, a0)
+	local a1 = self.specialValueOverrides
+	local a2 = a1 and a1[a0]
+	if a2 ~= nil then
+		return a2
 	end
-	return Privilege:GetPrivilegeSpecialValue(self.privilegeName, self.level, _, self:GetCaster())
+	return Privilege:GetPrivilegeSpecialValue(self.privilegeName, self.level, a0, self:GetCaster())
 end
-function D.prototype.IsValidPrivilege(self)
+function E.prototype.IsValidPrivilege(self)
 	if self._bAlreadyDestroyed then
 		return false
 	end
 	return true
 end
-function D.prototype.GetPriority(self)
-	local a2 = toFiniteNumber
-	local a3 = KeyValues.privilegeKv[self.privilegeName]
-	if a3 ~= nil then
-		a3 = a3.Priority
+function E.prototype.GetPriority(self)
+	local a3 = toFiniteNumber
+	local a4 = KeyValues.privilegeKv[self.privilegeName]
+	if a4 ~= nil then
+		a4 = a4.Priority
 	end
-	return a2(a3, 100)
+	return a3(a4, 100)
 end
-function D.prototype.GetUnavailableArtifactNames(self)
-	local a4 = self:GetCaster()
-	if not IsValid(a4) then
+function E.prototype.GetUnavailableArtifactNames(self)
+	local a5 = self:GetCaster()
+	if not IsValid(a5) then
 		return {}
 	end
-	local a5 = {}
-	for a6, a7 in pairs(KeyValues.items) do
-		local a8 = toFiniteNumber(a7.Quantitylimit, 0)
-		if a8 > 0 and a4:GetItemCount(a6) >= a8 then
-			self:AppendExcludedArtifact(a5, a6)
+	local a6 = {}
+	for a7, a8 in pairs(KeyValues.items) do
+		local a9 = toFiniteNumber(a8.Quantitylimit, 0)
+		if a9 > 0 and a5:GetItemCount(a7) >= a9 then
+			self:AppendExcludedArtifact(a6, a7)
 		end
 	end
-	local a9 = a4:GetAllItems()
+	local aa = a5:GetAllItems()
 	do
-		local t = 0
-		while t < #a9 do
+		local u = 0
+		while u < #aa do
 			do
-				local aa = a9[t + 1]
-				if not IsValid(aa) then
-					goto ab
+				local ab = aa[u + 1]
+				if not IsValid(ab) then
+					goto ac
 				end
-				self:AppendUpgradeGroupArtifacts(a5, aa:GetAbilityName())
+				self:AppendUpgradeGroupArtifacts(a6, ab:GetAbilityName())
 			end
-			::ab::
-			t = t + 1
+			::ac::
+			u = u + 1
 		end
 	end
-	return a5
+	return a6
 end
-function D.prototype.AppendUpgradeGroupArtifacts(self, a5, a6)
-	local ac = tostring
-	local ad = KeyValues.items[a6]
-	if ad ~= nil then
-		ad = ad.UpgradeGroup
+function E.prototype.AppendUpgradeGroupArtifacts(self, a6, a7)
+	local ad = tostring
+	local ae = KeyValues.items[a7]
+	if ae ~= nil then
+		ae = ae.UpgradeGroup
 	end
-	local ae = ad
-	if ae == nil then
-		ae = ""
+	local af = ae
+	if af == nil then
+		af = ""
 	end
-	local af = ac(ae)
-	if af == "" then
+	local ag = ad(af)
+	if ag == "" then
 		return
 	end
-	for ag, ah in pairs(KeyValues.items) do
-		local ai = tostring
-		local aj = ah.UpgradeGroup
-		if aj == nil then
-			aj = ""
+	for ah, ai in pairs(KeyValues.items) do
+		local aj = tostring
+		local ak = ai.UpgradeGroup
+		if ak == nil then
+			ak = ""
 		end
-		if ai(aj) == af then
-			self:AppendExcludedArtifact(a5, ag)
+		if aj(ak) == ag then
+			self:AppendExcludedArtifact(a6, ah)
 		end
 	end
 end
-function D.prototype.AppendExcludedArtifact(self, a5, a6)
-	if not d(a5, a6) then
-		a5[#a5 + 1] = a6
+function E.prototype.AppendExcludedArtifact(self, a6, a7)
+	if not d(a6, a7) then
+		a6[#a6 + 1] = a7
 	end
 end
-function D.prototype.StartThink(self, ak, al, am)
-	if type(al) == "function" and am == nil then
-		am = al
-		al = nil
+function E.prototype.StartThink(self, al, am, an)
+	if type(am) == "function" then
+		an = am
+		am = nil
 	end
-	local an = al or DoUniqueString("PrivilegeThink")
-	if ak == -1 then
-		if self._ThinkList[an] then
-			Timer:StopTimer(self._ThinkList[an])
-			self._ThinkList[an] = nil
-		end
-		return an
+	local ao = am or DoUniqueString("PrivilegeThink")
+	if not IsServer() then
+		return ao
 	end
-	if self._ThinkList[an] ~= nil then
-		Timer:StopTimer(self._ThinkList[an])
+	local ap = self._ThinkList[ao]
+	if ap ~= nil then
+		Timer:StopTimer(ap)
+		e(self._ThinkList, ao)
 	end
-	local ao = Timer:GameTimer(ak, function()
+	if al == -1 then
+		return ao
+	end
+	local aq
+	aq = Timer:StartIntervalThink(nil, al, function()
 		if not self:IsValidPrivilege() then
-			self._ThinkList[an] = nil
-			return
+			if self._ThinkList[ao] == aq then
+				e(self._ThinkList, ao)
+			end
+			return -1
 		end
-		local ap
-		if am ~= nil then
-			ap = am(nil, self, an)
-		elseif self.OnThink ~= nil then
-			ap = self:OnThink(an)
+		local ar
+		if an ~= nil then
+			ar = an(nil, self, ao)
+		else
+			ar = self:OnThink(ao)
 		end
-		if ap == -1 then
-			Timer:StopTimer(self._ThinkList[an])
-			self._ThinkList[an] = nil
-			return
+		local as = ar
+		if self._ThinkList[ao] ~= aq then
+			return -1
 		end
-		return ap
+		if as == -1 then
+			e(self._ThinkList, ao)
+		end
+		return as
 	end)
-	self._ThinkList[an] = ao
-	return an
+	self._ThinkList[ao] = aq
+	return ao
 end
-function D.prototype.OnThink(self, al) end
-function D.prototype.StopAllThinks(self)
-	for al, aq in pairs(self._ThinkList) do
-		Timer:StopTimer(aq)
+function E.prototype.OnThink(self, am) end
+function E.prototype.StopAllThinks(self)
+	for am, at in pairs(self._ThinkList) do
+		Timer:StopTimer(at)
 	end
 	self._ThinkList = {}
 end
-g.RegisterPrivilege = function(z, j)
-	return function(self, k)
-		local al = j or k.name
-		h(nil, al, k)
-		return k
+h.RegisterPrivilege = function(A, k)
+	return function(self, l)
+		local am = k or l.name
+		i(nil, am, l)
+		return l
 	end
 end
-i = {}
-function g.CreatePrivilegeInstance(self, j, E, F, G, H, I)
-	local ar = i[j]
-	if not ar then
-		print("[PrivilegeDecorator] Class not found: " .. j)
+j = {}
+function h.CreatePrivilegeInstance(self, k, F, G, H, I, J)
+	local au = j[k]
+	if not au then
+		print("[PrivilegeDecorator] Class not found: " .. k)
 		return nil
 	end
-	local as = e(ar, E, F, G, H, I)
-	return as
+	local av = f(au, F, G, H, I, J)
+	return av
 end
-function g.GetAllRegisteredPrivilegeNames(self)
-	return f(i)
+function h.GetAllRegisteredPrivilegeNames(self)
+	return g(j)
 end
-return g
+return h

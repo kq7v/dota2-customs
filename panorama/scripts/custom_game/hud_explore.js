@@ -1507,4 +1507,4 @@ function HudExplore() {
     }
   });
 }
-libs.render(() => libs.createComponent(HudExplore, {}), $.GetContextPanel());
+libs.render(() => libs.createComponent(HudExplore, {}), $.GetContextPanel());

@@ -19,6 +19,7 @@
 		"ability_values",
 		"damage_counter",
 		"unit",
+		"ability_state",
 		"service",
 		"dialog_event",
 		"dropped_item",

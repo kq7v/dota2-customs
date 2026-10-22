@@ -42,4 +42,4 @@ function Portal(props) {
 }
 
 exports.GenericPanel2 = GenericPanel2;
-exports.Portal = Portal;
+exports.Portal = Portal;

@@ -48,7 +48,7 @@ function HeroLevelMain(props) {
         marginRight: "70px"
       }, _el$);
     libs.setProp(_el$, "onmouseover", () => {
-      const text = `${GetLocalization("#HeroExp_Tips")} ${props.extraExp}/${maxExp()}`;
+      const text = `${GetLocalization("#HeroExp_Tips")} ${props.extraExp}/${isMax() ? "∞" : maxExp()}`;
       if (tooltipNode) {
         ShowCustomTooltip(tooltipNode, "text", {
           text: text
@@ -118,4 +118,4 @@ function HeroLevelMain(props) {
   })();
 }
 
-exports.HeroLevelMain = HeroLevelMain;
+exports.HeroLevelMain = HeroLevelMain;

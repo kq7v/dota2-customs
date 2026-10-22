@@ -74,4 +74,4 @@ const EOM_Breadcrumb = props => {
   })();
 };
 
-exports.EOM_Breadcrumb = EOM_Breadcrumb;
+exports.EOM_Breadcrumb = EOM_Breadcrumb;

@@ -48,4 +48,4 @@ const EOM_ImageNumber = props => {
   })();
 };
 
-exports.EOM_ImageNumber = EOM_ImageNumber;
+exports.EOM_ImageNumber = EOM_ImageNumber;

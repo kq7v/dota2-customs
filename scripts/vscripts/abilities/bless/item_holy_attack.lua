@@ -33,6 +33,7 @@ function j.prototype.EventListener(self)
 				self.enable = false
 				self:StartThink(0, function()
 					self.enable = true
+					return -1
 				end)
 			end
 		end,

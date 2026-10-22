@@ -108,6 +108,7 @@ function p.prototype.OnCreated(self, n)
 				return 1
 			end
 			self:Patrol()
+			return 0.5
 		end)
 		self:StartThink(0, "StageThink", function()
 			if o:HasState(StateEnum.AI_DISABLED) then
@@ -122,6 +123,7 @@ function p.prototype.OnCreated(self, n)
 			else
 				self:Stage2()
 			end
+			return 0
 		end)
 	end
 end

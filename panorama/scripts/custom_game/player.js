@@ -729,4 +729,4 @@ exports.ExchangeEntry = ExchangeEntry;
 exports.PlayerAvatar = PlayerAvatar;
 exports.PlayerMedal = PlayerMedal;
 exports.PlayerName = PlayerName;
-exports.PlayerTitle = PlayerTitle;
+exports.PlayerTitle = PlayerTitle;

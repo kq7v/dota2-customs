@@ -38,4 +38,4 @@ function InteractPrompt() {
     }
   });
 }
-libs.render(() => libs.createComponent(InteractPrompt, {}), $.GetContextPanel());
+libs.render(() => libs.createComponent(InteractPrompt, {}), $.GetContextPanel());

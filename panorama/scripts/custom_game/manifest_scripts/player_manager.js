@@ -278,4 +278,4 @@ if (playerManager != undefined) {
 }
 else {
     GameUI.CustomUIConfig().PlayerManager = new CPlayerManager();
-}
+}

@@ -82,4 +82,4 @@ GameUI.CustomUIConfig().npc = {
 		"AttackCapabilities": "DOTA_UNIT_CAP_NO_ATTACK",
 		"BoundsHullName": "DOTA_HULL_SIZE_SMALLEST"
 	}
-};
+};

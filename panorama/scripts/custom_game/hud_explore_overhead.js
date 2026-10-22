@@ -128,7 +128,7 @@ function CourierExploreOverhead() {
   let recycleBin;
   let disposed = false;
   const createOverheadPanel = entIndex => {
-    if (container === undefined) {
+    if (!container?.IsValid()) {
       return undefined;
     }
     const panel = $.CreatePanel('Panel', container, `courier_explore_overhead_${entIndex}`);
@@ -151,7 +151,7 @@ function CourierExploreOverhead() {
     panel.SetPositionInPixels(x, y, 0);
   };
   const cleanupContainer = currentTime => {
-    if (container === undefined || recycleBin === undefined) {
+    if (!container?.IsValid() || !recycleBin?.IsValid()) {
       return;
     }
     for (let i = container.GetChildCount() - 1; i >= 0; i--) {
@@ -175,7 +175,7 @@ function CourierExploreOverhead() {
     panel.DeleteAsync(0);
   };
   const cleanupPanelChildren = parent => {
-    if (parent === undefined) {
+    if (!parent?.IsValid()) {
       return;
     }
     for (let i = parent.GetChildCount() - 1; i >= 0; i--) {
@@ -213,14 +213,14 @@ function CourierExploreOverhead() {
         if (screenX < 0 || screenX > Game.GetScreenWidth() || screenY < 0 || screenY > Game.GetScreenHeight()) {
           continue;
         }
-        if (container === undefined) {
+        if (!container?.IsValid()) {
           continue;
         }
         let panel = container.FindChildTraverse(`courier_explore_overhead_${entIndex}`);
-        if (panel === undefined || panel === null) {
+        if (!panel?.IsValid()) {
           panel = createOverheadPanel(entIndex);
         }
-        if (panel === undefined || panel === null) {
+        if (!panel?.IsValid()) {
           continue;
         }
         updatePanelPosition(panel, entIndex);
@@ -258,4 +258,4 @@ function CourierExploreOverhead() {
     return _el$9;
   })();
 }
-libs.render(CourierExploreOverhead, $.GetContextPanel());
+libs.render(CourierExploreOverhead, $.GetContextPanel());

@@ -283,7 +283,40 @@
 
 #RuneRoot #RuneContent #RuneBagRoot #RuneFilterWindow #SuitFilterList .EOM_CheckBox2,#RuneRoot #RuneContent #RuneBagRoot #EngravingFilterWindow #SuitFilterList .EOM_CheckBox2
 {
-	width: 145px;
+	width: fill-parent-flow(1);
+}
+
+#RuneRoot #RuneContent #RuneBagRoot #RuneFilterWindow .EntryValueFilterList,#RuneRoot #RuneContent #RuneBagRoot #EngravingFilterWindow .EntryValueFilterList
+{
+	width: 100%;
+	margin-top: 10px;
+	flow-children: down;
+}
+
+#RuneRoot #RuneContent #RuneBagRoot #RuneFilterWindow .EntryRangeFilterRow,#RuneRoot #RuneContent #RuneBagRoot #EngravingFilterWindow .EntryRangeFilterRow
+{
+	width: 100%;
+	min-height: 38px;
+	flow-children: right;
+}
+
+#RuneRoot #RuneContent #RuneBagRoot #RuneFilterWindow .EntryRangeFilterRow .EntryRangeFilterName,#RuneRoot #RuneContent #RuneBagRoot #EngravingFilterWindow .EntryRangeFilterRow .EntryRangeFilterName
+{
+	width: fill-parent-flow(1);
+	margin-right: 8px;
+	vertical-align: center;
+}
+
+#RuneRoot #RuneContent #RuneBagRoot #RuneFilterWindow .EntryFilterRule,#RuneRoot #RuneContent #RuneBagRoot #EngravingFilterWindow .EntryFilterRule
+{
+	width: 100%;
+	flow-children: down;
+}
+
+#RuneRoot #RuneContent #RuneBagRoot #RuneFilterWindow .EntryFilterRule .EntryRangeInputs,#RuneRoot #RuneContent #RuneBagRoot #EngravingFilterWindow .EntryFilterRule .EntryRangeInputs
+{
+	horizontal-align: right;
+	margin-bottom: 6px;
 }
 
 #RuneRoot #RuneContent #RuneBagRoot #RuneFilterWindow #RuneAdverbEntryFilterList,#RuneRoot #RuneContent #RuneBagRoot #EngravingFilterWindow #RuneAdverbEntryFilterList
@@ -384,7 +417,7 @@
 
 #RuneRoot #RuneContent #RuneBagRoot #RuneFilterWindow #EngravingEntryFilterList .EOM_CheckBox2,#RuneRoot #RuneContent #RuneBagRoot #EngravingFilterWindow #EngravingEntryFilterList .EOM_CheckBox2
 {
-	width: 100%;
+	width: fill-parent-flow(1);
 	height: 30px;
 	margin-bottom: 2px;
 }
@@ -768,6 +801,46 @@
 	margin-left: 0px;
 	horizontal-align: left;
 	vertical-align: center;
+}
+
+.EOM_TextEntry
+{
+	width: 160px;
+	font-size: 16px;
+	height: 32px;
+	padding-top: 7px;
+}
+
+.EOM_TextEntry #PlaceholderText
+{
+	margin-top: 0px;
+	font-size: 16px;
+	color: #555555;
+}
+
+.EntryRangeInputs
+{
+	flow-children: right;
+	vertical-align: center;
+}
+
+.EntryRangeInputs .EntryRangeValue
+{
+	width: 80px;
+	vertical-align: center;
+}
+
+.EntryRangeInputs .EntryRangeSeparator,.EntryRangeInputs .EntryRangeUnit
+{
+	vertical-align: center;
+	font-size: 16px;
+	color: #C9BFA8;
+	margin: 0px 4px;
+}
+
+.EntryRangeInputs.Invalid .EntryRangeValue
+{
+	border: 1px solid #DD7770;
 }
 
 .EOM_RedMark
@@ -1820,21 +1893,6 @@
 	width: 35px;
 	height: 35px;
 	background-size: 100%;
-}
-
-.EOM_TextEntry
-{
-	width: 160px;
-	font-size: 16px;
-	height: 32px;
-	padding-top: 7px;
-}
-
-.EOM_TextEntry #PlaceholderText
-{
-	margin-top: 0px;
-	font-size: 16px;
-	color: #555555;
 }
 
 .AspectRatio4x3 .EOM_Currency
@@ -4909,7 +4967,6 @@
 .RuneBondItem.SuitLevel2 .RuneBondContent .RuneBondLabel
 {
 	color: #fff0b8;
-	text-shadow: 0px 0px 6px 2 rgba(255, 211, 116, 0.45);
 }
 
 .RuneBondItem .RuneBondContent

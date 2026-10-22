@@ -2324,4 +2324,4 @@ GameUI.CustomUIConfig().artifact = {
 		"Suit": "Bless",
 		"AbilityBehavior": "DOTA_ABILITY_BEHAVIOR_PASSIVE"
 	}
-};
+};

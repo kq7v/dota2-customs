@@ -77,4 +77,4 @@ function EOM_ToggleButton(props) {
   })();
 }
 
-exports.EOM_ToggleButton = EOM_ToggleButton;
+exports.EOM_ToggleButton = EOM_ToggleButton;

@@ -1,0 +1,22 @@
+--[[
+  ~ dumper · customs · dota2
+  ~ credits: rou (a.k.a internetenemy), qfun(a.k.a qfun_g9s)
+  ~ special for t.me/wildguild
+
+  ~ build 1a5b3bb 
+  ~ auto-generated — do not edit
+]]
+
+
+<svg xmlns="http://www.w3.org/2000/svg" width="84" height="84" viewBox="0 0 84 84">
+  <defs>
+    <linearGradient id="metal" x2="0.8" y2="1"><stop stop-color="#e4d59c"/><stop offset=".35" stop-color="#8e7848"/><stop offset=".65" stop-color="#493b23"/><stop offset="1" stop-color="#c6ae70"/></linearGradient>
+    <radialGradient id="core" cx=".4" cy=".32"><stop stop-color="#5f8244"/><stop offset="1" stop-color="#171d15"/></radialGradient>
+  </defs>
+  <circle cx="42" cy="42" r="39" fill="#171813" stroke="#352d1e" stroke-width="2"/>
+  <circle cx="42" cy="42" r="36" fill="url(#metal)" stroke="#cfbc82"/>
+  <circle cx="42" cy="42" r="30" fill="url(#core)" stroke="#4e4028" stroke-width="3"/>
+  <path d="m42 22 5 14 14 6-14 5-5 15-5-15-14-5 14-6Z" fill="#e1cd8b" stroke="#f5e5b6" stroke-width=".8"/>
+  <path d="m59 19 2 5 5 2-5 2-2 5-2-5-5-2 5-2Z" fill="#e1cd8b"/>
+  <circle cx="25" cy="61" r="2" fill="#d6c18c"/>
+</svg>

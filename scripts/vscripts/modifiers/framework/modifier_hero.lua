@@ -199,6 +199,7 @@ function k.prototype.EmitVoiceSound(self, v, z)
 		self.lastSoundName = v
 		self:StartThink(RandomInt(5, 7), "EnableSound", function()
 			self.enableSound = true
+			return -1
 		end)
 		return true
 	else

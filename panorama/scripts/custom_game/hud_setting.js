@@ -619,6 +619,7 @@ let currentGamepadBindings = {
 let keyToFunction = {};
 let registeredKeyboardEventNames = {};
 let registeredKeyboardKeys = {};
+const multiChoiceState = solid_utils.createPlayerNetDataSignal("common", "multi_choice_state");
 const KEYBOARD_MOVE_FUNCTIONS = [KeyFunction.Up, KeyFunction.Down, KeyFunction.Left, KeyFunction.Right];
 function IsKeyboardMoveFunction(func) {
   return KEYBOARD_MOVE_FUNCTIONS.includes(func);
@@ -637,6 +638,7 @@ function RemoveDisabledKeyboardMoveBindings(bindings, mode) {
 function RebuildKeyToFunctionMap(keyboardBindings, gamepadBindings) {
   keyToFunction = {};
   for (const func in keyboardBindings) {
+    if (SELECTION_KEY_FUNCTIONS.includes(func)) continue;
     const keyName = keyboardBindings[func];
     if (keyName) {
       keyToFunction[keyName] = func;
@@ -650,6 +652,10 @@ function RebuildKeyToFunctionMap(keyboardBindings, gamepadBindings) {
   }
 }
 function ResolveKeyFunctionByKeyName(keyName) {
+  if (["Blessing", "SkillUpgrade", "Artifact", "BlessUpgrade", "ArtifactUpgrade"].includes(multiChoiceState()?.active_type ?? "")) {
+    const selectionFunction = SELECTION_KEY_FUNCTIONS.find(func => keyBindings()[func] === keyName);
+    if (selectionFunction !== undefined) return selectionFunction;
+  }
   return keyToFunction[keyName];
 }
 function SyncKeyboardKeyRegistrations(bindings) {
@@ -678,6 +684,7 @@ function SyncKeyboardKeyRegistrations(bindings) {
 const onKeyPressed = data => {
   const keyName = data.event_name;
   const keyFunction = ResolveKeyFunctionByKeyName(keyName);
+  const selectionHotkey = keyFunction !== undefined && SELECTION_KEY_FUNCTIONS.includes(keyFunction);
   const payload = {
     key: keyName,
     position: GameUI.GetScreenWorldPosition(GameUI.GetCursorPosition()),
@@ -687,11 +694,13 @@ const onKeyPressed = data => {
     payload.keyFunction = keyFunction;
   }
   ClientSideEvent("key_pressed", payload);
-  GameEvents.SendCustomEventToServer("key_pressed", {
-    key: keyName,
-    position: payload.position,
-    entIndex: payload.entIndex
-  });
+  if (!selectionHotkey) {
+    GameEvents.SendCustomEventToServer("key_pressed", {
+      key: keyName,
+      position: payload.position,
+      entIndex: payload.entIndex
+    });
+  }
 };
 const onKeyReleased = data => {
   const keyName = data.event_name;
@@ -932,7 +941,8 @@ function Setting() {
             id: "SettingTabContainer"
           }, _el$15),
           _el$20 = libs.createElement("Panel", {
-            "class": "SettingTab VerticalScrollStyle"
+            "class": "SettingTab VerticalScrollStyle",
+            scroll: "y"
           }, _el$19),
           _el$21 = libs.createElement("Panel", {
             "class": "SettingTab VerticalScrollStyle",
@@ -1197,6 +1207,10 @@ function Setting() {
           defaultValue: false
         }), null);
         libs.insert(_el$6, libs.createComponent(SettingSwitch, {
+          text: "chest_high_quality_only",
+          defaultValue: true
+        }), null);
+        libs.insert(_el$6, libs.createComponent(SettingSwitch, {
           text: "hero_voice",
           defaultValue: true
         }), null);
@@ -1211,6 +1225,7 @@ function Setting() {
           list: ["#Setting_Keyboard", "#Setting_Gamepad"],
           onChange: index => selectTabIndex(index)
         }), _el$19);
+        libs.setProp(_el$20, "scroll", "y");
         libs.insert(_el$20, libs.createComponent(KeyBinder, {
           text: "#Hotkey_Up",
           get func() {
@@ -1329,6 +1344,33 @@ function Setting() {
           },
           get hotkey() {
             return getKeyForFunction(KeyFunction.ToggleAutoCast, false);
+          }
+        }), null);
+        libs.insert(_el$20, libs.createComponent(KeyBinder, {
+          text: "#Hotkey_Option1",
+          get func() {
+            return KeyFunction.Option1;
+          },
+          get hotkey() {
+            return getKeyForFunction(KeyFunction.Option1, false);
+          }
+        }), null);
+        libs.insert(_el$20, libs.createComponent(KeyBinder, {
+          text: "#Hotkey_Option2",
+          get func() {
+            return KeyFunction.Option2;
+          },
+          get hotkey() {
+            return getKeyForFunction(KeyFunction.Option2, false);
+          }
+        }), null);
+        libs.insert(_el$20, libs.createComponent(KeyBinder, {
+          text: "#Hotkey_Option3",
+          get func() {
+            return KeyFunction.Option3;
+          },
+          get hotkey() {
+            return getKeyForFunction(KeyFunction.Option3, false);
           }
         }), null);
         libs.setProp(_el$21, "scroll", "y");
@@ -1568,6 +1610,10 @@ function Setting() {
                 const currentKey = keyBindings()[pickerData.func] ?? DEFAULT_KEYBOARD_BINDINGS[pickerData.func] ?? "";
                 if (currentKey === keyName) {
                   setShowPicker(undefined);
+                  return;
+                }
+                if (SELECTION_KEY_FUNCTIONS.includes(pickerData.func) && SELECTION_KEY_FUNCTIONS.some(func => func !== pickerData.func && keyBindings()[func] === keyName)) {
+                  ErrorMessage("#Hotkey_SelectionKeyConflict");
                   return;
                 }
                 GameEvents.SendCustomEventToServer("update_keybind", {
@@ -2067,6 +2113,15 @@ GameUI.CustomUIConfig().SubscribeMouseEvent("controller", data => {
   if (!isMouseLocked) return false;
   const keyName = `MOUSE${data.value}`;
   const position = GameUI.GetScreenWorldPosition(GameUI.GetCursorPosition());
+  const selectionFunction = ResolveKeyFunctionByKeyName(keyName);
+  if (selectionFunction !== undefined && SELECTION_KEY_FUNCTIONS.includes(selectionFunction)) {
+    if (data.event_name === "pressed") onKeyPressed({
+      event_name: keyName
+    });else if (data.event_name === "released") onKeyReleased({
+      event_name: keyName
+    });
+    return true;
+  }
   const currentMode = moveMode();
   const isMoveClick = currentMode === MOVE_MODE_LEFT_CLICK && data.value === 0 || currentMode === MOVE_MODE_RIGHT_CLICK && data.value === 1;
   if (isMoveClick) {
@@ -2136,4 +2191,4 @@ GameEvents.Subscribe("cast_on_position", data => {
       ShowEffects: showEffects
     });
   }
-});
+});

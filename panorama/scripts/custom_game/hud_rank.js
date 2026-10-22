@@ -1739,4 +1739,4 @@ function Rank() {
   });
 }
 libs.render(() => libs.createComponent(Rank, {}), $.GetContextPanel());
-print("Rank loaded");
+print("Rank loaded");

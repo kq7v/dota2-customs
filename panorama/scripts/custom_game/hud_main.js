@@ -14,6 +14,7 @@ var libs = require('./libs.js');
 var solid_utils = require('./solid_utils.js');
 var common_box = require('./common_box.js');
 var EOM_Button = require('./EOM_Button.js');
+var EOM_Breadcrumb = require('./EOM_Breadcrumb.js');
 var equip_details = require('./equip_details.js');
 var server_dungeon_key = require('./server_dungeon_key.js');
 var EOM_GamePad = require('./EOM_GamePad.js');
@@ -62,6 +63,8 @@ const ArtifactSelection = () => {
     mode: "keyboard",
     isGamepad: 0
   });
+  const playerKeyValues = solid_utils.createServiceNetData("player_key_values", {});
+  const optionHotkeys = libs.createMemo(() => SELECTION_KEY_FUNCTIONS.map(func => GetKeyBind(func, playerKeyValues())));
   const isGamepad = libs.createMemo(() => inputMode().isGamepad == 1);
   libs.createEffect(libs.on(selection, () => {
     if (selection().refresh_count > maxRefreshCount()) {
@@ -164,7 +167,13 @@ const ArtifactSelection = () => {
     }
   });
   useClientSideEvent("key_pressed", data => {
-    if (selectableCount() <= 0) {
+    if (multiChoiceState().active_type !== "Artifact" || selectableCount() <= 0) {
+      return;
+    }
+    const optionIndex = SELECTION_KEY_FUNCTIONS.indexOf(data.keyFunction);
+    if (optionIndex >= 0) {
+      const option = selection().options[optionIndex];
+      if (option !== undefined) handleSelectArtifact(option.name);
       return;
     }
     if (data.keyFunction == KeyFunction.OptionUp) {
@@ -255,6 +264,9 @@ const ArtifactSelection = () => {
             },
             get rarity() {
               return option.rarity;
+            },
+            get hotkey() {
+              return libs.memo(() => !!!isGamepad())() ? optionHotkeys()[i()] : undefined;
             }
           }));
           libs.effect(_$p => libs.setProp(_el$15, "classList", {
@@ -358,10 +370,14 @@ const ArtifactSelection = () => {
   })();
 };
 
+const ATTRIBUTE_CATEGORIES = ["attack", "defence", "special", "farm"];
 const PLAYER_FALLBACK_PROPERTIES = ["equip_drop_pct", "equip_drop_num_pct", "equip_rarity_chance"];
 const AttributeSummary = () => {
   const [refreshTick, setRefreshTick] = libs.createSignal(0);
   const [show, setShow] = libs.createSignal(false);
+  const [categoryIndex, setCategoryIndex] = libs.createSignal(0);
+  const categoryLabels = ATTRIBUTE_CATEGORIES.map(category => GetLocalization(`AttributeSummary_Category_${category}`));
+  let attributesPanel;
   let cachedEntIndex;
   const attrCache = new Map();
   const targetEntIndex = libs.createMemo(() => {
@@ -380,7 +396,9 @@ const AttributeSummary = () => {
       attrCache.clear();
       cachedEntIndex = entIndex;
     }
-    return PROPERTY_LIST.map(id => {
+    const category = ATTRIBUTE_CATEGORIES[categoryIndex()];
+    const propertyIDs = PROPERTY_UI_CATEGORIES[category];
+    return propertyIDs.map(id => {
       const value = Entities.GetPropertyValue(entIndex, id, PLAYER_FALLBACK_PROPERTIES);
       const cached = attrCache.get(id);
       if (cached && cached.value === value) {
@@ -395,6 +413,21 @@ const AttributeSummary = () => {
       return next;
     }).filter(attr => attr.value > 0);
   });
+  const themes = libs.createMemo(() => {
+    refreshTick();
+    return categoryIndex() === 0 ? Object.keys(PROPERTY_UI_ATTACK_GROUPS) : [""];
+  });
+  const groupedAttributes = libs.createMemo(() => {
+    const byID = new Map(attributes().map(attr => [attr.id, attr]));
+    return new Map(themes().map(theme => {
+      const propertyIDs = categoryIndex() === 0 ? PROPERTY_UI_ATTACK_GROUPS[theme] : PROPERTY_UI_CATEGORIES[ATTRIBUTE_CATEGORIES[categoryIndex()]];
+      return [theme, propertyIDs.map(id => byID.get(id)).filter(attr => attr !== undefined)];
+    }));
+  });
+  const selectCategory = index => {
+    setCategoryIndex(index);
+    attributesPanel?.ScrollToTop();
+  };
   useClientSideEvent("ToggleAttributeSummary", data => {
     setShow(data.state);
   });
@@ -422,10 +455,12 @@ const AttributeSummary = () => {
       }, null),
       _el$2 = libs.createElement("Panel", {
         id: "AttributesSummary"
-      }, _el$);
-      libs.createElement("Label", {
+      }, _el$),
+      _el$3 = libs.createElement("Label", {
         id: "AttributesSummaryTitle",
-        text: "#Equipment_AttributesSummary"
+        get text() {
+          return GetLocalization("Equipment_AttributesSummary");
+        }
       }, _el$2);
       libs.createElement("Panel", {
         id: "TitleLine"
@@ -435,37 +470,99 @@ const AttributeSummary = () => {
         "class": "VerticalScrollStyle",
         scroll: "y"
       }, _el$2);
-    libs.setProp(_el$, "onmouseout", () => setShow(false));
+    libs.setProp(_el$, "onmouseout", self => {
+      if (!self.BHasHoverStyle()) setShow(false);
+    });
+    libs.insert(_el$2, libs.createComponent(EOM_Breadcrumb.EOM_Breadcrumb, {
+      id: "AttributeCategoryTabs",
+      group: "AttributeSummaryCategories",
+      list: categoryLabels,
+      get selected() {
+        return categoryIndex() + 1;
+      },
+      onChange: selectCategory
+    }), _el$5);
+    const _ref$ = attributesPanel;
+    typeof _ref$ === "function" ? libs.use(_ref$, _el$5) : attributesPanel = _el$5;
     libs.setProp(_el$5, "scroll", "y");
     libs.insert(_el$5, libs.createComponent(libs.Show, {
       get when() {
         return attributes().length > 0;
       },
       get fallback() {
-        return libs.createElement("Label", {
-          id: "EmptyAttributeTips",
-          text: "#DOTA_Hud_Empty"
-        }, null);
+        return (() => {
+          const _el$6 = libs.createElement("Label", {
+            id: "EmptyAttributeTips",
+            get text() {
+              return GetLocalization("AttributeSummary_EmptyCategory");
+            }
+          }, null);
+          libs.effect(_$p => libs.setProp(_el$6, "text", GetLocalization("AttributeSummary_EmptyCategory"), _$p));
+          return _el$6;
+        })();
       },
       get children() {
         return libs.createComponent(libs.For, {
           get each() {
-            return attributes();
+            return themes();
           },
-          children: attr => libs.createComponent(equip_details.EquipmentAttrRow, {
-            data: attr,
-            type: "Main",
-            get attributNameColor() {
-              return PLAYER_FALLBACK_PROPERTIES.includes(attr.id) ? "#4472CE" : "#BFAA82";
+          children: theme => libs.createComponent(libs.Show, {
+            get when() {
+              return groupedAttributes().get(theme).length > 0;
             },
-            showAttributeRange: false
+            get children() {
+              const _el$7 = libs.createElement("Panel", {
+                "class": "AttributeGroup"
+              }, null);
+              libs.insert(_el$7, libs.createComponent(libs.Show, {
+                when: theme !== "",
+                get children() {
+                  const _el$8 = libs.createElement("Panel", {
+                      "class": "AttributeGroupHeader"
+                    }, null),
+                    _el$9 = libs.createElement("Label", {
+                      get text() {
+                        return GetLocalization(`AttributeSummary_Theme_${theme}`);
+                      }
+                    }, _el$8);
+                    libs.createElement("Panel", {
+                      "class": "Separator"
+                    }, _el$8);
+                  libs.effect(_$p => libs.setProp(_el$9, "text", GetLocalization(`AttributeSummary_Theme_${theme}`), _$p));
+                  return _el$8;
+                }
+              }), null);
+              libs.insert(_el$7, libs.createComponent(libs.For, {
+                get each() {
+                  return groupedAttributes().get(theme);
+                },
+                children: attr => libs.createComponent(equip_details.EquipmentAttrRow, {
+                  data: attr,
+                  type: "Main",
+                  get attributNameColor() {
+                    return PLAYER_FALLBACK_PROPERTIES.includes(attr.id) ? "#4472CE" : "#BFAA82";
+                  },
+                  showAttributeRange: false
+                })
+              }), null);
+              return _el$7;
+            }
           })
         });
       }
     }));
-    libs.effect(_$p => libs.setProp(_el$, "classList", {
-      Show: show()
-    }, _$p));
+    libs.effect(_p$ => {
+      const _v$ = {
+          Show: show()
+        },
+        _v$2 = GetLocalization("Equipment_AttributesSummary");
+      _v$ !== _p$._v$ && (_p$._v$ = libs.setProp(_el$, "classList", _v$, _p$._v$));
+      _v$2 !== _p$._v$2 && (_p$._v$2 = libs.setProp(_el$3, "text", _v$2, _p$._v$2));
+      return _p$;
+    }, {
+      _v$: undefined,
+      _v$2: undefined
+    });
     return _el$;
   })();
 };
@@ -504,6 +601,8 @@ const BlessSelection = () => {
     mode: "keyboard",
     isGamepad: 0
   });
+  const playerKeyValues = solid_utils.createServiceNetData("player_key_values", {});
+  const optionHotkeys = libs.createMemo(() => SELECTION_KEY_FUNCTIONS.map(func => GetKeyBind(func, playerKeyValues())));
   const isGamepad = libs.createMemo(() => inputMode().isGamepad == 1);
   libs.createEffect(libs.on(selection, () => {
     const totalCount = selection().free_refresh_count + selection().pay_refresh_count;
@@ -611,7 +710,13 @@ const BlessSelection = () => {
     }
   });
   useClientSideEvent("key_pressed", data => {
-    if (selectableCount() <= 0) {
+    if (multiChoiceState().active_type !== "Blessing" || selectableCount() <= 0) {
+      return;
+    }
+    const optionIndex = SELECTION_KEY_FUNCTIONS.indexOf(data.keyFunction);
+    if (optionIndex >= 0) {
+      const option = selection().options[optionIndex];
+      if (option !== undefined) handleSelectUpgrade(option.name);
       return;
     }
     if (data.keyFunction == KeyFunction.OptionUp) {
@@ -720,6 +825,9 @@ const BlessSelection = () => {
             },
             get rarity() {
               return option.rarity;
+            },
+            get hotkey() {
+              return libs.memo(() => !!!isGamepad())() ? optionHotkeys()[i()] : undefined;
             }
           }), null);
           libs.insert(_el$25, libs.createComponent(libs.Show, {
@@ -2346,12 +2454,66 @@ const LeftBar = () => {
 };
 const ArtifactList = () => {
   const heroSelection = solid_utils.createPlayerNetDataSignal("common", "hero_selection");
-  const [itemList, setItemList] = libs.createSignal(getNetDataKey("unit", Players.GetLocalPlayerPortraitUnit().toString()) ?? {
-    items: []
+  const heroKey = libs.createMemo(() => {
+    const hero = heroSelection();
+    return `${hero?.heroIndex ?? -1}:${hero?.heroName ?? ""}`;
   });
+  const [itemList, setItemList] = libs.createSignal([]);
+  const itemsByEntity = new Map();
+  const runtimeStates = new Map();
+  const updateItem = item => {
+    let entry = itemsByEntity.get(item.entIndex);
+    if (!entry || entry.itemName !== item.itemName) {
+      const [level, setLevel] = libs.createSignal(item.level);
+      const [stackCount, setStackCount] = libs.createSignal(item.stackCount);
+      entry = {
+        entIndex: item.entIndex,
+        itemName: item.itemName,
+        level,
+        setLevel,
+        stackCount,
+        setStackCount
+      };
+      itemsByEntity.set(item.entIndex, entry);
+    } else {
+      entry.setLevel(item.level);
+      entry.setStackCount(item.stackCount);
+    }
+    return entry;
+  };
+  const applyAbilityState = state => {
+    const unitIndex = heroSelection()?.heroIndex;
+    if (!state || state.unitIndex !== unitIndex) return;
+    runtimeStates.set(state.entIndex, state);
+    const entry = itemsByEntity.get(state.entIndex);
+    if (!entry || entry.itemName !== state.abilityName) return;
+    libs.batch(() => {
+      entry.setLevel(state.level);
+      entry.setStackCount(state.stackCount);
+    });
+  };
+  const updateItems = value => {
+    const unitIndex = heroSelection()?.heroIndex;
+    libs.batch(() => {
+      const items = unitIndex === undefined ? [] : (value?.items ?? []).map(item => {
+        const state = runtimeStates.get(item.entIndex);
+        const data = state?.abilityName === item.itemName ? {
+          ...item,
+          level: state.level,
+          stackCount: state.stackCount
+        } : getUnitItemNetData(unitIndex, item);
+        return updateItem(data);
+      });
+      const activeEntities = new Set(items.map(item => item.entIndex));
+      for (const entIndex of itemsByEntity.keys()) {
+        if (!activeEntities.has(entIndex)) itemsByEntity.delete(entIndex);
+      }
+      setItemList(items);
+    });
+  };
   const sectInfos = libs.createMemo(() => {
     const tags = {};
-    itemList().items.map(item => {
+    itemList().map(item => {
       const access = KeyValues.npc_items_custom[item.itemName]?.Access;
       if (access == "Bless") {
         String(KeyValues.npc_items_custom[item.itemName]?.Suit ?? "").split("|").map(suit => {
@@ -2362,7 +2524,7 @@ const ArtifactList = () => {
               maxExp: SUIT_EXP[1],
               items: []
             };
-            tags[suit].exp += item.level;
+            tags[suit].exp += item.level();
             tags[suit].items.push(item);
             if (tags[suit].exp >= tags[suit].maxExp) {
               tags[suit].level += 1;
@@ -2387,7 +2549,8 @@ const ArtifactList = () => {
   libs.createEffect(() => {
     const keys = Object.keys(sectInfos());
     const hasData = keys.length > 0;
-    if (!hadSectInfosData && hasData && itemTag() === undefined) {
+    const selectedTag = itemTag();
+    if (hasData && (!hadSectInfosData && selectedTag === undefined || selectedTag !== undefined && !keys.includes(selectedTag))) {
       const firstTag = keys.sort((a, b) => {
         if (a === "Shop") {
           return 1;
@@ -2403,31 +2566,33 @@ const ArtifactList = () => {
     }
     hadSectInfosData = hasData;
   });
-  let id;
-  libs.createEffect(libs.on(heroSelection, () => {
-    if (id != undefined) {
-      CustomNetTables.UnsubscribeNetTableListener(id);
-    }
+  libs.createEffect(libs.on(heroKey, currentHeroKey => {
     const heroIndex = heroSelection()?.heroIndex;
-    if (!heroIndex) {
+    setItemList([]);
+    itemsByEntity.clear();
+    runtimeStates.clear();
+    hadSectInfosData = false;
+    setItemTag(undefined);
+    if (heroIndex == undefined || heroIndex <= 0) {
       return;
     }
-    setItemList(getNetDataKey("unit", heroIndex.toString()) ?? {
-      items: []
+    const stateID = ListenNetDataTable("ability_state", (key, state) => {
+      if (heroKey() !== currentHeroKey) return;
+      if (!state) {
+        runtimeStates.delete(Number(key));
+        return;
+      }
+      applyAbilityState(state);
     });
-    id = useNetDataKey("unit", heroIndex.toString(), value => {
-      setItemList(value ?? {
-        items: []
-      });
+    const id = useNetDataKey("unit", heroIndex.toString(), value => {
+      if (heroKey() !== currentHeroKey) return;
+      updateItems(value);
+    });
+    libs.onCleanup(() => {
+      CustomNetTables.UnsubscribeNetTableListener(id);
+      CustomNetTables.UnsubscribeNetTableListener(stateID);
     });
   }));
-  libs.onMount(() => {
-    libs.onCleanup(() => {
-      if (id != undefined) {
-        CustomNetTables.UnsubscribeNetTableListener(id);
-      }
-    });
-  });
   return (() => {
     const _el$3 = libs.createElement("Panel", {
       id: "ArtifactList"
@@ -2448,7 +2613,8 @@ const ArtifactList = () => {
         const sectInfo = libs.createMemo(() => sectInfos()[tag] ?? {
           level: 0,
           exp: 0,
-          maxExp: 1
+          maxExp: 1,
+          items: []
         });
         const isExpanded = () => tag === "Shop" || tag === itemTag();
         return [libs.createComponent(EOM_Button.EOM_BaseButton, {
@@ -2574,10 +2740,10 @@ const ArtifactList = () => {
                   return item.itemName;
                 },
                 get rarity() {
-                  return item.level;
+                  return item.level();
                 },
                 get stackCount() {
-                  return item.stackCount;
+                  return item.stackCount();
                 },
                 showTips: true
               });
@@ -3707,6 +3873,8 @@ const UpgradeArtifactSelection = () => {
     mode: "keyboard",
     isGamepad: 0
   });
+  const playerKeyValues = solid_utils.createServiceNetData("player_key_values", {});
+  const optionHotkeys = libs.createMemo(() => SELECTION_KEY_FUNCTIONS.map(func => GetKeyBind(func, playerKeyValues())));
   const isGamepad = libs.createMemo(() => inputMode().isGamepad == 1);
   libs.createEffect(libs.on(() => selection().options.map(option => option.name).join("|"), optionsKey => {
     if (optionsKey != "") {
@@ -3757,7 +3925,13 @@ const UpgradeArtifactSelection = () => {
     }
   });
   useClientSideEvent("key_pressed", data => {
-    if (selection().options.length <= 0) {
+    if (multiChoiceState().active_type !== "ArtifactUpgrade" || selection().options.length <= 0) {
+      return;
+    }
+    const optionIndex = SELECTION_KEY_FUNCTIONS.indexOf(data.keyFunction);
+    if (optionIndex >= 0) {
+      const option = selection().options[optionIndex];
+      if (option !== undefined) handleSelectUpgrade(option.name, option.rarity);
       return;
     }
     if (data.keyFunction == KeyFunction.OptionUp) {
@@ -3852,7 +4026,10 @@ const UpgradeArtifactSelection = () => {
             get rarity() {
               return option.rarity;
             },
-            upgradeLevel: 1
+            upgradeLevel: 1,
+            get hotkey() {
+              return libs.memo(() => !!!isGamepad())() ? optionHotkeys()[i()] : undefined;
+            }
           }));
           libs.effect(_p$ => {
             const _v$ = {
@@ -3901,6 +4078,8 @@ const UpgradeBlessSelection = () => {
     mode: "keyboard",
     isGamepad: 0
   });
+  const playerKeyValues = solid_utils.createServiceNetData("player_key_values", {});
+  const optionHotkeys = libs.createMemo(() => SELECTION_KEY_FUNCTIONS.map(func => GetKeyBind(func, playerKeyValues())));
   const isGamepad = libs.createMemo(() => inputMode().isGamepad == 1);
   libs.createEffect(libs.on(() => selection().options.map(option => option.name).join("|"), optionsKey => {
     if (optionsKey != "") {
@@ -3956,7 +4135,13 @@ const UpgradeBlessSelection = () => {
     }
   });
   useClientSideEvent("key_pressed", data => {
-    if (selectableCount() <= 0) {
+    if (multiChoiceState().active_type !== "BlessUpgrade" || selectableCount() <= 0) {
+      return;
+    }
+    const optionIndex = SELECTION_KEY_FUNCTIONS.indexOf(data.keyFunction);
+    if (optionIndex >= 0) {
+      const option = selection().options[optionIndex];
+      if (option !== undefined) handleSelectUpgrade(option.name);
       return;
     }
     if (data.keyFunction == KeyFunction.OptionUp) {
@@ -4078,6 +4263,9 @@ const UpgradeBlessSelection = () => {
             },
             get upgradeLevel() {
               return option.upgradeLevel;
+            },
+            get hotkey() {
+              return libs.memo(() => !!!isGamepad())() ? optionHotkeys()[i()] : undefined;
             }
           }), null);
           libs.insert(_el$15, libs.createComponent(libs.Show, {
@@ -4159,6 +4347,8 @@ const UpgradeSelection = () => {
     mode: "keyboard",
     isGamepad: 0
   });
+  const playerKeyValues = solid_utils.createServiceNetData("player_key_values", {});
+  const optionHotkeys = libs.createMemo(() => SELECTION_KEY_FUNCTIONS.map(func => GetKeyBind(func, playerKeyValues())));
   const isGamepad = libs.createMemo(() => inputMode().isGamepad == 1);
   libs.createEffect(libs.on(() => selection().options.map(option => option.id).join("|"), optionsKey => {
     if (optionsKey != "") {
@@ -4266,7 +4456,13 @@ const UpgradeSelection = () => {
     }
   });
   useClientSideEvent("key_pressed", data => {
-    if (selectableCount() <= 0) {
+    if (multiChoiceState().active_type !== "SkillUpgrade" || selectableCount() <= 0) {
+      return;
+    }
+    const optionIndex = SELECTION_KEY_FUNCTIONS.indexOf(data.keyFunction);
+    if (optionIndex >= 0) {
+      const option = selection().options[optionIndex];
+      if (option !== undefined) handleSelectUpgrade(option.id);
       return;
     }
     if (data.keyFunction == "upgrade") {
@@ -4350,6 +4546,9 @@ const UpgradeSelection = () => {
         const total = selection().options.length;
         const delay = (total - 1 - i()) * 0.08;
         return libs.createComponent(upgrade_box.UpgradeBox, {
+          get hotkey() {
+            return libs.memo(() => !!!isGamepad())() ? optionHotkeys()[i()] : undefined;
+          },
           get customTooltip() {
             return {
               name: "feature_tags",
@@ -4761,4 +4960,4 @@ function ReportPing() {
     pHud.SetHasClass("ShowStoreContent", open_store().value);
   });
 })();
-libs.render(HudMain, $.GetContextPanel());
+libs.render(HudMain, $.GetContextPanel());

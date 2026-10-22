@@ -3344,4 +3344,4 @@ GameUI.CustomUIConfig().enemies = {
 		"BehaviorTree": "hammer_attack_gem",
 		"AnimationModifier": "skeleton_hammer"
 	}
-};
+};

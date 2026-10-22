@@ -104,7 +104,7 @@ function FillCfgData(data) {
   data.class = kv.class;
   return true;
 }
-function GetEquipmentDetail(ids, callback, force = false) {
+function GetEquipmentDetail(ids, callback, force = false, onTimeout) {
   CustomUIConfig.EquipmentDetailCache ??= {};
   let result = {};
   let requestIDs = force ? ids : ids.filter(id => {
@@ -125,7 +125,7 @@ function GetEquipmentDetail(ids, callback, force = false) {
         }
       }
       callback(result);
-    });
+    }, undefined, onTimeout);
   } else {
     callback(result);
   }
@@ -187,17 +187,18 @@ function ShowServerGemTooltip(p, props) {
     }
   });
 }
+const equipmentHasStateText = value => !["", "0", "false", "nil"].includes(String(value ?? "").toLowerCase());
 function EquipmentIsEquiped(equip, heroID) {
-  if (equip.in_equip_suit == undefined || equip.in_equip_suit == "") {
+  if (!equipmentHasStateText(equip.in_equip_suit)) {
     return false;
   }
   if (heroID == undefined) {
     return true;
   }
-  const datas = equip.in_equip_suit.split(";");
+  const datas = String(equip.in_equip_suit).split(";");
   for (let i = 0; i < datas.length; i++) {
     const [hID, suit] = datas[i].split(":");
-    if (toFiniteNumber(hID) == heroID) {
+    if (Number(hID) === heroID) {
       return true;
     }
   }
@@ -208,10 +209,11 @@ function EquipmentHasStates(equip, showTips) {
   if (EquipmentIsEquiped(equip)) {
     state = "#EquipmentError_1";
   }
-  if (equip.locked) {
+  const locked = String(equip.locked ?? "").toLowerCase();
+  if (locked === "true" || locked === "1") {
     state = "#EquipmentError_2";
   }
-  if (equip.in_check && equip.in_check !== "") {
+  if (equipmentHasStateText(equip.in_check)) {
     state = equip.in_check === "gem_fusion" ? "#EquipmentError_GemFusionInCheck" : "#EquipmentError_InCheck";
   }
   let hasState = state != "";
@@ -281,4 +283,4 @@ exports.HeroID2Name = HeroID2Name;
 exports.MAX_EQUIPMENT_RARITY = MAX_EQUIPMENT_RARITY;
 exports.ParseEquipment = ParseEquipment;
 exports.ShowServerEquipTooltip = ShowServerEquipTooltip;
-exports.ShowServerGemTooltip = ShowServerGemTooltip;
+exports.ShowServerGemTooltip = ShowServerGemTooltip;

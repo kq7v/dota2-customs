@@ -28,4 +28,4 @@ if (storage !== undefined) {
 }
 else {
     CustomUIConfig.Storage = new CPanoramaScript_Storage();
-}
+}

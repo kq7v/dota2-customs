@@ -159,4 +159,4 @@ const EOM_IconButton = props => {
 exports.EOM_BaseButton = EOM_BaseButton;
 exports.EOM_Button = EOM_Button;
 exports.EOM_CloseButton = EOM_CloseButton;
-exports.EOM_IconButton = EOM_IconButton;
+exports.EOM_IconButton = EOM_IconButton;

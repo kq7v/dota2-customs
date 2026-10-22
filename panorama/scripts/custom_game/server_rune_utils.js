@@ -153,4 +153,4 @@ exports.buildEngravingAttributeDisplays = buildEngravingAttributeDisplays;
 exports.buildEngravingBagItems = buildEngravingBagItems;
 exports.getEngravingEntryConfig = getEngravingEntryConfig;
 exports.getEngravingIconPath = getEngravingIconPath;
-exports.getEngravingIconPathByItemID = getEngravingIconPathByItemID;
+exports.getEngravingIconPathByItemID = getEngravingIconPathByItemID;

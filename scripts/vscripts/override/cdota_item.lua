@@ -32,7 +32,7 @@ if IsServer() then
 		end
 		self:__OnRefresh()
 		if g then
-			h:UpdateAbilityNetData()
+			self:UpdateRuntimeNetData()
 		end
 	end
 	CDOTA_Item.GetAccess = function(self)

@@ -95,17 +95,22 @@ CDOTA_Buff.StartThink = function(self, m, n, o)
 		if self._ThinkList[q] ~= nil then
 			Timer:StopTimer(self._ThinkList[q])
 		end
-		local r = Timer:StartIntervalThink(self, m, function()
+		local r
+		r = Timer:StartIntervalThink(self, m, function()
 			local s
 			if o ~= nil then
 				s = o(self, q)
 			elseif self.OnThink ~= nil then
 				s = self:OnThink(q)
 			end
+			if self._ThinkList[q] ~= r then
+				return -1
+			end
 			if s == -1 then
 				Timer:StopTimer(self._ThinkList[q])
 				self._ThinkList[q] = nil
 			end
+			return s
 		end)
 		self._ThinkList[q] = r
 	end

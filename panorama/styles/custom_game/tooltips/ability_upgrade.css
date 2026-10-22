@@ -460,9 +460,15 @@
 	padding: 3px 0px;
 }
 
-.UpgradeBox .UpgradeInfo .UpgradeName
+.UpgradeBox .UpgradeInfo .UpgradeNameRow
 {
 	width: 100%;
+	flow-children: right;
+}
+
+.UpgradeBox .UpgradeInfo .UpgradeName
+{
+	width: fit-children;
 	font-size: 28px;
 	color: #CABEA2;
 	text-align: left;

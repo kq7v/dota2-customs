@@ -11,6 +11,7 @@
 'use strict'; const require = GameUI.__require;
 
 var libs = require('./libs.js');
+var entry_range_inputs = require('./entry_range_inputs.js');
 var EOM_RedMark = require('./EOM_RedMark.js');
 var EOM_CheckBox = require('./EOM_CheckBox.js');
 var EOM_MultiDropDown = require('./EOM_MultiDropDown.js');
@@ -29,9 +30,9 @@ var equipment_utils = require('./equipment_utils.js');
 var rune_components = require('./rune_components.js');
 var hero_selection_bar = require('./hero_selection_bar.js');
 var global_selection = require('./global_selection.js');
+require('./EOM_TextEntry.js');
 require('./EOMChildren.js');
 require('./service_netdata_helper.js');
-require('./EOM_TextEntry.js');
 require('./attribute_formatter.js');
 require('./EOM_Countdown.js');
 require('./EOM_ImageNumber.js');
@@ -2840,6 +2841,7 @@ const RUNE_NEEDLV_LIST = Array.from(new Set(Object.values(KeyValues.rune_rarity_
 const RUNE_RARITY_LIST = Object.values(KeyValues.rune_rarity_setting).map(setting => setting.rarity).sort((a, b) => a - b);
 const ENGRAVING_RARITY_LIST = Object.values(KeyValues.engraving_rarity_setting).map(setting => setting.rarity).sort((a, b) => a - b);
 const RUNE_ADVERB_ENTRY_LIST = Object.values(GameUI.CustomUIConfig().rune_entry ?? {}).filter(entry => entry.entry_type === 2).sort((a, b) => a.id - b.id);
+const RUNE_MAIN_ENTRY_LIST = Object.values(GameUI.CustomUIConfig().rune_entry ?? {}).filter(entry => entry.entry_type === 1).sort((a, b) => a.id - b.id);
 const ENGRAVING_ENTRY_LIST = Object.values(KeyValues.engraving_entry).sort((a, b) => a.id - b.id);
 const RUNE_BAG_MAX_CAPACITY = 400;
 const ENGRAVING_BAG_MAX_CAPACITY = 400;
@@ -2862,6 +2864,16 @@ let engravingFilterRarity = () => ({});
 let setEngravingFilterRarity = () => ({});
 let engravingFilterEntry = () => ({});
 let setEngravingFilterEntry = () => ({});
+let runeMainFilter = () => ({});
+let setRuneMainFilter = () => ({});
+let runeMainRanges = () => ({});
+let setRuneMainRanges = () => ({});
+let runeSubRanges = () => ({});
+let setRuneSubRanges = () => ({});
+let runeSuitRanges = () => ({});
+let setRuneSuitRanges = () => ({});
+let engravingRanges = () => ({});
+let setEngravingRanges = () => ({});
 let resetFilter = () => 0;
 let setResetFilter = () => 0;
 function createRunePageState() {
@@ -2875,6 +2887,11 @@ function createRunePageState() {
   [runeFilterAdverbEntry, setRuneFilterAdverbEntry] = libs.createSignal({});
   [engravingFilterRarity, setEngravingFilterRarity] = libs.createSignal({});
   [engravingFilterEntry, setEngravingFilterEntry] = libs.createSignal({});
+  [runeMainFilter, setRuneMainFilter] = libs.createSignal({});
+  [runeMainRanges, setRuneMainRanges] = libs.createSignal({});
+  [runeSubRanges, setRuneSubRanges] = libs.createSignal({});
+  [runeSuitRanges, setRuneSuitRanges] = libs.createSignal({});
+  [engravingRanges, setEngravingRanges] = libs.createSignal({});
   [resetFilter, setResetFilter] = libs.createSignal(0);
   libs.onCleanup(() => {
     runeUnreadIds?.submitReadCache();
@@ -2910,18 +2927,11 @@ function RuneFilterWindow() {
     }
     return list.toString();
   });
-  libs.onMount(() => {
-    const scheduleID = $.Schedule(0.2, () => {
-      needLvFilter?.setSelect(filterNeedLv());
-    });
-    libs.onCleanup(() => {
-      $.CancelScheduled(scheduleID);
-    });
-  });
-  libs.createEffect(() => {
-    resetFilter();
+  libs.createEffect(libs.on(resetFilter, () => {
     needLvFilter?.reset();
-  });
+  }, {
+    defer: true
+  }));
   return (() => {
     const _el$ = libs.createElement("Panel", {
         id: "RuneFilterWindow",
@@ -2962,7 +2972,7 @@ function RuneFilterWindow() {
       }, _el$);
       const _el$9 = libs.createElement("Panel", {
         id: "SuitFilterList",
-        "class": "CheckBoxList"
+        "class": "EntryValueFilterList"
       }, _el$);
     libs.setProp(_el$, "scroll", "y");
     libs.insert(_el$2, libs.createComponent(EOM_MultiDropDown.EOM_MultiDropDown, {
@@ -2974,6 +2984,9 @@ function RuneFilterWindow() {
         typeof _ref$ === "function" ? _ref$(r$) : needLvFilter = r$;
       },
       options: RUNE_NEEDLV_LIST,
+      get index() {
+        return RUNE_NEEDLV_LIST.map((level, index) => filterNeedLv()[level] ? index : -1).filter(index => index >= 0);
+      },
       onChange: value => {
         setFilterNeedLv(value);
       }
@@ -3010,31 +3023,53 @@ function RuneFilterWindow() {
       get each() {
         return Object.keys(KeyValues.rune_suit_effect);
       },
-      children: suitID => {
-        return libs.createComponent(EOM_CheckBox.EOM_CheckBox2, {
+      children: suitID => (() => {
+        const _el$0 = libs.createElement("Panel", {
+          "class": "EntryRangeFilterRow"
+        }, null);
+        libs.insert(_el$0, libs.createComponent(EOM_CheckBox.EOM_CheckBox2, {
+          "class": "EntryRangeFilterName",
           get checked() {
             return filterSuit()[suitID] ?? false;
           },
           get text() {
             return GetLocalization(`#RuneSuit_${suitID}`);
           },
-          onchecked: b => {
-            if (b) {
-              setFilterSuit(prev => ({
-                ...prev,
-                [suitID]: b
-              }));
-            } else {
-              const newSuit = {
-                ...filterSuit()
-              };
-              delete newSuit[suitID];
-              setFilterSuit(newSuit);
-            }
-          }
-        });
-      }
+          onchecked: checked => setFilterSuit(prev => ({
+            ...prev,
+            [suitID]: checked
+          }))
+        }), null);
+        libs.insert(_el$0, libs.createComponent(entry_range_inputs.EntryRangeInputs, {
+          get range() {
+            return runeSuitRanges()[suitID];
+          },
+          get unit() {
+            return GetLocalization("#RuneFilter_Points");
+          },
+          onChange: range => libs.batch(() => {
+            setRuneSuitRanges(prev => ({
+              ...prev,
+              [suitID]: range
+            }));
+            if (range.min.trim() || range.max.trim()) setFilterSuit(prev => ({
+              ...prev,
+              [suitID]: true
+            }));
+          })
+        }), null);
+        return _el$0;
+      })()
     }));
+    libs.insert(_el$, libs.createComponent(EntryFilterSection, {
+      title: "#Equipment_SelectMainEntry",
+      listID: "RuneMainEntryFilterList",
+      entries: RUNE_MAIN_ENTRY_LIST,
+      filter: runeMainFilter,
+      setFilter: setRuneMainFilter,
+      ranges: runeMainRanges,
+      setRanges: setRuneMainRanges
+    }), null);
     libs.insert(_el$, libs.createComponent(RuneAdverbEntryFilterSection, {}), null);
     libs.effect(_p$ => {
       const _v$ = GetLocalization("#NeedLvFilter"),
@@ -3054,51 +3089,67 @@ function RuneFilterWindow() {
 }
 function EntryFilterSection(props) {
   return [(() => {
-    const _el$0 = libs.createElement("Label", {
+    const _el$1 = libs.createElement("Label", {
       "class": "Subheading",
       get text() {
         return GetLocalization(props.title);
       }
     }, null);
-    libs.effect(_$p => libs.setProp(_el$0, "text", GetLocalization(props.title), _$p));
-    return _el$0;
+    libs.effect(_$p => libs.setProp(_el$1, "text", GetLocalization(props.title), _$p));
+    return _el$1;
   })(), libs.createElement("Panel", {
     "class": "FilterLine"
   }, null), (() => {
-    const _el$10 = libs.createElement("Panel", {
+    const _el$11 = libs.createElement("Panel", {
       get id() {
         return props.listID;
-      }
+      },
+      "class": "EntryValueFilterList"
     }, null);
-    libs.insert(_el$10, libs.createComponent(libs.For, {
+    libs.insert(_el$11, libs.createComponent(libs.For, {
       get each() {
         return props.entries;
       },
-      children: entry => libs.createComponent(EOM_CheckBox.EOM_CheckBox2, {
-        get checked() {
-          return props.filter()[entry.entry_name] ?? false;
-        },
-        get text() {
-          return GetLocalization(`#property_${entry.entry_name}`).replace("%", "");
-        },
-        onchecked: checked => {
-          if (checked) {
-            props.setFilter(prev => ({
+      children: entry => (() => {
+        const _el$12 = libs.createElement("Panel", {
+          "class": "EntryRangeFilterRow"
+        }, null);
+        libs.insert(_el$12, libs.createComponent(EOM_CheckBox.EOM_CheckBox2, {
+          "class": "EntryRangeFilterName",
+          get checked() {
+            return props.filter()[entry.entry_name] ?? false;
+          },
+          get text() {
+            return GetLocalization(`#property_${entry.entry_name}`).replace("%", "");
+          },
+          onchecked: checked => props.setFilter(prev => ({
+            ...prev,
+            [entry.entry_name]: checked
+          }))
+        }), null);
+        libs.insert(_el$12, libs.createComponent(entry_range_inputs.EntryRangeInputs, {
+          get range() {
+            return props.ranges()[entry.entry_name];
+          },
+          get unit() {
+            return GetLocalization(`#property_${entry.entry_name}`).startsWith("%") ? "%" : "";
+          },
+          onChange: range => libs.batch(() => {
+            props.setRanges(prev => ({
+              ...prev,
+              [entry.entry_name]: range
+            }));
+            if (range.min.trim() || range.max.trim()) props.setFilter(prev => ({
               ...prev,
               [entry.entry_name]: true
             }));
-          } else {
-            const next = {
-              ...props.filter()
-            };
-            delete next[entry.entry_name];
-            props.setFilter(next);
-          }
-        }
-      })
+          })
+        }), null);
+        return _el$12;
+      })()
     }));
-    libs.effect(_$p => libs.setProp(_el$10, "id", props.listID, _$p));
-    return _el$10;
+    libs.effect(_$p => libs.setProp(_el$11, "id", props.listID, _$p));
+    return _el$11;
   })()];
 }
 function RuneAdverbEntryFilterSection() {
@@ -3116,58 +3167,61 @@ function RuneAdverbEntryFilterSection() {
     });
   };
   return [(() => {
-    const _el$11 = libs.createElement("Label", {
+    const _el$13 = libs.createElement("Label", {
       "class": "Subheading",
       get text() {
         return GetLocalization("#RuneFilter_SelectAdverbEntry");
       }
     }, null);
-    libs.effect(_$p => libs.setProp(_el$11, "text", GetLocalization("#RuneFilter_SelectAdverbEntry"), _$p));
-    return _el$11;
+    libs.effect(_$p => libs.setProp(_el$13, "text", GetLocalization("#RuneFilter_SelectAdverbEntry"), _$p));
+    return _el$13;
   })(), libs.createElement("Panel", {
     "class": "FilterLine"
   }, null), (() => {
-    const _el$13 = libs.createElement("Panel", {
+    const _el$15 = libs.createElement("Panel", {
       id: "RuneAdverbEntryFilterList"
     }, null);
-    libs.insert(_el$13, libs.createComponent(libs.For, {
+    libs.insert(_el$15, libs.createComponent(libs.For, {
       each: RUNE_ADVERB_ENTRY_LIST,
       children: entry => {
         const mode = () => runeFilterAdverbEntry()[entry.entry_name] ?? "default";
         return (() => {
-          const _el$14 = libs.createElement("Panel", {
-              "class": "RuneAdverbEntryFilterRow"
+          const _el$16 = libs.createElement("Panel", {
+              "class": "EntryFilterRule"
             }, null),
-            _el$15 = libs.createElement("Label", {
+            _el$17 = libs.createElement("Panel", {
+              "class": "RuneAdverbEntryFilterRow"
+            }, _el$16),
+            _el$18 = libs.createElement("Label", {
               html: true,
               "class": "RuneAdverbEntryName",
               get text() {
                 return GetLocalization(`#property_${entry.entry_name}`).replace("%", "");
               }
-            }, _el$14),
-            _el$16 = libs.createElement("Panel", {
+            }, _el$17),
+            _el$19 = libs.createElement("Panel", {
               "class": "RuneAdverbEntryMode"
-            }, _el$14);
-          libs.insert(_el$16, libs.createComponent(libs.For, {
+            }, _el$17);
+          libs.insert(_el$19, libs.createComponent(libs.For, {
             each: RUNE_ADVERB_ENTRY_FILTER_MODES,
             children: (filterMode, index) => (() => {
-              const _el$17 = libs.createElement("Panel", {
+              const _el$20 = libs.createElement("Panel", {
                   "class": "RuneAdverbEntryModeOption"
                 }, null),
-                _el$18 = libs.createElement("Button", {
+                _el$21 = libs.createElement("Button", {
                   get ["class"]() {
                     return libs.classNames("RuneAdverbEntryModeButton", filterMode, {
                       Selected: mode() === filterMode
                     });
                   }
-                }, _el$17),
-                _el$19 = libs.createElement("Label", {
+                }, _el$20),
+                _el$22 = libs.createElement("Label", {
                   get text() {
                     return GetLocalization(`#RuneFilter_AdverbEntryMode_${filterMode}`);
                   }
-                }, _el$18);
-              libs.setProp(_el$18, "onactivate", () => selectMode(entry.entry_name, filterMode));
-              libs.insert(_el$17, libs.createComponent(libs.Show, {
+                }, _el$21);
+              libs.setProp(_el$21, "onactivate", () => selectMode(entry.entry_name, filterMode));
+              libs.insert(_el$20, libs.createComponent(libs.Show, {
                 get when() {
                   return index() < RUNE_ADVERB_ENTRY_FILTER_MODES.length - 1;
                 },
@@ -3183,22 +3237,41 @@ function RuneAdverbEntryFilterSection() {
                     Selected: mode() === filterMode
                   }),
                   _v$5 = GetLocalization(`#RuneFilter_AdverbEntryMode_${filterMode}`);
-                _v$4 !== _p$._v$4 && (_p$._v$4 = libs.setProp(_el$18, "class", _v$4, _p$._v$4));
-                _v$5 !== _p$._v$5 && (_p$._v$5 = libs.setProp(_el$19, "text", _v$5, _p$._v$5));
+                _v$4 !== _p$._v$4 && (_p$._v$4 = libs.setProp(_el$21, "class", _v$4, _p$._v$4));
+                _v$5 !== _p$._v$5 && (_p$._v$5 = libs.setProp(_el$22, "text", _v$5, _p$._v$5));
                 return _p$;
               }, {
                 _v$4: undefined,
                 _v$5: undefined
               });
-              return _el$17;
+              return _el$20;
             })()
           }));
-          libs.effect(_$p => libs.setProp(_el$15, "text", GetLocalization(`#property_${entry.entry_name}`).replace("%", ""), _$p));
-          return _el$14;
+          libs.insert(_el$16, libs.createComponent(libs.Show, {
+            get when() {
+              return mode() === "include";
+            },
+            get children() {
+              return libs.createComponent(entry_range_inputs.EntryRangeInputs, {
+                get range() {
+                  return runeSubRanges()[entry.entry_name];
+                },
+                get unit() {
+                  return GetLocalization(`#property_${entry.entry_name}`).startsWith("%") ? "%" : "";
+                },
+                onChange: range => setRuneSubRanges(prev => ({
+                  ...prev,
+                  [entry.entry_name]: range
+                }))
+              });
+            }
+          }), null);
+          libs.effect(_$p => libs.setProp(_el$18, "text", GetLocalization(`#property_${entry.entry_name}`).replace("%", ""), _$p));
+          return _el$16;
         })();
       }
     }));
-    return _el$13;
+    return _el$15;
   })()];
 }
 function EngravingEntryFilterSection() {
@@ -3207,31 +3280,33 @@ function EngravingEntryFilterSection() {
     listID: "EngravingEntryFilterList",
     entries: ENGRAVING_ENTRY_LIST,
     filter: engravingFilterEntry,
-    setFilter: setEngravingFilterEntry
+    setFilter: setEngravingFilterEntry,
+    ranges: engravingRanges,
+    setRanges: setEngravingRanges
   });
 }
 function EngravingFilterWindow() {
   return (() => {
-    const _el$21 = libs.createElement("Panel", {
+    const _el$24 = libs.createElement("Panel", {
         id: "EngravingFilterWindow",
         "class": "VerticalScrollStyle",
         scroll: "y"
       }, null),
-      _el$22 = libs.createElement("Label", {
+      _el$25 = libs.createElement("Label", {
         "class": "Subheading FirstFilterHeading",
         get text() {
           return GetLocalization("#Equipment_Rarity");
         }
-      }, _el$21);
+      }, _el$24);
       libs.createElement("Panel", {
         "class": "FilterLine"
-      }, _el$21);
-      const _el$24 = libs.createElement("Panel", {
+      }, _el$24);
+      const _el$27 = libs.createElement("Panel", {
         id: "EngravingRarityFilterList",
         "class": "CheckBoxList"
-      }, _el$21);
-    libs.setProp(_el$21, "scroll", "y");
-    libs.insert(_el$24, libs.createComponent(libs.For, {
+      }, _el$24);
+    libs.setProp(_el$24, "scroll", "y");
+    libs.insert(_el$27, libs.createComponent(libs.For, {
       each: ENGRAVING_RARITY_LIST,
       children: rarity => libs.createComponent(EOM_CheckBox.EOM_CheckBox2, {
         "class": `Rarity${rarity}`,
@@ -3257,9 +3332,9 @@ function EngravingFilterWindow() {
         }
       })
     }));
-    libs.insert(_el$21, libs.createComponent(EngravingEntryFilterSection, {}), null);
-    libs.effect(_$p => libs.setProp(_el$22, "text", GetLocalization("#Equipment_Rarity"), _$p));
-    return _el$21;
+    libs.insert(_el$24, libs.createComponent(EngravingEntryFilterSection, {}), null);
+    libs.effect(_$p => libs.setProp(_el$25, "text", GetLocalization("#Equipment_Rarity"), _$p));
+    return _el$24;
   })();
 }
 function RunePage() {
@@ -3375,7 +3450,16 @@ function RunePage() {
     }
     const selectedSuit = Object.keys(suitFilterMap).filter(key => suitFilterMap[key]);
     if (selectedSuit.length > 0) {
-      result = result.filter(rune => rune.suitIDs.some(suitID => selectedSuit.includes(suitID)));
+      result = result.filter(rune => {
+        const points = {};
+        for (const entry of rune.rune_suit_data ?? []) {
+          points[entry.id] = (points[entry.id] ?? 0) + entry.value;
+        }
+        return entry_range_inputs.matchesSelectedEntryRanges(Object.entries(points).map(([id, value]) => ({
+          id,
+          value
+        })), selectedSuit, runeSuitRanges(), true);
+      });
     }
     const includedAdverbEntries = [];
     const excludedAdverbEntries = [];
@@ -3383,12 +3467,8 @@ function RunePage() {
       if (mode === "include") includedAdverbEntries.push(entryID);
       if (mode === "exclude") excludedAdverbEntries.push(entryID);
     }
-    if (includedAdverbEntries.length > 0 || excludedAdverbEntries.length > 0) {
-      result = result.filter(rune => {
-        const entryIDs = new Set((rune.adverb_entry_data ?? []).map(entry => entry.id));
-        return includedAdverbEntries.every(entryID => entryIDs.has(entryID)) && excludedAdverbEntries.every(entryID => !entryIDs.has(entryID));
-      });
-    }
+    const selectedMainEntries = Object.keys(runeMainFilter()).filter(id => runeMainFilter()[id]);
+    result = result.filter(rune => entry_range_inputs.matchesSelectedEntryRanges(rune.main_entry_data, selectedMainEntries, runeMainRanges(), true) && entry_range_inputs.matchesSelectedEntryRanges(rune.adverb_entry_data, includedAdverbEntries, runeSubRanges()) && excludedAdverbEntries.every(id => !(rune.adverb_entry_data ?? []).some(entry => entry.id === id)));
     return result;
   });
   const filteredEngravings = libs.createMemo(() => {
@@ -3401,7 +3481,7 @@ function RunePage() {
     }
     const selectedEntries = Object.keys(entryFilter).filter(key => entryFilter[key]);
     if (selectedEntries.length > 0) {
-      result = result.filter(engraving => engraving.adverb_entry_data?.some(entry => selectedEntries.includes(entry.id)));
+      result = result.filter(engraving => entry_range_inputs.matchesSelectedEntryRanges(engraving.adverb_entry_data, selectedEntries, engravingRanges(), true));
     }
     return result;
   });
@@ -3549,6 +3629,7 @@ function RunePage() {
       libs.batch(() => {
         setEngravingFilterRarity({});
         setEngravingFilterEntry({});
+        setEngravingRanges({});
       });
       return;
     }
@@ -3557,6 +3638,10 @@ function RunePage() {
       setFilterRarity({});
       setFilterSuit({});
       setRuneFilterAdverbEntry({});
+      setRuneMainFilter({});
+      setRuneMainRanges({});
+      setRuneSubRanges({});
+      setRuneSuitRanges({});
       setResetFilter(prev => prev + 1);
     });
   };
@@ -4132,7 +4217,7 @@ function RunePage() {
         id: "RuneContent",
         get topbarChildren() {
           return (() => {
-            const _el$33 = libs.createElement("Panel", {
+            const _el$36 = libs.createElement("Panel", {
                 id: "BGRoot",
                 get ["class"]() {
                   return menuName() == "RuneDevour_Menu" ? "DevourPage" : "EmbedPage";
@@ -4142,16 +4227,16 @@ function RunePage() {
               libs.createElement("Panel", {
                 id: "CustomTopBottomBG",
                 hittest: false
-              }, _el$33);
-            libs.effect(_$p => libs.setProp(_el$33, "class", menuName() == "RuneDevour_Menu" ? "DevourPage" : "EmbedPage", _$p));
-            return _el$33;
+              }, _el$36);
+            libs.effect(_$p => libs.setProp(_el$36, "class", menuName() == "RuneDevour_Menu" ? "DevourPage" : "EmbedPage", _$p));
+            return _el$36;
           })();
         },
         get children() {
-          const _el$25 = libs.createElement("Panel", {
+          const _el$28 = libs.createElement("Panel", {
             id: "RuneContentMain"
           }, null);
-          libs.insert(_el$25, libs.createComponent(libs.Switch, {
+          libs.insert(_el$28, libs.createComponent(libs.Switch, {
             get children() {
               return [libs.createComponent(libs.Match, {
                 get when() {
@@ -4238,7 +4323,7 @@ function RunePage() {
               })];
             }
           }), null);
-          libs.insert(_el$25, libs.createComponent(libs.Show, {
+          libs.insert(_el$28, libs.createComponent(libs.Show, {
             get when() {
               return rightShowAttrInfo();
             },
@@ -4248,29 +4333,29 @@ function RunePage() {
               });
             }
           }), null);
-          libs.insert(_el$25, libs.createComponent(libs.Show, {
+          libs.insert(_el$28, libs.createComponent(libs.Show, {
             get when() {
               return !rightShowAttrInfo();
             },
             get children() {
-              const _el$26 = libs.createElement("Panel", {
+              const _el$29 = libs.createElement("Panel", {
                   id: "RuneBagRoot",
                   "class": "RuneRightBag"
                 }, null),
-                _el$27 = libs.createElement("Panel", {
+                _el$30 = libs.createElement("Panel", {
                   id: "RuneBagContent"
-                }, _el$26),
-                _el$28 = libs.createElement("Panel", {
-                  id: "RuneBagLeftArea"
-                }, _el$27),
+                }, _el$29),
                 _el$31 = libs.createElement("Panel", {
+                  id: "RuneBagLeftArea"
+                }, _el$30),
+                _el$34 = libs.createElement("Panel", {
                   id: "RuneBottomContainer"
-                }, _el$26),
-                _el$32 = libs.createElement("Button", {
+                }, _el$29),
+                _el$35 = libs.createElement("Button", {
                   id: "ResetBtn",
                   "class": "SecondaryButtonStates"
-                }, _el$31);
-              libs.insert(_el$28, libs.createComponent(libs.Show, {
+                }, _el$34);
+              libs.insert(_el$31, libs.createComponent(libs.Show, {
                 get when() {
                   return showFilter();
                 },
@@ -4292,16 +4377,16 @@ function RunePage() {
                   })];
                 }
               }), null);
-              libs.insert(_el$28, libs.createComponent(libs.Show, {
+              libs.insert(_el$31, libs.createComponent(libs.Show, {
                 get when() {
                   return !showFilter();
                 },
                 get children() {
                   return [(() => {
-                    const _el$29 = libs.createElement("Panel", {
+                    const _el$32 = libs.createElement("Panel", {
                       id: "RuneBagTabs"
                     }, null);
-                    libs.insert(_el$29, libs.createComponent(RuneBagTabButton, {
+                    libs.insert(_el$32, libs.createComponent(RuneBagTabButton, {
                       get ["class"]() {
                         return libs.classNames({
                           Full: isRuneBagFull()
@@ -4332,7 +4417,7 @@ function RunePage() {
                         });
                       }
                     }), null);
-                    libs.insert(_el$29, libs.createComponent(RuneBagTabButton, {
+                    libs.insert(_el$32, libs.createComponent(RuneBagTabButton, {
                       iconClass: "EngravingTabIcon",
                       get text() {
                         return GetLocalization("#MenuTabButton_Engraving");
@@ -4361,7 +4446,7 @@ function RunePage() {
                         });
                       }
                     }), null);
-                    return _el$29;
+                    return _el$32;
                   })(), libs.createComponent(libs.Show, {
                     get when() {
                       return bagType() === "engraving";
@@ -4384,7 +4469,7 @@ function RunePage() {
                           const engraving = data;
                           const isDragging = () => draggingEngravingID() === engraving().id;
                           return (() => {
-                            const _el$36 = libs.createElement("Panel", {
+                            const _el$39 = libs.createElement("Panel", {
                                 get ["class"]() {
                                   return libs.classNames(`EngravingBagItem Class${engraving().class}`, {
                                     Selected: selectedEngravingIDMap()[engraving().id] === true,
@@ -4393,38 +4478,38 @@ function RunePage() {
                                   });
                                 }
                               }, null),
-                              _el$37 = libs.createElement("Panel", {
+                              _el$40 = libs.createElement("Panel", {
                                 get ["class"]() {
                                   return libs.classNames(`EngravingBagItemIconRoot Rarity${engraving().rarity}`, {
                                     Dragging: isDragging(),
                                     Requesting: requesting()
                                   });
                                 }
-                              }, _el$36),
-                              _el$38 = libs.createElement("Image", {
+                              }, _el$39),
+                              _el$41 = libs.createElement("Image", {
                                 "class": "EngravingBagItemIcon",
                                 get src() {
                                   return server_rune_utils.getEngravingIconPath(engraving());
                                 }
-                              }, _el$37);
+                              }, _el$40);
                               libs.createElement("Panel", {
                                 "class": "SelectedBorder"
-                              }, _el$36);
+                              }, _el$39);
                               libs.createElement("Panel", {
                                 "class": "RuneNewRedPoint"
-                              }, _el$36);
+                              }, _el$39);
                               libs.createElement("Panel", {
                                 "class": "RuenLocked"
-                              }, _el$36);
-                            libs.setProp(_el$36, "onmouseover", panel => {
+                              }, _el$39);
+                            libs.setProp(_el$39, "onmouseover", panel => {
                               markEngravingRead(engraving().id);
                               server_rune_utils.ShowServerEngravingTooltip(panel, {
                                 id1: engraving().id
                               });
                             });
-                            libs.setProp(_el$36, "onmouseout", panel => HideCustomTooltip(panel, "server_engraving"));
-                            libs.setProp(_el$36, "onmouseactivate", () => handleEngravingActivate(engraving().id));
-                            libs.setProp(_el$36, "onDragStart", (panel, dragCallbacks) => {
+                            libs.setProp(_el$39, "onmouseout", panel => HideCustomTooltip(panel, "server_engraving"));
+                            libs.setProp(_el$39, "onmouseactivate", () => handleEngravingActivate(engraving().id));
+                            libs.setProp(_el$39, "onDragStart", (panel, dragCallbacks) => {
                               const isBreakDrag = menuName() === "RuneBreak_Menu" && bagType() === "engraving";
                               const isInlayDrag = menuName() === "RuneInlay_Menu" && bagType() === "engraving";
                               if (!isBreakDrag && !isInlayDrag || requesting() || isInlayDrag && inlayPreviewing()) {
@@ -4439,31 +4524,31 @@ function RunePage() {
                               setDraggingEngravingID(engraving().id);
                               const dragPanel = $.CreatePanel("Panel", $.GetContextPanel(), "engravingDragImage");
                               libs.render(() => (() => {
-                                const _el$42 = libs.createElement("Panel", {
+                                const _el$45 = libs.createElement("Panel", {
                                     "class": "RuneDragPreview"
                                   }, null),
-                                  _el$43 = libs.createElement("Panel", {
+                                  _el$46 = libs.createElement("Panel", {
                                     get ["class"]() {
                                       return `EngravingBagItemIconRoot Rarity${engraving().rarity}`;
                                     }
-                                  }, _el$42),
-                                  _el$44 = libs.createElement("Image", {
+                                  }, _el$45),
+                                  _el$47 = libs.createElement("Image", {
                                     "class": "EngravingBagItemIcon",
                                     get src() {
                                       return server_rune_utils.getEngravingIconPath(engraving());
                                     }
-                                  }, _el$43);
+                                  }, _el$46);
                                 libs.effect(_p$ => {
                                   const _v$9 = `EngravingBagItemIconRoot Rarity${engraving().rarity}`,
                                     _v$0 = server_rune_utils.getEngravingIconPath(engraving());
-                                  _v$9 !== _p$._v$9 && (_p$._v$9 = libs.setProp(_el$43, "class", _v$9, _p$._v$9));
-                                  _v$0 !== _p$._v$0 && (_p$._v$0 = libs.setProp(_el$44, "src", _v$0, _p$._v$0));
+                                  _v$9 !== _p$._v$9 && (_p$._v$9 = libs.setProp(_el$46, "class", _v$9, _p$._v$9));
+                                  _v$0 !== _p$._v$0 && (_p$._v$0 = libs.setProp(_el$47, "src", _v$0, _p$._v$0));
                                   return _p$;
                                 }, {
                                   _v$9: undefined,
                                   _v$0: undefined
                                 });
-                                return _el$42;
+                                return _el$45;
                               })(), dragPanel);
                               dragCallbacks.displayPanel = dragPanel;
                               const position = GameUI.GetCursorPosition();
@@ -4476,7 +4561,7 @@ function RunePage() {
                               $.GetContextPanel().AddClass("Rune_Dragging");
                               return true;
                             });
-                            libs.setProp(_el$36, "onDragEnd", (panel, draggedPanel) => {
+                            libs.setProp(_el$39, "onDragEnd", (panel, draggedPanel) => {
                               if (draggedPanel !== undefined && draggedPanel.IsValid()) {
                                 draggedPanel.DeleteAsync(-1);
                               }
@@ -4484,7 +4569,7 @@ function RunePage() {
                               $.GetContextPanel().RemoveClass("Rune_Dragging");
                               clearDragState();
                             });
-                            libs.setProp(_el$36, "oncontextmenu", panel => handleEngravingContextMenu(panel, engraving().id));
+                            libs.setProp(_el$39, "oncontextmenu", panel => handleEngravingContextMenu(panel, engraving().id));
                             libs.effect(_p$ => {
                               const _v$6 = libs.classNames(`EngravingBagItem Class${engraving().class}`, {
                                   Selected: selectedEngravingIDMap()[engraving().id] === true,
@@ -4496,16 +4581,16 @@ function RunePage() {
                                   Requesting: requesting()
                                 }),
                                 _v$8 = server_rune_utils.getEngravingIconPath(engraving());
-                              _v$6 !== _p$._v$6 && (_p$._v$6 = libs.setProp(_el$36, "class", _v$6, _p$._v$6));
-                              _v$7 !== _p$._v$7 && (_p$._v$7 = libs.setProp(_el$37, "class", _v$7, _p$._v$7));
-                              _v$8 !== _p$._v$8 && (_p$._v$8 = libs.setProp(_el$38, "src", _v$8, _p$._v$8));
+                              _v$6 !== _p$._v$6 && (_p$._v$6 = libs.setProp(_el$39, "class", _v$6, _p$._v$6));
+                              _v$7 !== _p$._v$7 && (_p$._v$7 = libs.setProp(_el$40, "class", _v$7, _p$._v$7));
+                              _v$8 !== _p$._v$8 && (_p$._v$8 = libs.setProp(_el$41, "src", _v$8, _p$._v$8));
                               return _p$;
                             }, {
                               _v$6: undefined,
                               _v$7: undefined,
                               _v$8: undefined
                             });
-                            return _el$36;
+                            return _el$39;
                           })();
                         }
                       });
@@ -4541,7 +4626,7 @@ function RunePage() {
                           };
                           const isLocked = () => rune().locked === true;
                           return (() => {
-                            const _el$46 = libs.createElement("Panel", {
+                            const _el$49 = libs.createElement("Panel", {
                                 get ["class"]() {
                                   return libs.classNames("RuneBagItem", {
                                     Selected: selectedRuneIDMap()[rune().id] === true,
@@ -4551,47 +4636,47 @@ function RunePage() {
                                   });
                                 }
                               }, null),
-                              _el$47 = libs.createElement("Panel", {
+                              _el$50 = libs.createElement("Panel", {
                                 get ["class"]() {
                                   return libs.classNames(`RuneBagItemIconRoot Rarity${rune().rarity}`, {
                                     Dragging: isDragging(),
                                     Requesting: requesting()
                                   });
                                 }
-                              }, _el$46),
-                              _el$48 = libs.createElement("Image", {
+                              }, _el$49),
+                              _el$51 = libs.createElement("Image", {
                                 "class": "RuneBagItemIcon",
                                 get src() {
                                   return rune_data.getRuneIconPath(rune());
                                 }
-                              }, _el$47);
+                              }, _el$50);
                               libs.createElement("Image", {
                                 "class": "RunePeekIcon"
-                              }, _el$46);
+                              }, _el$49);
                               libs.createElement("Panel", {
                                 "class": "SelectedBorder"
-                              }, _el$46);
+                              }, _el$49);
                               libs.createElement("Panel", {
                                 "class": "RuneNewRedPoint"
-                              }, _el$46);
+                              }, _el$49);
                               libs.createElement("Panel", {
                                 "class": "RuenLocked"
-                              }, _el$46);
-                            libs.setProp(_el$46, "onmouseover", panel => {
+                              }, _el$49);
+                            libs.setProp(_el$49, "onmouseover", panel => {
                               markRuneRead(rune().id);
                               server_rune_utils.ShowServerRuneTooltip(panel, {
                                 id1: rune().id
                               });
                             });
-                            libs.setProp(_el$46, "onmouseout", panel => HideCustomTooltip(panel, "server_rune"));
-                            libs.setProp(_el$46, "onmouseactivate", () => {
+                            libs.setProp(_el$49, "onmouseout", panel => HideCustomTooltip(panel, "server_rune"));
+                            libs.setProp(_el$49, "onmouseactivate", () => {
                               if (isSelectionBlocked()) {
                                 showSelectionBlockedMessage();
                                 return;
                               }
                               handleRuneActivate(rune().id);
                             });
-                            libs.setProp(_el$46, "onDragStart", (panel, dragCallbacks) => {
+                            libs.setProp(_el$49, "onDragStart", (panel, dragCallbacks) => {
                               if (requesting()) {
                                 return false;
                               }
@@ -4603,31 +4688,31 @@ function RunePage() {
                               setDraggingRuneID(runeData.id);
                               const dragPanel = $.CreatePanel("Panel", $.GetContextPanel(), "runeDragImage");
                               const dispose = libs.render(() => (() => {
-                                const _el$53 = libs.createElement("Panel", {
+                                const _el$56 = libs.createElement("Panel", {
                                     "class": "RuneDragPreview"
                                   }, null),
-                                  _el$54 = libs.createElement("Panel", {
+                                  _el$57 = libs.createElement("Panel", {
                                     get ["class"]() {
                                       return `RuneBagItemIconRoot Rarity${runeData.rarity}`;
                                     }
-                                  }, _el$53),
-                                  _el$55 = libs.createElement("Image", {
+                                  }, _el$56),
+                                  _el$58 = libs.createElement("Image", {
                                     "class": "RuneBagItemIcon",
                                     get src() {
                                       return rune_data.getRuneIconPath(runeData);
                                     }
-                                  }, _el$54);
+                                  }, _el$57);
                                 libs.effect(_p$ => {
                                   const _v$12 = `RuneBagItemIconRoot Rarity${runeData.rarity}`,
                                     _v$13 = rune_data.getRuneIconPath(runeData);
-                                  _v$12 !== _p$._v$12 && (_p$._v$12 = libs.setProp(_el$54, "class", _v$12, _p$._v$12));
-                                  _v$13 !== _p$._v$13 && (_p$._v$13 = libs.setProp(_el$55, "src", _v$13, _p$._v$13));
+                                  _v$12 !== _p$._v$12 && (_p$._v$12 = libs.setProp(_el$57, "class", _v$12, _p$._v$12));
+                                  _v$13 !== _p$._v$13 && (_p$._v$13 = libs.setProp(_el$58, "src", _v$13, _p$._v$13));
                                   return _p$;
                                 }, {
                                   _v$12: undefined,
                                   _v$13: undefined
                                 });
-                                return _el$53;
+                                return _el$56;
                               })(), dragPanel);
                               SaveData(dragPanel, "_SOLIDJS_DISPOSE_", dispose);
                               dragCallbacks.displayPanel = dragPanel;
@@ -4641,7 +4726,7 @@ function RunePage() {
                               $.GetContextPanel().AddClass("Rune_Dragging");
                               return true;
                             });
-                            libs.setProp(_el$46, "onDragEnd", (panel, draggedPanel) => {
+                            libs.setProp(_el$49, "onDragEnd", (panel, draggedPanel) => {
                               if (draggedPanel !== undefined && draggedPanel.IsValid()) {
                                 const dispose = LoadData(draggedPanel, "_SOLIDJS_DISPOSE_");
                                 dispose?.();
@@ -4652,8 +4737,8 @@ function RunePage() {
                               $.GetContextPanel().RemoveClass("Rune_Dragging");
                               clearDragState();
                             });
-                            libs.setProp(_el$46, "oncontextmenu", panel => handleRuneContextMenu(panel, rune().id));
-                            libs.insert(_el$47, libs.createComponent(rune_components.RuneEngravingSlots, {
+                            libs.setProp(_el$49, "oncontextmenu", panel => handleRuneContextMenu(panel, rune().id));
+                            libs.insert(_el$50, libs.createComponent(rune_components.RuneEngravingSlots, {
                               get slots() {
                                 return rune().inlay_engravings_data;
                               }
@@ -4670,16 +4755,16 @@ function RunePage() {
                                   Requesting: requesting()
                                 }),
                                 _v$11 = rune_data.getRuneIconPath(rune());
-                              _v$1 !== _p$._v$1 && (_p$._v$1 = libs.setProp(_el$46, "class", _v$1, _p$._v$1));
-                              _v$10 !== _p$._v$10 && (_p$._v$10 = libs.setProp(_el$47, "class", _v$10, _p$._v$10));
-                              _v$11 !== _p$._v$11 && (_p$._v$11 = libs.setProp(_el$48, "src", _v$11, _p$._v$11));
+                              _v$1 !== _p$._v$1 && (_p$._v$1 = libs.setProp(_el$49, "class", _v$1, _p$._v$1));
+                              _v$10 !== _p$._v$10 && (_p$._v$10 = libs.setProp(_el$50, "class", _v$10, _p$._v$10));
+                              _v$11 !== _p$._v$11 && (_p$._v$11 = libs.setProp(_el$51, "src", _v$11, _p$._v$11));
                               return _p$;
                             }, {
                               _v$1: undefined,
                               _v$10: undefined,
                               _v$11: undefined
                             });
-                            return _el$46;
+                            return _el$49;
                           })();
                         }
                       });
@@ -4687,54 +4772,54 @@ function RunePage() {
                   })];
                 }
               }), null);
-              libs.insert(_el$27, libs.createComponent(libs.Show, {
+              libs.insert(_el$30, libs.createComponent(libs.Show, {
                 get when() {
                   return bagType() === "rune";
                 },
                 get children() {
-                  const _el$30 = libs.createElement("Panel", {
+                  const _el$33 = libs.createElement("Panel", {
                     id: "RuneBagFilter"
                   }, null);
-                  libs.insert(_el$30, libs.createComponent(libs.For, {
+                  libs.insert(_el$33, libs.createComponent(libs.For, {
                     get each() {
                       return filterTabs();
                     },
                     children: filter => {
                       return (() => {
-                        const _el$56 = libs.createElement("Button", {
+                        const _el$59 = libs.createElement("Button", {
                             get ["class"]() {
                               return libs.classNames("RuneBagFilterTab", {
                                 Selected: suitFilter() === filter
                               });
                             }
                           }, null),
-                          _el$57 = libs.createElement("Image", {
+                          _el$60 = libs.createElement("Image", {
                             "class": "RuneBagFilterIcon",
                             get src() {
                               return filterIcon(filter);
                             }
-                          }, _el$56);
-                        libs.setProp(_el$56, "onactivate", () => setSuitFilter(filter));
+                          }, _el$59);
+                        libs.setProp(_el$59, "onactivate", () => setSuitFilter(filter));
                         libs.effect(_p$ => {
                           const _v$14 = libs.classNames("RuneBagFilterTab", {
                               Selected: suitFilter() === filter
                             }),
                             _v$15 = filterIcon(filter);
-                          _v$14 !== _p$._v$14 && (_p$._v$14 = libs.setProp(_el$56, "class", _v$14, _p$._v$14));
-                          _v$15 !== _p$._v$15 && (_p$._v$15 = libs.setProp(_el$57, "src", _v$15, _p$._v$15));
+                          _v$14 !== _p$._v$14 && (_p$._v$14 = libs.setProp(_el$59, "class", _v$14, _p$._v$14));
+                          _v$15 !== _p$._v$15 && (_p$._v$15 = libs.setProp(_el$60, "src", _v$15, _p$._v$15));
                           return _p$;
                         }, {
                           _v$14: undefined,
                           _v$15: undefined
                         });
-                        return _el$56;
+                        return _el$59;
                       })();
                     }
                   }));
-                  return _el$30;
+                  return _el$33;
                 }
               }), null);
-              libs.insert(_el$31, libs.createComponent(equipment_comp.EquipmentCommonBtn, {
+              libs.insert(_el$34, libs.createComponent(equipment_comp.EquipmentCommonBtn, {
                 id: "FilterBtn",
                 get ["class"]() {
                   return libs.classNames({
@@ -4747,9 +4832,9 @@ function RunePage() {
                 onactivate: () => {
                   setShowFilter(prev => !prev);
                 }
-              }), _el$32);
-              libs.setProp(_el$32, "onactivate", handleResetFilter);
-              libs.insert(_el$31, libs.createComponent(equipment_comp.EquipmentCommonBtn, {
+              }), _el$35);
+              libs.setProp(_el$35, "onactivate", handleResetFilter);
+              libs.insert(_el$34, libs.createComponent(equipment_comp.EquipmentCommonBtn, {
                 id: "RuneLockBtn",
                 get text() {
                   return GetLocalization(selectedBagItemLocked() ? "#RuneItem_OptUnlock" : "#RuneItem_OptLock");
@@ -4759,10 +4844,10 @@ function RunePage() {
                 },
                 onactivate: handleSelectedBagItemLock
               }), null);
-              return _el$26;
+              return _el$29;
             }
           }), null);
-          return _el$25;
+          return _el$28;
         }
       })];
     }
@@ -4778,4 +4863,4 @@ function HudRune() {
     }
   });
 }
-libs.render(() => libs.createComponent(HudRune, {}), $.GetContextPanel());
+libs.render(() => libs.createComponent(HudRune, {}), $.GetContextPanel());

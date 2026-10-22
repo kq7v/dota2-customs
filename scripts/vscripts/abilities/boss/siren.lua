@@ -181,11 +181,11 @@ function E.prototype.OnThink(self, I)
 		{ direction = VectorToString(self.direction), speed = self.distance / self.motionDuration, duration = self.motionDuration }
 	)
 	self.parent:EmitSound("Ability.GushImpact")
-	self:StartThink(-1)
 	self:IncrementStackCount()
 	if self:GetStackCount() >= self["repeat"] then
 		self:SetDuration(self.motionDuration, true)
 	end
+	return -1
 end
 function E.prototype.CheckState(self)
 	return { [MODIFIER_STATE_ROOTED] = true, [MODIFIER_STATE_DISARMED] = true, [MODIFIER_STATE_SILENCED] = true }

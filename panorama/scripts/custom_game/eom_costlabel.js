@@ -55,4 +55,4 @@ const EOM_CostLabel = props => {
   })();
 };
 
-exports.EOM_CostLabel = EOM_CostLabel;
+exports.EOM_CostLabel = EOM_CostLabel;

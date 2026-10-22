@@ -233,4 +233,4 @@ const EOM_Loading = props => {
   }
 };
 
-exports.EOM_Loading = EOM_Loading;
+exports.EOM_Loading = EOM_Loading;

@@ -30,4 +30,4 @@ const EOM_RadioButton = props => {
   })();
 };
 
-exports.EOM_RadioButton = EOM_RadioButton;
+exports.EOM_RadioButton = EOM_RadioButton;

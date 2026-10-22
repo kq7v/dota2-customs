@@ -71,4 +71,4 @@ function SetupTooltip() {
 (() => {
   tooltip_base.InitTooltipStyle(pSelf);
   pSelf.SetPanelEvent("ontooltiploaded", SetupTooltip);
-})();
+})();

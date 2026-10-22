@@ -1127,4 +1127,4 @@ function CommunityRoot() {
     return _el$53;
   })();
 }
-libs.render(() => libs.createComponent(CommunityRoot, {}), $.GetContextPanel());
+libs.render(() => libs.createComponent(CommunityRoot, {}), $.GetContextPanel());

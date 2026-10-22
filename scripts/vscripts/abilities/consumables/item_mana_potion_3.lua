@@ -24,6 +24,7 @@ d(k, j)
 function k.prototype.OnCreated(self)
 	self:StartThink(0, function()
 		self:OnSpellStart()
+		return -1
 	end)
 end
 function k.prototype.OnSpellStart(self)

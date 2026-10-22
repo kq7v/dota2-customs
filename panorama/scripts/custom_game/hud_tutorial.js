@@ -1292,4 +1292,4 @@ const TutorialUpper = () => {
     return _el$34;
   })();
 };
-libs.render(() => libs.createComponent(HudTutorial, {}), $.GetContextPanel());
+libs.render(() => libs.createComponent(HudTutorial, {}), $.GetContextPanel());

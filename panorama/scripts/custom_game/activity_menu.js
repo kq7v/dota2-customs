@@ -46,6 +46,10 @@ function shouldShowPrimaryMenu(menu, config, context) {
   if (menu == "seven_days") {
     return !isLoginActivityCompleted(context);
   }
+  if (menu == "activity_moonstone") {
+    const dataEndTime = KeyValues.activity_data[902]?.data_end_time ?? 0;
+    return isBeforeEndTime(context.now, dataEndTime);
+  }
   if (menu == "boardslot") {
     const dataEndTime = KeyValues.activity_data[dig_veins_logic.ACTIVITY_DICE_ID]?.data_end_time ?? 0;
     return isBeforeEndTime(context.now, dataEndTime);
@@ -114,4 +118,4 @@ function areActivityMenuListsEqual(left, right) {
 exports.areActivityMenuListsEqual = areActivityMenuListsEqual;
 exports.buildActivityMenuList = buildActivityMenuList;
 exports.getActiveStarseaActivityID = getActiveStarseaActivityID;
-exports.getVisibleActivityRedPoint = getVisibleActivityRedPoint;
+exports.getVisibleActivityRedPoint = getVisibleActivityRedPoint;
