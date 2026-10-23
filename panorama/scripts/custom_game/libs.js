@@ -2110,4 +2110,4 @@ function handleError(err, owner = Owner) {
   let msg = err.stack ?? err;
   GameEvents.SendEventClientSide("pui_error_msg", {error: msg});
   throw err;
-}
+}

@@ -892,4 +892,4 @@ function ArenaEndScreen() {
   })();
 }
 libs.render(() => libs.createComponent(ArenaEndScreen, {}), $.GetContextPanel());
-print("ArenaEndScreen loaded 1 ");
+print("ArenaEndScreen loaded 1 ");

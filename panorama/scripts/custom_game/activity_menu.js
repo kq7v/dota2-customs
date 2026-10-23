@@ -118,4 +118,4 @@ function areActivityMenuListsEqual(left, right) {
 exports.areActivityMenuListsEqual = areActivityMenuListsEqual;
 exports.buildActivityMenuList = buildActivityMenuList;
 exports.getActiveStarseaActivityID = getActiveStarseaActivityID;
-exports.getVisibleActivityRedPoint = getVisibleActivityRedPoint;
+exports.getVisibleActivityRedPoint = getVisibleActivityRedPoint;

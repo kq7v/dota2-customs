@@ -874,4 +874,4 @@ function RedPointCenter() {
     hittest: false
   }, null);
 }
-libs.render(() => libs.createComponent(RedPointCenter, {}), $.GetContextPanel());
+libs.render(() => libs.createComponent(RedPointCenter, {}), $.GetContextPanel());

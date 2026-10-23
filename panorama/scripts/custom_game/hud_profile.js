@@ -1300,4 +1300,4 @@ function Profile() {
     }
   });
 }
-libs.render(() => libs.createComponent(Profile, {}), $.GetContextPanel());
+libs.render(() => libs.createComponent(Profile, {}), $.GetContextPanel());

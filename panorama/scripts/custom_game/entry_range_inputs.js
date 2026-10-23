@@ -116,4 +116,4 @@ function EntryRangeInputs(props) {
 exports.EntryRangeInputs = EntryRangeInputs;
 exports.isEntryFilterRangeValid = isEntryFilterRangeValid;
 exports.matchesSelectedEntryRanges = matchesSelectedEntryRanges;
-exports.serializeEntryFilterRanges = serializeEntryFilterRanges;
+exports.serializeEntryFilterRanges = serializeEntryFilterRanges;

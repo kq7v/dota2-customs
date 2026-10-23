@@ -23,56 +23,53 @@ d(j, h)
 function j.prototype.OnCreated(self)
 	local k = self:GetCaster()
 	self:StartThink(0, function()
-		local l = DungeonManager:GetCurrentRoom()
-		local m = DungeonAdventure:IsPlayerInRunningAdventure(k:GetPlayerOwnerID())
 		if
 			self:IsCooldownReady()
 			and (
 				Demo.force_dash_auto_cast
-				or self:GetAutoCastState()
-					and (l and l:IsCombatRoom() and not l:IsCombatEnd() or AbyssalHordeManager:IsRunning() or m)
+				or self:GetAutoCastState() and GameModeManager:IsAutoCastCombatActive(k:GetPlayerOwnerID())
 			)
 		then
 			if Demo.force_dash_auto_cast and not Demo:CanForceDashAutoCast(k) then
 				return
 			end
-			local n = Demo.force_dash_auto_cast and Demo:GetForceDashDirection(k, self)
+			local l = Demo.force_dash_auto_cast and Demo:GetForceDashDirection(k, self)
 				or Controller:GetInputDirection(k)
-			if VectorIsZero(n) then
-				n = k:GetForwardVector()
+			if VectorIsZero(l) then
+				l = k:GetForwardVector()
 			end
-			self:OnController(k:GetAbsOrigin() + n * self:GetSpecialValueFor("distance"), n)
+			self:OnController(k:GetAbsOrigin() + l * self:GetSpecialValueFor("distance"), l)
 			if Demo.force_dash_auto_cast then
 				Demo:MarkForceDashAutoCast(k)
 			end
 		end
 	end)
 end
-function j.prototype.OnController(self, o, n)
+function j.prototype.OnController(self, m, l)
 	local k = self:GetCaster()
-	if o == nil then
-		o = k:GetAbsOrigin() + n * self:GetSpecialValueFor("distance")
+	if m == nil then
+		m = k:GetAbsOrigin() + l * self:GetSpecialValueFor("distance")
 	end
-	k:ExecuteOrder(DOTA_UNIT_ORDER_CAST_POSITION, self, o)
+	k:ExecuteOrder(DOTA_UNIT_ORDER_CAST_POSITION, self, m)
 end
 function j.prototype.GetCastCooldown(self)
 	return self:GetSpecialValueFor("distance") / self:GetSpecialValueFor("speed")
 end
-function j.prototype.GetCooldown(self, p)
-	return math.max(h.prototype.GetCooldown(self, p) - self:GetSpecialValueFor("cooldown_reduction"), 0)
+function j.prototype.GetCooldown(self, n)
+	return math.max(h.prototype.GetCooldown(self, n) - self:GetSpecialValueFor("cooldown_reduction"), 0)
 end
 function j.prototype.StaticProperty(self)
 	return { [PropertyFunction.ATTACKSPEED] = self:GetStackCount() * self:GetSpecialValueFor("attackspeed_bonus") }
 end
 function j.prototype.EventListener(self)
 	return {
-		dash_start = function(q, r)
+		dash_start = function(o, p)
 			local k = self:GetCaster()
-			if r.caster ~= k then
+			if p.caster ~= k then
 				return
 			end
-			local s = self:GetSpecialValueFor("dash_damage")
-			if s > 0 then
+			local q = self:GetSpecialValueFor("dash_damage")
+			if q > 0 then
 				self.bulletID = Bullet:CreateCustomBullet({
 					caster = k,
 					spawnOrigin = k:GetAbsOrigin(),
@@ -80,15 +77,15 @@ function j.prototype.EventListener(self)
 					typeFilter = DOTA_UNIT_TARGET_HEROES_AND_CREEPS,
 					radius = self:GetSpecialValueFor("dash_width"),
 					lifeTime = 2,
-					PathFunction = function(o, t)
+					PathFunction = function(m, r)
 						return k:GetAbsOrigin()
 					end,
-					FuncUnitFinder = function(u, o, v, t)
+					FuncUnitFinder = function(s, m, t, r)
 						return FindUnitsInRadius(
 							k:GetTeamNumber(),
-							o,
+							m,
 							nil,
-							v,
+							t,
 							DOTA_UNIT_TARGET_TEAM_ENEMY,
 							DOTA_UNIT_TARGET_HEROES_AND_CREEPS,
 							DOTA_UNIT_TARGET_FLAG_NONE,
@@ -96,47 +93,47 @@ function j.prototype.EventListener(self)
 							false
 						)
 					end,
-					OnBulletHit = function(w, x, y)
-						k:DealDamage(w, self, s, EOM_DAMAGE_TYPES.DAMAGE_TYPE_PHYSICAL)
+					OnBulletHit = function(u, v, w)
+						k:DealDamage(u, self, q, EOM_DAMAGE_TYPES.DAMAGE_TYPE_PHYSICAL)
 					end,
 				})
 			end
 			if k:HasAbilityUpgrade("vexis_upgrade_holy_1") then
-				local z = LASER_LENGTH + GetBulletRange(k)
-				local A = FindUnitsInRadiusWithAbility(k, k:GetAbsOrigin(), z, self)
-				local w = GetRandomElement(A)
-				local o = IsValid(w) and w:GetAbsOrigin() or k:GetAbsOrigin() + RandomVector(300)
-				k:Laser(CalcDirection2D(o, k), self:GetSpecialValueFor("laser_damage"))
+				local x = LASER_LENGTH + GetBulletRange(k)
+				local y = FindUnitsInRadiusWithAbility(k, k:GetAbsOrigin(), x, self)
+				local u = GetRandomElement(y)
+				local m = IsValid(u) and u:GetAbsOrigin() or k:GetAbsOrigin() + RandomVector(300)
+				k:Laser(CalcDirection2D(m, k), self:GetSpecialValueFor("laser_damage"))
 			end
 		end,
-		dash_end = function(q, r)
+		dash_end = function(o, p)
 			local k = self:GetCaster()
-			if k == r.caster then
+			if k == p.caster then
 				if AbilityUpgrade:HasAbilityUpgrade(k, "vexis_upgrade_13") then
-					local B = k:GetAbilityByTag(AbilityTag.Skill)
-					if IsValid(B) then
-						B:PowerShot(k:GetAttachmentPosition("attach_attack3"), CalcDirection2D(r.start, r["end"]), 1)
+					local z = k:GetAbilityByTag(AbilityTag.Skill)
+					if IsValid(z) then
+						z:PowerShot(k:GetAttachmentPosition("attach_attack3"), CalcDirection2D(p.start, p["end"]), 1)
 						Event:Fire(
 							"ability_cast_complete",
 							{
-								ability = B,
+								ability = z,
 								caster = k,
-								position = B:GetCursorPosition(),
-								abilityTag = B:GetAbilityTag(),
+								position = z:GetCursorPosition(),
+								abilityTag = z:GetAbilityTag(),
 								record = "vexis_upgrade_13",
 							}
 						)
 					end
 				end
 				if k:HasAbilityUpgrade("vexis_upgrade_poison_1") then
-					local C = 1
+					local A = 1
 					do
-						local D = 0
-						while D < C do
-							local E = 0.5 + D * 0.15
-							local o = D == 0 and r.start or r.start + RandomVector(150)
-							k:ThrowPoisonBottle(o, self, 2, E)
-							D = D + 1
+						local B = 0
+						while B < A do
+							local C = 0.5 + B * 0.15
+							local m = B == 0 and p.start or p.start + RandomVector(150)
+							k:ThrowPoisonBottle(m, self, 2, C)
+							B = B + 1
 						end
 					end
 				end
@@ -154,21 +151,21 @@ function j.prototype.EventListener(self)
 end
 function j.prototype.OnSpellStart(self)
 	local k = self:GetCaster()
-	local o = self:GetCursorPosition()
+	local m = self:GetCursorPosition()
 	k:StartGesture(ACT_DOTA_CAST_ABILITY_3)
-	local n = CalcDirection2D(o, k:GetAbsOrigin())
-	k:SetForwardVector(n)
-	local F = ParticleManager:CreateParticle(
+	local l = CalcDirection2D(m, k:GetAbsOrigin())
+	k:SetForwardVector(l)
+	local D = ParticleManager:CreateParticle(
 		"models/eom/hero/shooter_1/particles/shooter_1_elude_fx.vpcf",
 		PATTACH_ABSORIGIN_FOLLOW,
 		k
 	)
-	ParticleManager:SetParticleControlTransformForward(F, 1, k:GetAbsOrigin(), n)
-	local z = math.min(self:GetSpecialValueFor("distance"), CalcDistance(o, k))
-	local G = self:GetSpecialValueFor("speed")
-	local E = z / G
-	local H = 0
-	k:Dash(n, z, H, E)
+	ParticleManager:SetParticleControlTransformForward(D, 1, k:GetAbsOrigin(), l)
+	local x = math.min(self:GetSpecialValueFor("distance"), CalcDistance(m, k))
+	local E = self:GetSpecialValueFor("speed")
+	local C = x / E
+	local F = 0
+	k:Dash(l, x, F, C)
 	k:EmitSound("Hero_QueenOfPain.Blink_in.Layer")
 end
 j = e({ i(nil) }, j)

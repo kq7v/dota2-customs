@@ -489,6 +489,9 @@ function J.prototype.reset(self)
 	self.debugPrepareRequest = nil
 	self:Stop("Reset", true)
 end
+function J.prototype.IsPlayerInCombat(self, ab)
+	return self.isRunning and self.phase == "battle" and f(self.activeParticipantPlayerIds, ab)
+end
 function J.prototype.Start(self, P)
 	self:Stop("Restart", true)
 	if not self:LoadConfigs(P.difficulty, #P.participantPlayerIds) then

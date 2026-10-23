@@ -98,4 +98,4 @@ const FishRod3DPreview = props => {
   })();
 };
 
-exports.FishRod3DPreview = FishRod3DPreview;
+exports.FishRod3DPreview = FishRod3DPreview;

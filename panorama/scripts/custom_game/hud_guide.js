@@ -100,4 +100,4 @@ function GuideRoot() {
     }
   });
 }
-libs.render(() => libs.createComponent(GuideRoot, {}), $.GetContextPanel());
+libs.render(() => libs.createComponent(GuideRoot, {}), $.GetContextPanel());

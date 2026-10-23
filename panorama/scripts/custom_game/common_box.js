@@ -325,4 +325,4 @@ const CommonBox = props => {
 };
 
 exports.CommonBox = CommonBox;
-exports.SectIcon = SectIcon;
+exports.SectIcon = SectIcon;

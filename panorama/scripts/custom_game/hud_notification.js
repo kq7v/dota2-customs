@@ -386,4 +386,4 @@ function OnShowPlaceName(event) {
   GameEvents.Subscribe("notification_combat", OnNotificationCombat);
   GameEvents.Subscribe("notification_chat_line", OnNotificationChatLine);
   GameEvents.Subscribe("ShowPlaceName", OnShowPlaceName);
-})();
+})();

@@ -1012,4 +1012,4 @@ function GetAttrRowInfo(data, attributNameColor = "#BFAA82", showAttributeRange 
 exports.EquipSuitList = EquipSuitList;
 exports.EquipmentAttrRow = EquipmentAttrRow;
 exports.GemSpecialEffectRow = GemSpecialEffectRow;
-exports.ServerEquipDetail = ServerEquipDetail;
+exports.ServerEquipDetail = ServerEquipDetail;

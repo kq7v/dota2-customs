@@ -4883,7 +4883,6 @@ function V.prototype.ApplyDifficultyModifiers(self, aJ)
 	local jb = (1 + self.difficultyDamageAmplify / 100) * j5 * j9
 	local jc = (ja - 1) * 100
 	local jd = (jb - 1) * 100
-	print("ApplyDifficultyModifiers", j4, j5)
 	if jc ~= 0 then
 		aJ:AddProperty(PropertyFunction.HEALTH_AMPLIFY, jc)
 	end

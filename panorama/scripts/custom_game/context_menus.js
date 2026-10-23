@@ -139,4 +139,4 @@ const ContextMenu = () => {
     return _el$;
   })();
 };
-libs.render(() => libs.createComponent(ContextMenu, {}), $.GetContextPanel());
+libs.render(() => libs.createComponent(ContextMenu, {}), $.GetContextPanel());

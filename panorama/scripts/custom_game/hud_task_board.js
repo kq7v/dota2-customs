@@ -1474,4 +1474,4 @@ function Battlepass() {
     }
   });
 }
-libs.render(() => libs.createComponent(Battlepass, {}), $.GetContextPanel());
+libs.render(() => libs.createComponent(Battlepass, {}), $.GetContextPanel());

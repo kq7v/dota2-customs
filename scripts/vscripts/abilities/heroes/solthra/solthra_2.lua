@@ -26,40 +26,37 @@ d(m, k)
 function m.prototype.OnCreated(self)
 	local n = self:GetCaster()
 	self:StartThink(0, function()
-		local o = DungeonManager:GetCurrentRoom()
-		local p = DungeonAdventure:IsPlayerInRunningAdventure(n:GetPlayerOwnerID())
 		if
 			self:IsCooldownReady()
 			and (
 				Demo.force_dash_auto_cast
-				or self:GetAutoCastState()
-					and (o and o:IsCombatRoom() and not o:IsCombatEnd() or AbyssalHordeManager:IsRunning() or p)
+				or self:GetAutoCastState() and GameModeManager:IsAutoCastCombatActive(n:GetPlayerOwnerID())
 			)
 		then
 			if Demo.force_dash_auto_cast and not Demo:CanForceDashAutoCast(n) then
 				return
 			end
-			local q = Demo.force_dash_auto_cast and Demo:GetForceDashDirection(n, self)
+			local o = Demo.force_dash_auto_cast and Demo:GetForceDashDirection(n, self)
 				or Controller:GetInputDirection(n)
-			if VectorIsZero(q) then
-				q = n:GetForwardVector()
+			if VectorIsZero(o) then
+				o = n:GetForwardVector()
 			end
-			self:OnController(n:GetAbsOrigin() + q * self:GetSpecialValueFor("distance"), q)
+			self:OnController(n:GetAbsOrigin() + o * self:GetSpecialValueFor("distance"), o)
 			if Demo.force_dash_auto_cast then
 				Demo:MarkForceDashAutoCast(n)
 			end
 		end
 	end)
 end
-function m.prototype.OnController(self, r, q)
+function m.prototype.OnController(self, p, o)
 	local n = self:GetCaster()
-	if r == nil then
-		r = n:GetAbsOrigin() + q * self:GetSpecialValueFor("distance")
+	if p == nil then
+		p = n:GetAbsOrigin() + o * self:GetSpecialValueFor("distance")
 	end
-	n:ExecuteOrder(DOTA_UNIT_ORDER_CAST_POSITION, self, r)
+	n:ExecuteOrder(DOTA_UNIT_ORDER_CAST_POSITION, self, p)
 end
-function m.prototype.GetCooldown(self, s)
-	return math.max(k.prototype.GetCooldown(self, s) - self:GetSpecialValueFor("cooldown_reduction"), 0)
+function m.prototype.GetCooldown(self, q)
+	return math.max(k.prototype.GetCooldown(self, q) - self:GetSpecialValueFor("cooldown_reduction"), 0)
 end
 function m.prototype.GetCastCooldown(self)
 	return self:GetSpecialValueFor("distance") / self:GetSpecialValueFor("speed")
@@ -72,38 +69,38 @@ function m.prototype.StaticProperty(self)
 end
 function m.prototype.EventListener(self)
 	return {
-		dash_end = function(t, u)
+		dash_end = function(r, s)
 			local n = self:GetCaster()
-			if u.caster == n and n:HasAbilityUpgrade("solthra_upgrade_8") then
-				local v = self:GetSpecialValueFor("burn_path_duration")
-				local w = self:GetSpecialValueFor("burn_path_damage")
-				local x = CalcDistance(u.start, u["end"])
-				local y = CalcDirection2D(u["end"], u.start)
-				local z = math.floor(x / 128)
+			if s.caster == n and n:HasAbilityUpgrade("solthra_upgrade_8") then
+				local t = self:GetSpecialValueFor("burn_path_duration")
+				local u = self:GetSpecialValueFor("burn_path_damage")
+				local v = CalcDistance(s.start, s["end"])
+				local w = CalcDirection2D(s["end"], s.start)
+				local x = math.floor(v / 128)
 				do
-					local A = 0
-					while A <= z do
-						local B = u.start + y * A * 128
-						local C = u.start + y * math.min((A + 1) * 128, x)
-						local D = ParticleManager:CreateParticle(
+					local y = 0
+					while y <= x do
+						local z = s.start + w * y * 128
+						local A = s.start + w * math.min((y + 1) * 128, v)
+						local B = ParticleManager:CreateParticle(
 							"particles/units/heroes/hero_mars/mars_spear_burning_trail.vpcf",
 							PATTACH_CUSTOMORIGIN,
 							nil
 						)
-						ParticleManager:SetParticleControl(D, 0, B)
-						ParticleManager:SetParticleControl(D, 1, C)
-						ParticleManager:SetParticleControl(D, 2, Vector(v, 0, 0))
-						ParticleManager:ReleaseParticleIndex(D)
-						A = A + 1
+						ParticleManager:SetParticleControl(B, 0, z)
+						ParticleManager:SetParticleControl(B, 1, A)
+						ParticleManager:SetParticleControl(B, 2, Vector(t, 0, 0))
+						ParticleManager:ReleaseParticleIndex(B)
+						y = y + 1
 					end
 				end
 				self:StartThink(0, DoUniqueString("solthra_upgrade_8"), function()
-					if v > 0 then
-						local E = FindEnemiesInLine(n, u.start, u["end"], 160)
-						for A, F in ipairs(E) do
-							n:Burning(F, self, w)
+					if t > 0 then
+						local C = FindEnemiesInLine(n, s.start, s["end"], 160)
+						for y, D in ipairs(C) do
+							n:Burning(D, self, u)
 						end
-						v = v - 0.1
+						t = t - 0.1
 						return 0.1
 					end
 					return -1
@@ -114,53 +111,53 @@ function m.prototype.EventListener(self)
 end
 function m.prototype.OnSpellStart(self)
 	local n = self:GetCaster()
-	local r = self:GetCursorPosition()
+	local p = self:GetCursorPosition()
 	n:FadeGesture(ACT_DOTA_ATTACK_EVENT)
-	local q = CalcDirection2D(r, n:GetAbsOrigin())
-	n:SetForwardVector(q)
-	local G = math.min(self:GetSpecialValueFor("distance"), CalcDistance(r, n))
-	local H = self:GetSpecialValueFor("speed")
-	local I = G / H
-	local J = 0
-	n:AddNewModifier(n, self, "modifier_solthra_2_dash", { duration = I })
-	local K = self:GetSpecialValueFor("bouns_duration")
-	if K > 0 then
-		n:AddNewModifier(n, self, "modifier_solthra_2_upgrade_7", { duration = K })
+	local o = CalcDirection2D(p, n:GetAbsOrigin())
+	n:SetForwardVector(o)
+	local E = math.min(self:GetSpecialValueFor("distance"), CalcDistance(p, n))
+	local F = self:GetSpecialValueFor("speed")
+	local G = E / F
+	local H = 0
+	n:AddNewModifier(n, self, "modifier_solthra_2_dash", { duration = G })
+	local I = self:GetSpecialValueFor("bouns_duration")
+	if I > 0 then
+		n:AddNewModifier(n, self, "modifier_solthra_2_upgrade_7", { duration = I })
 	end
-	n:Dash(q, G, J, I)
+	n:Dash(o, E, H, G)
 	n:EmitSound("Hero_EmberSpirit.FireRemnant.Create")
-	local L = self:GetSpecialValueFor("fury_gain")
-	if L > 0 then
-		n:GiveMana(L)
+	local J = self:GetSpecialValueFor("fury_gain")
+	if J > 0 then
+		n:GiveMana(J)
 	end
 end
 m = e({ l(nil) }, m)
-local M = c()
-M.name = "modifier_solthra_2_dash"
-d(M, h)
-function M.prototype.GetAbilitySpecialValue(self)
+local K = c()
+K.name = "modifier_solthra_2_dash"
+d(K, h)
+function K.prototype.GetAbilitySpecialValue(self)
 	self.damage = self:GetAbilitySpecialValueFor("damage")
 end
-function M.prototype.OnCreated(self, N)
-	local O = self:GetParent()
+function K.prototype.OnCreated(self, L)
+	local M = self:GetParent()
 	if IsServer() then
-		local P = self:GetAbility()
+		local N = self:GetAbility()
 		Bullet:CreateCustomBullet({
-			caster = O,
-			spawnOrigin = O:GetAbsOrigin(),
+			caster = M,
+			spawnOrigin = M:GetAbsOrigin(),
 			teamFilter = DOTA_UNIT_TARGET_TEAM_ENEMY,
 			typeFilter = UNIT_AND_BUILDING,
 			radius = 160,
 			lifeTime = self:GetDuration(),
-			PathFunction = function(r, Q)
-				return O:GetAbsOrigin()
+			PathFunction = function(p, O)
+				return M:GetAbsOrigin()
 			end,
-			FuncUnitFinder = function(R, r, S, Q)
+			FuncUnitFinder = function(P, p, Q, O)
 				return FindUnitsInRadius(
-					O:GetTeamNumber(),
-					r,
+					M:GetTeamNumber(),
+					p,
 					nil,
-					S,
+					Q,
 					DOTA_UNIT_TARGET_TEAM_ENEMY,
 					UNIT_AND_BUILDING,
 					DOTA_UNIT_TARGET_FLAG_NONE,
@@ -168,28 +165,28 @@ function M.prototype.OnCreated(self, N)
 					false
 				)
 			end,
-			OnBulletHit = function(T, U, V)
-				O:DealDamage(T, P, self.damage)
+			OnBulletHit = function(R, S, T)
+				M:DealDamage(R, N, self.damage)
 			end,
 		})
 	else
-		local D = ParticleManager:CreateParticle(
+		local B = ParticleManager:CreateParticle(
 			"particles/units/heroes/hero_ember_spirit/ember_spirit_remnant_dash.vpcf",
 			PATTACH_CUSTOMORIGIN,
-			O
+			M
 		)
-		ParticleManager:SetParticleControlEnt(D, 0, O, PATTACH_POINT_FOLLOW, "attach_hitloc", O:GetAbsOrigin(), true)
-		ParticleManager:SetParticleControlEnt(D, 1, O, PATTACH_POINT_FOLLOW, "attach_hitloc", O:GetAbsOrigin(), true)
-		self:AddParticle(D, false, false, -1, false, false)
+		ParticleManager:SetParticleControlEnt(B, 0, M, PATTACH_POINT_FOLLOW, "attach_hitloc", M:GetAbsOrigin(), true)
+		ParticleManager:SetParticleControlEnt(B, 1, M, PATTACH_POINT_FOLLOW, "attach_hitloc", M:GetAbsOrigin(), true)
+		self:AddParticle(B, false, false, -1, false, false)
 	end
 end
-function M.prototype.StaticProperty(self)
+function K.prototype.StaticProperty(self)
 	return { [PropertyFunction.AVOID_DAMAGE] = 1 }
 end
-function M.prototype.StaticState(self)
+function K.prototype.StaticState(self)
 	return { [StateEnum.NO_HEALTH_BAR] = true, [StateEnum.STUN_IMMUNE] = true, [StateEnum.KNOCKBACK_IMMUNE] = true }
 end
-M = e(
+K = e(
 	{
 		i(
 			a,
@@ -203,29 +200,29 @@ M = e(
 			}
 		),
 	},
-	M
+	K
 )
-local W = c()
-W.name = "modifier_solthra_2_upgrade_7"
-d(W, h)
-function W.prototype.GetAbilitySpecialValue(self)
+local U = c()
+U.name = "modifier_solthra_2_upgrade_7"
+d(U, h)
+function U.prototype.GetAbilitySpecialValue(self)
 	self.bouns_count = self:GetAbilitySpecialValueFor("bouns_count")
 	self.bouns_duration = self:GetAbilitySpecialValueFor("bouns_duration")
 end
-function W.prototype.OnCreated(self, N)
+function U.prototype.OnCreated(self, L)
 	if IsServer() then
 		self:AddStackCountDuration(1, self.bouns_duration)
 	end
 end
-function W.prototype.OnRefresh(self, N)
+function U.prototype.OnRefresh(self, L)
 	if IsServer() then
 		self:AddStackCountDuration(1, self.bouns_duration)
 	end
 end
-function W.prototype.StaticProperty(self)
+function U.prototype.StaticProperty(self)
 	return { [PropertyFunction.SPLIT_COUNT] = self.bouns_count * self:GetStackCount() }
 end
-W = e(
+U = e(
 	{
 		i(
 			a,
@@ -239,6 +236,6 @@ W = e(
 			}
 		),
 	},
-	W
+	U
 )
 return f

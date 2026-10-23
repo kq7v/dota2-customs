@@ -3356,4 +3356,4 @@ GameUI.CustomUIConfig().npc_abilities_custom = {
 		"AbilityBehavior": "DOTA_ABILITY_BEHAVIOR_HIDDEN|DOTA_ABILITY_BEHAVIOR_POINT|DOTA_ABILITY_BEHAVIOR_IGNORE_SILENCE",
 		"IsCastableWhileHidden": 1
 	}
-};
+};

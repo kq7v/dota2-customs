@@ -86,4 +86,4 @@ const UpgradeIcon = props => {
   })();
 };
 
-exports.UpgradeIcon = UpgradeIcon;
+exports.UpgradeIcon = UpgradeIcon;

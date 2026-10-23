@@ -234,4 +234,4 @@ GameUI.CustomUIConfig().runes = {
 			"plus_stack_max": 10
 		}
 	}
-};
+};

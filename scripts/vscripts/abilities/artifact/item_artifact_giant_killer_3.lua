@@ -23,9 +23,10 @@ d(j, h)
 function j.prototype.DynamicProperty(self)
 	return {
 		[PropertyFunction.DAMAGE_AMPLIFY] = function(k, l)
-			if l and l.target:IsHealthy() then
+			if IsValid(l and l.target) and l.target:IsHealthy() then
 				return self:GetSpecialValueFor("damage_amp")
 			end
+			return 0
 		end,
 	}
 end

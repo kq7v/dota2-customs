@@ -118,4 +118,4 @@ function HeroLevelMain(props) {
   })();
 }
 
-exports.HeroLevelMain = HeroLevelMain;
+exports.HeroLevelMain = HeroLevelMain;

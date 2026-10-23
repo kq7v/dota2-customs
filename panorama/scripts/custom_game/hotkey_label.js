@@ -90,4 +90,4 @@ const HotkeyLabel = props => {
   })();
 };
 
-exports.HotkeyLabel = HotkeyLabel;
+exports.HotkeyLabel = HotkeyLabel;

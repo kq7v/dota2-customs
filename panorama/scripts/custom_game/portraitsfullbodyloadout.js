@@ -139,4 +139,4 @@ const PortraitsFullBodyLoadout = props => {
   })();
 };
 
-exports.PortraitsFullBodyLoadout = PortraitsFullBodyLoadout;
+exports.PortraitsFullBodyLoadout = PortraitsFullBodyLoadout;

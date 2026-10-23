@@ -109,4 +109,4 @@ exports.GetHuntBuffCatalog = GetHuntBuffCatalog;
 exports.GetHuntBuffData = GetHuntBuffData;
 exports.GetHuntEffectDescription = GetHuntEffectDescription;
 exports.GetHuntEffectName = GetHuntEffectName;
-exports.HuntBuffIcon = HuntBuffIcon;
+exports.HuntBuffIcon = HuntBuffIcon;

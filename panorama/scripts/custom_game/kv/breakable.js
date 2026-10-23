@@ -187,4 +187,4 @@ GameUI.CustomUIConfig().breakable = {
 		"RingRadius": 0,
 		"SpawnModifier": "modifier_secret_gate"
 	}
-};
+};

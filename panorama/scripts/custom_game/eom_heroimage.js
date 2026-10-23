@@ -49,4 +49,4 @@ const EOM_HeroImage = props => {
   })();
 };
 
-exports.EOM_HeroImage = EOM_HeroImage;
+exports.EOM_HeroImage = EOM_HeroImage;

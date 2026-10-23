@@ -226,4 +226,4 @@ teamSelectGlobal.OnAddBot = OnAddBot;
   UpdateTimer();
   $.RegisterForUnhandledEvent("DOTAGame_TeamPlayerListChanged", OnTeamPlayerListChanged);
   $.RegisterForUnhandledEvent("DOTAGame_PlayerSelectedCustomTeam", OnPlayerSelectedTeam);
-})();
+})();

@@ -237,4 +237,4 @@ const ExchangeStore = params => {
 };
 
 exports.EOM_DrawerLayout = EOM_DrawerLayout;
-exports.ExchangeStore = ExchangeStore;
+exports.ExchangeStore = ExchangeStore;

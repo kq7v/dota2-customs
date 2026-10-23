@@ -727,4 +727,4 @@ const DropdownItem = props => {
     }
   });
 };
-libs.render(() => libs.createComponent(MenuBar, {}), $.GetContextPanel());
+libs.render(() => libs.createComponent(MenuBar, {}), $.GetContextPanel());

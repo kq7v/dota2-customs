@@ -163,4 +163,4 @@ const HeroSelectionBar = props => {
   })();
 };
 
-exports.HeroSelectionBar = HeroSelectionBar;
+exports.HeroSelectionBar = HeroSelectionBar;

@@ -102,22 +102,6 @@ function w.prototype.OnPropertyAdded(self, A)
 	local J = self.playerAttributes[G]
 	local K = J.attributes[F]
 	J.attributes[F] = K == nil and C or PropertySystem:AggregatePropertyValues(F, K, C)
-	self:print(
-		(
-			(
-				(
-					(
-						(
-							(
-								(("[HuntSaveArchive] recorded permanent property player=" .. tostring(G)) .. " source=")
-								.. B
-							) .. " property="
-						) .. F
-					) .. " gain="
-				) .. tostring(C)
-			) .. " total="
-		) .. tostring(J.attributes[F])
-	)
 end
 function w.prototype.GetAttributes(self, G)
 	local L = self.playerAttributes
@@ -356,26 +340,6 @@ function w.prototype.ApplySelectedSave(self, G, E, af)
 	end
 	self.restoredSaves[G] = { hero = E, matchID = Match:GetMatchID(), slotID = af }
 	E:UpdateAbilityNetData()
-	self:print(
-		(
-			(
-				(
-					(
-						(
-							(
-								(
-									(
-										(("[HuntSaveArchive] restored player=" .. tostring(G)) .. " slot=")
-										.. tostring(af)
-									) .. " blessings="
-								) .. tostring(an)
-							) .. " artifacts="
-						) .. tostring(ap)
-					) .. " upgrades="
-				) .. tostring(as)
-			) .. " propertyGains="
-		) .. tostring(au)
-	)
 	return true
 end
 function w.prototype.RestoreItemStackCount(self, N, aw)
@@ -388,26 +352,6 @@ function w.prototype.RestoreItemStackCount(self, N, aw)
 	end
 	local ay = N:GetStackCount()
 	N:SetStackCount(ax)
-	self:print(
-		(
-			(
-				(
-					(
-						(
-							(
-								(
-									(
-										"[HuntSaveArchive] restored item stack player="
-										.. tostring(N:GetCaster():GetPlayerOwnerID())
-									) .. " item="
-								) .. N:GetAbilityName()
-							) .. " entity="
-						) .. tostring(N:entindex())
-					) .. " before="
-				) .. tostring(ay)
-			) .. " after="
-		) .. tostring(N:GetStackCount())
-	)
 end
 function w.prototype.SaveSnapshot(self, G, af)
 	local aw = self.playerStates[G]

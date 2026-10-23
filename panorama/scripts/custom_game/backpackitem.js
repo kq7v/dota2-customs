@@ -65,4 +65,4 @@ const BackpackItemContent = props => {
   })();
 };
 
-exports.BackpackItemContent = BackpackItemContent;
+exports.BackpackItemContent = BackpackItemContent;

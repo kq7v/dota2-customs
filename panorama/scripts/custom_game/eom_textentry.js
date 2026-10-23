@@ -72,4 +72,4 @@ const EOM_TextEntry = props => {
   })();
 };
 
-exports.EOM_TextEntry = EOM_TextEntry;
+exports.EOM_TextEntry = EOM_TextEntry;

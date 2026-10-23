@@ -88,4 +88,4 @@ exports.buildRuneAttributeDisplays = buildRuneAttributeDisplays;
 exports.buildRuneBagItems = buildRuneBagItems;
 exports.buildRuneSuitDisplays = buildRuneSuitDisplays;
 exports.getRuneIconPath = getRuneIconPath;
-exports.getRuneSuitIconPath = getRuneSuitIconPath;
+exports.getRuneSuitIconPath = getRuneSuitIconPath;

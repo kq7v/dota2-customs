@@ -170,43 +170,38 @@ n = e(
 	{
 		m(nil, {
 			funcCondition = function(C, y)
-				local S = DungeonManager:GetCurrentRoom()
 				if Demo.force_dash_auto_cast then
 					return Demo:CanForceDefenseAutoCast(y)
 				end
-				local T = y:GetAutoCastState()
-				if T then
-					local U = S and S:IsCombatRoom() and not S:IsCombatEnd() or AbyssalHordeManager:IsRunning()
-					if not U then
-						local V = DungeonAdventure
-						local W = DungeonAdventure.IsPlayerInRunningAdventure
-						local X = y:GetCaster()
-						U = W(V, X and X:GetPlayerOwnerID())
-					end
-					T = U
+				local S = y:GetAutoCastState()
+				if S then
+					local T = GameModeManager
+					local U = GameModeManager.IsAutoCastCombatActive
+					local V = y:GetCaster()
+					S = U(T, V and V:GetPlayerOwnerID())
 				end
-				return T
+				return S
 			end,
 		}),
 	},
 	n
 )
-local Y = c()
-Y.name = "modifier_vexis_3"
-d(Y, h)
-function Y.prototype.GetAbilitySpecialValue(self)
+local W = c()
+W.name = "modifier_vexis_3"
+d(W, h)
+function W.prototype.GetAbilitySpecialValue(self)
 	self.movespeed = self:GetAbilitySpecialValueFor("movespeed")
 end
-function Y.prototype.CheckState(self)
+function W.prototype.CheckState(self)
 	return { [MODIFIER_STATE_DISARMED] = true, [MODIFIER_STATE_NO_UNIT_COLLISION] = true }
 end
-function Y.prototype.StaticProperty(self)
+function W.prototype.StaticProperty(self)
 	return { [PropertyFunction.MOVESPEED_NOT_CALCULATED] = 1200, [PropertyFunction.AVOID_DAMAGE] = 1 }
 end
-function Y.prototype.StaticState(self)
+function W.prototype.StaticState(self)
 	return { [StateEnum.NO_HEALTH_BAR] = true, [StateEnum.STUN_IMMUNE] = true, [StateEnum.KNOCKBACK_IMMUNE] = true }
 end
-Y = e(
+W = e(
 	{
 		i(
 			a,
@@ -220,6 +215,6 @@ Y = e(
 			}
 		),
 	},
-	Y
+	W
 )
 return f

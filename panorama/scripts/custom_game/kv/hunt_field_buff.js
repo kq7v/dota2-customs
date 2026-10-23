@@ -99,4 +99,4 @@ GameUI.CustomUIConfig().hunt_field_buff = {
 		"EffectParams": "Interval:7|TrackTime:1|Radius:400|WarningTime:1.5|DamagePct:20|Duration:5|TickInterval:0.1|TickDamagePct:1",
 		"AbilityTextureName": "zuus_cloud"
 	}
-};
+};

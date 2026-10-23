@@ -107,4 +107,4 @@ GameUI.CustomUIConfig().potion = {
 			"value": 10
 		}
 	}
-};
+};

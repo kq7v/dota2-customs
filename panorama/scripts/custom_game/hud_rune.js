@@ -4863,4 +4863,4 @@ function HudRune() {
     }
   });
 }
-libs.render(() => libs.createComponent(HudRune, {}), $.GetContextPanel());
+libs.render(() => libs.createComponent(HudRune, {}), $.GetContextPanel());

@@ -1418,4 +1418,4 @@ function SafeParseJson(raw, fallback) {
     return fallback;
   }
 }
-libs.render(() => libs.createComponent(GemSettlementHud, {}), $.GetContextPanel());
+libs.render(() => libs.createComponent(GemSettlementHud, {}), $.GetContextPanel());

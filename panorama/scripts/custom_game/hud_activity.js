@@ -10334,4 +10334,4 @@ function ActivityRoot() {
     }
   });
 }
-libs.render(() => libs.createComponent(ActivityRoot, {}), $.GetContextPanel());
+libs.render(() => libs.createComponent(ActivityRoot, {}), $.GetContextPanel());

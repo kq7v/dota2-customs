@@ -23,4 +23,4 @@ GameUI.CustomUIConfig().bless_excludefromrandom_readme = {
 	"ExcludeFromRandom": 1,
 	"Access": "Bless",
 	"AbilityBehavior": "DOTA_ABILITY_BEHAVIOR_PASSIVE"
-};
+};

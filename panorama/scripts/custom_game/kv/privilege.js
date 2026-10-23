@@ -2364,4 +2364,4 @@ GameUI.CustomUIConfig().privilege = {
 		"Note": "存档-宝石：每颗宝石的前2次强化，必定获得1条随机副词条",
 		"IsNoScript": 1
 	}
-};
+};

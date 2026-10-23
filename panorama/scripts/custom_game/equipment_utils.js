@@ -283,4 +283,4 @@ exports.HeroID2Name = HeroID2Name;
 exports.MAX_EQUIPMENT_RARITY = MAX_EQUIPMENT_RARITY;
 exports.ParseEquipment = ParseEquipment;
 exports.ShowServerEquipTooltip = ShowServerEquipTooltip;
-exports.ShowServerGemTooltip = ShowServerGemTooltip;
+exports.ShowServerGemTooltip = ShowServerGemTooltip;

@@ -86,4 +86,4 @@ function Huntloot(props) {
   })();
 }
 
-exports.Huntloot = Huntloot;
+exports.Huntloot = Huntloot;

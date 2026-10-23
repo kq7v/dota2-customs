@@ -3118,4 +3118,4 @@ const DiffSelection = () => {
     return _el$;
   })();
 };
-libs.render(() => libs.createComponent(DiffSelection, {}), $.GetContextPanel());
+libs.render(() => libs.createComponent(DiffSelection, {}), $.GetContextPanel());

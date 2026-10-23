@@ -3376,4 +3376,4 @@ function Book() {
     }
   });
 }
-libs.render(() => libs.createComponent(Book, {}), $.GetContextPanel());
+libs.render(() => libs.createComponent(Book, {}), $.GetContextPanel());

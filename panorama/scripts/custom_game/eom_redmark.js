@@ -57,4 +57,4 @@ const EOM_RedMark = props => {
   })();
 };
 
-exports.EOM_RedMark = EOM_RedMark;
+exports.EOM_RedMark = EOM_RedMark;

@@ -125,4 +125,4 @@ GameUI.CustomUIConfig().hunt_field = {
 		"CombatClassDefend": "DOTA_COMBAT_CLASS_DEFEND_HERO",
 		"BehaviorTree": "range_attack"
 	}
-};
+};

@@ -122,4 +122,4 @@ function Root() {
     }
   });
 }
-libs.render(() => libs.createComponent(Root, {}), $.GetContextPanel());
+libs.render(() => libs.createComponent(Root, {}), $.GetContextPanel());

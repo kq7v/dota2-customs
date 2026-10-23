@@ -323,4 +323,4 @@ GameUI.CustomUIConfig().summon = {
 		"HealthBarOffset": 200,
 		"UnitLabel": "Summon"
 	}
-};
+};

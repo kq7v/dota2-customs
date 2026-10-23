@@ -258,4 +258,4 @@ function CourierExploreOverhead() {
     return _el$9;
   })();
 }
-libs.render(CourierExploreOverhead, $.GetContextPanel());
+libs.render(CourierExploreOverhead, $.GetContextPanel());

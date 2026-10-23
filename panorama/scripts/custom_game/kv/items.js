@@ -2957,4 +2957,4 @@ GameUI.CustomUIConfig().items = {
 			"duration": 3
 		}
 	}
-};
+};

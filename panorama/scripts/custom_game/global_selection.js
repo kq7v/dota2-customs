@@ -128,4 +128,4 @@ function createPreviewCourierIDSignal(defaultCourierID = "600001") {
 exports.createPreviewCourierIDSignal = createPreviewCourierIDSignal;
 exports.createPreviewHeroNameSignal = createPreviewHeroNameSignal;
 exports.createPreviewWeaponIDSignal = createPreviewWeaponIDSignal;
-exports.formatDateText = formatDateText;
+exports.formatDateText = formatDateText;

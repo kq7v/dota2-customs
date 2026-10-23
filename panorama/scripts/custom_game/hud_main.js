@@ -4456,6 +4456,10 @@ const UpgradeSelection = () => {
     }
   });
   useClientSideEvent("key_pressed", data => {
+    if (data.keyFunction === KeyFunction.Upgrade) {
+      GameEvents.SendCustomGameEventToServer("toggle_skill_upgrade_selection", {});
+      return;
+    }
     if (multiChoiceState().active_type !== "SkillUpgrade" || selectableCount() <= 0) {
       return;
     }
@@ -4463,10 +4467,6 @@ const UpgradeSelection = () => {
     if (optionIndex >= 0) {
       const option = selection().options[optionIndex];
       if (option !== undefined) handleSelectUpgrade(option.id);
-      return;
-    }
-    if (data.keyFunction == "upgrade") {
-      GameEvents.SendCustomGameEventToServer("toggle_skill_upgrade_selection", {});
       return;
     }
     if (data.keyFunction == KeyFunction.OptionUp) {
@@ -4960,4 +4960,4 @@ function ReportPing() {
     pHud.SetHasClass("ShowStoreContent", open_store().value);
   });
 })();
-libs.render(HudMain, $.GetContextPanel());
+libs.render(HudMain, $.GetContextPanel());

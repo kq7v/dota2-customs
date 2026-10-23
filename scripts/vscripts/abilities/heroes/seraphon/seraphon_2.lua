@@ -26,129 +26,126 @@ d(m, k)
 function m.prototype.OnCreated(self)
 	local n = self:GetCaster()
 	self:StartThink(0, function()
-		local o = DungeonManager:GetCurrentRoom()
-		local p = DungeonAdventure:IsPlayerInRunningAdventure(n:GetPlayerOwnerID())
 		if
 			self:IsCooldownReady()
 			and (
 				Demo.force_dash_auto_cast
-				or self:GetAutoCastState()
-					and (o and o:IsCombatRoom() and not o:IsCombatEnd() or AbyssalHordeManager:IsRunning() or p)
+				or self:GetAutoCastState() and GameModeManager:IsAutoCastCombatActive(n:GetPlayerOwnerID())
 			)
 		then
 			if Demo.force_dash_auto_cast and not Demo:CanForceDashAutoCast(n) then
 				return
 			end
-			local q = Demo.force_dash_auto_cast and Demo:GetForceDashDirection(n, self)
+			local o = Demo.force_dash_auto_cast and Demo:GetForceDashDirection(n, self)
 				or Controller:GetInputDirection(n)
-			if VectorIsZero(q) then
-				q = n:GetForwardVector()
+			if VectorIsZero(o) then
+				o = n:GetForwardVector()
 			end
-			self:OnController(n:GetAbsOrigin() + q * self:GetSpecialValueFor("distance"), q)
+			self:OnController(n:GetAbsOrigin() + o * self:GetSpecialValueFor("distance"), o)
 			if Demo.force_dash_auto_cast then
 				Demo:MarkForceDashAutoCast(n)
 			end
 		end
 	end)
 end
-function m.prototype.OnController(self, r, q)
+function m.prototype.OnController(self, p, o)
 	local n = self:GetCaster()
-	if r == nil then
-		r = n:GetAbsOrigin() + q * self:GetSpecialValueFor("distance")
+	if p == nil then
+		p = n:GetAbsOrigin() + o * self:GetSpecialValueFor("distance")
 	end
-	n:ExecuteOrder(DOTA_UNIT_ORDER_CAST_POSITION, self, r)
+	n:ExecuteOrder(DOTA_UNIT_ORDER_CAST_POSITION, self, p)
 end
-function m.prototype.GetCooldown(self, s)
-	return math.max(k.prototype.GetCooldown(self, s) - self:GetSpecialValueFor("cooldown_reduction"), 0)
+function m.prototype.GetCooldown(self, q)
+	return math.max(k.prototype.GetCooldown(self, q) - self:GetSpecialValueFor("cooldown_reduction"), 0)
 end
 function m.prototype.GetCastCooldown(self)
 	return self:GetSpecialValueFor("duration")
 end
 function m.prototype.OnSpellStart(self)
 	local n = self:GetCaster()
-	local r = self:GetCursorPosition()
+	local p = self:GetCursorPosition()
 	if not n:HasModifier("modifier_seraphon_3") then
 		n:StartGestureWithPlaybackRate(ACT_DOTA_CAST_ABILITY_2, 1)
 	end
-	local q = CalcDirection2D(r, n:GetAbsOrigin())
-	n:SetForwardVector(q)
-	local t = math.min(self:GetSpecialValueFor("distance"), CalcDistance(r, n))
-	local u = self:GetSpecialValueFor("duration")
-	local v = 0
-	n:AddNewModifier(n, self, "modifier_seraphon_2_dash", { duration = u })
-	n:Dash(q, t, v, u)
+	local o = CalcDirection2D(p, n:GetAbsOrigin())
+	n:SetForwardVector(o)
+	local r = math.min(self:GetSpecialValueFor("distance"), CalcDistance(p, n))
+	local s = self:GetSpecialValueFor("duration")
+	local t = 0
+	n:AddNewModifier(n, self, "modifier_seraphon_2_dash", { duration = s })
+	n:Dash(o, r, t, s)
 end
 m = e({ l(nil) }, m)
-local w = c()
-w.name = "modifier_seraphon_2_dash"
-d(w, h)
-function w.prototype.GetAbilitySpecialValue(self)
+local u = c()
+u.name = "modifier_seraphon_2_dash"
+d(u, h)
+function u.prototype.GetAbilitySpecialValue(self)
 	self.distance = self:GetAbilitySpecialValueFor("distance")
 	self.knockback = self:GetAbilitySpecialValueFor("knockback")
 	self.damage = self:GetAbilitySpecialValueFor("damage")
 end
-function w.prototype.OnCreated(self, x)
-	local y = self:GetParent()
+function u.prototype.OnCreated(self, v)
+	local w = self:GetParent()
 	if IsServer() then
-		local z = self:GetAbility()
-		y:EmitSound("Hero_DragonKnight.ElderDragonShoot3.Attack")
+		local x = self:GetAbility()
+		w:EmitSound("Hero_DragonKnight.ElderDragonShoot3.Attack")
 		Bullet:CreateCustomBullet({
-			caster = y,
-			spawnOrigin = y:GetAbsOrigin(),
+			caster = w,
+			spawnOrigin = w:GetAbsOrigin(),
 			teamFilter = DOTA_UNIT_TARGET_TEAM_ENEMY,
 			typeFilter = DOTA_UNIT_TARGET_HEROES_AND_CREEPS,
 			radius = 120,
 			lifeTime = self:GetDuration(),
-			PathFunction = function(r, A)
-				return y:GetAbsOrigin()
+			PathFunction = function(p, y)
+				return w:GetAbsOrigin()
 			end,
-			ParticleCreator = function(A)
-				local B = ParticleManager:CreateParticle(
+			ParticleCreator = function(y)
+				local z = ParticleManager:CreateParticle(
 					"particles/mushi_fx/mushi_fx_chongci_01.vpcf",
 					PATTACH_CUSTOMORIGIN,
-					y
+					w
 				)
-				ParticleManager:SetParticleControl(B, 0, y:GetAttachmentPosition("attach_hitloc"))
-				ParticleManager:SetParticleControl(B, 1, y:GetAttachmentPosition("attach_hitloc"))
+				ParticleManager:SetParticleControl(z, 0, w:GetAttachmentPosition("attach_hitloc"))
+				ParticleManager:SetParticleControl(z, 1, w:GetAttachmentPosition("attach_hitloc"))
 				ParticleManager:SetParticleControlEnt(
-					B,
+					z,
 					1,
-					y,
+					w,
 					PATTACH_POINT_FOLLOW,
 					"attach_hitloc",
-					y:GetAbsOrigin(),
+					w:GetAbsOrigin(),
 					true
 				)
-				ParticleManager:SetParticleControl(B, 2, Vector(2000, 0, 0))
-				return B
+				ParticleManager:SetParticleControl(z, 2, Vector(2000, 0, 0))
+				return z
 			end,
-			FuncUnitFinder = function(C, r, D, A)
-				return Bullet:FindUnitInLine(A.__teamNumber, C, r, D, D, A.teamFilter, A.typeFilter, A.flagFilter)
+			FuncUnitFinder = function(A, p, B, y)
+				return Bullet:FindUnitInLine(y.__teamNumber, A, p, B, B, y.teamFilter, y.typeFilter, y.flagFilter)
 			end,
-			OnBulletHit = function(E, F, A)
-				local G = y:GetForwardVector()
-				local H = AbilityUpgrade:HasAbilityUpgrade(y, "seraphon_upgrade_12")
-				y:EmitSound("Hero_DragonKnight.DragonTail.DragonFormCast")
-				y:DealDamage(E, z, self.damage)
-				E:KnockBack(G, not H and self.knockback or self.distance * A.__lifeTimeRemaining / A.lifeTime, 100, 0.3)
-				if not H and IsValid(self) then
+			OnBulletHit = function(C, D, y)
+				local E = w:GetForwardVector()
+				local F = AbilityUpgrade:HasAbilityUpgrade(w, "seraphon_upgrade_12")
+				w:EmitSound("Hero_DragonKnight.DragonTail.DragonFormCast")
+				w:DealDamage(C, x, self.damage)
+				C:KnockBack(E, not F and self.knockback or self.distance * y.__lifeTimeRemaining / y.lifeTime, 100, 0.3)
+				if not F and IsValid(self) then
 					self:Destroy()
 				end
-				if not H then
-					y:RemoveModifierByName("modifier_dash")
+				if not F then
+					w:RemoveModifierByName("modifier_dash")
 				end
 			end,
 		})
 	else
 	end
 end
-function w.prototype.StaticProperty(self)
+function u.prototype.StaticProperty(self)
 	return { [PropertyFunction.AVOID_DAMAGE] = 1 }
 end
-function w.prototype.StaticState(self)
+function u.prototype.StaticState(self)
 	return { [StateEnum.NO_HEALTH_BAR] = true, [StateEnum.STUN_IMMUNE] = true, [StateEnum.KNOCKBACK_IMMUNE] = true }
 end
-w = e(
+u = e(
 	{
 		i(
 			a,
@@ -162,6 +159,6 @@ w = e(
 			}
 		),
 	},
-	w
+	u
 )
 return f

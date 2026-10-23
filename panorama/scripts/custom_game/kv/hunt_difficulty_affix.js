@@ -25,4 +25,4 @@ GameUI.CustomUIConfig().hunt_difficulty_affix = {
 		"FixedAffixes": "potion:4|heavy:4|freeze:4|calm:4",
 		"FieldBuffCount": 3
 	}
-};
+};

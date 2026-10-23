@@ -1206,4 +1206,4 @@ function ArenaHud() {
     }
   });
 }
-libs.render(() => libs.createComponent(ArenaHud, {}), $.GetContextPanel());
+libs.render(() => libs.createComponent(ArenaHud, {}), $.GetContextPanel());

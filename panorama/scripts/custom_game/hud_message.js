@@ -755,4 +755,4 @@ function getLocalChoice(data, playerID) {
     return "rejected";
   }
   return "pending";
-}
+}

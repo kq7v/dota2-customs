@@ -19,4 +19,4 @@ function normalizeDisplayNumber(value) {
   return Number(value.toPrecision(12));
 }
 
-exports.normalizeDisplayNumber = normalizeDisplayNumber;
+exports.normalizeDisplayNumber = normalizeDisplayNumber;

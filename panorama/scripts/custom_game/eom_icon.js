@@ -44,4 +44,4 @@ const EOM_Icon = props => {
   })();
 };
 
-exports.EOM_Icon = EOM_Icon;
+exports.EOM_Icon = EOM_Icon;

@@ -43,4 +43,4 @@ exports.getDigVeinsTaskState = getDigVeinsTaskState;
 exports.hasClaimableDigVeinsTask = hasClaimableDigVeinsTask;
 exports.isDigVeinsTask = isDigVeinsTask;
 exports.isDigVeinsTaskActive = isDigVeinsTaskActive;
-exports.isDigVeinsTaskClaimable = isDigVeinsTaskClaimable;
+exports.isDigVeinsTaskClaimable = isDigVeinsTaskClaimable;

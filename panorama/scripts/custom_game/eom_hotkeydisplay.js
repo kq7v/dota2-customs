@@ -77,4 +77,4 @@ const EOM_HotKeyDisplay = rawProps => {
   })();
 };
 
-exports.EOM_HotKeyDisplay = EOM_HotKeyDisplay;
+exports.EOM_HotKeyDisplay = EOM_HotKeyDisplay;

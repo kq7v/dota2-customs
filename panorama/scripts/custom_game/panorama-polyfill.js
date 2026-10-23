@@ -4243,4 +4243,4 @@ var PROPERTY_UI_ATTACK_GROUPS = {
         "bonus_lightning_damage",
         "bonus_bleed_damage",
     ],
-};
+};

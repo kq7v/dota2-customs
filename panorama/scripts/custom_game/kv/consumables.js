@@ -626,4 +626,4 @@ GameUI.CustomUIConfig().consumables = {
 			}
 		}
 	}
-};
+};

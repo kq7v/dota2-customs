@@ -2335,4 +2335,4 @@ GameUI.CustomUIConfig().bless = {
 		},
 		"ExcludeFromRandom": 1
 	}
-};
+};

@@ -1839,4 +1839,4 @@ function DamageCounterHUD() {
     }
   });
 }
-libs.render(() => libs.createComponent(DamageCounterHUD, {}), $.GetContextPanel());
+libs.render(() => libs.createComponent(DamageCounterHUD, {}), $.GetContextPanel());

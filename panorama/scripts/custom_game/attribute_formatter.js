@@ -78,4 +78,4 @@ function formatAttributeDisplay(data, options) {
 }
 
 exports.formatAttributeDisplay = formatAttributeDisplay;
-exports.formatAttributeNameHtml = formatAttributeNameHtml;
+exports.formatAttributeNameHtml = formatAttributeNameHtml;

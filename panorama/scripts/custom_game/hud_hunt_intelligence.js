@@ -176,4 +176,4 @@ const HuntIntelligenceHud = () => {
     }
   });
 };
-libs.render(() => libs.createComponent(HuntIntelligenceHud, {}), $.GetContextPanel());
+libs.render(() => libs.createComponent(HuntIntelligenceHud, {}), $.GetContextPanel());

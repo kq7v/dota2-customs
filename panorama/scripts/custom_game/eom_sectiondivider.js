@@ -37,4 +37,4 @@ function EOM_SectionDivider(props) {
   })();
 }
 
-exports.EOM_SectionDivider = EOM_SectionDivider;
+exports.EOM_SectionDivider = EOM_SectionDivider;

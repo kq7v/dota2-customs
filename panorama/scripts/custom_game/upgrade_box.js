@@ -72,4 +72,4 @@ const UpgradeBox = props => {
   })();
 };
 
-exports.UpgradeBox = UpgradeBox;
+exports.UpgradeBox = UpgradeBox;

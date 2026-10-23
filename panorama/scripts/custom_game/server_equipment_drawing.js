@@ -144,4 +144,4 @@ function EquipmentDrawingItem(props) {
   })();
 }
 
-exports.EquipmentDrawingItem = EquipmentDrawingItem;
+exports.EquipmentDrawingItem = EquipmentDrawingItem;

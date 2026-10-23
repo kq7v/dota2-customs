@@ -88,4 +88,4 @@ exports.isDiceTaskClaimable = isDiceTaskClaimable;
 exports.refreshMiningActivityRedPoint = refreshMiningActivityRedPoint;
 exports.setRedPoint = setRedPoint;
 exports.setRedPointBatch = setRedPointBatch;
-exports.useMiningActivityRedPoints = useMiningActivityRedPoints;
+exports.useMiningActivityRedPoints = useMiningActivityRedPoints;

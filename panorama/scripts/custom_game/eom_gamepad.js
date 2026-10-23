@@ -121,4 +121,4 @@ const EOM_GamePad = rawProps => {
   })();
 };
 
-exports.EOM_GamePad = EOM_GamePad;
+exports.EOM_GamePad = EOM_GamePad;
