@@ -49,6 +49,7 @@ return {
 	"item_spirit_vessel_custom",
 	"item_sphere_custom",
 	"item_spell_breaker",
+	"item_mage_slayer_custom",
 	"item_solar_crest_custom",
 	"item_silver_edge_custom",
 	"item_invis_sword_custom",

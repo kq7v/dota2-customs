@@ -114,8 +114,8 @@ function muerta_gunslinger_custom:UpdateTalents(name)
 			e1_duration = caster:GetTalentValue("modifier_muerta_gun_1", "duration", true),
 			e1_max = caster:GetTalentValue("modifier_muerta_gun_1", "max", true),
 
-			has_e2 = 0,
 			e2_chance = 0,
+			e2_heal = 0,
 
 			has_e3 = 0,
 			e3_crit = 0,
@@ -157,8 +157,9 @@ function muerta_gunslinger_custom:UpdateTalents(name)
 	end
 
 	if caster:HasTalent("modifier_muerta_gun_2") then
-		self.talents.has_e2 = 1
 		self.talents.e2_chance = caster:GetTalentValue("modifier_muerta_gun_2", "chance")
+		self.talents.e2_heal = caster:GetTalentValue("modifier_muerta_gun_2", "heal") / 100
+		caster:AddLifesteal(self.tracker, { name = "modifier_muerta_gun_2", type = 2, value = self.talents.e2_heal })
 	end
 
 	if caster:HasTalent("modifier_muerta_gun_3") then
@@ -298,6 +299,7 @@ function modifier_muerta_gunslinger_custom:OnCreated()
 	end
 	self.parent:AddAttackRecordEvent_out(self)
 	self.parent:AddAttackStartEvent_out(self)
+	self.proc = self.parent:AddProc(self, { current = true })
 
 	self.proj_data = {
 		[DOTA_PROJECTILE_ATTACHMENT_ATTACK_1] = "particles/units/heroes/hero_muerta/muerta_base_attack_alt.vpcf",
@@ -314,6 +316,17 @@ end
 
 function modifier_muerta_gunslinger_custom:OnRefresh()
 	self.ability.double_shot_chance = self.ability:GetSpecialValueFor("double_shot_chance")
+end
+
+function modifier_muerta_gunslinger_custom:GetProcChance(params)
+	if self.parent:PassivesDisabled() then
+		return 0
+	end
+	if self.parent:HasModifier("modifier_muerta_gunslinger_custom_legendary_attack") then
+		return 100
+	end
+	return (self.ability.double_shot_chance + self.ability.talents.e2_chance)
+		* (params.target:IsCreep() and self.ability.creeps or 1)
 end
 
 function modifier_muerta_gunslinger_custom:AttackRecordEvent_out(params)
@@ -336,16 +349,14 @@ function modifier_muerta_gunslinger_custom:AttackRecordEvent_out(params)
 
 	self.parent:FadeGesture(ACT_DOTA_CAST_ABILITY_3)
 
+	if not self.proc or not self.proc.armed then
+		return
+	end
+
+	self.double_attack = 1
 	if self.parent:HasModifier("modifier_muerta_gunslinger_custom_legendary_attack") then
 		self.double_attack = 2
 		self.parent:RemoveModifierByName("modifier_muerta_gunslinger_custom_legendary_attack")
-	else
-		local chance = (self.ability.double_shot_chance + self.ability.talents.e2_chance)
-			* (target:IsCreep() and self.ability.creeps or 1)
-		if not RollPseudoRandomPercentage(chance, 832, self.parent) then
-			return
-		end
-		self.double_attack = 1
 	end
 
 	self.parent:StartGestureWithPlaybackRate(ACT_DOTA_CAST_ABILITY_3, self.parent:GetAttackSpeed(true))

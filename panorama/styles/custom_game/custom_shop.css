@@ -1,0 +1,34 @@
+--[[
+  ~ dumper · customs · dota2
+  ~ credits: rou (a.k.a internetenemy), qfun(a.k.a qfun_g9s)
+  ~ special for t.me/wildguild
+
+  ~ build 1a5b3bb 
+  ~ auto-generated — do not edit
+]]
+
+
+/* Prettified by Source 2 Viewer 20.1.0.0 - https://valveresourceformat.github.io */
+
+.CustomBasherBadge
+{
+	width: 18px;
+	height: 18px;
+	horizontal-align: right;
+	vertical-align: top;
+	margin-top: 2px;
+	margin-right: 2px;
+	border: 1.2px solid #ff3b3b;
+	border-radius: 50%;
+	background-color: #520707;
+}
+
+.CustomBasherBadge .CustomBasherBadgeText
+{
+	horizontal-align: center;
+	vertical-align: center;
+	font-family: Radiance;
+	font-size: 14px;
+	font-weight: bold;
+	color: #ff3b3b;
+}

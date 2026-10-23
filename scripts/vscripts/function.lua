@@ -305,6 +305,12 @@ function CDOTA_BaseNPC:RemoveTalent(talent)
 		talent_increase_functions[player_id][talent] = nil
 	end
 
+	if self.lifesteal_mods then
+		for _, list in pairs(self.lifesteal_mods) do
+			list[talent] = nil
+		end
+	end
+
 	if self:HasModifier(talent) then
 		self:RemoveModifierByName(talent)
 	end
@@ -1413,7 +1419,7 @@ end
 function CDOTA_BaseNPC:GetArmor(check_mod)
 	local result = self:GetPhysicalArmorBaseValue()
 	for _, mod in pairs(self:FindAllModifiers()) do
-		if mod ~= check_mod and mod.GetModifierPhysicalArmorBonus then
+		if mod ~= check_mod and not mod.is_hub and mod.GetModifierPhysicalArmorBonus then
 			local armor = mod:GetModifierPhysicalArmorBonus()
 			if armor and armor > 0 then
 				result = result + armor
@@ -1614,14 +1620,20 @@ function CDOTA_BaseNPC:CanLifesteal(target)
 	return result
 end
 
-function CDOTA_BaseNPC:CheckLifesteal(params, type, ignore_attacker)
+function CDOTA_BaseNPC:CheckLifesteal(params, type, ignore_attacker, ignore_alive)
 	if params.attacker ~= self and not ignore_attacker then
 		return false
 	end
-	if not self:IsAlive() or self == params.unit or self:GetHealth() <= 0.5 then
+	if self == params.unit then
+		return
+	end
+	if not ignore_alive and (not self:IsAlive() or self:GetHealth() <= 0.5) then
 		return
 	end
 	if not params.unit:IsUnit() or params.unit:IsIllusion() then
+		return false
+	end
+	if params.unit:GetTeamNumber() == self:GetTeamNumber() then
 		return false
 	end
 	if
@@ -1637,18 +1649,151 @@ function CDOTA_BaseNPC:CheckLifesteal(params, type, ignore_attacker)
 		if type == 1 and not inflictor then
 			return false
 		end
-		if
-			type == 2
-			and inflictor
-			and inflictor:GetName() ~= "muerta_pierce_the_veil_custom"
-			and not inflictor.attack_lifesteal
-		then
+		if type == 2 and inflictor and not inflictor.attack_lifesteal then
 			return false
 		end
 	end
 
 	local result = params.unit:IsCreep() and LIFESTEAL_CREEPS_CUSTOM or 1
 	return result
+end
+
+function CDOTA_BaseNPC:AddLifesteal(mod, data)
+	if not IsValid(mod) then
+		return
+	end
+	if self:IsIllusion() and not data.illusion then
+		return
+	end
+	if not self.lifesteal_mods then
+		self.lifesteal_mods = {}
+		self.lifesteal_groups = { {}, {} }
+	end
+	if not self.lifesteal_mods[mod] then
+		self.lifesteal_mods[mod] = {}
+	end
+
+	data.ability = data.ability or mod:GetAbility()
+	data.amount = 0
+	self.lifesteal_mods[mod][data.name or data.heal_unit or ""] = data
+end
+
+function CDOTA_BaseNPC:Lifesteal(params)
+	if not self.lifesteal_mods then
+		return 0
+	end
+
+	local result = 1
+	if not params.dry then
+		result = self:CheckLifesteal(params, nil, true, true)
+		if not result then
+			return
+		end
+	end
+
+	local inflictor = params.inflictor
+	local attack = not inflictor or inflictor.attack_lifesteal
+
+	for _, group in pairs(self.lifesteal_groups) do
+		group.unit = nil
+		group.total = 0
+		group.ability = nil
+		group.text = false
+		group.effect = false
+		group.custom = nil
+		group.custom_amount = 0
+	end
+
+	for mod, list in pairs(self.lifesteal_mods) do
+		if IsValid(mod) then
+			for name, data in pairs(list) do
+				data.amount = 0
+				if data.delete and data.delete() then
+					list[name] = nil
+				elseif
+					(not params.dry or data.heal ~= false)
+					and (not data.type or (data.type == 1 and inflictor) or (data.type == 2 and attack))
+				then
+					local value = data.value
+					local hit_effect = nil
+					local hit_text = nil
+					if type(value) == "function" then
+						value, hit_effect, hit_text = value(params)
+					end
+					if hit_effect == nil then
+						hit_effect = data.effect
+					end
+					if hit_text == nil then
+						hit_text = data.text
+					end
+					data.amount = value * result
+					if data.amount > 0 then
+						local group = self.lifesteal_groups[data.heal_unit and 2 or 1]
+						group.unit = data.heal_unit or self
+						if data.heal ~= false then
+							group.total = group.total + data.amount
+							group.ability = group.ability or data.ability
+							group.text = group.text or hit_text == true
+							group.effect = group.effect or hit_effect ~= false
+							if type(hit_effect) == "string" and data.amount > group.custom_amount then
+								group.custom = hit_effect
+								group.custom_amount = data.amount
+							end
+						end
+					end
+				end
+			end
+		else
+			self.lifesteal_mods[mod] = nil
+		end
+	end
+
+	if not next(self.lifesteal_mods) then
+		self.lifesteal_mods = nil
+		return 0
+	end
+
+	if params.dry then
+		return self.lifesteal_groups[1].total
+	end
+
+	for _, group in pairs(self.lifesteal_groups) do
+		group.alive = IsValid(group.unit) and group.unit:IsAlive() and group.unit:GetHealth() > 0.5
+		group.real_heal = 0
+		if group.alive and group.total > 0 then
+			local particle = ""
+			if group.custom then
+				particle = group.custom
+			elseif group.effect then
+				particle = inflictor and "particles/items3_fx/octarine_core_lifesteal.vpcf"
+					or "particles/generic_gameplay/generic_lifesteal.vpcf"
+			end
+			group.real_heal =
+				group.unit:GenericHeal(params.damage * group.total, group.ability, not group.text, particle, nil, true)
+		end
+		group.stats = group.real_heal >= 1
+			and group.unit:IsRealHero()
+			and not group.unit:IsTempestDouble()
+			and IsValid(dota1x6.event_thinker_mod)
+	end
+
+	for mod, list in pairs(self.lifesteal_mods) do
+		for _, data in pairs(list) do
+			if data.amount > 0 then
+				local group = self.lifesteal_groups[data.heal_unit and 2 or 1]
+				local amount = 0
+				if data.heal ~= false then
+					amount = math.floor(group.real_heal * data.amount / group.total)
+				end
+				if group.alive and data.proc then
+					mod[data.proc](mod, params, params.damage * data.amount, group.unit, amount, result)
+				end
+				if group.stats and amount >= 1 then
+					dota1x6.event_thinker_mod:HealingTableCount(group.unit, amount, data.name, data.ability, "healing")
+				end
+			end
+		end
+	end
 end
 
 function CDOTA_BaseNPC:CanTeleport()
@@ -1846,6 +1991,7 @@ function CDOTA_BaseNPC:SendNumber(type, number)
 		[113] = "particles/phantom_assassin/phantom_proc_number.vpcf",
 		[114] = "particles/primal_beast/trample_crit_number.vpcf",
 		[115] = "particles/items4_fx/serrated_shiv_numbers.vpcf",
+		[116] = "particles/puck/orb_legendary_number.vpcf",
 	}
 
 	if type_table[type] then
@@ -1869,7 +2015,82 @@ function CDOTA_BaseNPC:SendNumber(type, number)
 	SendOverheadEventMessage(player, type, self, real_number, nil)
 end
 
-function CDOTA_BaseNPC:GenericHeal(heal, ability, no_text, effect, talent_name)
+function CDOTA_BaseNPC:GetHealChange()
+	local heal_change = 1
+	for mod, bkb in pairs(self.heal_reduce_mods) do
+		if IsValid(mod) and mod.GetModifierHealChange then
+			local result = mod:GetModifierHealChange()
+			if result and (bkb == 1 or not self:IsDebuffImmune() or result > 0) then
+				heal_change = heal_change * (1 + result / 100)
+			end
+		else
+			self.heal_reduce_mods[mod] = nil
+		end
+	end
+
+	return heal_change
+end
+
+function CDOTA_BaseNPC:GetItemDamage()
+	local item_damage = 0
+	for mod in pairs(self.item_damage_mods) do
+		if IsValid(mod) then
+			item_damage = item_damage + (mod:GetItemDamage() or 0)
+		else
+			self.item_damage_mods[mod] = nil
+		end
+	end
+
+	return item_damage
+end
+
+function CDOTA_BaseNPC:GetCritDamageBonus()
+	local crit_bonus = 0
+	for mod in pairs(self.crit_damage_mods) do
+		if IsValid(mod) then
+			crit_bonus = math.max(crit_bonus, mod:GetCritDamageBonus() or 0)
+		else
+			self.crit_damage_mods[mod] = nil
+		end
+	end
+
+	return crit_bonus
+end
+
+function CDOTA_BaseNPC:AddUniqueStat(mod, ...)
+	if not self.unique_stats then
+		self.unique_stats = {}
+	end
+	for _, name in pairs({ ... }) do
+		if not self.unique_stats[name] then
+			self.unique_stats[name] = {}
+		end
+		self.unique_stats[name][mod] = true
+	end
+end
+
+function CDOTA_BaseNPC:UniqueStat(mod, name)
+	local best
+	local best_value = 0
+	for item_mod in pairs(self.unique_stats[name]) do
+		if IsValid(item_mod) then
+			local value = item_mod:GetUniqueStat(name) or 0
+			if value > best_value then
+				best = item_mod
+				best_value = value
+			end
+		else
+			self.unique_stats[name][item_mod] = nil
+		end
+	end
+
+	if best ~= mod then
+		return
+	end
+	return best_value
+end
+
+function CDOTA_BaseNPC:GenericHeal(heal, ability, no_text, effect, talent_name, no_info)
 	if not IsServer() then
 		return
 	end
@@ -1882,23 +2103,13 @@ function CDOTA_BaseNPC:GenericHeal(heal, ability, no_text, effect, talent_name)
 		and (not self.heal_check_timer or (GameRules:GetDOTATime(false, false) - self.heal_check_timer) > 1)
 	then
 		self.heal_check_timer = GameRules:GetDOTATime(false, false)
-		self.heal_change = 1
-		for mod, bkb in pairs(self.heal_reduce_mods) do
-			if IsValid(mod) and mod.GetModifierHealChange then
-				local result = mod:GetModifierHealChange()
-				if result and (bkb == 1 or not self:IsDebuffImmune() or result > 0) then
-					self.heal_change = self.heal_change * (1 + result / 100)
-				end
-			else
-				self.heal_reduce_mods[mod] = nil
-			end
-		end
+		self.heal_change = self:GetHealChange()
 	end
 
 	self:Heal(heal * (self.heal_change and self.heal_change or 1), ability)
 	local real_heal = self:GetHealth() - health_before
 
-	if ability and real_heal >= 1 then
+	if ability and real_heal >= 1 and not no_info then
 		self:AddHealingInfo({ healing = math.floor(real_heal), inflictor = ability, name = talent_name })
 	end
 
@@ -2701,6 +2912,423 @@ function CDOTA_BaseNPC:AddAttackStartEvent_inc(new_mod, sync)
 	self.attack_start_mods_inc[new_mod] = sync and 2 or 1
 end
 
+function CDOTA_BaseNPC:AddProc(mod, data, inherited)
+	if not IsValid(mod) then
+		return
+	end
+	if self:IsIllusion() and not inherited then
+		return
+	end
+	if not self.proc_mods then
+		self.proc_mods = {}
+		self.proc_records = {}
+		self.proc_landed = {}
+		self.proc_landed_property = {}
+		self.proc_damaged = {}
+	end
+
+	data.mod = mod
+	data.group = data.group or mod:GetName() .. (data.name and "_" .. data.name or "")
+	data.name = data.name or "default"
+	data.cd_name = data.cd_name or "proc_" .. mod:GetName() .. "_" .. data.name
+	data.priority = data.priority or 0
+	self.proc_mods[mod] = self.proc_mods[mod] or {}
+	self.proc_mods[mod][data.name] = data
+	if data.illusion then
+		self.proc_version = (self.proc_version or 0) + 1
+	end
+
+	local meta = getmetatable(mod)
+	local class = type(meta) == "table" and rawget(meta, "__index")
+	if type(class) == "table" and not rawget(class, "proc_wrapped") then
+		rawset(class, "proc_wrapped", true)
+		local destroy = class.OnDestroy
+		rawset(class, "OnDestroy", function(obj, ...)
+			local parent = obj:GetParent()
+			if parent and parent.proc_mods and parent.proc_mods[obj] then
+				parent.proc_mods[obj] = nil
+				parent:UpdateProcs(true)
+			end
+			if destroy then
+				return destroy(obj, ...)
+			end
+		end)
+	end
+
+	if not inherited then
+		self:UpdateProcs()
+	end
+	return data
+end
+
+function CDOTA_BaseNPC:InheritProcs()
+	local owner = self.owner
+	if not owner.proc_version then
+		return
+	end
+	if self.is_arc_tempest or self.is_monkey_soldier then
+		return
+	end
+	if self.proc_owner_version == owner.proc_version then
+		return
+	end
+
+	self.proc_owner_version = owner.proc_version
+	for mod, list in pairs(owner.proc_mods) do
+		for _, data in pairs(list) do
+			if data.illusion and IsValid(mod) then
+				local copy = {}
+				for key, value in pairs(data) do
+					copy[key] = value
+				end
+				copy.armed = nil
+				copy.armed_until = nil
+				self:AddProc(mod, copy, true)
+			end
+		end
+	end
+
+	if self.proc_mods then
+		self:UpdateProcs()
+	end
+end
+
+function CDOTA_BaseNPC:IsProc(mod, record, name)
+	local procs = self.proc_records and self.proc_records[record]
+	return procs ~= nil and procs[mod] ~= nil and procs[mod][name or "default"] == true
+end
+
+function CDOTA_BaseNPC:RollAttackProc(data, params)
+	if data.cd == true and params and not data.mod:GetAbility():IsFullyCastable() then
+		return false
+	end
+	if type(data.cd) == "number" and self:HasCd(data.cd_name, data.cd) then
+		return false
+	end
+	if data.target_cd and params and params.target:HasCd(data.cd_name, data.target_cd) then
+		return false
+	end
+	local chance = data.mod:GetProcChance(params, data.name)
+	if not chance or chance <= 0 then
+		return false
+	end
+	if chance >= 100 then
+		return true
+	end
+
+	local unit = self
+	if data.target_prd then
+		unit = params.target
+	elseif data.prd_owner and IsValid(self.owner) then
+		unit = self.owner
+	end
+	return RollPseudoRandomPercentage(chance, data.group, unit)
+end
+
+function CDOTA_BaseNPC:ArmProc(data)
+	data.armed = self:RollAttackProc(data)
+	data.armed_until = GameRules:GetDOTATime(false, false) + 3
+end
+
+function CDOTA_BaseNPC:UpdateUnmiss()
+	self.proc_unmiss = 0
+	for _, data in ipairs(self.proc_active) do
+		if data.accuracy and not data.current and data.armed then
+			self.proc_unmiss = math.max(self.proc_unmiss, data.armed_until)
+		end
+	end
+end
+
+function CDOTA_BaseNPC:UseAttackProc(data, procs, params)
+	if not procs then
+		procs = self.proc_records[params.record] or {}
+		self.proc_records[params.record] = procs
+	end
+	procs[data.mod] = procs[data.mod] or {}
+	procs[data.mod][data.name] = true
+	if data.cd == true then
+		for mod, list in pairs(self.proc_mods) do
+			if
+				IsValid(mod)
+				and list[data.name]
+				and list[data.name].cd == true
+				and mod:GetName() == data.mod:GetName()
+			then
+				mod:GetAbility():StartCd()
+			end
+		end
+	elseif data.cd then
+		self:StartCd(data.cd_name)
+	end
+	if data.target_cd then
+		params.target:StartCd(data.cd_name)
+	end
+	if data.once then
+		self.proc_mods[data.mod][data.name] = nil
+		self.proc_dirty = true
+	end
+	return procs
+end
+
+function CDOTA_BaseNPC:UpdateProcs(removing)
+	self.proc_dirty = nil
+
+	local best = {}
+	for mod, list in pairs(self.proc_mods) do
+		if not IsValid(mod) then
+			self.proc_mods[mod] = nil
+		else
+			for _, data in pairs(list) do
+				if not best[data.group] or best[data.group].priority < data.priority then
+					best[data.group] = data
+				end
+			end
+		end
+	end
+
+	local accuracy = false
+	self.proc_current = false
+	self.proc_strike = false
+	self.proc_ally = false
+	self.proc_land = false
+	self.proc_launch = false
+	self.proc_damage = false
+	self.proc_active = {}
+	for _, data in pairs(best) do
+		table.insert(self.proc_active, data)
+		if data.ally then
+			self.proc_ally = true
+		end
+		if data.current then
+			self.proc_current = true
+			self.proc_launch = true
+			if data.strike then
+				self.proc_strike = true
+			end
+		elseif data.damage then
+			self.proc_damage = true
+		elseif data.land then
+			self.proc_land = true
+		else
+			self.proc_launch = true
+			if data.accuracy then
+				accuracy = true
+				if data.armed == nil then
+					self:ArmProc(data)
+				end
+			end
+		end
+	end
+	self.proc_has_accuracy = accuracy
+	self:UpdateUnmiss()
+
+	if accuracy and not removing and not IsValid(self.proc_accuracy) then
+		self.proc_accuracy = self:AddNewModifier(self, nil, "modifier_proc_accuracy", {})
+	elseif not accuracy and IsValid(self.proc_accuracy) then
+		self.proc_accuracy:Destroy()
+	end
+
+	if not self.proc_current and IsValid(self.proc_swing) then
+		self.proc_swing:Destroy()
+	end
+end
+
+function CDOTA_BaseNPC:AttackSwingProcs(params)
+	self.proc_perform = nil
+	if self.proc_dirty then
+		self:UpdateProcs()
+	end
+	local ally = params.target:GetTeamNumber() == self:GetTeamNumber()
+	if ally and not self.proc_ally then
+		return
+	end
+
+	local unit = params.target:IsUnit()
+	local unmiss = false
+	for _, data in ipairs(self.proc_active) do
+		if data.current and IsValid(data.mod) then
+			if (data.any or unit) and (not ally or data.ally) then
+				data.armed = self:RollAttackProc(data, params)
+			end
+			unmiss = unmiss or (data.accuracy and data.armed)
+		end
+	end
+
+	if unmiss and not IsValid(self.proc_swing) then
+		self.proc_swing = self:AddNewModifier(self, nil, "modifier_proc_accuracy_swing", {})
+	elseif not unmiss and IsValid(self.proc_swing) then
+		self.proc_swing:Destroy()
+	end
+end
+
+function CDOTA_BaseNPC:StrikeReady(target)
+	local ally = target:GetTeamNumber() == self:GetTeamNumber()
+	if ally and not self.proc_ally then
+		return false
+	end
+	local unit = target:IsUnit()
+	for _, data in ipairs(self.proc_active) do
+		if
+			data.strike
+			and IsValid(data.mod)
+			and (data.any or unit)
+			and (not ally or data.ally)
+			and self:RollAttackProc(data, { target = target })
+		then
+			return true
+		end
+	end
+	return false
+end
+
+function CDOTA_BaseNPC:EndProcSwing()
+	if self.proc_perform then
+		return
+	end
+	if not IsValid(self.proc_swing) then
+		return
+	end
+	for _, data in ipairs(self.proc_active) do
+		if data.current and data.accuracy and data.armed and IsValid(data.mod) then
+			return
+		end
+	end
+	self.proc_swing:Destroy()
+end
+
+function CDOTA_BaseNPC:AttackProcs(params)
+	if self.proc_dirty then
+		self:UpdateProcs()
+	end
+	if not self.proc_launch then
+		return
+	end
+
+	local ally = params.target:GetTeamNumber() == self:GetTeamNumber()
+	if ally and not self.proc_ally then
+		return
+	end
+	local unit = params.target:IsUnit()
+	local now = GameRules:GetDOTATime(false, false)
+	local procs = nil
+	for _, data in ipairs(self.proc_active) do
+		if not IsValid(data.mod) then
+			self.proc_dirty = true
+		elseif data.current then
+			if (data.any or unit) and (not ally or data.ally) then
+				if data.strike and (params.no_attack_cooldown or self.proc_perform) then
+					if self:RollAttackProc(data, params) then
+						procs = self:UseAttackProc(data, procs, params)
+					end
+					data.armed = false
+				elseif data.extra or not params.no_attack_cooldown then
+					if data.armed and (not data.strike or self:RollAttackProc(data, params)) then
+						procs = self:UseAttackProc(data, procs, params)
+					end
+					data.armed = false
+				end
+			end
+		elseif
+			(data.extra ~= false or not params.no_attack_cooldown)
+			and (data.any or unit)
+			and (not ally or data.ally)
+		then
+			if data.accuracy then
+				if
+					data.armed
+					and now < data.armed_until
+					and (data.cd ~= true or data.mod:GetAbility():IsFullyCastable())
+				then
+					procs = self:UseAttackProc(data, procs, params)
+				end
+				self:ArmProc(data)
+			elseif not data.land and not data.damage and self:RollAttackProc(data, params) then
+				procs = self:UseAttackProc(data, procs, params)
+			end
+		end
+	end
+	if self.proc_has_accuracy then
+		self:UpdateUnmiss()
+	end
+	self:EndProcSwing()
+
+	return procs
+end
+
+function CDOTA_BaseNPC:LandProcs(params, property)
+	if not self.proc_land then
+		return
+	end
+	local ally = params.target:GetTeamNumber() == self:GetTeamNumber()
+	if ally and not self.proc_ally then
+		return
+	end
+	local landed = property and self.proc_landed_property or self.proc_landed
+	if landed[params.record] then
+		return
+	end
+	landed[params.record] = true
+	if self.proc_dirty then
+		self:UpdateProcs()
+	end
+
+	local unit = params.target:IsUnit()
+	local procs = nil
+	for _, data in ipairs(self.proc_active) do
+		if
+			data.land
+			and (data.property == true) == (property == true)
+			and IsValid(data.mod)
+			and (data.extra ~= false or not params.no_attack_cooldown)
+			and (data.any or unit)
+			and (not ally or data.ally)
+			and self:RollAttackProc(data, params)
+		then
+			procs = self:UseAttackProc(data, procs, params)
+		end
+	end
+end
+
+function CDOTA_BaseNPC:DamageProcs(params)
+	if params.inflictor then
+		return
+	end
+	if not params.record then
+		return
+	end
+	local target = params.unit
+	local ally = target:GetTeamNumber() == self:GetTeamNumber()
+	if ally and not self.proc_ally then
+		return
+	end
+	if self.proc_damaged[params.record] then
+		return
+	end
+	self.proc_damaged[params.record] = true
+	if self.proc_dirty then
+		self:UpdateProcs()
+	end
+
+	params.target = target
+	local unit = target:IsUnit()
+	local procs = nil
+	local fired = nil
+	for _, data in ipairs(self.proc_active) do
+		if
+			data.damage
+			and IsValid(data.mod)
+			and (data.any or unit)
+			and (not ally or data.ally)
+			and self:RollAttackProc(data, params)
+		then
+			procs = self:UseAttackProc(data, procs or {}, params)
+			fired = fired or {}
+			table.insert(fired, data)
+		end
+	end
+	return procs, fired
+end
+
 function CDOTA_BaseNPC:AddDamageEvent_out(new_mod, sync)
 	if not IsValid(new_mod) then
 		return
@@ -3071,8 +3699,12 @@ function DoDamage(data, replace_damage)
 	local ability = data.ability
 	local damage = data.damage
 
-	if ability and ability.creeps_damage then
+	if ability and ability.creeps_damage and not data.no_creeps_bonus then
 		data.damage = damage * ability:GetCreepsMult(data.victim)
+	end
+
+	if ability and attacker and attacker.item_damage_mods and ability:IsItem() then
+		data.damage = data.damage * (1 + attacker:GetItemDamage() / 100)
 	end
 
 	local result = ApplyDamage(data)
@@ -3123,7 +3755,22 @@ function CDOTA_BaseNPC:PerformAttack(
 		self.no_cleave_flag = no_cleave_flag
 	end
 
-	return self:PerformAttack_old(
+	local strike = false
+	local perform = self.proc_perform
+	if self.proc_mods and not bNeverMiss and hTarget then
+		if self.proc_dirty then
+			self:UpdateProcs()
+		end
+		if self.proc_strike and self:StrikeReady(hTarget) then
+			strike = true
+			self.proc_perform = true
+			if not IsValid(self.proc_swing) then
+				self.proc_swing = self:AddNewModifier(self, nil, "modifier_proc_accuracy_swing", {})
+			end
+		end
+	end
+
+	local result = self:PerformAttack_old(
 		hTarget,
 		bUseCastAttackOrb,
 		bProcessProcs,
@@ -3133,6 +3780,19 @@ function CDOTA_BaseNPC:PerformAttack(
 		bFakeAttack,
 		bNeverMiss
 	)
+
+	if strike then
+		self.proc_perform = perform
+		self:EndProcSwing()
+	end
+
+	if not bUseProjectile then
+		self.attack_flag = nil
+		self.pre_attack_flag = nil
+		self.attack_damage_flag = nil
+	end
+
+	return result
 end
 
 function CDOTABaseAbility:GetState()

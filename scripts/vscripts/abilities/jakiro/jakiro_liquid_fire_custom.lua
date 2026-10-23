@@ -87,8 +87,8 @@ function jakiro_liquid_fire_custom:UpdateTalents(name)
 			e1_frost_damage = 0,
 			e1_fire_damage = 0,
 
-			has_e2 = 0,
 			e2_duration = 0,
+			e2_heal = 0,
 
 			has_e3 = 0,
 			e3_speed = 0,
@@ -122,8 +122,21 @@ function jakiro_liquid_fire_custom:UpdateTalents(name)
 	end
 
 	if caster:HasTalent("modifier_jakiro_liquid_2") then
-		self.talents.has_e2 = 1
 		self.talents.e2_duration = caster:GetTalentValue("modifier_jakiro_liquid_2", "duration")
+		self.talents.e2_heal = caster:GetTalentValue("modifier_jakiro_liquid_2", "heal") / 100
+		caster:AddLifesteal(self.tracker, {
+			name = "modifier_jakiro_liquid_2",
+			value = function(params)
+				if
+					params.inflictor
+					and params.inflictor ~= self
+					and params.inflictor ~= caster.liquid_ability_frost
+				then
+					return 0
+				end
+				return self.talents.e2_heal
+			end,
+		})
 	end
 
 	if caster:HasTalent("modifier_jakiro_liquid_3") then
@@ -134,6 +147,9 @@ function jakiro_liquid_fire_custom:UpdateTalents(name)
 
 	if caster:HasTalent("modifier_jakiro_liquid_4") then
 		self.talents.has_e4 = 1
+		if IsServer() then
+			self.tracker.proc = caster:AddProc(self.tracker, { current = true })
+		end
 	end
 
 	if caster:HasTalent("modifier_jakiro_liquid_7") then
@@ -227,7 +243,7 @@ function modifier_jakiro_liquid_fire_custom_tracker:OnCreated(table)
 	self.parent:AddAttackRecordEvent_out(self)
 	self.parent:AddAttackStartEvent_out(self)
 	self.parent:AddOrderEvent(self)
-	self.parent:AddAttackEvent_out(self, true)
+	self.parent:AddProc(self, { name = "hit", land = true })
 	self.parent:AddRecordDestroyEvent(self, true)
 
 	self.records = {}
@@ -304,24 +320,42 @@ function modifier_jakiro_liquid_fire_custom_tracker:OnIntervalThink()
 	self:UpdateUI()
 end
 
+function modifier_jakiro_liquid_fire_custom_tracker:IsOrbCast()
+	return not self.parent:IsSilenced()
+		and self.ability:IsFullyCastable()
+		and (self.ability:GetAutoCastState() or self.cast)
+end
+
+function modifier_jakiro_liquid_fire_custom_tracker:GetProcChance(params, name)
+	if name == "hit" then
+		return 100
+	end
+	if self:IsOrbCast() then
+		return 0
+	end
+	return self.ability.talents.e4_chance
+end
+
 function modifier_jakiro_liquid_fire_custom_tracker:ShouldLaunch(target)
 	if not target:IsUnit() then
 		return
 	end
-	local result = false
-	if
-		not self.parent:IsSilenced()
-		and self.ability:IsFullyCastable()
-		and (self.ability:GetAutoCastState() or self.cast)
-	then
-		result = 0
-	elseif
-		self.ability.talents.has_e4 == 1
-		and RollPseudoRandomPercentage(self.ability.talents.e4_chance, 9008, self.parent)
-	then
-		result = 1
+	if self:IsOrbCast() then
+		return 0
 	end
-	return result
+	if self.ability.talents.has_e4 == 0 then
+		return false
+	end
+
+	local proc = self.proc and self.proc.armed
+	if self.parent.jakiro_e7 then
+		proc = RollPseudoRandomPercentage(
+			self.ability.talents.e4_chance,
+			"modifier_jakiro_liquid_fire_custom_tracker",
+			self.parent
+		)
+	end
+	return proc and 1 or false
 end
 
 function modifier_jakiro_liquid_fire_custom_tracker:CheckState()
@@ -349,18 +383,12 @@ function modifier_jakiro_liquid_fire_custom_tracker:GetModifierProjectileSpeedBo
 	return self.ability.talents.e4_speed
 end
 
-function modifier_jakiro_liquid_fire_custom_tracker:AttackEvent_out(params)
-	if not IsServer() then
-		return
-	end
-	if self.parent ~= params.attacker then
+function modifier_jakiro_liquid_fire_custom_tracker:AttackProc(params, name)
+	if name ~= "hit" then
 		return
 	end
 
 	local target = params.target
-	if not target:IsUnit() then
-		return
-	end
 	if not self.records[params.record] then
 		return
 	end

@@ -101,21 +101,6 @@
 		distance_max = 1600
 		volume = 0.8
 	}
-	Slark.Pounce_silence = 
-	{
-		vsnd_files = 
-		[
-			"sounds/items/nullifier_cast.vsnd",
-		]
-		pitch_rand_max = 0.1
-		pitch = 1
-		soundlevel = 100
-		type = "dota_src1_3d"
-		pitch_rand_min = 0.05
-		volume_fade_out = 0.5
-		distance_max = 1600
-		volume = 0.8
-	}
 	Slark.Pounce_legendary_fish_end = 
 	{
 		vsnd_files = 
@@ -145,21 +130,6 @@
 		volume_fade_out = 0.5
 		distance_max = 1600
 		volume = 1.2
-	}
-	Slark.Pounce_legendary_fish_loop = 
-	{
-		vsnd_files = 
-		[
-			"sounds/ambient/soundscapes/river_light_lp_03.vsnd",
-		]
-		pitch_rand_max = -0.1
-		pitch = 1
-		soundlevel = 100
-		type = "dota_src1_3d"
-		pitch_rand_min = -0.2
-		volume_fade_out = 0.5
-		distance_max = 1600
-		volume = 0.5
 	}
 	Slark.Essence_stun = 
 	{

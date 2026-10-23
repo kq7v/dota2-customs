@@ -56,13 +56,11 @@ function bristleback_viscous_nasal_goo_custom:Precache(context)
 		"particles/units/heroes/hero_bristleback/bristleback_viscous_nasal_goo_debuff.vpcf",
 		context
 	)
-	PrecacheResource("particle", "particles/status_fx/status_effect_goo.vpcf", context)
 	PrecacheResource(
 		"particle",
 		"particles/units/heroes/hero_bristleback/bristleback_viscous_nasal_stack.vpcf",
 		context
 	)
-	PrecacheResource("particle", "particles/hoodwink/bush_damage.vpcf", context)
 	PrecacheResource("particle", "particles/bristleback/goo_legendary_stack.vpcf", context)
 	PrecacheResource("particle", "particles/bristleback/goo_legendary_proc_2.vpcf", context)
 	PrecacheResource("particle", "particles/alchemist/alch_root.vpcf", context)
@@ -624,8 +622,7 @@ function modifier_bristleback_viscous_nasal_goo_custom_legendary:OnCreated(table
 	)
 	self:AddParticle(self.legendary_particle, false, false, -1, false, false)
 
-	self.last_bash = 0
-	self.parent:AddAttackEvent_out(self, true)
+	self.parent:AddProc(self, { cd = self.ability.talents.q7_stun_cd, land = true })
 
 	self:OnIntervalThink()
 	self:StartIntervalThink(0.1)
@@ -637,25 +634,12 @@ function modifier_bristleback_viscous_nasal_goo_custom_legendary:CheckState()
 	}
 end
 
-function modifier_bristleback_viscous_nasal_goo_custom_legendary:AttackEvent_out(params)
-	if not IsServer() then
-		return
-	end
-	if self.parent ~= params.attacker then
-		return
-	end
-	if not params.target:IsUnit() then
-		return
-	end
-	if (GameRules:GetDOTATime(false, false) - self.last_bash) <= self.ability.talents.q7_stun_cd then
-		return
-	end
-	if not RollPseudoRandomPercentage(self.ability.talents.q7_chance, 1535, self.parent) then
-		return
-	end
+function modifier_bristleback_viscous_nasal_goo_custom_legendary:GetProcChance()
+	return self.ability.talents.q7_chance
+end
 
+function modifier_bristleback_viscous_nasal_goo_custom_legendary:AttackProc(params)
 	local target = params.target
-	self.last_bash = GameRules:GetDOTATime(false, false)
 
 	local effect_cast = ParticleManager:CreateParticle(
 		"particles/bristleback/goo_legendary_proc_2.vpcf",

@@ -56,14 +56,6 @@ LinkLuaModifier(
 
 razor_unstable_current_custom = class({})
 
-function razor_unstable_current_custom:CreateTalent()
-	CustomGameEventManager:Send_ServerToPlayer(
-		PlayerResource:GetPlayer(self:GetCaster():GetPlayerOwnerID()),
-		"ability_razor_current",
-		{}
-	)
-end
-
 function razor_unstable_current_custom:Precache(context)
 	if self:GetCaster() and self:GetCaster():IsIllusion() then
 		return
@@ -545,6 +537,11 @@ function modifier_razor_unstable_current_custom_legendary:OnCreated()
 
 	self.parent:EmitSound("Razor.Surge_cast")
 	self.parent:EmitSound("Razor.Surge_cast_loop")
+	CustomGameEventManager:Send_ServerToPlayer(
+		PlayerResource:GetPlayer(self.parent:GetPlayerOwnerID()),
+		"ability_razor_current",
+		{ state = 1, range = self.max_distance }
+	)
 
 	self.particle = self.parent:GenericParticle("particles/razor/surge_stacks.vpcf", self, true)
 
@@ -655,6 +652,11 @@ function modifier_razor_unstable_current_custom_legendary:OnDestroy()
 	end
 	self.parent:StopSound("Razor.Surge_cast_loop")
 	self.parent:StopSound("Razor.Surge_cast")
+	CustomGameEventManager:Send_ServerToPlayer(
+		PlayerResource:GetPlayer(self.parent:GetPlayerOwnerID()),
+		"ability_razor_current",
+		{ state = 2 }
+	)
 
 	self.ability:EndCd(0)
 	self.ability:UseResources(false, false, false, true)

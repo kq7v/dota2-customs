@@ -320,21 +320,6 @@
 		distance_max = 1600
 		pitch = 1
 	}
-	SandKing.Attack_pull = 
-	{
-		vsnd_files = 
-		[
-			"sounds/weapons/hero/marci/dispose_cast.vsnd",
-		]
-		volume = 0.4
-		pitch_rand_min = -0.05
-		pitch_rand_max = 0.05
-		type = "dota_src1_3d"
-		soundlevel = 81
-		distance_max = 1600
-		pitch = 1
-		volume_fade_out = 1
-	}
 	SandKing.Epicenter_legendary_loop = 
 	{
 		vsnd_files = 
@@ -364,20 +349,6 @@
 		distance_max = 1600
 		pitch = 1
 	}
-	SandKing.Finale_legerndary_start = 
-	{
-		vsnd_files = 
-		[
-			"sounds/weapons/hero/lifestealer/open_wounds.vsnd",
-		]
-		volume = 1.5
-		pitch_rand_min = -0.1
-		pitch_rand_max = -0.1
-		type = "dota_src1_3d"
-		soundlevel = 81
-		distance_max = 1600
-		pitch = 1
-	}
 	SandKing.Finale_legerndary_caster = 
 	{
 		vsnd_files = 
@@ -392,54 +363,6 @@
 		soundlevel = 81
 		distance_max = 1600
 		pitch = 1
-	}
-	SandKing.Finale_legerndary_loop = 
-	{
-		vsnd_files = 
-		[
-			"sounds/weapons/hero/viper/enc/nethertoxin_lp_ti8.vsnd",
-		]
-		volume = 0.6
-		pitch_rand_min = 0.1
-		pitch_rand_max = 0.1
-		type = "dota_src1_3d"
-		soundlevel = 81
-		distance_max = 1600
-		pitch = 1
-		volume_fade_out = 1
-	}
-	SandKing.Finale_legerndary_hit = 
-	{
-		vsnd_files = 
-		[
-			"sounds/weapons/hero/venomancer/attack_impact1.vsnd",
-			"sounds/weapons/hero/venomancer/attack_impact2.vsnd",
-		]
-		volume = 0.6
-		pitch_rand_min = -0.3
-		pitch_rand_max = -0.2
-		type = "dota_src1_3d"
-		soundlevel = 81
-		distance_max = 1600
-		pitch = 1
-		volume_fade_out = 1
-	}
-	SandKing.Finale_legerndary_explode = 
-	{
-		vsnd_files = 
-		[
-			"sounds/weapons/hero/venomancer/venomancer_venomous_gale_impact1.vsnd",
-			"sounds/weapons/hero/venomancer/venomancer_venomous_gale_impact2.vsnd",
-			"sounds/weapons/hero/venomancer/venomancer_venomous_gale_impact3.vsnd",
-		]
-		volume = 1.2
-		pitch_rand_min = -0.2
-		pitch_rand_max = -0.2
-		type = "dota_src1_3d"
-		soundlevel = 81
-		distance_max = 1600
-		pitch = 1
-		volume_fade_out = 1
 	}
 	SandKing.Double_hit = 
 	{

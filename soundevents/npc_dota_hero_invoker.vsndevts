@@ -10,20 +10,6 @@
 
 <!-- kv3 encoding:text:version{e21c7f3c-8a33-41c5-9977-a76d3a32aa0d} format:generic:version{7412167c-06e9-4698-aff2-e63eb59037e7} -->
 {
-	Invoker.Sun_strike.Apex = 
-	{
-		pitch_rand_max = 0
-		pitch = 1
-		soundlevel = 81
-		pitch_rand_min = 0
-		volume = 0.8
-		distance_max = 1600
-		type = "dota_src1_3d"
-		vsnd_files = 
-		[
-			"sounds/weapons/hero/invoker/sunstrike_charge_apex.vsnd",
-		]
-	}
 	Invoker.Sun_strike_apex = 
 	{
 		type = "dota_src1_3d"
@@ -49,20 +35,6 @@
 			"sounds/weapons/hero/lich/ice_spire_destroy.vsnd",
 		]
 		pitch_rand_max = -0.1
-	}
-	Invoker.EMP_purge = 
-	{
-		pitch_rand_max = 0.1
-		pitch = 1
-		soundlevel = 100
-		pitch_rand_min = 0
-		volume = 1
-		distance_max = 1600
-		type = "dota_src1_3d"
-		vsnd_files = 
-		[
-			"sounds/weapons/hero/brewmaster/dispel_magic.vsnd",
-		]
 	}
 	Invoker.Sun_strike = 
 	{
@@ -143,20 +115,6 @@
 			"sounds/weapons/hero/weaver/time_lapse.vsnd",
 		]
 	}
-	Invoker.Blast_lowhp = 
-	{
-		pitch_rand_max = 0
-		pitch = 1
-		soundlevel = 100
-		pitch_rand_min = 0
-		volume = 2.1
-		distance_max = 1600
-		type = "dota_src1_3d"
-		vsnd_files = 
-		[
-			"sounds/weapons/hero/oracle/rain_cast.vsnd",
-		]
-	}
 	Invoker.Invoke_legendary_start = 
 	{
 		pitch_rand_max = -0.2
@@ -199,20 +157,6 @@
 			"sounds/weapons/hero/faceless_void/chronosphere_tick.vsnd",
 		]
 	}
-	Invoker.Forge_stun = 
-	{
-		pitch_rand_max = 0.05
-		pitch = 1
-		soundlevel = 100
-		pitch_rand_min = 0.05
-		volume = 0.8
-		distance_max = 1600
-		type = "dota_src1_3d"
-		vsnd_files = 
-		[
-			"sounds/weapons/hero/ogre_magi/fireblast_target.vsnd",
-		]
-	}
 	Invoker.Invoke_legendary_refresh = 
 	{
 		pitch_rand_max = 0
@@ -239,48 +183,6 @@
 		vsnd_files = 
 		[
 			"sounds/weapons/hero/queenofpain/blink_out_arc.vsnd",
-		]
-	}
-	Invoker.Spell_heal = 
-	{
-		pitch = 1
-		soundlevel = 100
-		pitch_rand_max = 0.3
-		pitch_rand_min = 0.2
-		volume = 0.9
-		distance_max = 1600
-		type = "dota_src1_3d"
-		vsnd_files = 
-		[
-			"sounds/weapons/hero/oracle/false_promise_heal.vsnd",
-		]
-	}
-	Invoker.Snap_Wall = 
-	{
-		pitch_rand_max = 0.25
-		pitch = 1
-		soundlevel = 100
-		pitch_rand_min = 0.25
-		volume = 0.5
-		distance_max = 1600
-		type = "dota_src1_3d"
-		vsnd_files = 
-		[
-			"sounds/weapons/hero/invoker/cold_snap.vsnd",
-		]
-	}
-	Invoker.Meteor_stack_max = 
-	{
-		pitch_rand_max = 0
-		pitch = 1
-		soundlevel = 100
-		pitch_rand_min = 0
-		volume = 1.4
-		distance_max = 1600
-		type = "dota_src1_3d"
-		vsnd_files = 
-		[
-			"sounds/weapons/hero/lina/lsa_ti7_layer.vsnd",
 		]
 	}
 	Invoker.Legendary_snap_damage = 
@@ -428,20 +330,6 @@
 			"sounds/physics/movement/hero/warlock/golem_spawn_loop.vsnd",
 		]
 		pitch_rand_max = -0.05
-	}
-	Invoker.Alacrity_max = 
-	{
-		pitch_rand_max = 0.25
-		pitch = 1
-		soundlevel = 100
-		pitch_rand_min = 0.25
-		volume = 1.2
-		distance_max = 1600
-		type = "dota_src1_3d"
-		vsnd_files = 
-		[
-			"sounds/weapons/hero/invoker/tornado_cast_ti6.vsnd",
-		]
 	}
 	Voice.Invoker.3_2 = 
 	{

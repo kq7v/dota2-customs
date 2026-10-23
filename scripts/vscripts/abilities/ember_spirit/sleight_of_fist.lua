@@ -106,6 +106,8 @@ function ember_spirit_sleight_of_fist_custom:UpdateTalents()
 		self.talents = {
 			w1_cd = 0,
 
+			w2_heal = 0,
+
 			has_w3 = 0,
 			w3_magic = 0,
 			w3_damage = 0,
@@ -147,6 +149,11 @@ function ember_spirit_sleight_of_fist_custom:UpdateTalents()
 
 	if caster:HasTalent("modifier_ember_fist_1") then
 		self.talents.w1_cd = caster:GetTalentValue("modifier_ember_fist_1", "cd")
+	end
+
+	if caster:HasTalent("modifier_ember_fist_2") then
+		self.talents.w2_heal = caster:GetTalentValue("modifier_ember_fist_2", "heal") / 100
+		caster:AddLifesteal(self.tracker, { name = "modifier_ember_fist_2", type = 1, value = self.talents.w2_heal })
 	end
 
 	if caster:HasTalent("modifier_ember_fist_3") then

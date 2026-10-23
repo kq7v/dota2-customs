@@ -54,40 +54,14 @@ function modifier_item_enhancement_audacious_custom:OnCreated(table)
 		return
 	end
 
-	self.parent:AddAttackStartEvent_out(self, true)
+	self.parent:AddProc(self, { extra = false, illusion = true })
 end
 
-function modifier_item_enhancement_audacious_custom:AttackStartEvent_out(params)
-	if not IsServer() then
-		return
-	end
-	if not IsValid(self.ability) then
-		return
-	end
-	if not IsValid(params.target) then
-		return
-	end
-	if params.attacker:IsTempestDouble() then
-		return
-	end
-	if not params.target:IsUnit() then
-		return
-	end
-	if params.no_attack_cooldown then
-		return
-	end
+function modifier_item_enhancement_audacious_custom:GetProcChance()
+	return self.chance
+end
 
-	local attacker = params.attacker
-	if attacker.owner then
-		attacker = attacker.owner
-	end
-	if attacker ~= self.parent then
-		return
-	end
-	if not RollPseudoRandomPercentage(self.chance, 1888, params.attacker) then
-		return
-	end
-
+function modifier_item_enhancement_audacious_custom:AttackProcStart(params)
 	params.attacker:AddNewModifier(
 		params.attacker,
 		self.ability,

@@ -67,13 +67,6 @@ function kunkka_innate_custom:UpdateTalents(name)
 	if not self.init then
 		self.init = true
 		self.talents = {
-			has_e2 = 0,
-			e2_lifesteal = 0,
-			e2_bonus = caster:GetTalentValue("modifier_kunkka_xmark_2", "bonus", true),
-
-			has_r3 = 0,
-			r3_lifesteal = 0,
-
 			h1_armor = 0,
 			h1_move = 0,
 			h1_bonus = caster:GetTalentValue("modifier_kunkka_hero_1", "bonus", true),
@@ -101,18 +94,6 @@ function kunkka_innate_custom:UpdateTalents(name)
 		}
 	end
 
-	if caster:HasTalent("modifier_kunkka_xmark_2") then
-		self.talents.has_e2 = 1
-		self.talents.e2_lifesteal = caster:GetTalentValue("modifier_kunkka_xmark_2", "lifesteal") / 100
-		caster:AddDamageEvent_out(self.tracker, true)
-	end
-
-	if caster:HasTalent("modifier_kunkka_ship_3") then
-		self.talents.has_r3 = 1
-		self.talents.r3_lifesteal = caster:GetTalentValue("modifier_kunkka_ship_3", "lifesteal") / 100
-		caster:AddDamageEvent_out(self.tracker, true)
-	end
-
 	if caster:HasTalent("modifier_kunkka_hero_1") then
 		self.talents.h1_armor = caster:GetTalentValue("modifier_kunkka_hero_1", "armor")
 		self.talents.h1_move = caster:GetTalentValue("modifier_kunkka_hero_1", "move")
@@ -137,7 +118,10 @@ function kunkka_innate_custom:UpdateTalents(name)
 
 	if caster:HasTalent("modifier_kunkka_hero_5") then
 		self.talents.has_h5 = 1
-		caster:AddDamageEvent_out(self.tracker, true)
+		caster:AddLifesteal(
+			self.tracker,
+			{ name = "modifier_kunkka_hero_5", heal = false, proc = "LifestealBurn", value = self.talents.h5_burn }
+		)
 	end
 
 	if caster:HasTalent("modifier_kunkka_hero_6") then
@@ -261,51 +245,12 @@ function modifier_kunkka_innate_custom_tracker:OnCreated(table)
 	self.ability.shard_cd = self.ability:GetSpecialValueFor("shard_cd")
 end
 
-function modifier_kunkka_innate_custom_tracker:DamageEvent_out(params)
-	if not IsServer() then
+function modifier_kunkka_innate_custom_tracker:LifestealBurn(params, burn)
+	local delayed = self.parent:FindModifierByName("modifier_kunkka_innate_custom_damage")
+	if not delayed then
 		return
 	end
-
-	if IsValid(self.parent.ghostship_ability) then
-		self.parent.ghostship_ability:Bank(params)
-	end
-
-	local result = self.parent:CheckLifesteal(params)
-	if not result then
-		return
-	end
-
-	if self.ability.talents.has_h5 == 1 then
-		local delayed = self.parent:FindModifierByName("modifier_kunkka_innate_custom_damage")
-		if delayed then
-			delayed:Burn(params.damage * result * self.ability.talents.h5_burn)
-		end
-	end
-
-	if
-		self.ability.talents.has_e2 == 1
-		and (not params.inflictor or params.inflictor == self.parent.tidebringer_ability)
-	then
-		local lifesteal = self.ability.talents.e2_lifesteal
-			* (self.parent:HasModifier("modifier_kunkka_xmark_custom_target") and self.ability.talents.e2_bonus or 1)
-		self.parent:GenericHeal(
-			params.damage * result * lifesteal,
-			self.ability,
-			true,
-			false,
-			"modifier_kunkka_xmark_2"
-		)
-	end
-
-	if self.ability.talents.has_r3 == 1 and params.inflictor then
-		self.parent:GenericHeal(
-			params.damage * result * self.ability.talents.r3_lifesteal,
-			self.ability,
-			true,
-			"particles/items3_fx/octarine_core_lifesteal.vpcf",
-			"modifier_kunkka_ship_3"
-		)
-	end
+	delayed:Burn(burn)
 end
 
 function modifier_kunkka_innate_custom_tracker:SpellEvent(params)

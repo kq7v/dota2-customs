@@ -107,6 +107,7 @@ function tinker_march_of_the_machines_custom:Precache(context)
 		context
 	)
 	PrecacheResource("particle", "particles/units/heroes/hero_terrorblade/terrorblade_reflection_slow.vpcf", context)
+	PrecacheResource("particle", "particles/tinker/march_vector.vpcf", context)
 end
 
 function tinker_march_of_the_machines_custom:UpdateTalents()
@@ -124,6 +125,7 @@ function tinker_march_of_the_machines_custom:UpdateTalents()
 			w1_duration = caster:GetTalentValue("modifier_tinker_march_1", "duration", true),
 
 			w2_speed = 0,
+			w2_heal = 0,
 
 			has_w3 = 0,
 			w3_duration = 0,
@@ -172,6 +174,16 @@ function tinker_march_of_the_machines_custom:UpdateTalents()
 
 	if caster:HasTalent("modifier_tinker_march_2") then
 		self.talents.w2_speed = caster:GetTalentValue("modifier_tinker_march_2", "speed") / 100
+		self.talents.w2_heal = caster:GetTalentValue("modifier_tinker_march_2", "heal") / 100
+		caster:AddLifesteal(self.tracker, {
+			name = "modifier_tinker_march_2",
+			value = function(params)
+				if params.inflictor and not (caster.turret_ability and params.inflictor == caster.turret_ability) then
+					return 0
+				end
+				return self.talents.w2_heal
+			end,
+		})
 	end
 
 	if caster:HasTalent("modifier_tinker_march_3") then
@@ -187,7 +199,6 @@ function tinker_march_of_the_machines_custom:UpdateTalents()
 	if caster:HasTalent("modifier_tinker_march_7") then
 		self.talents.has_w7 = 1
 		if IsServer() then
-			self:UpdateVectorValues()
 			self.tracker:UpdateUI()
 		end
 	end

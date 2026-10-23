@@ -110,7 +110,9 @@ function nyx_assassin_spiked_carapace_custom:UpdateTalents()
 			e1_duration = caster:GetTalentValue("modifier_nyx_carapace_1", "duration", true),
 
 			has_e2 = 0,
+			e2_heal = 0,
 			e2_duration = caster:GetTalentValue("modifier_nyx_carapace_2", "duration", true),
+			e2_bonus = caster:GetTalentValue("modifier_nyx_carapace_2", "bonus", true),
 
 			has_h2 = 0,
 			h2_status = 0,
@@ -152,6 +154,17 @@ function nyx_assassin_spiked_carapace_custom:UpdateTalents()
 
 	if caster:HasTalent("modifier_nyx_carapace_2") then
 		self.talents.has_e2 = 1
+		self.talents.e2_heal = caster:GetTalentValue("modifier_nyx_carapace_2", "heal") / 100
+		caster:AddLifesteal(self.tracker, {
+			name = "modifier_nyx_carapace_2",
+			type = 2,
+			value = function()
+				if caster:HasModifier("modifier_nyx_assassin_spiked_carapace_custom_heal_bonus") then
+					return self.talents.e2_heal * self.talents.e2_bonus, nil, true
+				end
+				return self.talents.e2_heal
+			end,
+		})
 	end
 
 	if caster:HasTalent("modifier_nyx_hero_2") then
@@ -165,7 +178,7 @@ function nyx_assassin_spiked_carapace_custom:UpdateTalents()
 		self.talents.has_e3 = 1
 		self.talents.e3_health = caster:GetTalentValue("modifier_nyx_carapace_3", "health")
 		self.talents.e3_cd = caster:GetTalentValue("modifier_nyx_carapace_3", "cd")
-		caster:AddAttackEvent_out(self.tracker, true)
+		caster:AddProc(self.tracker, { land = true })
 		caster:AddDamageEvent_inc(self.tracker, true)
 	end
 
@@ -254,22 +267,16 @@ function modifier_nyx_assassin_spiked_carapace_custom_tracker:OnRefresh()
 	self.ability.damage_creeps = self.ability:GetSpecialValueFor("damage_creeps")
 end
 
-function modifier_nyx_assassin_spiked_carapace_custom_tracker:AttackEvent_out(params)
-	if not IsServer() then
-		return
-	end
+function modifier_nyx_assassin_spiked_carapace_custom_tracker:GetProcChance()
+	return 100
+end
+
+function modifier_nyx_assassin_spiked_carapace_custom_tracker:AttackProc(params, name)
 	if self.ability.talents.has_e3 == 0 then
-		return
-	end
-	if self.parent ~= params.attacker then
 		return
 	end
 
 	local target = params.target
-	if not target:IsUnit() then
-		return
-	end
-
 	target:AddNewModifier(
 		self.parent,
 		self.ability,
@@ -740,16 +747,14 @@ function modifier_nyx_assassin_spiked_carapace_custom_legendary:ChangeStage()
 		{ duration = self:GetRemainingTime() }
 	)
 	self.parent:AddAttackRecordEvent_out(self, true)
-	self.parent:AddAttackEvent_out(self, true)
+	self.parent:AddProc(self, { land = true, any = true })
 end
 
-function modifier_nyx_assassin_spiked_carapace_custom_legendary:AttackEvent_out(params)
-	if not IsServer() then
-		return
-	end
-	if self.parent ~= params.attacker then
-		return
-	end
+function modifier_nyx_assassin_spiked_carapace_custom_legendary:GetProcChance()
+	return 100
+end
+
+function modifier_nyx_assassin_spiked_carapace_custom_legendary:AttackProc(params, name)
 	params.target:EmitSound("Nyx.Carapace_legendary_attack")
 end
 

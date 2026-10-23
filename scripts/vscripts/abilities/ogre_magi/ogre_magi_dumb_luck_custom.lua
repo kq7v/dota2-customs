@@ -38,17 +38,8 @@ function ogre_magi_dumb_luck_custom:UpdateTalents(name)
 	if not self.init then
 		self.init = true
 		self.talents = {
-			has_w2 = 0,
-			w2_heal = 0,
-			w2_bonus = caster:GetTalentValue("modifier_ogremagi_ignite_2", "bonus", true),
-
 			has_e2 = 0,
 			e2_duration = caster:GetTalentValue("modifier_ogremagi_bloodlust_2", "duration", true),
-
-			e7_heal_max = caster:GetTalentValue("modifier_ogremagi_bloodlust_7", "heal_max", true) / 100,
-
-			has_r2 = 0,
-			r2_heal = 0,
 
 			has_r3 = 0,
 			r3_duration = caster:GetTalentValue("modifier_ogremagi_multi_3", "duration", true),
@@ -63,24 +54,8 @@ function ogre_magi_dumb_luck_custom:UpdateTalents(name)
 		}
 	end
 
-	if caster:HasTalent("modifier_ogremagi_ignite_2") then
-		self.talents.has_w2 = 1
-		self.talents.w2_heal = caster:GetTalentValue("modifier_ogremagi_ignite_2", "heal") / 100
-		caster:AddDamageEvent_out(self.tracker, true)
-	end
-
 	if caster:HasTalent("modifier_ogremagi_bloodlust_2") then
 		self.talents.has_e2 = 1
-	end
-
-	if caster:HasTalent("modifier_ogremagi_bloodlust_7") then
-		caster:AddDamageEvent_out(self.tracker, true)
-	end
-
-	if caster:HasTalent("modifier_ogremagi_multi_2") then
-		self.talents.has_r2 = 1
-		self.talents.r2_heal = caster:GetTalentValue("modifier_ogremagi_multi_2", "heal") / 100
-		caster:AddDamageEvent_out(self.tracker, true)
 	end
 
 	if caster:HasTalent("modifier_ogremagi_multi_3") then
@@ -187,51 +162,6 @@ function modifier_ogre_magi_dumb_luck_custom:OnIntervalThink()
 	self.agi = self.int / 2
 
 	self.parent:CalculateStatBonus(true)
-end
-
-function modifier_ogre_magi_dumb_luck_custom:DamageEvent_out(params)
-	if not IsServer() then
-		return
-	end
-	local result = self.parent:CheckLifesteal(params)
-	if not result then
-		return
-	end
-
-	if
-		self.ability.talents.has_w2 == 1 and (not params.inflictor or params.inflictor == self.parent.ignite_ability)
-	then
-		local heal = params.damage * self.ability.talents.w2_heal * result
-		if params.inflictor then
-			heal = heal * self.ability.talents.w2_bonus
-		end
-		self.parent:GenericHeal(
-			heal,
-			self.ability,
-			true,
-			"particles/items3_fx/octarine_core_lifesteal.vpcf",
-			"modifier_ogremagi_ignite_2"
-		)
-	end
-
-	if self.parent:HasModifier("modifier_ogre_magi_bloodlust_custom_legendary_3") and not params.inflictor then
-		local heal = (1 - self.parent:GetHealthPercent() / 100)
-			* self.ability.talents.e7_heal_max
-			* result
-			* params.damage
-		self.parent:GenericHeal(heal, self.ability, true, false, "modifier_ogremagi_bloodlust_7")
-	end
-
-	if self.ability.talents.has_r2 == 1 and params.inflictor then
-		local heal = self.ability.talents.r2_heal * params.damage * result
-		self.parent:GenericHeal(
-			heal,
-			self.ability,
-			false,
-			"particles/items3_fx/octarine_core_lifesteal.vpcf",
-			"modifier_ogremagi_multi_2"
-		)
-	end
 end
 
 function modifier_ogre_magi_dumb_luck_custom:DeclareFunctions()

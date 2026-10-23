@@ -180,20 +180,6 @@
 		distance_max = 1600
 		pitch = 1
 	}
-	Pudge.Dismember_grave = 
-	{
-		vsnd_files = 
-		[
-			"sounds/weapons/hero/undying/soul_rip_cast.vsnd",
-		]
-		volume = 1.8
-		pitch_rand_min = 0
-		pitch_rand_max = 0
-		type = "dota_src1_3d"
-		soundlevel = 81
-		distance_max = 1600
-		pitch = 1
-	}
 	Pudge.Dismember_devour = 
 	{
 		vsnd_files = 
@@ -231,23 +217,6 @@
 		volume = 1.6
 		pitch_rand_min = -0.1
 		pitch_rand_max = -0.1
-		type = "dota_src1_3d"
-		soundlevel = 81
-		distance_max = 1600
-		pitch = 1
-	}
-	Pudge.Dismember_cd = 
-	{
-		vsnd_files = 
-		[
-			"sounds/weapons/hero/undying/decay_transfer01.vsnd",
-			"sounds/weapons/hero/undying/decay_transfer02.vsnd",
-			"sounds/weapons/hero/undying/decay_transfer03.vsnd",
-			"sounds/weapons/hero/undying/decay_transfer04.vsnd",
-		]
-		volume = 1
-		pitch_rand_min = 0
-		pitch_rand_max = 0
 		type = "dota_src1_3d"
 		soundlevel = 81
 		distance_max = 1600

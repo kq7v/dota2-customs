@@ -88,6 +88,7 @@ function antimage_blink_custom:UpdateTalents(name)
 
 			has_w3 = 0,
 			w3_damage = 0,
+			w3_heal = 0,
 			w3_legendary_count = caster:GetTalentValue("modifier_antimage_blink_3", "legendary_count", true),
 			w3_duration = caster:GetTalentValue("modifier_antimage_blink_3", "duration", true),
 
@@ -114,7 +115,7 @@ function antimage_blink_custom:UpdateTalents(name)
 	if caster:HasTalent("modifier_antimage_blink_1") then
 		self.talents.has_w1 = 1
 		self.talents.w1_crit = caster:GetTalentValue("modifier_antimage_blink_1", "crit")
-		caster:AddAttackEvent_out(self.tracker, true)
+		caster:AddProc(self.tracker, { land = true })
 	end
 
 	if caster:HasTalent("modifier_antimage_blink_2") then
@@ -124,11 +125,12 @@ function antimage_blink_custom:UpdateTalents(name)
 	if caster:HasTalent("modifier_antimage_blink_3") then
 		self.talents.has_w3 = 1
 		self.talents.w3_damage = caster:GetTalentValue("modifier_antimage_blink_3", "damage")
+		self.talents.w3_heal = caster:GetTalentValue("modifier_antimage_blink_3", "heal") / 100
 	end
 
 	if caster:HasTalent("modifier_antimage_blink_4") then
 		self.talents.has_w4 = 1
-		caster:AddAttackEvent_out(self.tracker, true)
+		caster:AddProc(self.tracker, { land = true })
 	end
 
 	if caster:HasTalent("modifier_antimage_blink_7") then
@@ -568,6 +570,26 @@ end
 function modifier_antimage_blink_custom_illusion:StatusEffectPriority()
 	return MODIFIER_PRIORITY_ILLUSION
 end
+function modifier_antimage_blink_custom_illusion:OnCreated()
+	self.parent = self:GetParent()
+	self.caster = self:GetCaster()
+	self.ability = self:GetAbility()
+
+	if not IsServer() then
+		return
+	end
+	self.parent:AddLifesteal(
+		self,
+		{
+			name = "modifier_antimage_blink_3",
+			type = 2,
+			heal_unit = self.caster,
+			illusion = true,
+			value = self.ability.talents.w3_heal,
+		}
+	)
+end
+
 function modifier_antimage_blink_custom_illusion:CheckState()
 	return {
 		[MODIFIER_STATE_NO_HEALTH_BAR] = true,
@@ -724,17 +746,11 @@ function modifier_antimage_blink_custom_tracker:GetModifierPreAttack_CriticalStr
 	return self.ability.talents.w1_crit
 end
 
-function modifier_antimage_blink_custom_tracker:AttackEvent_out(params)
-	if not IsServer() then
-		return
-	end
-	if self.parent ~= params.attacker then
-		return
-	end
-	if not params.target:IsUnit() then
-		return
-	end
+function modifier_antimage_blink_custom_tracker:GetProcChance()
+	return 100
+end
 
+function modifier_antimage_blink_custom_tracker:AttackProc(params, name)
 	if self.record then
 		self.record = nil
 		params.target:EmitSound("DOTA_Item.Daedelus.Crit")

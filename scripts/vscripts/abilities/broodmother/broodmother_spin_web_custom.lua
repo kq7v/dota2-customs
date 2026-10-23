@@ -95,6 +95,7 @@ function broodmother_spin_web_custom:UpdateTalents()
 		self.talents = {
 			has_w2 = 0,
 			w2_heal_reduce = 0,
+			w2_heal = 0,
 			w2_radius = caster:GetTalentValue("modifier_broodmother_web_2", "radius", true),
 
 			has_h1 = 0,
@@ -111,6 +112,11 @@ function broodmother_spin_web_custom:UpdateTalents()
 	if caster:HasTalent("modifier_broodmother_web_2") then
 		self.talents.has_w2 = 1
 		self.talents.w2_heal_reduce = caster:GetTalentValue("modifier_broodmother_web_2", "heal_reduce")
+		self.talents.w2_heal = caster:GetTalentValue("modifier_broodmother_web_2", "heal") / 100
+		caster:AddLifesteal(
+			self.tracker,
+			{ name = "modifier_broodmother_web_2", type = 1, value = self.talents.w2_heal }
+		)
 	end
 
 	if caster:HasTalent("modifier_broodmother_hero_1") then

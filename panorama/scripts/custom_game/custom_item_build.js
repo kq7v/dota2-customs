@@ -34,6 +34,13 @@ function FindDotaHudElement(sId)
     return GetDotaHud().FindChildTraverse(sId);
 }
 
+function CustomItemBuildShopItem(panel)
+{
+    $.RegisterEventHandler("DOTAShowAbilityShopItemTooltip", panel, (shop_panel, item) => {
+        $.DispatchEvent("DOTAShowAbilityTooltip", shop_panel, item);
+    });
+}
+
 let itemBuild;
 
 let retries = 0;
@@ -398,12 +405,13 @@ class CustomItemBuild {
             self.standartBuild.forEach((build, index) => {
                 Categories[index].style.visibility = "visible"
                 build.forEach(item => {
-                    $.CreatePanel("DOTAShopItem", Categories[index].FindChildTraverse("ItemList"), `Item${items_ids[item]}`, { 
-                        style: "width: 42px; height: width-percentage( 72.7% ); margin-bottom: 5px; margin-right: 6px;", 
+                    CustomItemBuildShopItem($.CreatePanel("DOTAShopItem", Categories[index].FindChildTraverse("ItemList"), `Item${items_ids[item]}`, {
+                        style: "width: 42px; height: width-percentage( 72.7% ); margin-bottom: 5px; margin-right: 6px;",
                         itemname: item
-                    });  
+                    }));
                 })
             })
+            Game.UpdateBasherBadges()
         }
         else {
             FindDotaHudElement("Icons").AddClass("IconsBig");
@@ -478,10 +486,10 @@ class CustomItemBuild {
             for(let j = 1; j <= 6; j++) {
                 let item = value.items[j]
                 if(item != "item_empty")
-                    $.CreatePanel("DOTAShopItem", CategoriesPanels[key], `Item${items_ids[item]}`, { 
-                        style: "width: 42px; height: width-percentage( 72.7% ); margin-bottom: 5px; margin-right: 6px;", 
+                    CustomItemBuildShopItem($.CreatePanel("DOTAShopItem", CategoriesPanels[key], `Item${items_ids[item]}`, {
+                        style: "width: 42px; height: width-percentage( 72.7% ); margin-bottom: 5px; margin-right: 6px;",
                         itemname: item
-                    });
+                    }));
             }
             let items = [
                 value.hasAghanimScepter ? "item_ultimate_scepter_2" : null,
@@ -489,13 +497,14 @@ class CustomItemBuild {
             ]; // если в категории если шард или блессинг, добавить их
             
             items.forEach(item => {
-                if (item) 
-                    $.CreatePanel("DOTAShopItem", CategoriesPanels[key], `Item${items_ids[item]}`, { 
-                        style: "width: 42px; height: width-percentage(72.7%); margin-bottom: 5px; margin-right: 6px;", 
+                if (item)
+                    CustomItemBuildShopItem($.CreatePanel("DOTAShopItem", CategoriesPanels[key], `Item${items_ids[item]}`, {
+                        style: "width: 42px; height: width-percentage(72.7%); margin-bottom: 5px; margin-right: 6px;",
                         itemname: item
-                    });
+                    }));
             });
         }
+        Game.UpdateBasherBadges()
         backPanel.RemoveClass("Hidden")
     }
     LegendaryUpdate(kv) 

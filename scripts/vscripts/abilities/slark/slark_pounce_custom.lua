@@ -73,13 +73,9 @@ function slark_pounce_custom:Precache(context)
 	PrecacheResource("particle", "particles/slark/pounce_legendary_refresh.vpcf", context)
 	PrecacheResource("particle", "particles/slark/pounce_legendary_water.vpcf", context)
 	PrecacheResource("particle", "particles/units/heroes/hero_tidehunter/tidehunter_gush_splash.vpcf", context)
-	PrecacheResource("particle", "particles/units/heroes/hero_slark/slark_shard_fish_bait.vpcf", context)
-	PrecacheResource("particle", "particles/econ/items/lion/fish_stick/fish_stick_splash.vpcf", context)
 	PrecacheResource("particle", "particles/slark/pounce_legendary_cast.vpcf", context)
 	PrecacheResource("particle", "particles/slark/pounce_armora.vpcf", context)
 	PrecacheResource("particle", "particles/slark/pounce_slow.vpcf", context)
-	PrecacheResource("particle", "particles/items4_fx/nullifier_mute.vpcf", context)
-	PrecacheResource("particle", "particles/enigma/summon_perma.vpcf", context)
 	PrecacheResource("particle", "particles/slark/pounce_pact.vpcf", context)
 
 	PrecacheUnitByNameSync("npc_dota_slark_fish_legendary", context, -1)
@@ -1068,12 +1064,6 @@ end
 
 function slark_pounce_custom_legendary:CreateTalent()
 	self:UpdateTalents()
-
-	CustomGameEventManager:Send_ServerToPlayer(
-		PlayerResource:GetPlayer(self.caster:GetPlayerOwnerID()),
-		"ability_slark_pounce_legendary",
-		{}
-	)
 
 	if self.talents.has_r7 == 1 then
 		self.caster:SwapAbilities("slark_shadow_dance_custom_legendary", "slark_pounce_custom_legendary", false, true)

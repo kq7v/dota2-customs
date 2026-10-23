@@ -48,14 +48,7 @@ function drow_ranger_innate_custom:UpdateTalents()
 			h3_status = 0,
 			h3_bonus = caster:GetTalentValue("modifier_drow_hero_3", "bonus", true),
 
-			has_q3 = 0,
-			q3_heal = 0,
-
 			has_q7 = 0,
-			q7_heal = caster:GetTalentValue("modifier_drow_frost_7", "heal", true) / 100,
-
-			has_e1 = 0,
-			e1_heal = 0,
 
 			has_r4 = 0,
 			r4_linger = caster:GetTalentValue("modifier_drow_marksman_4", "linger", true),
@@ -74,21 +67,8 @@ function drow_ranger_innate_custom:UpdateTalents()
 		self.talents.h3_status = caster:GetTalentValue("modifier_drow_hero_3", "status")
 	end
 
-	if caster:HasTalent("modifier_drow_frost_3") then
-		self.talents.has_q3 = 1
-		self.talents.q3_heal = caster:GetTalentValue("modifier_drow_frost_3", "heal") / 100
-		caster:AddDamageEvent_out(self.tracker, true)
-	end
-
 	if caster:HasTalent("modifier_drow_frost_7") then
 		self.talents.has_q7 = 1
-		caster:AddDamageEvent_out(self.tracker, true)
-	end
-
-	if caster:HasTalent("modifier_drow_multishot_1") then
-		self.talents.has_e1 = 1
-		self.talents.e1_heal = caster:GetTalentValue("modifier_drow_multishot_1", "heal") / 100
-		caster:AddDamageEvent_out(self.tracker, true)
 	end
 
 	if caster:HasTalent("modifier_drow_marksman_4") then
@@ -252,47 +232,6 @@ function modifier_drow_ranger_innate_custom:UpdateParticle()
 		ParticleManager:SetParticleControl(self.particle, 2, Vector(2, 0, 0))
 	else
 		ParticleManager:SetParticleControl(self.particle, 2, Vector(1, 0, 0))
-	end
-end
-
-function modifier_drow_ranger_innate_custom:DamageEvent_out(params)
-	if not IsServer() then
-		return
-	end
-
-	local result = self.parent:CheckLifesteal(params)
-	if not result then
-		return
-	end
-
-	if self.ability.talents.has_q3 == 1 and not params.inflictor then
-		self.parent:GenericHeal(
-			params.damage * result * self.ability.talents.q3_heal,
-			self.ability,
-			true,
-			nil,
-			"modifier_drow_frost_3"
-		)
-	end
-
-	if self.ability.talents.has_e1 == 1 and params.inflictor then
-		self.parent:GenericHeal(
-			params.damage * result * self.ability.talents.e1_heal,
-			self.ability,
-			false,
-			"particles/items3_fx/octarine_core_lifesteal.vpcf",
-			"modifier_drow_multishot_1"
-		)
-	end
-
-	if params.attack_damage_flag == "drow_q7" and not params.inflictor then
-		self.parent:GenericHeal(
-			params.damage * result * self.ability.talents.q7_heal,
-			self.ability,
-			true,
-			"",
-			"modifier_drow_frost_7"
-		)
 	end
 end
 

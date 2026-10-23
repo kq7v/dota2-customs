@@ -120,7 +120,6 @@ function antimage_mana_break_custom:UpdateTalents(name)
 			q7_talent_cd = caster:GetTalentValue("modifier_antimage_break_7", "talent_cd", true),
 			q7_status = caster:GetTalentValue("modifier_antimage_break_7", "status", true),
 
-			has_h2 = 0,
 			h2_heal = 0,
 			h2_bonus = caster:GetTalentValue("modifier_antimage_hero_2", "bonus", true),
 			h2_mana = caster:GetTalentValue("modifier_antimage_hero_2", "mana", true) / 100,
@@ -144,12 +143,6 @@ function antimage_mana_break_custom:UpdateTalents(name)
 
 			has_w1 = 0,
 			w1_damage = 0,
-
-			has_w3 = 0,
-			w3_heal = 0,
-
-			has_r2 = 0,
-			r2_heal = 0,
 		}
 	end
 
@@ -181,9 +174,16 @@ function antimage_mana_break_custom:UpdateTalents(name)
 	end
 
 	if caster:HasTalent("modifier_antimage_hero_2") then
-		self.talents.has_h2 = 1
 		self.talents.h2_heal = caster:GetTalentValue("modifier_antimage_hero_2", "heal") / 100
-		caster:AddDamageEvent_out(self.tracker, true)
+		caster:AddLifesteal(self.tracker, {
+			name = "modifier_antimage_hero_2",
+			value = function(params)
+				if params.unit and self:GetManaK(params.unit) <= self.talents.h2_mana then
+					return self.talents.h2_heal * self.talents.h2_bonus
+				end
+				return self.talents.h2_heal
+			end,
+		})
 	end
 
 	if caster:HasTalent("modifier_antimage_hero_3") then
@@ -210,18 +210,6 @@ function antimage_mana_break_custom:UpdateTalents(name)
 		self.talents.has_w2 = 1
 		self.talents.w2_evasion = caster:GetTalentValue("modifier_antimage_blink_2", "evasion")
 		self.talents.w2_move = caster:GetTalentValue("modifier_antimage_blink_2", "move")
-	end
-
-	if caster:HasTalent("modifier_antimage_blink_3") then
-		self.talents.has_w3 = 1
-		self.talents.w3_heal = caster:GetTalentValue("modifier_antimage_blink_3", "heal") / 100
-		caster:AddDamageEvent_out(self.tracker, true)
-	end
-
-	if caster:HasTalent("modifier_antimage_void_2") then
-		self.talents.has_r2 = 1
-		self.talents.r2_heal = caster:GetTalentValue("modifier_antimage_void_2", "heal") / 100
-		caster:AddDamageEvent_out(self.tracker, true)
 	end
 end
 
@@ -334,64 +322,6 @@ function modifier_antimage_mana_break_custom:OnIntervalThink()
 			)
 		end
 	end
-end
-
-function modifier_antimage_mana_break_custom:DamageEvent_out(params)
-	if not IsServer() then
-		return
-	end
-	local attacker = params.attacker
-
-	local result = self.parent:CheckLifesteal(params, nil, true)
-	if not result then
-		return
-	end
-
-	if
-		attacker.owner
-		and attacker.owner == self.parent
-		and not params.inflictor
-		and attacker:HasModifier("modifier_antimage_blink_custom_illusion")
-	then
-		self.parent:GenericHeal(
-			self.ability.talents.w3_heal * params.damage * result,
-			self.ability,
-			true,
-			"",
-			"modifier_antimage_blink_3"
-		)
-	end
-
-	if self.parent ~= attacker then
-		return
-	end
-
-	if self.ability.talents.has_r2 == 1 and params.inflictor then
-		self.parent:GenericHeal(
-			self.ability.talents.r2_heal * result * params.damage,
-			self.ability,
-			true,
-			"particles/items3_fx/octarine_core_lifesteal.vpcf",
-			"modifier_antimage_void_2"
-		)
-	end
-
-	if self.ability.talents.has_h2 == 0 then
-		return
-	end
-	local target = params.unit
-	local mana_k = self.ability:GetManaK(target)
-	local heal = self.ability.talents.h2_heal * params.damage * result
-	local effect = ""
-
-	if mana_k <= self.ability.talents.h2_mana then
-		if not params.inflictor then
-			effect = nil
-		end
-		heal = heal * self.ability.talents.h2_bonus
-	end
-
-	self.parent:GenericHeal(heal, self.ability, true, effect, "modifier_antimage_hero_2")
 end
 
 function modifier_antimage_mana_break_custom:AttackEvent_inc(params)

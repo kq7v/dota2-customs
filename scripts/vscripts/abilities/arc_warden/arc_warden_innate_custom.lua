@@ -36,15 +36,8 @@ function arc_warden_innate_custom:UpdateTalents(name)
 	if not self.init then
 		self.init = true
 		self.talents = {
-			has_w2 = 0,
-			w2_heal = 0,
-			w2_bonus = caster:GetTalentValue("modifier_arc_warden_field_2", "bonus", true),
-
 			has_w3 = 0,
 			w3_damage = 0,
-
-			has_e3 = 0,
-			e3_heal = 0,
 
 			has_r2 = 0,
 			r2_move = 0,
@@ -53,21 +46,9 @@ function arc_warden_innate_custom:UpdateTalents(name)
 		}
 	end
 
-	if caster:HasTalent("modifier_arc_warden_field_2") then
-		self.talents.has_w2 = 1
-		self.talents.w2_heal = caster:GetTalentValue("modifier_arc_warden_field_2", "heal") / 100
-		caster:AddDamageEvent_out(self.tracker, true)
-	end
-
 	if caster:HasTalent("modifier_arc_warden_field_3") then
 		self.talents.has_w3 = 1
 		self.talents.w3_damage = caster:GetTalentValue("modifier_arc_warden_field_3", "damage") / 100
-	end
-
-	if caster:HasTalent("modifier_arc_warden_spark_3") then
-		self.talents.has_e3 = 1
-		self.talents.e3_heal = caster:GetTalentValue("modifier_arc_warden_spark_3", "heal") / 100
-		caster:AddDamageEvent_out(self.tracker, true)
 	end
 
 	if caster:HasTalent("modifier_arc_warden_double_2") then
@@ -119,55 +100,6 @@ function modifier_arc_warden_ancients_ally_custom:OnIntervalThink()
 	if IsDire(tostring(base)) then
 		self:SetStackCount(1)
 	end
-end
-
-function modifier_arc_warden_ancients_ally_custom:DamageEvent_out(params)
-	if not IsServer() then
-		return
-	end
-	local attacker = params.attacker
-
-	if attacker:IsIllusion() and (not attacker.owner or attacker.owner ~= self.parent) then
-		return
-	end
-	if attacker:IsRealHero() and attacker ~= self.parent then
-		return
-	end
-
-	local result = self.parent:CheckLifesteal(params)
-
-	if not result then
-		return
-	end
-
-	if params.inflictor and self.ability.talents.has_e3 == 1 then
-		attacker:GenericHeal(
-			params.damage * result * self.ability.talents.e3_heal,
-			self.ability,
-			true,
-			"particles/items3_fx/octarine_core_lifesteal.vpcf",
-			"modifier_arc_warden_spark_3"
-		)
-		return
-	end
-
-	if params.inflictor then
-		return
-	end
-	if self.ability.talents.has_w2 == 0 then
-		return
-	end
-
-	local heal = self.ability.talents.w2_heal * params.damage * result
-	local effect = ""
-	if
-		attacker:HasModifier("modifier_arc_warden_magnetic_field_custom_speed_count")
-		or attacker:HasModifier("modifier_arc_warden_magnetic_field_custom_linger")
-	then
-		heal = heal * self.ability.talents.w2_bonus
-		effect = nil
-	end
-	attacker:GenericHeal(heal, self.ability, true, effect, "modifier_arc_warden_field_2")
 end
 
 function modifier_arc_warden_ancients_ally_custom:DeclareFunctions()

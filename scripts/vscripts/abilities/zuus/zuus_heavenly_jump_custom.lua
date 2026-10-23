@@ -152,17 +152,17 @@ function zuus_heavenly_jump_custom:UpdateTalents(name)
 		self.talents.has_e3 = 1
 		self.talents.e3_stats = caster:GetTalentValue("modifier_zuus_jump_3", "stats")
 		self.talents.e3_damage = caster:GetTalentValue("modifier_zuus_jump_3", "damage")
-		caster:AddAttackEvent_out(self.tracker, true)
+		caster:AddProc(self.tracker, { land = true, extra = false })
 	end
 
 	if caster:HasTalent("modifier_zuus_jump_4") then
 		self.talents.has_e4 = 1
-		caster:AddAttackEvent_out(self.tracker, true)
+		caster:AddProc(self.tracker, { land = true, extra = false })
 	end
 
 	if caster:HasTalent("modifier_zuus_jump_7") then
 		self.talents.has_e7 = 1
-		caster:AddAttackEvent_out(self.tracker, true)
+		caster:AddProc(self.tracker, { land = true, extra = false })
 		if name == "modifier_zuus_jump_7" then
 			caster:UpdateUIlong({ max = self.talents.e7_duration, stack = 0, active = 0, style = "ZeusJump" })
 		end
@@ -511,21 +511,12 @@ function modifier_zuus_heavenly_jump_custom_passive:OnRefresh()
 	self.ability.range = self.ability:GetSpecialValueFor("range")
 end
 
-function modifier_zuus_heavenly_jump_custom_passive:AttackEvent_out(params)
-	if not IsServer() then
-		return
-	end
-	if self.parent ~= params.attacker then
-		return
-	end
+function modifier_zuus_heavenly_jump_custom_passive:GetProcChance()
+	return 100
+end
 
+function modifier_zuus_heavenly_jump_custom_passive:AttackProc(params, name)
 	local target = params.target
-	if not target:IsUnit() then
-		return
-	end
-	if params.no_attack_cooldown then
-		return
-	end
 
 	self.ability:ProcEffects(target)
 end

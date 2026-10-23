@@ -202,7 +202,7 @@ function life_stealer_infest_custom:UpdateTalents(name)
 
 	if caster:HasTalent("modifier_lifestealer_infest_4") then
 		self.talents.has_r4 = 1
-		caster:AddAttackEvent_out(self.tracker, true)
+		caster:AddProc(self.tracker, { land = true, illusion = true })
 	end
 
 	if caster:HasTalent("modifier_lifestealer_infest_7") then
@@ -831,14 +831,11 @@ function modifier_life_stealer_infest_custom_tracker:SpellEvent(params)
 	end
 end
 
-function modifier_life_stealer_infest_custom_tracker:AttackEvent_out(params)
-	if not IsServer() then
-		return
-	end
-	if not params.target:IsUnit() then
-		return
-	end
+function modifier_life_stealer_infest_custom_tracker:GetProcChance()
+	return 100
+end
 
+function modifier_life_stealer_infest_custom_tracker:AttackProc(params, name)
 	local attacker = params.attacker
 
 	if attacker.owner ~= self.parent then
@@ -1119,6 +1116,8 @@ function life_stealer_infest_custom_legendary:UpdateTalents(name)
 			has_r4 = 0,
 			r4_heal_amp = caster:GetTalentValue("modifier_lifestealer_infest_4", "heal_amp", true),
 
+			w2_heal = 0,
+
 			has_h1 = 0,
 			h1_cd = 0,
 
@@ -1142,6 +1141,10 @@ function life_stealer_infest_custom_legendary:UpdateTalents(name)
 
 	if caster:HasTalent("modifier_lifestealer_infest_4") then
 		self.talents.has_r4 = 1
+	end
+
+	if caster:HasTalent("modifier_lifestealer_wounds_2") then
+		self.talents.w2_heal = caster:GetTalentValue("modifier_lifestealer_wounds_2", "heal") / 100
 	end
 
 	if caster:HasTalent("modifier_lifestealer_hero_1") then
@@ -1445,9 +1448,16 @@ function modifier_life_stealer_infest_custom_legendary_creep:OnCreated()
 	self.parent:SetBaseMoveSpeed(self.move)
 	self.parent:SetBaseMagicalResistanceValue(self.magic)
 
-	self.caster:AddAttackEvent_out(self, true)
+	self.parent:AddProc(self, { land = true, any = true })
 	self.parent:AddAttackCreateEvent(self, true)
 	self.parent:AddOrderFilter(self)
+	self.parent:AddLifesteal(self, {
+		name = "modifier_lifestealer_wounds_2",
+		type = 1,
+		value = function()
+			return self.ability.talents.w2_heal
+		end,
+	})
 
 	self.interval = 1
 	self:StartIntervalThink(0.1)
@@ -1535,13 +1545,11 @@ function modifier_life_stealer_infest_custom_legendary_creep:AttackCreateEvent(p
 	self.parent:EmitSound("Lifestealer." .. self.unit_name .. "_attack_start")
 end
 
-function modifier_life_stealer_infest_custom_legendary_creep:AttackEvent_out(params)
-	if not IsServer() then
-		return
-	end
-	if self.parent ~= params.attacker then
-		return
-	end
+function modifier_life_stealer_infest_custom_legendary_creep:GetProcChance()
+	return 100
+end
+
+function modifier_life_stealer_infest_custom_legendary_creep:AttackProc(params, name)
 	params.target:EmitSound("Lifestealer." .. self.unit_name .. "_attack_end")
 end
 

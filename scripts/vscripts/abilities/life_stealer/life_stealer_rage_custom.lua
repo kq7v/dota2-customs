@@ -356,7 +356,7 @@ function modifier_life_stealer_rage_custom:OnCreated()
 
 	self.shield_count = 0
 	if self.ability.talents.has_q1 == 1 or self.ability.talents.has_e4 == 1 then
-		self.caster:AddAttackEvent_out(self, true)
+		self.caster:AddProc(self, { land = true, illusion = true })
 	end
 
 	local pfx_name = wearables_system:GetParticleReplacementAbility(
@@ -514,18 +514,14 @@ function modifier_life_stealer_rage_custom:OnDestroy()
 	end
 end
 
-function modifier_life_stealer_rage_custom:AttackEvent_out(params)
-	if not IsServer() then
-		return
-	end
+function modifier_life_stealer_rage_custom:GetProcChance()
+	return 100
+end
 
-	local target = params.target
+function modifier_life_stealer_rage_custom:AttackProc(params, name)
 	local real_attacker = params.attacker
 	local attacker = real_attacker.lifestealer_creep and real_attacker.owner or real_attacker
 
-	if not target:IsUnit() then
-		return
-	end
 	if self.caster ~= attacker then
 		return
 	end

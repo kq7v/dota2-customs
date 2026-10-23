@@ -106,7 +106,9 @@ function arc_warden_magnetic_field_custom:UpdateTalents()
 			w1_radius = caster:GetTalentValue("modifier_arc_warden_field_1", "radius", true),
 
 			has_w2 = 0,
+			w2_heal = 0,
 			w2_duration = caster:GetTalentValue("modifier_arc_warden_field_2", "duration", true),
+			w2_bonus = caster:GetTalentValue("modifier_arc_warden_field_2", "bonus", true),
 
 			has_w3 = 0,
 			w3_agi = 0,
@@ -142,22 +144,36 @@ function arc_warden_magnetic_field_custom:UpdateTalents()
 		self.talents.has_w1 = 1
 		self.talents.w1_cleave = caster:GetTalentValue("modifier_arc_warden_field_1", "cleave") / 100
 		self.talents.w1_speed = caster:GetTalentValue("modifier_arc_warden_field_1", "speed")
-		caster:AddAttackEvent_out(self.tracker, true)
+		caster:AddProc(self.tracker, { land = true })
 	end
 
 	if caster:HasTalent("modifier_arc_warden_field_2") then
 		self.talents.has_w2 = 1
+		self.talents.w2_heal = caster:GetTalentValue("modifier_arc_warden_field_2", "heal") / 100
+		caster:AddLifesteal(self.tracker, {
+			name = "modifier_arc_warden_field_2",
+			type = 2,
+			value = function()
+				if
+					caster:HasModifier("modifier_arc_warden_magnetic_field_custom_speed_count")
+					or caster:HasModifier("modifier_arc_warden_magnetic_field_custom_linger")
+				then
+					return self.talents.w2_heal * self.talents.w2_bonus
+				end
+				return self.talents.w2_heal
+			end,
+		})
 	end
 
 	if caster:HasTalent("modifier_arc_warden_field_3") then
 		self.talents.has_w3 = 1
 		self.talents.w3_agi = caster:GetTalentValue("modifier_arc_warden_field_3", "agi")
-		caster:AddAttackEvent_out(self.tracker, true)
+		caster:AddProc(self.tracker, { land = true })
 	end
 
 	if caster:HasTalent("modifier_arc_warden_field_4") then
 		self.talents.has_w4 = 1
-		caster:AddAttackEvent_out(self.tracker, true)
+		caster:AddProc(self.tracker, { land = true })
 	end
 
 	if caster:HasTalent("modifier_arc_warden_field_7") then
@@ -661,20 +677,15 @@ function modifier_arc_warden_magnetic_field_custom_tracker:AttackStartEvent_out(
 	end
 end
 
-function modifier_arc_warden_magnetic_field_custom_tracker:AttackEvent_out(params)
-	if not IsServer() then
-		return
-	end
+function modifier_arc_warden_magnetic_field_custom_tracker:GetProcChance()
+	return 100
+end
+
+function modifier_arc_warden_magnetic_field_custom_tracker:AttackProc(params, name)
 	local attacker = params.attacker
 	local target = params.target
 
-	if not params.target:IsUnit() then
-		return
-	end
 	if not attacker:IsRealHero() then
-		return
-	end
-	if attacker ~= self.parent then
 		return
 	end
 

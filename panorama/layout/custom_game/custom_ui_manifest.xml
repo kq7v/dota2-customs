@@ -13,9 +13,7 @@
 	<scripts>
 		<include src="s2r://panorama/scripts/custom_game/events_protector.vjs" />
 		<include src="s2r://panorama/scripts/custom_game/upgrades_data.vjs" />
-		<include src="s2r://panorama/scripts/custom_game/vector_targeting_marci.vjs" />
-		<include src="s2r://panorama/scripts/custom_game/vector_targeting.vjs" />
-		<include src="s2r://panorama/scripts/custom_game/custom_ability_particles.vjs" />
+		<include src="s2r://panorama/layout/custom_game/ability_targeting/ability_targeting.vjs" />
 		<include src="s2r://panorama/scripts/custom_game/custom_ui_manifest.vjs" />
 		<include src="s2r://panorama/scripts/custom_game/selection.vjs" />
 		<include src="s2r://panorama/scripts/custom_game/voice_radius.vjs" />

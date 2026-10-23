@@ -118,7 +118,7 @@ function bloodseeker_bloodrage_custom:UpdateTalents()
 			/ self.talents.q2_max
 		self.talents.q2_damage_reduce_stack = caster:GetTalentValue("modifier_bloodseeker_bloodrage_2", "damage_reduce")
 			/ self.talents.q2_max
-		caster:AddAttackEvent_out(self.tracker, true)
+		caster:AddProc(self.tracker, { land = true })
 	end
 
 	if caster:HasTalent("modifier_bloodseeker_hero_1") then
@@ -130,7 +130,7 @@ function bloodseeker_bloodrage_custom:UpdateTalents()
 		self.talents.has_q3 = 1
 		self.talents.q3_damage_sec = caster:GetTalentValue("modifier_bloodseeker_bloodrage_3", "damage")
 			/ self.talents.q3_duration
-		caster:AddAttackEvent_out(self.tracker, true)
+		caster:AddProc(self.tracker, { land = true })
 	end
 
 	if caster:HasTalent("modifier_bloodseeker_bloodrage_4") then
@@ -503,7 +503,7 @@ function modifier_bloodseeker_bloodrage_custom_tracker:InitShard()
 	end
 
 	self.init_shard = true
-	self.parent:AddAttackEvent_out(self, true)
+	self.parent:AddProc(self, { land = true })
 end
 
 function modifier_bloodseeker_bloodrage_custom_tracker:GetModifierIncomingDamage_Percentage()
@@ -573,18 +573,12 @@ function modifier_bloodseeker_bloodrage_custom_tracker:OnIntervalThink()
 	self:UpdateUI()
 end
 
-function modifier_bloodseeker_bloodrage_custom_tracker:AttackEvent_out(params)
-	if not IsServer() then
-		return
-	end
-	if self.parent ~= params.attacker then
-		return
-	end
-	local target = params.target
+function modifier_bloodseeker_bloodrage_custom_tracker:GetProcChance()
+	return 100
+end
 
-	if not target:IsUnit() then
-		return
-	end
+function modifier_bloodseeker_bloodrage_custom_tracker:AttackProc(params, name)
+	local target = params.target
 	local mod = self.parent:HasModifier("modifier_bloodseeker_bloodrage_custom")
 
 	if self.ability.talents.has_q3 == 1 and mod then

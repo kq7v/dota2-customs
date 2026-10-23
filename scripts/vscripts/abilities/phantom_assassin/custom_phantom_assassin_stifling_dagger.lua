@@ -99,6 +99,7 @@ function custom_phantom_assassin_stifling_dagger:UpdateTalents(name)
 
 			has_q3 = 0,
 			q3_damage = 0,
+			q3_heal = 0,
 			q3_range = caster:GetTalentValue("modifier_phantom_assassin_dagger_3", "range", true),
 			q3_duration = caster:GetTalentValue("modifier_phantom_assassin_dagger_3", "duration", true),
 			q3_damage_type = caster:GetTalentValue("modifier_phantom_assassin_dagger_3", "damage_type", true),
@@ -126,6 +127,7 @@ function custom_phantom_assassin_stifling_dagger:UpdateTalents(name)
 			q7_stack_max = caster:GetTalentValue("modifier_phantom_assassin_dagger_7", "stack_max", true),
 			q7_timer = caster:GetTalentValue("modifier_phantom_assassin_dagger_7", "timer", true),
 			q7_stun = caster:GetTalentValue("modifier_phantom_assassin_dagger_7", "stun", true),
+			q7_creeps = caster:GetTalentValue("modifier_phantom_assassin_dagger_7", "creeps", true) / 100,
 		}
 	end
 
@@ -138,6 +140,11 @@ function custom_phantom_assassin_stifling_dagger:UpdateTalents(name)
 	if caster:HasTalent("modifier_phantom_assassin_dagger_3") then
 		self.talents.has_q3 = 1
 		self.talents.q3_damage = caster:GetTalentValue("modifier_phantom_assassin_dagger_3", "damage") / 100
+		self.talents.q3_heal = caster:GetTalentValue("modifier_phantom_assassin_dagger_3", "heal") / 100
+		caster:AddLifesteal(
+			self.tracker,
+			{ name = "modifier_phantom_assassin_dagger_3", type = 1, value = self.talents.q3_heal }
+		)
 	end
 
 	if caster:HasTalent("modifier_phantom_assassin_dagger_4") then
@@ -523,6 +530,10 @@ function modifier_custom_phantom_assassin_stifling_dagger_tracker:GetModifierTot
 
 	if self.parent.pa_damage then
 		self.damageTable.damage = self.damageTable.damage * self.parent.pa_damage
+	end
+
+	if self.parent.pa_source == "modifier_phantom_assassin_dagger_7" and params.target:IsCreep() then
+		self.damageTable.damage = self.damageTable.damage * (1 + self.ability.talents.q7_creeps)
 	end
 
 	DoDamage(self.damageTable, self.parent.pa_source)

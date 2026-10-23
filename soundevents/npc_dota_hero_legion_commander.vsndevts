@@ -76,20 +76,6 @@
 		type = "dota_src1_3d"
 		volume = 1.6
 	}
-	Lc.Odds_Purge = 
-	{
-		vsnd_files = 
-		[
-			"sounds/items/item_diffusalblade.vsnd",
-		]
-		type = "dota_src1_3d"
-		pitch = 1
-		soundlevel = 100
-		pitch_rand_max = 0.05
-		distance_max = 1600
-		pitch_rand_min = -0.05
-		volume = 0.7
-	}
 	Lc.Duel_target_effect_voice = 
 	{
 		vsnd_files = 
@@ -208,20 +194,6 @@
 		]
 		type = "dota_src1_3d"
 		volume = 1.3
-	}
-	Lc.Press_Purge = 
-	{
-		vsnd_files = 
-		[
-			"sounds/weapons/hero/brewmaster/dispel_magic.vsnd",
-		]
-		type = "dota_src1_3d"
-		pitch = 1
-		soundlevel = 100
-		pitch_rand_max = -0.1
-		distance_max = 1600
-		pitch_rand_min = -0.1
-		volume = 0.8
 	}
 	Voice.Legion.6_1 = 
 	{
@@ -349,20 +321,6 @@
 		type = "dota_src1_3d"
 		volume = 1.6
 	}
-	Lc.Courage_armor2 = 
-	{
-		vsnd_files = 
-		[
-			"sounds/weapons/hero/brewmaster/brawler_cast.vsnd",
-		]
-		type = "dota_src1_3d"
-		pitch = 1
-		soundlevel = 100
-		pitch_rand_max = 0.05
-		distance_max = 1600
-		pitch_rand_min = -0.05
-		volume = 1.2
-	}
 	Voice.Legion.1_1 = 
 	{
 		vsnd_files = 
@@ -437,20 +395,6 @@
 		pitch_rand_min = 0
 		pitch_rand_max = 0
 		volume = 2.2
-	}
-	Lc.Odds_Proc = 
-	{
-		vsnd_files = 
-		[
-			"sounds/items/magic_lamp.vsnd",
-		]
-		type = "dota_src1_3d"
-		pitch = 1
-		soundlevel = 100
-		pitch_rand_max = 0.05
-		distance_max = 1600
-		pitch_rand_min = -0.05
-		volume = 1.3
 	}
 	Lc.Duel_scepter_duel = 
 	{

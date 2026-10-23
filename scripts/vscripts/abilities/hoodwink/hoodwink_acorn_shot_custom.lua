@@ -90,6 +90,7 @@ function hoodwink_acorn_shot_custom:UpdateTalents()
 			q1_bonus = caster:GetTalentValue("modifier_hoodwink_acorn_1", "bonus", true),
 
 			q2_cd = 0,
+			q2_heal = 0,
 
 			h1_range = 0,
 			h1_mana = 0,
@@ -127,6 +128,11 @@ function hoodwink_acorn_shot_custom:UpdateTalents()
 
 	if caster:HasTalent("modifier_hoodwink_acorn_2") then
 		self.talents.q2_cd = caster:GetTalentValue("modifier_hoodwink_acorn_2", "cd")
+		self.talents.q2_heal = caster:GetTalentValue("modifier_hoodwink_acorn_2", "heal") / 100
+		caster:AddLifesteal(
+			self.tracker,
+			{ name = "modifier_hoodwink_acorn_2", type = 2, value = self.talents.q2_heal }
+		)
 	end
 
 	if caster:HasTalent("modifier_hoodwink_hero_1") then
@@ -624,7 +630,7 @@ function modifier_hoodwink_acorn_shot_custom_tracker:OnCreated()
 		damage_type = DAMAGE_TYPE_PHYSICAL,
 		damage_flags = DOTA_DAMAGE_FLAG_BYPASSES_PHYSICAL_BLOCK,
 	}
-	self.parent:AddAttackEvent_out(self)
+	self.parent:AddProc(self, { land = true, sync = true })
 end
 
 function modifier_hoodwink_acorn_shot_custom_tracker:OnRefresh()
@@ -712,6 +718,21 @@ function modifier_hoodwink_acorn_shot_custom_tracker:UpdateUI()
 	})
 end
 
+function modifier_hoodwink_acorn_shot_custom_tracker:GetCritChance()
+	if self.ability.talents.has_q1 == 0 then
+		return 0
+	end
+	if self.parent:HasModifier("modifier_hoodwink_acorn_shot_custom") then
+		return self.ability.talents.q1_chance * self.ability.talents.q1_bonus, 5124
+	end
+
+	return self.ability.talents.q1_chance, 5123
+end
+
+function modifier_hoodwink_acorn_shot_custom_tracker:GetCritDamage()
+	return self.ability.talents.q1_damage
+end
+
 function modifier_hoodwink_acorn_shot_custom_tracker:GetModifierPreAttack_CriticalStrike(params)
 	if not IsServer() then
 		return
@@ -726,18 +747,12 @@ function modifier_hoodwink_acorn_shot_custom_tracker:GetModifierPreAttack_Critic
 		return
 	end
 
-	local chance = self.ability.talents.q1_chance
-	local index = 5123
-	if self.parent:HasModifier("modifier_hoodwink_acorn_shot_custom") then
-		index = 5124
-		chance = chance * self.ability.talents.q1_bonus
-	end
-
+	local chance, index = self:GetCritChance()
 	if not RollPseudoRandomPercentage(chance, index, self.parent) then
 		return
 	end
 	self.records[params.record] = true
-	return self.ability.talents.q1_damage
+	return self:GetCritDamage()
 end
 
 function modifier_hoodwink_acorn_shot_custom_tracker:AttackStartEvent_out(params)
@@ -783,17 +798,11 @@ function modifier_hoodwink_acorn_shot_custom_tracker:RecordDestroyEvent(params)
 	self.records[params.record] = nil
 end
 
-function modifier_hoodwink_acorn_shot_custom_tracker:AttackEvent_out(params)
-	if not IsServer() then
-		return
-	end
-	if self.parent ~= params.attacker then
-		return
-	end
-	if not params.target:IsUnit() then
-		return
-	end
+function modifier_hoodwink_acorn_shot_custom_tracker:GetProcChance()
+	return 100
+end
 
+function modifier_hoodwink_acorn_shot_custom_tracker:AttackProc(params)
 	if self.parent:HasModifier("modifier_hoodwink_acorn_shot_custom") then
 		self.damage_table.damage = params.damage * self.ability.aoe_damage
 		self.damage_table.victim = params.target

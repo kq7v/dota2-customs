@@ -69,20 +69,6 @@
 		soundlevel = 100
 		pitch = 1
 	}
-	Drow.Frost_legendary_damage = 
-	{
-		type = "dota_src1_3d"
-		vsnd_files = 
-		[
-			"sounds/weapons/hero/tusk/punch_damage.vsnd",
-		]
-		volume = 1
-		pitch_rand_min = 0.3
-		pitch_rand_max = 0.5
-		distance_max = 1600
-		soundlevel = 100
-		pitch = 1
-	}
 	Drow.Frost_legendary_stun = 
 	{
 		type = "dota_src1_3d"
@@ -412,21 +398,6 @@
 		type = "dota_src1_3d"
 		distance_max = 1600
 	}
-	Drow.Mark_knock = 
-	{
-		volume = 0.6
-		vsnd_files = 
-		[
-			"sounds/weapons/hero/drow_ranger/marksmanship_target.vsnd",
-		]
-		pitch_rand_max = 0
-		pitch_rand_min = -0.1
-		pitch = 1
-		soundlevel = 100
-		volume_fade_out = 0.5
-		type = "dota_src1_3d"
-		distance_max = 1600
-	}
 	Drow.Scepter_return = 
 	{
 		volume = 0.85
@@ -450,20 +421,6 @@
 		[
 			"sounds/vo/drowranger/dro_inthebag_01.vsnd",
 		]
-	}
-	Drow.Silence_legendary_proc = 
-	{
-		type = "dota_src1_3d"
-		vsnd_files = 
-		[
-			"sounds/weapons/hero/phantom_lancer/spirit_lance_impact.vsnd",
-		]
-		volume = 0.7
-		pitch_rand_min = -0.2
-		pitch_rand_max = -0.1
-		distance_max = 1600
-		soundlevel = 100
-		pitch = 1
 	}
 	DoubleRating.npc_dota_hero_drow_ranger_alt1 = 
 	{

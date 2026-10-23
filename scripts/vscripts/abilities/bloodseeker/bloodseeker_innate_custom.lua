@@ -35,7 +35,6 @@ function bloodseeker_innate_custom:UpdateTalents()
 			h2_shield_max = 0,
 			h2_shield = 0,
 
-			has_h3 = 0,
 			h3_heal = 0,
 			h3_health = caster:GetTalentValue("modifier_bloodseeker_hero_3", "health", true),
 			h3_bonus = caster:GetTalentValue("modifier_bloodseeker_hero_3", "bonus", true),
@@ -49,9 +48,16 @@ function bloodseeker_innate_custom:UpdateTalents()
 	end
 
 	if caster:HasTalent("modifier_bloodseeker_hero_3") then
-		self.talents.has_h3 = 1
 		self.talents.h3_heal = caster:GetTalentValue("modifier_bloodseeker_hero_3", "heal") / 100
-		caster:AddDamageEvent_out(self.tracker, true)
+		caster:AddLifesteal(self.tracker, {
+			name = "modifier_bloodseeker_hero_3",
+			value = function(params)
+				if params.unit and params.unit:GetHealthPercent() <= self.talents.h3_health then
+					return self.talents.h3_heal * self.talents.h3_bonus
+				end
+				return self.talents.h3_heal
+			end,
+		})
 	end
 end
 
@@ -104,41 +110,23 @@ function modifier_bloodseeker_sanguivore_custom:InitScepter()
 	end
 
 	self.init_scepter = true
-	self.parent:AddDamageEvent_out(self, true)
+	self.parent:AddLifesteal(self, {
+		heal = false,
+		proc = "LifestealShield",
+		value = function(params)
+			if not self.parent:HasScepter() then
+				return 0
+			end
+			if not params.unit:HasModifier("modifier_bloodseeker_rupture_custom") then
+				return 0
+			end
+			return self.ability.scepter_shield
+		end,
+	})
 end
 
-function modifier_bloodseeker_sanguivore_custom:DamageEvent_out(params)
-	if not IsServer() then
-		return
-	end
-	local target = params.unit
-
-	if self.parent ~= params.attacker then
-		return
-	end
-	if not target:IsUnit() then
-		return
-	end
-
-	local result = self.parent:CheckLifesteal(params)
-	if not result then
-		return
-	end
-
-	if self.ability.talents.has_h3 == 1 then
-		local heal = self.ability.talents.h3_heal * params.damage
-		local effect = ""
-		if target:GetHealthPercent() <= self.ability.talents.h3_health then
-			effect = "particles/items3_fx/octarine_core_lifesteal.vpcf"
-			heal = heal * self.ability.talents.h3_bonus
-		end
-		self.parent:GenericHeal(heal * result, self.ability, true, effect, "modifier_bloodseeker_hero_3")
-	end
-
-	if self.parent:HasScepter() and target:HasModifier("modifier_bloodseeker_rupture_custom") then
-		local shield = params.damage * self.ability.scepter_shield * result
-		self:AddShield(shield)
-	end
+function modifier_bloodseeker_sanguivore_custom:LifestealShield(params, shield)
+	self:AddShield(shield)
 end
 
 function modifier_bloodseeker_sanguivore_custom:DeathEvent(params)

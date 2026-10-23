@@ -78,6 +78,7 @@ function witch_doctor_death_ward_custom:UpdateTalents()
 
 			has_r3 = 0,
 			r3_damage = 0,
+			r3_heal = 0,
 			r3_duration = caster:GetTalentValue("modifier_witch_doctor_deathward_3", "duration", true),
 			r3_bva = caster:GetTalentValue("modifier_witch_doctor_deathward_3", "bva", true),
 			r3_max = caster:GetTalentValue("modifier_witch_doctor_deathward_3", "max", true),
@@ -92,6 +93,8 @@ function witch_doctor_death_ward_custom:UpdateTalents()
 			r7_bva = caster:GetTalentValue("modifier_witch_doctor_deathward_7", "bva", true),
 			r7_base = caster:GetTalentValue("modifier_witch_doctor_deathward_7", "base", true),
 			r7_armor = caster:GetTalentValue("modifier_witch_doctor_deathward_7", "armor", true),
+
+			h3_mana = 0,
 
 			has_h6 = 0,
 			h6_bkb_cd = caster:GetTalentValue("modifier_witch_doctor_hero_6", "bkb_cd", true),
@@ -119,7 +122,12 @@ function witch_doctor_death_ward_custom:UpdateTalents()
 	if caster:HasTalent("modifier_witch_doctor_deathward_3") then
 		self.talents.has_r3 = 1
 		self.talents.r3_damage = caster:GetTalentValue("modifier_witch_doctor_deathward_3", "damage") / 100
+		self.talents.r3_heal = caster:GetTalentValue("modifier_witch_doctor_deathward_3", "heal") / 100
 		caster:AddSpellEvent(self.tracker, true)
+		caster:AddLifesteal(
+			self.tracker,
+			{ name = "modifier_witch_doctor_deathward_3", type = 2, value = self.talents.r3_heal }
+		)
 	end
 
 	if caster:HasTalent("modifier_witch_doctor_deathward_4") then
@@ -128,6 +136,10 @@ function witch_doctor_death_ward_custom:UpdateTalents()
 
 	if caster:HasTalent("modifier_witch_doctor_deathward_7") then
 		self.talents.has_r7 = 1
+	end
+
+	if caster:HasTalent("modifier_witch_doctor_hero_3") then
+		self.talents.h3_mana = caster:GetTalentValue("modifier_witch_doctor_hero_3", "mana") / 100
 	end
 
 	if caster:HasTalent("modifier_witch_doctor_hero_6") then
@@ -397,8 +409,6 @@ function modifier_witch_doctor_death_ward_custom:OnCreated(table)
 		self
 	)
 
-	self.cask_mod = self.caster:FindModifierByName("modifier_witch_doctor_paralyzing_cask_custom_tracker")
-
 	if self.has_r7 == 1 then
 		self.parent:EmitSound("WD.Ward_legendary_loop")
 		local health = self.ability.talents.r7_base + self.caster:GetMaxHealth() * self.ability.talents.r7_health
@@ -491,12 +501,8 @@ function modifier_witch_doctor_death_ward_custom:OnIntervalThink()
 		}
 		ProjectileManager:CreateTrackingProjectile(self.info)
 
-		if self.ability.talents.has_q7 == 1 and self.cask_mod then
-			self.cask_mod:AttackStartEvent_out({
-				attacker = self.caster,
-				ward_unit = self.parent:entindex(),
-				target = target,
-			})
+		if self.ability.talents.has_q7 == 1 and IsValid(self.caster.cask_ability) then
+			self.caster.cask_ability:ProcLegendary(target, self.parent:entindex())
 		end
 
 		self.parent:EmitSound("Hero_WitchDoctor_Ward.Attack")
@@ -687,6 +693,27 @@ function modifier_witch_doctor_death_ward_custom_unit:OnCreated(table)
 			self.bva = self.caster.switcheroo_ability.bva
 		end
 	end
+
+	self.parent:AddLifesteal(self, {
+		name = "modifier_witch_doctor_deathward_3",
+		heal_unit = self.caster,
+		value = function()
+			return self.ability.talents.r3_heal
+		end,
+	})
+	self.parent:AddLifesteal(self, {
+		name = "modifier_witch_doctor_hero_3",
+		heal_unit = self.caster,
+		heal = false,
+		proc = "LifestealMana",
+		value = function()
+			return self.ability.talents.h3_mana
+		end,
+	})
+end
+
+function modifier_witch_doctor_death_ward_custom_unit:LifestealMana(params, mana, target)
+	target:GiveMana(mana)
 end
 
 function modifier_witch_doctor_death_ward_custom_unit:DeclareFunctions()
@@ -730,7 +757,7 @@ function modifier_witch_doctor_death_ward_custom_tracker:OnCreated(table)
 	self.ability.channel = self.ability:GetSpecialValueFor("channel")
 	self.ability.radius = self.ability:GetSpecialValueFor("radius")
 
-	self.parent:AddAttackEvent_out(self, true)
+	self.parent:AddProc(self, { land = true, illusion = true })
 end
 
 function modifier_witch_doctor_death_ward_custom_tracker:OnRefresh()
@@ -770,23 +797,26 @@ function modifier_witch_doctor_death_ward_custom_tracker:GetModifierProcAttack_B
 		return
 	end
 
-	self:DealDamage(params.target, self.parent.wd_ward_attack)
+	self.parent:LandProcs(params)
+	self:DealDamage(
+		params.target,
+		self.parent.wd_ward_attack,
+		self.parent.proc_records and self.parent.proc_records[params.record]
+	)
 	return -params.damage
 end
 
-function modifier_witch_doctor_death_ward_custom_tracker:AttackEvent_out(params)
-	if not IsServer() then
-		return
-	end
+function modifier_witch_doctor_death_ward_custom_tracker:GetProcChance()
+	return 100
+end
+
+function modifier_witch_doctor_death_ward_custom_tracker:AttackProc(params, name)
 	if self.ability.talents.has_r7 == 1 then
 		return
 	end
 	local attacker = params.attacker
 	local target = params.target
 
-	if not target:IsUnit() then
-		return
-	end
 	if not attacker.owner then
 		return
 	end
@@ -797,10 +827,10 @@ function modifier_witch_doctor_death_ward_custom_tracker:AttackEvent_out(params)
 		return
 	end
 
-	self:DealDamage(target, attacker)
+	self:DealDamage(target, attacker, params.procs)
 end
 
-function modifier_witch_doctor_death_ward_custom_tracker:DealDamage(target, attacker)
+function modifier_witch_doctor_death_ward_custom_tracker:DealDamage(target, attacker, procs)
 	if not IsServer() then
 		return
 	end
@@ -861,7 +891,7 @@ function modifier_witch_doctor_death_ward_custom_tracker:DealDamage(target, atta
 	end
 
 	if IsValid(self.parent.cask_ability) then
-		self.parent.cask_ability:ProcAttack(target, true)
+		self.parent.cask_ability:ProcAttack(target, procs)
 	end
 
 	target:EmitSound("Hero_WitchDoctor_Ward.ProjectileImpact")

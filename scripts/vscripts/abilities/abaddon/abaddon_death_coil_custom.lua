@@ -90,6 +90,7 @@ function abaddon_death_coil_custom:UpdateTalents(name)
 			q1_spell = 0,
 
 			q2_cd = 0,
+			q2_heal = 0,
 
 			has_q3 = 0,
 			q3_chance = 0,
@@ -128,6 +129,8 @@ function abaddon_death_coil_custom:UpdateTalents(name)
 
 	if caster:HasTalent("modifier_abaddon_mist_2") then
 		self.talents.q2_cd = caster:GetTalentValue("modifier_abaddon_mist_2", "cd")
+		self.talents.q2_heal = caster:GetTalentValue("modifier_abaddon_mist_2", "heal") / 100
+		caster:AddLifesteal(self.tracker, { name = "modifier_abaddon_mist_2", type = 1, value = self.talents.q2_heal })
 	end
 
 	if caster:HasTalent("modifier_abaddon_mist_3") then

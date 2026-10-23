@@ -382,7 +382,18 @@ function modifier_custom_juggernaut_healing_ward:OnCreated(table)
 			self:AddParticle(effect_cast, false, false, -1, false, false)
 		end
 
-		self.caster:AddDamageEvent_out(self, true)
+		self.caster:AddLifesteal(self, {
+			name = "modifier_juggernaut_healingward_7",
+			type = 1,
+			heal = false,
+			proc = "LifestealDamage",
+			value = function()
+				if (self.caster:GetAbsOrigin() - self.parent:GetAbsOrigin()):Length2D() > self.radius then
+					return 0
+				end
+				return self.ability.talents.w7_damage
+			end,
+		})
 	elseif self.caster:HasScepter() then
 		self.radius_visual = ParticleManager:CreateParticle(
 			"particles/juggernaut/ward_radius.vpcf",
@@ -592,28 +603,7 @@ function modifier_custom_juggernaut_healing_ward:OnDestroy()
 	end
 end
 
-function modifier_custom_juggernaut_healing_ward:DamageEvent_out(params)
-	if not IsServer() then
-		return
-	end
-	if self.caster ~= params.attacker then
-		return
-	end
-	if not params.unit:IsUnit() then
-		return
-	end
-	if not params.inflictor then
-		return
-	end
-	if (self.caster:GetAbsOrigin() - self.parent:GetAbsOrigin()):Length2D() > self.radius then
-		return
-	end
-
-	local result = self.parent:CanLifesteal(params.unit)
-	if not result then
-		return
-	end
-
+function modifier_custom_juggernaut_healing_ward:LifestealDamage(params, damage, target, real_heal, result)
 	self.damage_stack = self.damage_stack + result * params.original_damage * self.ability.talents.w7_damage
 end
 

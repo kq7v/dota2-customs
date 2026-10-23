@@ -97,12 +97,6 @@ function modifier_item_dagon_custom:GetModifierManaBonus()
 end
 
 function modifier_item_dagon_custom:GetModifierCastRangeBonusStacking()
-	if self.parent:HasModifier("modifier_item_aether_lens") then
-		return
-	end
-	if self.parent:HasModifier("modifier_item_starforge_seal_custom_stats") then
-		return
-	end
 	return self.bonus_range
 end
 

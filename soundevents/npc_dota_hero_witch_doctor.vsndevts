@@ -25,37 +25,6 @@
 		volume_fade_out = 0.5
 		distance_max = 1600
 	}
-	WD.Cask_poison_max = 
-	{
-		type = "dota_src1_3d"
-		volume = 1.3
-		vsnd_files = 
-		[
-			"sounds/weapons/hero/viper/poison_attack_target_ti7.vsnd",
-		]
-		pitch_rand_max = 0.1
-		pitch_rand_min = 0.1
-		pitch = 1
-		soundlevel = 100
-		volume_fade_out = 0.5
-		distance_max = 1600
-	}
-	WD.Cask_attack = 
-	{
-		type = "dota_src1_3d"
-		volume = 1
-		vsnd_files = 
-		[
-			"sounds/weapons/hero/witch_doctor/cask_bounce_ti8_01.vsnd",
-			"sounds/weapons/hero/witch_doctor/cask_bounce_ti8_02.vsnd",
-		]
-		pitch_rand_max = 0.1
-		pitch_rand_min = -0.1
-		pitch = 1
-		soundlevel = 100
-		volume_fade_out = 0.5
-		distance_max = 1600
-	}
 	WD.Voodoo_legendary_cast = 
 	{
 		type = "dota_src1_3d"

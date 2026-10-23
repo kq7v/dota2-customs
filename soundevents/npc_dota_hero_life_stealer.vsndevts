@@ -132,22 +132,6 @@
 			"sounds/vo/life_stealer/lifest_ability_infest_cast_07.vsnd",
 		]
 	}
-	Lifestealer.Wounds_feast = 
-	{
-		type = "dota_src1_3d"
-		volume = 0.35
-		pitch_rand_min = -0.3
-		pitch_rand_max = -0.2
-		pitch = 1
-		soundlevel = 100
-		volume_fade_out = 0.5
-		distance_max = 1600
-		vsnd_files = 
-		[
-			"sounds/weapons/hero/venomancer/attack_impact2.vsnd",
-			"sounds/weapons/hero/venomancer/attack_impact1.vsnd",
-		]
-	}
 	Lifestealer.Wounds_death = 
 	{
 		type = "dota_src1_3d"

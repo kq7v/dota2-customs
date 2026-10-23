@@ -90,3 +90,7 @@ end
 function modifier_stats_hub:GetModifierMoveSpeedBonus_Constant(params)
 	return self:Sum(MODIFIER_PROPERTY_MOVESPEED_BONUS_CONSTANT, params)
 end
+
+function modifier_stats_hub:GetModifierCastRangeBonusStacking(params)
+	return self:Sum(MODIFIER_PROPERTY_CAST_RANGE_BONUS_STACKING, params)
+end

@@ -92,6 +92,7 @@ function ogre_magi_multicast_custom:UpdateTalents(name)
 
 			has_r2 = 0,
 			r2_regen = 0,
+			r2_heal = 0,
 			r2_duration = caster:GetTalentValue("modifier_ogremagi_multi_2", "duration", true),
 			r2_max = caster:GetTalentValue("modifier_ogremagi_multi_2", "max", true),
 
@@ -138,6 +139,11 @@ function ogre_magi_multicast_custom:UpdateTalents(name)
 	if caster:HasTalent("modifier_ogremagi_multi_2") then
 		self.talents.has_r2 = 1
 		self.talents.r2_regen = caster:GetTalentValue("modifier_ogremagi_multi_2", "regen")
+		self.talents.r2_heal = caster:GetTalentValue("modifier_ogremagi_multi_2", "heal") / 100
+		caster:AddLifesteal(
+			self.tracker,
+			{ name = "modifier_ogremagi_multi_2", type = 1, value = self.talents.r2_heal, text = true }
+		)
 	end
 
 	if caster:HasTalent("modifier_ogremagi_multi_3") then

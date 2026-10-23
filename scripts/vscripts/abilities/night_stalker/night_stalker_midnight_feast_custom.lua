@@ -144,6 +144,7 @@ function night_stalker_midnight_feast_custom:UpdateTalents(name)
 		self.talents.has_e3 = 1
 		self.talents.e3_damage = caster:GetTalentValue("modifier_stalker_hunter_3", "damage")
 		self.talents.e3_chance = caster:GetTalentValue("modifier_stalker_hunter_3", "chance")
+		caster:AddProc(self.tracker, { group = "modifier_stalker_hunter_3", extra = false, land = true })
 	end
 
 	if caster:HasTalent("modifier_stalker_hunter_4") then
@@ -242,7 +243,7 @@ function modifier_night_stalker_midnight_feast_custom:OnCreated(table)
 	self.ability.duration = self.ability:GetSpecialValueFor("duration")
 	self.ability.legendary_attacks = self.ability:GetSpecialValueFor("legendary_attacks")
 
-	self.parent:AddAttackEvent_out(self, true)
+	self.parent:AddProc(self, { name = "hit", land = true })
 end
 
 function modifier_night_stalker_midnight_feast_custom:OnRefresh(table)
@@ -251,18 +252,18 @@ function modifier_night_stalker_midnight_feast_custom:OnRefresh(table)
 	self.ability.damage_health = self.ability:GetSpecialValueFor("damage_health") / 100
 end
 
-function modifier_night_stalker_midnight_feast_custom:AttackEvent_out(params)
-	if not IsServer() then
-		return
+function modifier_night_stalker_midnight_feast_custom:GetProcChance(params, name)
+	if name == "hit" then
+		return 100
 	end
-	if self.parent ~= params.attacker then
-		return
-	end
+	return self.ability.talents.e3_chance
+end
 
-	local target = params.target
-	if not target:IsUnit() then
+function modifier_night_stalker_midnight_feast_custom:AttackProc(params, name)
+	if name ~= "hit" then
 		return
 	end
+	local target = params.target
 
 	if not params.no_attack_cooldown then
 		DoCleaveAttack(
@@ -294,10 +295,7 @@ function modifier_night_stalker_midnight_feast_custom:AttackEvent_out(params)
 			)
 		end
 
-		if
-			not params.no_attack_cooldown
-			and RollPseudoRandomPercentage(self.ability.talents.e3_chance, 1324, self.parent)
-		then
+		if params.procs and params.procs[self] and params.procs[self].default then
 			target:AddNewModifier(
 				self.parent,
 				self.ability,

@@ -45,95 +45,18 @@ function modifier_item_serrated_shiv_custom:OnCreated()
 	self.parent = self:GetParent()
 	self.ability = self:GetAbility()
 
-	self.records = {}
-
 	if not IsServer() then
 		return
 	end
 	self.damageTable = { attacker = self.parent, ability = self.ability, damage_type = DAMAGE_TYPE_PHYSICAL }
-	self:RollProc()
-
-	self.parent:AddRecordDestroyEvent(self, true)
-	self.parent:AddAttackStartEvent_out(self)
-	self.parent:AddAttackEvent_out(self, true)
+	self.parent:AddProc(self, { cd = true, accuracy = true })
 end
 
-function modifier_item_serrated_shiv_custom:CheckState()
-	if not IsServer() then
-		return
-	end
-	if not IsValid(self.parent) then
-		return
-	end
-	if not self.parent:HasCd("serrated_shiv_proc", 3) then
-		return
-	end
-	return {
-		[MODIFIER_STATE_CANNOT_MISS] = true,
-	}
+function modifier_item_serrated_shiv_custom:GetProcChance()
+	return self.ability.proc_chance
 end
 
-function modifier_item_serrated_shiv_custom:RecordDestroyEvent(params)
-	if not self.records[params.record] then
-		return
-	end
-	self.records[params.record] = nil
-end
-
-function modifier_item_serrated_shiv_custom:RollProc()
-	if not IsServer() then
-		return
-	end
-	if not RollPseudoRandomPercentage(self.ability.proc_chance, 7417, self.parent) then
-		return
-	end
-
-	self.parent:StartCd("serrated_shiv_proc")
-end
-
-function modifier_item_serrated_shiv_custom:AttackStartEvent_out(params)
-	if not IsServer() then
-		return
-	end
-	if not IsValid(self.ability) then
-		return
-	end
-	if not params.target:IsUnit() then
-		return
-	end
-	if self.parent ~= params.attacker then
-		return
-	end
-	if params.target:GetTeamNumber() == self.parent:GetTeamNumber() then
-		return
-	end
-
-	if self.parent:HasCd("serrated_shiv_proc", 3) and self.ability:IsFullyCastable() then
-		self.records[params.record] = true
-		self.ability:StartCd()
-	end
-
-	self.parent:RemoveCd("serrated_shiv_proc")
-	self:RollProc()
-end
-
-function modifier_item_serrated_shiv_custom:AttackEvent_out(params)
-	if not IsServer() then
-		return
-	end
-	if not IsValid(self.ability) then
-		return
-	end
-	if not params.target:IsUnit() then
-		return
-	end
-	if self.parent ~= params.attacker then
-		return
-	end
-	if not self.records[params.record] then
-		return
-	end
-
+function modifier_item_serrated_shiv_custom:AttackProc(params)
 	local target = params.target
 	self.damageTable.victim = target
 	self.damageTable.damage = target:IsCreep() and self.ability.damage_creeps

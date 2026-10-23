@@ -275,21 +275,6 @@
 		pitch = 1
 		volume_fade_out = 1
 	}
-	Razor.Link_stun = 
-	{
-		vsnd_files = 
-		[
-			"sounds/weapons/hero/zuus/righteous_target.vsnd",
-		]
-		volume = 1.5
-		pitch_rand_min = 0.3
-		pitch_rand_max = 0.3
-		type = "dota_src1_3d"
-		soundlevel = 100
-		distance_max = 1600
-		pitch = 1
-		volume_fade_out = 1
-	}
 	Razor.Link_pull = 
 	{
 		vsnd_files = 

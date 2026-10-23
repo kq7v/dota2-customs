@@ -119,7 +119,10 @@ item_manta_custom_passive = class(mod_hidden)
 function item_manta_custom_passive:RemoveOnDeath()
 	return false
 end
-function item_manta_custom_passive:OnCreated(table)
+function item_manta_custom_passive:GetUniqueStat()
+	return self.move
+end
+function item_manta_custom_passive:OnCreated()
 	self.parent = self:GetParent()
 	self.ability = self:GetAbility()
 
@@ -130,10 +133,12 @@ function item_manta_custom_passive:OnCreated(table)
 	self.move = self.ability.bonus_movement_speed
 	self.attack = self.ability.bonus_attack_speed
 	self.heal = self.ability.illusion_heal / 100
+	self.parent:AddUniqueStat(self, "move_bonus")
+
 	if not IsServer() then
 		return
 	end
-	self.parent:AddAttackEvent_out(self, true)
+	self.parent:AddProc(self, { land = true, illusion = true })
 end
 
 function item_manta_custom_passive:DeclareFunctions()
@@ -146,15 +151,12 @@ function item_manta_custom_passive:DeclareFunctions()
 	}
 end
 
-function item_manta_custom_passive:AttackEvent_out(params)
-	if not IsServer() then
-		return
-	end
+function item_manta_custom_passive:GetProcChance()
+	return 100
+end
+
+function item_manta_custom_passive:AttackProc(params, name)
 	if not IsValid(self.ability) then
-		return
-	end
-	local target = params.target
-	if not target:IsUnit() then
 		return
 	end
 
@@ -195,17 +197,7 @@ function item_manta_custom_passive:GetModifierMoveSpeedBonus_Percentage_Unique()
 	if not IsValid(self.parent) then
 		return
 	end
-	if self.parent:HasModifier("modifier_item_sange_and_yasha_custom") then
-		return
-	end
-	if self.parent:HasModifier("modifier_item_yasha") then
-		return
-	end
-	if self.parent:HasModifier("modifier_item_yasha_and_kaya_custom") then
-		return
-	end
-
-	return self.move
+	return self.parent:UniqueStat(self, "move_bonus")
 end
 
 item_manta_custom_illusion = class(mod_hidden)

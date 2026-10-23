@@ -122,7 +122,7 @@
 
     "AbilityValues"
     {
-        "crit_mult"                 "150 170 190 210"
+        "crit_mult"                 "140 160 180 200"
         "cleave_damage"             "25 30 35 40"
     }
 }

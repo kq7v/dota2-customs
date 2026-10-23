@@ -103,20 +103,6 @@
 		]
 		distance_max = 1600
 	}
-	Leshrac.Nova_cdr = 
-	{
-		type = "dota_src1_3d"
-		volume = 1.5
-		pitch_rand_min = 0.35
-		pitch_rand_max = 0.35
-		pitch = 1
-		soundlevel = 100
-		vsnd_files = 
-		[
-			"sounds/weapons/hero/keeper/solar_bind_target.vsnd",
-		]
-		distance_max = 1600
-	}
 	Leshrac.Earth_legendary = 
 	{
 		type = "dota_src1_3d"
@@ -244,20 +230,6 @@
 		]
 		distance_max = 1600
 	}
-	Leshrac.Storm_refresh = 
-	{
-		type = "dota_src1_3d"
-		volume = 1.2
-		pitch_rand_min = 0.05
-		pitch_rand_max = 0.05
-		pitch = 1
-		soundlevel = 100
-		vsnd_files = 
-		[
-			"sounds/weapons/hero/rattletrap/overclock_cast.vsnd",
-		]
-		distance_max = 1600
-	}
 	Leshrac.Nova_legendary_impact = 
 	{
 		type = "dota_src1_3d"
@@ -322,20 +294,6 @@
 		[
 			"sounds/vo/leshrac/lesh_inthebag_01.vsnd",
 		]
-	}
-	Leshrac.Edict_proc = 
-	{
-		type = "dota_src1_3d"
-		volume = 1.6
-		pitch_rand_min = -0.05
-		pitch_rand_max = 0.05
-		pitch = 1
-		soundlevel = 100
-		vsnd_files = 
-		[
-			"sounds/weapons/hero/dazzle/bad_juju_target.vsnd",
-		]
-		distance_max = 1600
 	}
 	Voice.Leshrac.1_1 = 
 	{

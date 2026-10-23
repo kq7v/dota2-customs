@@ -10,23 +10,6 @@
 
 "DOTAAbilities"
 {
-"item_cloak"
-{
-    "ID"                            "31"
-    "AbilityBehavior"               "DOTA_ABILITY_BEHAVIOR_PASSIVE"
-
-    "ItemCost"                      "900"
-    "ItemShopTags"                  "magic_resist"
-    "ItemQuality"                   "component"
-    "ItemAliases"                   "cloak"
-
-    "AbilityValues"
-    {
-        "bonus_magical_armor"       "15"
-        "tooltip_resist"            "15"
-    }
-}
-
 "item_blood_grenade"
 {
     "ID"                            "1123"
@@ -96,32 +79,6 @@
     }
 }
 
-"item_mage_slayer"
-{
-    "ID"                            "598"
-    "AbilityBehavior"               "DOTA_ABILITY_BEHAVIOR_PASSIVE"
-    "AbilityUnitTargetTeam"         "DOTA_UNIT_TARGET_TEAM_ENEMY"
-    "AbilityUnitTargetType"         "DOTA_UNIT_TARGET_HERO | DOTA_UNIT_TARGET_BASIC"
-    "SpellDispellableType"          "SPELL_DISPELLABLE_YES"
-
-    "ItemCost"                      "2825"
-    "ItemShopTags"                  "hard_to_tag"
-    "ItemQuality"                   "rare"
-    "ItemAliases"                   "mage slayer;ms"
-    "ShouldBeInitiallySuggested"    "1"
-
-    "AbilityValues"
-    {
-        "bonus_magical_armor"       "15"
-        "spell_amp_debuff"          "25"
-        "bonus_health_regen"        "6"
-        "bonus_mana_regen"          "3"
-        "bonus_damage"              "15"
-        "duration"                  "4"
-        "dps"                       "40"
-    }
-}
-
 "item_rod_of_atos"
 {
     "AbilityBehavior"               "DOTA_ABILITY_BEHAVIOR_UNIT_TARGET"
@@ -164,7 +121,7 @@
     {
         "bonus_mana"                "300"
         "bonus_mana_regen"          "2.5"
-        "cast_range_bonus"          "200"
+        "cast_range_bonus"          "150"
     }
 }
 

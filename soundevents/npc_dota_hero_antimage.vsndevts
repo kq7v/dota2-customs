@@ -73,20 +73,6 @@
 		]
 		volume = 1.6
 	}
-	Antimage.Blink_root = 
-	{
-		distance_max = 1600
-		volume = 0.8
-		pitch_rand_min = 0.1
-		pitch_rand_max = 0.1
-		pitch = 1
-		type = "dota_src1_3d"
-		vsnd_files = 
-		[
-			"sounds/items/gleipnir_target.vsnd",
-		]
-		soundlevel = 81
-	}
 	Voice.Anti.6_1 = 
 	{
 		type = "dota_src1_3d"
@@ -107,20 +93,6 @@
 		vsnd_files = 
 		[
 			"sounds/weapons/hero/antimage/mana_break.vsnd",
-		]
-		soundlevel = 81
-	}
-	Antimage.Counter_slow = 
-	{
-		distance_max = 1600
-		volume = 0.7
-		pitch_rand_min = -0.1
-		pitch_rand_max = -0.1
-		pitch = 1
-		type = "dota_src1_3d"
-		vsnd_files = 
-		[
-			"sounds/weapons/hero/pugna/pugna_netherward.vsnd",
 		]
 		soundlevel = 81
 	}
@@ -150,48 +122,6 @@
 		vsnd_files = 
 		[
 			"sounds/weapons/hero/antimage/spell_shield_reflect.vsnd",
-		]
-		soundlevel = 81
-	}
-	Antimage.Block_2 = 
-	{
-		distance_max = 1600
-		volume = 1.9
-		pitch_rand_min = -0.01
-		pitch_rand_max = 0.01
-		pitch = 1
-		type = "dota_src1_3d"
-		vsnd_files = 
-		[
-			"sounds/weapons/hero/antimage/spell_shield_reflect.vsnd",
-		]
-		soundlevel = 81
-	}
-	Antimage.Block_3 = 
-	{
-		distance_max = 1600
-		volume = 1.9
-		pitch_rand_min = -0.01
-		pitch_rand_max = 0.01
-		pitch = 1
-		type = "dota_src1_3d"
-		vsnd_files = 
-		[
-			"sounds/weapons/hero/antimage/spell_shield_reflect.vsnd",
-		]
-		soundlevel = 81
-	}
-	Antimage.Break_silence = 
-	{
-		distance_max = 1600
-		volume = 1.2
-		pitch_rand_min = -0.01
-		pitch_rand_max = 0.01
-		pitch = 1
-		type = "dota_src1_3d"
-		vsnd_files = 
-		[
-			"sounds/weapons/hero/silencer/curse_tick.vsnd",
 		]
 		soundlevel = 81
 	}
@@ -251,20 +181,6 @@
 		]
 		soundlevel = 81
 	}
-	Antimage.Counterspell_lowhp = 
-	{
-		distance_max = 1600
-		volume = 1.4
-		pitch_rand_min = -0.1
-		pitch_rand_max = -0.1
-		pitch = 1
-		type = "dota_src1_3d"
-		vsnd_files = 
-		[
-			"sounds/items/lotus_end.vsnd",
-		]
-		soundlevel = 81
-	}
 	Antimage.Break_legendary_hit = 
 	{
 		distance_max = 1600
@@ -321,48 +237,6 @@
 		]
 		soundlevel = 81
 	}
-	Antimage.Blink_refresh = 
-	{
-		distance_max = 1600
-		volume = 1
-		pitch_rand_min = -0.01
-		pitch_rand_max = 0.01
-		pitch = 1
-		type = "dota_src1_3d"
-		vsnd_files = 
-		[
-			"sounds/items/blink_swift.vsnd",
-		]
-		soundlevel = 81
-	}
-	Antimage.Counter_heal = 
-	{
-		distance_max = 1600
-		volume = 1.1
-		pitch_rand_min = -0.01
-		pitch_rand_max = 0.01
-		pitch = 1
-		type = "dota_src1_3d"
-		vsnd_files = 
-		[
-			"sounds/weapons/hero/oracle/false_promise_heal.vsnd",
-		]
-		soundlevel = 81
-	}
-	Antimage.Void_stun = 
-	{
-		distance_max = 1600
-		volume = 1
-		pitch_rand_min = -0.01
-		pitch_rand_max = -0.01
-		pitch = 1
-		type = "dota_src1_3d"
-		vsnd_files = 
-		[
-			"sounds/weapons/hero/pugna/netherward_wight_attack.vsnd",
-		]
-		soundlevel = 81
-	}
 	DoubleRating.npc_dota_hero_antimage = 
 	{
 		type = "dota_src1_3d"
@@ -371,20 +245,6 @@
 			"sounds/vo/antimage/anti_inthebag_01.vsnd",
 		]
 		volume = 1.3
-	}
-	Antimage.Counterspell_damage2 = 
-	{
-		distance_max = 1600
-		volume = 0.5
-		pitch_rand_min = 0.1
-		pitch_rand_max = 0.1
-		pitch = 1
-		type = "dota_src1_3d"
-		vsnd_files = 
-		[
-			"sounds/weapons/hero/antimage/spell_shield_reflect.vsnd",
-		]
-		soundlevel = 81
 	}
 	Voice.Anti.5_1 = 
 	{

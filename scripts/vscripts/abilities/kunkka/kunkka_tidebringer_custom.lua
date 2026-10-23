@@ -149,6 +149,7 @@ function kunkka_tidebringer_custom:UpdateTalents(name)
 		self.talents.has_w3 = 1
 		self.talents.w3_chance = caster:GetTalentValue("modifier_kunkka_tidebringer_3", "chance")
 		self.talents.w3_armor = caster:GetTalentValue("modifier_kunkka_tidebringer_3", "armor")
+		caster:AddProc(self.tracker, { land = true, ally = true })
 	end
 
 	if caster:HasTalent("modifier_kunkka_tidebringer_4") then
@@ -274,7 +275,7 @@ function modifier_kunkka_tidebringer_custom_tracker:OnCreated(table)
 	self:CheckEffect()
 
 	self.parent:AddAttackRecordEvent_out(self)
-	self.parent:AddAttackEvent_out(self)
+	self.parent:AddProc(self, { name = "hit", land = true, sync = true, extra = false, ally = true })
 	self.parent:AddOrderFilter(self)
 end
 
@@ -375,24 +376,32 @@ function modifier_kunkka_tidebringer_custom_tracker:AttackRecordEvent_out(params
 	self.is_attack = true
 end
 
-function modifier_kunkka_tidebringer_custom_tracker:AttackEvent_out(params)
-	if not IsServer() then
-		return
+function modifier_kunkka_tidebringer_custom_tracker:GetProcChance(params, name)
+	if params.target:GetTeamNumber() == self.parent:GetTeamNumber() and not params.target.is_kunkka_target then
+		return 0
 	end
-	if params.no_attack_cooldown then
-		return
+	if name == "hit" then
+		return 100
 	end
-	if self.parent ~= params.attacker then
-		return
+	if not params.target.is_kunkka_target then
+		return 0
 	end
+	local mod = params.target:FindModifierByName("modifier_kunkka_tidebringer_custom_target")
+	if not mod or mod.procs >= self.ability.talents.w3_procs then
+		return 0
+	end
+	return self.ability.talents.w3_chance
+end
 
-	local target = params.target
-	if not target:IsUnit() then
+function modifier_kunkka_tidebringer_custom_tracker:AttackProc(params, name)
+	if name ~= "hit" then
 		return
 	end
 	if not self.is_attack then
 		return
 	end
+
+	local target = params.target
 
 	target:EmitSound("Hero_Kunkka.Tidebringer.Attack")
 	target:GenericParticle("particles/units/heroes/hero_tidehunter/tidehunter_krakenshell_purge.vpcf")
@@ -690,13 +699,16 @@ function modifier_kunkka_tidebringer_custom_target:AttackEvent_inc(params)
 	self.parent:StartGesture(ACT_DOTA_FLINCH)
 	self.parent:EmitSound("Kunkka.Tidebringer_target_hit")
 
-	if self.ability.talents.has_w3 == 1 and self.procs < self.ability.talents.w3_procs then
-		if RollPseudoRandomPercentage(self.ability.talents.w3_chance, 1923, self.caster) then
-			self.procs = self.procs + 1
-			self.parent:GenericParticle("particles/kunkka/tidebringer_refresh.vpcf")
-			self.parent:EmitSound("Kunkka.Tidebringer_refresh")
-			return
-		end
+	if
+		params.procs
+		and params.procs[self.ability.tracker]
+		and params.procs[self.ability.tracker].default
+		and self.procs < self.ability.talents.w3_procs
+	then
+		self.procs = self.procs + 1
+		self.parent:GenericParticle("particles/kunkka/tidebringer_refresh.vpcf")
+		self.parent:EmitSound("Kunkka.Tidebringer_refresh")
+		return
 	end
 
 	self.hits = self.hits - 1

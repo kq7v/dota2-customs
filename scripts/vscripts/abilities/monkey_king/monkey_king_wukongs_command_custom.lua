@@ -127,6 +127,7 @@ function monkey_king_wukongs_command_custom:UpdateTalents(name)
 		self.talents = {
 			has_r1 = 0,
 			r1_damage = 0,
+			r1_heal = 0,
 			r1_max = caster:GetTalentValue("modifier_monkey_king_command_1", "max", true),
 			r1_damage_type = caster:GetTalentValue("modifier_monkey_king_command_1", "damage_type", true),
 			r1_radius = caster:GetTalentValue("modifier_monkey_king_command_1", "radius", true),
@@ -168,6 +169,11 @@ function monkey_king_wukongs_command_custom:UpdateTalents(name)
 	if caster:HasTalent("modifier_monkey_king_command_1") then
 		self.talents.has_r1 = 1
 		self.talents.r1_damage = caster:GetTalentValue("modifier_monkey_king_command_1", "damage")
+		self.talents.r1_heal = caster:GetTalentValue("modifier_monkey_king_command_1", "heal") / 100
+		caster:AddLifesteal(
+			self.tracker,
+			{ name = "modifier_monkey_king_command_1", type = 1, value = self.talents.r1_heal }
+		)
 	end
 
 	if caster:HasTalent("modifier_monkey_king_command_2") then
@@ -765,7 +771,15 @@ function modifier_monkey_king_wukongs_command_custom_soldier_active:OnCreated(pa
 		self.cast_data = {}
 		self.interval = FrameTime() * 2
 		self.parent:AddSpellEvent(self, true)
-		self.parent:AddDamageEvent_out(self, true)
+		self.parent:AddLifesteal(
+			self,
+			{
+				name = "modifier_monkey_king_command_7",
+				heal_unit = self.caster,
+				illusion = true,
+				value = self.ability.talents.r7_heal,
+			}
+		)
 
 		self.parent:GenericParticle(
 			"particles/units/heroes/hero_monkey_king/monkey_king_quad_tap_overhead.vpcf",
@@ -832,31 +846,6 @@ function modifier_monkey_king_wukongs_command_custom_soldier_active:OnCreated(pa
 	}
 
 	self:StartIntervalThink(self.interval)
-end
-
-function modifier_monkey_king_wukongs_command_custom_soldier_active:DamageEvent_out(params)
-	if not IsServer() then
-		return
-	end
-	if not self.parent.is_monkey_soldier_legendary then
-		return
-	end
-
-	local result = self.parent:CheckLifesteal(params)
-	if not result then
-		return
-	end
-	if not self.caster:IsAlive() then
-		return
-	end
-
-	self.caster:GenericHeal(
-		self.ability.talents.r7_heal * result * params.damage,
-		self.ability,
-		true,
-		"particles/items3_fx/octarine_core_lifesteal.vpcf",
-		"modifier_monkey_king_command_7"
-	)
 end
 
 function modifier_monkey_king_wukongs_command_custom_soldier_active:SpellEvent(params)
@@ -1115,39 +1104,51 @@ function modifier_monkey_king_wukongs_command_custom_soldier:OnCreated(params)
 		{ attacker = self.parent, ability = self.ability, damage_type = self.ability.talents.r3_damage_type }
 
 	self.parent:AddNewModifier(self.parent, nil, "modifier_monkey_king_wukongs_command_custom_inactive", {})
-	self.parent:AddAttackEvent_out(self, true)
+	self.parent:AddProc(self, { name = "hit", land = true })
+	self.parent:AddProc(self, { name = "r3", prd_owner = true, land = true })
+	self.parent:AddProc(self, { name = "w7", prd_owner = true, land = true })
 end
 
-function modifier_monkey_king_wukongs_command_custom_soldier:AttackEvent_out(params)
-	if not IsServer() then
-		return
+function modifier_monkey_king_wukongs_command_custom_soldier:GetProcChance(params, name)
+	if name == "hit" then
+		return 100
 	end
-	if self.parent ~= params.attacker then
-		return
+	if name == "r3" then
+		if self.ability.talents.has_r3 == 0 then
+			return 0
+		end
+		return self.ability.talents.r3_chance
 	end
+	local mod = self.caster:FindModifierByName("modifier_monkey_king_primal_spring_custom_legendary")
+	if not mod then
+		return 0
+	end
+	return mod:GetRefreshChance()
+end
 
-	local target = params.target
-	if not target:IsUnit() then
+function modifier_monkey_king_wukongs_command_custom_soldier:AttackProc(params, name)
+	if name ~= "hit" then
 		return
 	end
+	local target = params.target
+	local procs = params.procs and params.procs[self]
 
 	if self.caster.mastery_ability and IsValid(self.caster.mastery_ability.tracker) then
-		self.caster.mastery_ability.tracker:AttackEvent_out(params)
+		self.caster.mastery_ability.tracker:AttackProc(params)
 	end
 
-	if self.caster:HasModifier("modifier_monkey_king_primal_spring_custom_legendary") then
+	if procs and procs.w7 then
 		local mod = self.caster:FindModifierByName("modifier_monkey_king_primal_spring_custom_legendary")
-		mod:ChargeRefresh()
+		if mod then
+			mod:ChargeRefresh()
+		end
 	end
 
 	if IsValid(self.caster.mastery_buff) and self.caster.mastery_buff.is_magic then
 		self.caster.mastery_buff:ProcDamage({ target })
 	end
 
-	if
-		self.ability.talents.has_r3 == 1
-		and RollPseudoRandomPercentage(self.ability.talents.r3_chance, 8540, self.caster)
-	then
+	if procs and procs.r3 then
 		target:EmitSound("MK.Arena_proc")
 
 		local hit_effect = ParticleManager:CreateParticle(

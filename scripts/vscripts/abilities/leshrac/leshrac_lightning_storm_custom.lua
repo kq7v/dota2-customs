@@ -73,8 +73,6 @@ function leshrac_lightning_storm_custom:Precache(context)
 	PrecacheResource("particle", "particles/units/heroes/hero_leshrac/leshrac_lightning_slow.vpcf", context)
 	PrecacheResource("particle", "particles/leshrac/lesh_charges.vpcf", context)
 	PrecacheResource("particle", "particles/leshrac/storm_max.vpcf", context)
-	PrecacheResource("particle", "particles/items3_fx/octarine_core_lifesteal.vpcf", context)
-	PrecacheResource("particle", "particles/status_fx/status_effect_mjollnir_shield.vpcf", context)
 	PrecacheResource("particle", "particles/templar_assassin/ta_shield_roots.vpcf", context)
 end
 
@@ -147,12 +145,13 @@ function leshrac_lightning_storm_custom:UpdateTalents(name)
 		self.talents.has_e3 = 1
 		self.talents.e3_damage = caster:GetTalentValue("modifier_leshrac_storm_3", "damage") / 100
 		self.talents.e3_speed = caster:GetTalentValue("modifier_leshrac_storm_3", "speed")
-		caster:AddAttackEvent_out(self.tracker, true)
+		caster:AddProc(self.tracker, { name = "hit", land = true })
+		caster:AddProc(self.tracker, { land = true })
 	end
 
 	if caster:HasTalent("modifier_leshrac_storm_4") then
 		self.talents.has_e4 = 1
-		caster:AddAttackEvent_out(self.tracker, true)
+		caster:AddProc(self.tracker, { name = "hit", land = true })
 	end
 
 	if caster:HasTalent("modifier_leshrac_storm_7") then
@@ -737,18 +736,19 @@ function modifier_leshrac_lightning_storm_custom_tracker:AttackStartEvent_out(pa
 	)
 end
 
-function modifier_leshrac_lightning_storm_custom_tracker:AttackEvent_out(params)
-	if not IsServer() then
-		return
+function modifier_leshrac_lightning_storm_custom_tracker:GetProcChance(params, name)
+	if name == "hit" then
+		return 100
 	end
-	if self.parent ~= params.attacker then
+	return self.ability.talents.e3_chance
+end
+
+function modifier_leshrac_lightning_storm_custom_tracker:AttackProc(params, name)
+	if name ~= "hit" then
 		return
 	end
 
 	local target = params.target
-	if not target:IsUnit() then
-		return
-	end
 
 	if
 		self.ability.talents.has_e4 == 1
@@ -819,10 +819,7 @@ function modifier_leshrac_lightning_storm_custom_tracker:AttackEvent_out(params)
 		self.ability:ApplySlow(target)
 	end
 
-	if self.ability.talents.has_e3 == 0 then
-		return
-	end
-	if not RollPseudoRandomPercentage(self.ability.talents.e3_chance, 5011, self.parent) then
+	if not params.procs[self].default then
 		return
 	end
 

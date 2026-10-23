@@ -43,20 +43,6 @@
 		type = "dota_src1_3d"
 		volume = 1.6
 	}
-	Arc.Spark_heal = 
-	{
-		vsnd_files = 
-		[
-			"sounds/weapons/hero/oracle/false_promise_heal.vsnd",
-		]
-		type = "dota_src1_3d"
-		soundlevel = 100
-		pitch = 1
-		distance_max = 1600
-		pitch_rand_max = 0.1
-		volume = 0.8
-		pitch_rand_min = 0
-	}
 	Voice.Arc.6_1 = 
 	{
 		vsnd_files = 
@@ -149,76 +135,6 @@
 		pitch_rand_max = 0
 		volume = 0.6
 		pitch_rand_min = 0
-	}
-	Arc.Field_purge = 
-	{
-		vsnd_files = 
-		[
-			"sounds/weapons/hero/brewmaster/dispel_magic.vsnd",
-		]
-		type = "dota_src1_3d"
-		soundlevel = 100
-		pitch = 1
-		distance_max = 1600
-		pitch_rand_max = -0.2
-		volume = 1.3
-		pitch_rand_min = -0.2
-	}
-	Arc.Field_stun = 
-	{
-		vsnd_files = 
-		[
-			"sounds/weapons/hero/faceless_void/time_dilation_cast.vsnd",
-		]
-		type = "dota_src1_3d"
-		soundlevel = 100
-		pitch = 1
-		distance_max = 1600
-		pitch_rand_max = -0.2
-		volume = 1
-		pitch_rand_min = -0.2
-	}
-	Arc.Field_attack_buff = 
-	{
-		vsnd_files = 
-		[
-			"sounds/items/item_mjoll_on.vsnd",
-		]
-		type = "dota_src1_3d"
-		soundlevel = 100
-		pitch = 1
-		distance_max = 1600
-		pitch_rand_max = -0.15
-		volume = 0.5
-		pitch_rand_min = -0.15
-	}
-	Arc.Field_attack_start = 
-	{
-		vsnd_files = 
-		[
-			"sounds/items/nullifier_cast.vsnd",
-		]
-		type = "dota_src1_3d"
-		soundlevel = 100
-		pitch = 1
-		distance_max = 1600
-		pitch_rand_max = 0.25
-		volume = 0.7
-		pitch_rand_min = 0.25
-	}
-	Arc.Field_attack_end = 
-	{
-		vsnd_files = 
-		[
-			"sounds/weapons/hero/invoker/sunstrike_ignite_apex.vsnd",
-		]
-		type = "dota_src1_3d"
-		soundlevel = 100
-		pitch = 1
-		distance_max = 1600
-		pitch_rand_max = 0.1
-		volume = 1.5
-		pitch_rand_min = 0.1
 	}
 	Arc.Teleport_cast = 
 	{
@@ -363,21 +279,6 @@
 		pitch_rand_max = 0
 		pitch = 1
 	}
-	Arc.Legendary_kill = 
-	{
-		distance_max = 1600
-		volume = 1.2
-		pitch_rand_min = -0.1
-		vsnd_files = 
-		[
-			"sounds/weapons/hero/necrolyte/reapers_ti7_layer.vsnd",
-		]
-		type = "dota_src1_3d"
-		soundlevel = 100
-		volume_fade_out = 1.5
-		pitch_rand_max = -0.1
-		pitch = 1
-	}
 	Arc.Tempest_reduce = 
 	{
 		distance_max = 1600
@@ -405,66 +306,6 @@
 		type = "dota_src1_3d"
 		soundlevel = 100
 		volume_fade_out = 0.5
-		pitch_rand_max = 0
-		pitch = 1
-	}
-	Arc.Rune_Shield = 
-	{
-		distance_max = 1600
-		volume = 1.2
-		pitch_rand_min = 0
-		vsnd_files = 
-		[
-			"sounds/items/rune_shield.vsnd",
-		]
-		type = "dota_src1_3d"
-		soundlevel = 100
-		volume_fade_out = 1.5
-		pitch_rand_max = 0
-		pitch = 1
-	}
-	Arc.Rune_Damage = 
-	{
-		distance_max = 1600
-		volume = 0.6
-		pitch_rand_min = 0
-		vsnd_files = 
-		[
-			"sounds/items/rune_dd.vsnd",
-		]
-		type = "dota_src1_3d"
-		soundlevel = 100
-		volume_fade_out = 1.5
-		pitch_rand_max = 0
-		pitch = 1
-	}
-	Arc.Rune_Arcane = 
-	{
-		distance_max = 1600
-		volume = 0.8
-		pitch_rand_min = 0
-		vsnd_files = 
-		[
-			"sounds/items/rune_arcane.vsnd",
-		]
-		type = "dota_src1_3d"
-		soundlevel = 100
-		volume_fade_out = 1.5
-		pitch_rand_max = 0
-		pitch = 1
-	}
-	Arc.Rune_Haste = 
-	{
-		distance_max = 1600
-		volume = 0.8
-		pitch_rand_min = 0
-		vsnd_files = 
-		[
-			"sounds/items/rune_haste.vsnd",
-		]
-		type = "dota_src1_3d"
-		soundlevel = 100
-		volume_fade_out = 1.5
 		pitch_rand_max = 0
 		pitch = 1
 	}
@@ -515,21 +356,6 @@
 		]
 		type = "dota_src1_3d"
 		volume = 1.3
-	}
-	Arc.Spark_root = 
-	{
-		distance_max = 1600
-		volume = 0.7
-		pitch_rand_min = -0.05
-		vsnd_files = 
-		[
-			"sounds/items/gleipnir_target.vsnd",
-		]
-		type = "dota_src1_3d"
-		soundlevel = 100
-		volume_fade_out = 1
-		pitch_rand_max = -0.05
-		pitch = 1
 	}
 	Arc.Field_crit = 
 	{

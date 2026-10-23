@@ -72,6 +72,7 @@ LinkLuaModifier(
 
 muerta_pierce_the_veil_custom = class({})
 muerta_pierce_the_veil_custom.talents = {}
+muerta_pierce_the_veil_custom.attack_lifesteal = true
 
 function muerta_pierce_the_veil_custom:Precache(context)
 	if self:GetCaster() and self:GetCaster():IsIllusion() then
@@ -79,7 +80,6 @@ function muerta_pierce_the_veil_custom:Precache(context)
 	end
 
 	PrecacheResource("particle", "particles/sand_king/sand_pull.vpcf", context)
-	PrecacheResource("particle", "particles/items3_fx/octarine_core_lifesteal.vpcf", context)
 	PrecacheResource(
 		"particle",
 		"particles/units/heroes/hero_muerta/muerta_pierce_the_veil_spell_amp_bonus.vpcf",
@@ -155,14 +155,14 @@ function muerta_pierce_the_veil_custom:UpdateTalents(name)
 		self.talents.has_r1 = 1
 		self.talents.r1_damage = caster:GetTalentValue("modifier_muerta_veil_1", "damage") / 100
 		self.talents.r1_base = caster:GetTalentValue("modifier_muerta_veil_1", "base")
-		caster:AddAttackEvent_out(self.tracker, true)
+		caster:AddProc(self.tracker, { land = true })
 	end
 
 	if caster:HasTalent("modifier_muerta_veil_2") then
 		self.talents.has_r2 = 1
 		self.talents.r2_range = caster:GetTalentValue("modifier_muerta_veil_2", "range")
 		self.talents.r2_slow = caster:GetTalentValue("modifier_muerta_veil_2", "slow")
-		caster:AddAttackEvent_out(self.tracker, true)
+		caster:AddProc(self.tracker, { land = true })
 	end
 
 	if caster:HasTalent("modifier_muerta_veil_3") then
@@ -583,18 +583,12 @@ function modifier_muerta_pierce_the_veil_custom_tracker:GetModifierStatusResista
 		* (self.parent:HasModifier("modifier_muerta_pierce_the_veil_custom") and self.ability.talents.h6_bonus or 1)
 end
 
-function modifier_muerta_pierce_the_veil_custom_tracker:AttackEvent_out(params)
-	if not IsServer() then
-		return
-	end
-	if self.parent ~= params.attacker then
-		return
-	end
+function modifier_muerta_pierce_the_veil_custom_tracker:GetProcChance()
+	return 100
+end
 
+function modifier_muerta_pierce_the_veil_custom_tracker:AttackProc(params, name)
 	local target = params.target
-	if not target:IsUnit() then
-		return
-	end
 
 	if self.ability.talents.has_r2 == 1 then
 		target:AddNewModifier(

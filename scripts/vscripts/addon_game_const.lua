@@ -225,10 +225,11 @@ _G.NonRecordItems = {
 	["item_sobi_mask"] = true,
 	["item_fluffy_hat"] = true,
 	["item_wind_lace"] = true,
-	["item_cloak"] = true,
+	["item_cloak_custom"] = true,
+	["item_shawl_custom"] = true,
 	["item_boots"] = true,
-	["item_lifesteal"] = true,
-	["item_voodoo_mask"] = true,
+	["item_lifesteal_custom"] = true,
+	["item_voodoo_mask_custom"] = true,
 	["item_magic_stick"] = true,
 	["item_buckler"] = true,
 	["item_ring_of_basilius"] = true,
@@ -328,6 +329,7 @@ _G.Recast_mods = {
 	["lina_scepter_custom"] = "modifier_lina_scepter_custom_caster",
 	["nyx_assassin_burrow_custom"] = "modifier_nyx_assassin_burrow_custom",
 	["custom_puck_illusory_orb"] = "modifier_puck_coil_orb_custom_steal_jump",
+	["custom_puck_waning_rift"] = "modifier_custom_puck_waning_rift_legendary_charge",
 	["monkey_king_wukongs_command_custom"] = "modifier_monkey_king_wukongs_command_custom_buff",
 	["furion_teleportation_custom"] = "modifier_furion_teleportation_custom_legendary",
 	["pangolier_gyroshell_custom"] = "modifier_pangolier_gyroshell_custom",
@@ -432,6 +434,7 @@ _G.new_talent_system = {
 	["npc_dota_hero_kunkka"] = 1,
 	["npc_dota_hero_phantom_assassin"] = 1,
 	["npc_dota_hero_primal_beast"] = 1,
+	["npc_dota_hero_puck"] = 1,
 }
 
 _G.hero_changes = {
@@ -483,7 +486,7 @@ _G.hero_changes = {
 		"Warpath",
 		"Scepter",
 	},
-	["npc_dota_hero_puck"] = { "innate", "movespeed", "Orb", "Orb", "Rift", "Shift", "Coil", "Scepter" },
+	["npc_dota_hero_puck"] = { "innate", "stats", "movespeed", "Rift", "Shift", "Coil", "Coil", "Scepter" },
 	["npc_dota_hero_void_spirit"] = { "movespeed", "Remnant", "Remnant", "Pulse", "Pulse", "Step", "Scepter" },
 	["npc_dota_hero_ember_spirit"] = { "innate", "Chain", "Guard", "Guard", "FireRemnant", "Scepter" },
 	["npc_dota_hero_pudge"] = { "movespeed", "innate", "Flesh", "Dismember", "Shard", "Scepter" },
@@ -790,6 +793,11 @@ _G.attack_mods = {
 		["modifier_pangolier_swashbuckle_custom_scepter"] = "",
 		["modifier_pangolier_innate_custom_damage"] = "",
 	},
+	["npc_dota_hero_puck"] = {
+		["puck_shift"] = "custom_puck_phase_shift",
+		["puck_r3"] = "modifier_puck_coil_3",
+		["puck_r7"] = "modifier_puck_coil_7",
+	},
 	["npc_dota_hero_hoodwink"] = {
 		["modifier_hoodwink_acorn_shot_custom"] = "",
 		["modifier_hoodwink_scurry_custom_attack_mod"] = "modifier_hoodwink_scurry_3",
@@ -935,6 +943,7 @@ _G.auto_cast_spells = {
 	["enigma_demonic_conversion_custom"] = { "modifier_enigma_demonic_conversion_custom_teleport" },
 	["furion_innate_custom"] = { "modifier_furion_innate_custom_toggle", true },
 	["furion_wrath_of_nature_custom"] = { "modifier_furion_innate_custom_toggle", true },
+	["custom_puck_phase_shift"] = "modifier_custom_puck_phase_shift_autocast",
 }
 
 _G.all_heroes = {

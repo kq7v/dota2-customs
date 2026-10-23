@@ -66,20 +66,6 @@
 		distance_max = 1600
 		pitch = 1
 	}
-	QoP.Dagger_dispel = 
-	{
-		vsnd_files = 
-		[
-			"sounds/weapons/hero/shadow_demon/soul_catcher_target.vsnd",
-		]
-		volume = 1.51
-		pitch_rand_min = -0.05
-		pitch_rand_max = 0.05
-		type = "dota_src1_3d"
-		soundlevel = 100
-		distance_max = 1600
-		pitch = 1
-	}
 	QoP.Dagger_legendary_proc = 
 	{
 		vsnd_files = 
@@ -234,48 +220,6 @@
 		distance_max = 1600
 		pitch = 1
 		volume_fade_out = 0.6
-	}
-	QoP.Sonic_timer = 
-	{
-		vsnd_files = 
-		[
-			"sounds/weapons/hero/dark_willow/ley_counter.vsnd",
-		]
-		volume = 3.5
-		pitch_rand_min = -0.05
-		pitch_rand_max = 0.05
-		type = "dota_src1_3d"
-		soundlevel = 100
-		distance_max = 1600
-		pitch = 1
-	}
-	QoP.Sonic_stun = 
-	{
-		vsnd_files = 
-		[
-			"sounds/weapons/hero/dark_willow/ley_stun.vsnd",
-		]
-		volume = 2
-		pitch_rand_min = -0.05
-		pitch_rand_max = 0.05
-		type = "dota_src1_3d"
-		soundlevel = 100
-		distance_max = 1600
-		pitch = 1
-	}
-	QoP.Sonic_order = 
-	{
-		vsnd_files = 
-		[
-			"sounds/weapons/hero/dark_willow/ley_cast.vsnd",
-		]
-		volume = 2
-		pitch_rand_min = -0.05
-		pitch_rand_max = 0.05
-		type = "dota_src1_3d"
-		soundlevel = 100
-		distance_max = 1600
-		pitch = 1
 	}
 	DoubleRating.npc_dota_hero_queenofpain = 
 	{

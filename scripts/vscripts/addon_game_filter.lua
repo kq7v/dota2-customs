@@ -60,6 +60,16 @@ local ward_break_orders = {
 	[DOTA_UNIT_ORDER_HOLD_POSITION] = true,
 }
 
+local vector_cast_orders = {
+	[DOTA_UNIT_ORDER_CAST_POSITION] = true,
+	[DOTA_UNIT_ORDER_CAST_TARGET] = true,
+	[DOTA_UNIT_ORDER_CAST_TARGET_TREE] = true,
+}
+
+local function VectorCastStart(self)
+	self:OnVectorCastStart(self.vectorTargetPosition, self.vectorTargetDirection)
+end
+
 function dota1x6:ExecuteOrderFilterCustom(ord)
 	local target = nil
 	local player = PlayerResource:GetPlayer(ord["issuer_player_id_const"])
@@ -461,63 +471,48 @@ function dota1x6:ExecuteOrderFilterCustom(ord)
 		unit.ward_attack_mod:Destroy()
 	end
 
-	if not ability or not ability.GetBehaviorInt then
+	if not ability or not ability.OnVectorCastStart then
 		return true
 	end
-	local behavior = ability:GetBehaviorInt()
-
-	if
-		(
-			bit.band(behavior, DOTA_ABILITY_BEHAVIOR_VECTOR_TARGETING) ~= 0
-			or ability:GetAbilityName() == "broodmother_shard_ability_custom"
-		)
-		and (
-			order == DOTA_UNIT_ORDER_CAST_POSITION
-			or order == DOTA_UNIT_ORDER_CAST_TARGET
-			or order == DOTA_UNIT_ORDER_CAST_TARGET_TREE
-			or order == DOTA_UNIT_ORDER_VECTOR_TARGET_POSITION
-		)
-	then
-		if order == DOTA_UNIT_ORDER_VECTOR_TARGET_POSITION then
-			ability.vectorTargetPosition2 = Vector(ord.position_x, ord.position_y, 0)
-			ability.vectorTargetPosition = ability.vectorTargetPosition2
-			if IsValid(target) then
-				ability.vectorTargetPosition = target:GetAbsOrigin()
-				ability.vectorTargetPosition.z = 0
-			end
-			return true
-		end
-
-		if order == DOTA_UNIT_ORDER_CAST_POSITION then
-			ability.vectorTargetPosition = Vector(ord.position_x, ord.position_y, 0)
-		end
-
-		local position_start = ability.vectorTargetPosition or unit:GetAbsOrigin()
-		local position_end = ability.vectorTargetPosition2 or position_start
-		local vec = position_end - position_start
-		vec.z = 0
-
-		if vec:Length2D() < 1 then
-			vec = position_start - unit:GetAbsOrigin()
-			vec.z = 0
-		end
-
-		if vec:Length2D() < 1 then
-			vec = unit:GetForwardVector()
-			vec.z = 0
-		end
-
-		local direction = vec:Normalized()
-		ability.vectorTargetDirection = direction
-
-		local function OverrideSpellStart(self, position, direction)
-			self:OnVectorCastStart(position_start, direction)
-		end
-		ability.OnSpellStart = function(self)
-			return OverrideSpellStart(self, position_start, direction)
-		end
+	if bit.band(ability:GetBehaviorInt(), DOTA_ABILITY_BEHAVIOR_VECTOR_TARGETING) == 0 then
+		return true
 	end
 
+	if order == DOTA_UNIT_ORDER_VECTOR_TARGET_POSITION then
+		ability.vectorTargetPosition2 = Vector(ord.position_x, ord.position_y, 0)
+		ability.vectorTargetPosition = ability.vectorTargetPosition2
+		if IsValid(target) then
+			ability.vectorTargetPosition = target:GetAbsOrigin()
+			ability.vectorTargetPosition.z = 0
+		end
+		return true
+	end
+
+	if not vector_cast_orders[order] then
+		return true
+	end
+
+	if order == DOTA_UNIT_ORDER_CAST_POSITION then
+		ability.vectorTargetPosition = Vector(ord.position_x, ord.position_y, 0)
+	end
+
+	local start = ability.vectorTargetPosition or unit:GetAbsOrigin()
+	local direction = (ability.vectorTargetPosition2 or start) - start
+	direction.z = 0
+
+	if direction:Length2D() < 1 then
+		direction = start - unit:GetAbsOrigin()
+		direction.z = 0
+	end
+
+	if direction:Length2D() < 1 then
+		direction = unit:GetForwardVector()
+		direction.z = 0
+	end
+
+	ability.vectorTargetPosition = start
+	ability.vectorTargetDirection = direction:Normalized()
+	ability.OnSpellStart = VectorCastStart
 	return true
 end
 

@@ -163,21 +163,6 @@
 		volume_fade_out = 0.5
 		distance_max = 1600
 	}
-	Brood.Shield_start = 
-	{
-		type = "dota_src1_3d"
-		volume = 0.4
-		vsnd_files = 
-		[
-			"sounds/weapons/hero/warlock/fatal_bonds_precast.vsnd",
-		]
-		pitch_rand_max = 0.05
-		pitch_rand_min = -0.05
-		pitch = 1
-		soundlevel = 100
-		volume_fade_out = 0.5
-		distance_max = 1600
-	}
 	Brood.Auto_attack = 
 	{
 		type = "dota_src1_3d"

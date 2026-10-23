@@ -351,6 +351,22 @@ function modifier_event_thinker:OnModifierAdded(params)
 		end)
 	end
 
+	local crit = type(class) == "table" and rawget(class, "GetModifierPreAttack_CriticalStrike")
+	if type(crit) == "function" and not rawget(class, "crit_wrapped") then
+		rawset(class, "crit_wrapped", true)
+		rawset(class, "GetModifierPreAttack_CriticalStrike", function(obj, ...)
+			local result = crit(obj, ...)
+			if type(result) ~= "number" then
+				return result
+			end
+			local parent = obj:GetParent()
+			if not parent.crit_damage_mods then
+				return result
+			end
+			return result * (1 + parent:GetCritDamageBonus() / 100)
+		end)
+	end
+
 	if mod.GetModifierHealChange and unit:IsRealHero() then
 		if not unit.heal_reduce_mods then
 			unit.heal_reduce_mods = {}
@@ -360,6 +376,20 @@ function modifier_event_thinker:OnModifierAdded(params)
 			result = 1
 		end
 		unit.heal_reduce_mods[mod] = result
+	end
+
+	if mod.GetItemDamage then
+		if not unit.item_damage_mods then
+			unit.item_damage_mods = {}
+		end
+		unit.item_damage_mods[mod] = true
+	end
+
+	if mod.GetCritDamageBonus then
+		if not unit.crit_damage_mods then
+			unit.crit_damage_mods = {}
+		end
+		unit.crit_damage_mods[mod] = true
 	end
 
 	if mod:GetName() == "modifier_status_effect_thinker_custom" then
@@ -443,6 +473,13 @@ function modifier_event_thinker:OnAttackRecordDestroy(params)
 		return
 	end
 
+	if attacker.proc_records then
+		attacker.proc_records[params.record] = nil
+		attacker.proc_landed[params.record] = nil
+		attacker.proc_landed_property[params.record] = nil
+		attacker.proc_damaged[params.record] = nil
+	end
+
 	if attacker.record_destroy_mods then
 		for mod, sync_type in pairs(attacker.record_destroy_mods) do
 			if IsValid(mod) and mod.RecordDestroyEvent ~= nil then
@@ -509,6 +546,14 @@ function modifier_event_thinker:OnAttackStart(params)
 	attacker.pre_attack_flag = nil
 	attacker.attack_damage_flag = nil
 	attacker.no_cleave_flag = nil
+
+	if attacker.owner then
+		attacker:InheritProcs()
+	end
+
+	if attacker.proc_current then
+		attacker:AttackSwingProcs(params)
+	end
 
 	local attacker_mod = attacker
 	local target_mod = target
@@ -931,6 +976,31 @@ function modifier_event_thinker:OnAttack(params)
 		attacker.pre_attack_flag = nil
 	end
 
+	if attacker.owner then
+		attacker:InheritProcs()
+	end
+
+	local procs = attacker.proc_mods and attacker:AttackProcs(params)
+	if procs then
+		params.procs = procs
+		for mod, names in pairs(procs) do
+			if mod.AttackProcStart then
+				local list = {}
+				for name in pairs(names) do
+					table.insert(list, name)
+				end
+				local callback = function()
+					if IsValid(mod, params.attacker, params.target) then
+						for _, name in ipairs(list) do
+							mod:AttackProcStart(params, name)
+						end
+					end
+				end
+				self:StartThink(callback, mod, "AttackProcStart")
+			end
+		end
+	end
+
 	local target_mod = target
 
 	if attacker_mod.attack_start_mods_out then
@@ -990,6 +1060,10 @@ function modifier_event_thinker:OnAttackLanded(params)
 		match_log:Call("Attack", owner, attacker, target, true)
 	end
 
+	if attacker.proc_mods then
+		attacker:LandProcs(params)
+	end
+
 	if attacker.attack_flag then
 		params.attack_flag = attacker.attack_flag
 		attacker.attack_flag = nil
@@ -998,6 +1072,38 @@ function modifier_event_thinker:OnAttackLanded(params)
 	if attacker.no_cleave_flag then
 		params.no_cleave_flag = attacker.no_cleave_flag
 		attacker.no_cleave_flag = nil
+	end
+
+	local procs = attacker.proc_records and attacker.proc_records[params.record]
+	if procs then
+		params.procs = procs
+		for mod, names in pairs(procs) do
+			if mod.AttackProc then
+				local list = attacker.proc_mods and attacker.proc_mods[mod]
+				local queue = false
+				for name in pairs(names) do
+					if list and list[name] and list[name].sync then
+						if IsValid(mod) then
+							mod:AttackProc(params, name)
+						end
+					else
+						queue = true
+					end
+				end
+				if queue then
+					local callback = function()
+						if IsValid(mod, params.attacker, params.target) then
+							for name in pairs(names) do
+								if not (list and list[name] and list[name].sync) then
+									mod:AttackProc(params, name)
+								end
+							end
+						end
+					end
+					self:StartThink(callback, mod, "AttackProc")
+				end
+			end
+		end
 	end
 
 	local attacker_mod = attacker
@@ -1214,6 +1320,29 @@ function modifier_event_thinker:OnTakeDamage(params)
 		attacker.attack_damage_flag = nil
 	end
 
+	if attacker.proc_damage then
+		local procs, fired = attacker:DamageProcs(params)
+		if fired then
+			params.procs = procs
+			for _, data in ipairs(fired) do
+				local mod = data.mod
+				local name = data.name
+				if mod.DamageProc then
+					if data.sync then
+						mod:DamageProc(params, name)
+					else
+						local callback = function()
+							if IsValid(mod, params.attacker, params.unit) then
+								mod:DamageProc(params, name)
+							end
+						end
+						self:StartThink(callback, mod, "DamageProc")
+					end
+				end
+			end
+		end
+	end
+
 	local attacker_mod = attacker
 	if attacker_mod.owner and not attacker.is_arc_tempest and not attacker.is_monkey_soldier then
 		attacker_mod = attacker_mod.owner
@@ -1242,6 +1371,16 @@ function modifier_event_thinker:OnTakeDamage(params)
 				attacker_mod.take_damage_mods_out[mod] = nil
 			end
 		end
+	end
+
+	if attacker.lifesteal_mods then
+		local lifesteal_unit = attacker
+		local callback = function()
+			if IsValid(lifesteal_unit, unit) then
+				lifesteal_unit:Lifesteal(params)
+			end
+		end
+		self:StartThink(callback, self, "Lifesteal")
 	end
 
 	if target_mod.take_damage_mods_inc then
@@ -1560,6 +1699,30 @@ function modifier_event_thinker_heal:OnHealReceived(params)
 			unit.heal_mods_inc[mod] = nil
 		end
 	end
+end
+
+modifier_proc_accuracy = class(mod_hidden)
+function modifier_proc_accuracy:RemoveOnDeath()
+	return false
+end
+function modifier_proc_accuracy:OnCreated()
+	self.parent = self:GetParent()
+end
+
+function modifier_proc_accuracy:CheckState()
+	if GameRules:GetDOTATime(false, false) >= (self.parent.proc_unmiss or 0) then
+		return
+	end
+	return {
+		[MODIFIER_STATE_CANNOT_MISS] = true,
+	}
+end
+
+modifier_proc_accuracy_swing = class(mod_hidden)
+function modifier_proc_accuracy_swing:CheckState()
+	return {
+		[MODIFIER_STATE_CANNOT_MISS] = true,
+	}
 end
 
 modifier_quest_blink = class({})

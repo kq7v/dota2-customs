@@ -10,20 +10,6 @@
 
 <!-- kv3 encoding:text:version{e21c7f3c-8a33-41c5-9977-a76d3a32aa0d} format:generic:version{7412167c-06e9-4698-aff2-e63eb59037e7} -->
 {
-	BB.Goo_poison = 
-	{
-		vsnd_files = 
-		[
-			"sounds/weapons/hero/viper/nethertoxin_cast.vsnd",
-		]
-		type = "dota_src1_3d"
-		volume = 1.7
-		pitch_rand_min = -0.05
-		pitch_rand_max = 0.05
-		pitch = 1
-		soundlevel = 80
-		distance_max = 1600
-	}
 	BB.Goo_bash = 
 	{
 		vsnd_files = 
@@ -60,20 +46,6 @@
 		]
 		type = "dota_src1_3d"
 		volume = 0.8
-		pitch_rand_min = -0.05
-		pitch_rand_max = 0.05
-		pitch = 1
-		soundlevel = 80
-		distance_max = 1600
-	}
-	BB.Back_ground = 
-	{
-		vsnd_files = 
-		[
-			"sounds/items/star_emblem_ally.vsnd",
-		]
-		type = "dota_src1_3d"
-		volume = 0.5
 		pitch_rand_min = -0.05
 		pitch_rand_max = 0.05
 		pitch = 1
@@ -122,34 +94,6 @@
 		soundlevel = 80
 		distance_max = 1600
 	}
-	BB.Warpath_lowhp = 
-	{
-		vsnd_files = 
-		[
-			"sounds/weapons/hero/clinkz/death_pact_cast.vsnd",
-		]
-		type = "dota_src1_3d"
-		volume = 2
-		pitch_rand_min = -0.05
-		pitch_rand_max = 0.05
-		pitch = 1
-		soundlevel = 80
-		distance_max = 1600
-	}
-	BB.Warpath_proc = 
-	{
-		vsnd_files = 
-		[
-			"sounds/items/maim.vsnd",
-		]
-		type = "dota_src1_3d"
-		volume = 1
-		pitch_rand_min = -0.05
-		pitch_rand_max = 0.05
-		pitch = 1
-		soundlevel = 80
-		distance_max = 1600
-	}
 	DoubleRating.npc_dota_hero_bristleback = 
 	{
 		vsnd_files = 
@@ -158,48 +102,6 @@
 		]
 		volume = 1.3
 		type = "dota_src1_3d"
-	}
-	BB.Back_heal = 
-	{
-		vsnd_files = 
-		[
-			"sounds/weapons/creep/neutral/troll_priest_heal.vsnd",
-		]
-		type = "dota_src1_3d"
-		volume = 1
-		pitch_rand_min = -0.05
-		pitch_rand_max = 0.05
-		pitch = 1
-		soundlevel = 80
-		distance_max = 1600
-	}
-	BB.Back_damage = 
-	{
-		vsnd_files = 
-		[
-			"sounds/weapons/hero/bristlebog/pistonprongs_bristleback.vsnd",
-		]
-		type = "dota_src1_3d"
-		volume = 0.15
-		pitch_rand_min = -0.2
-		pitch_rand_max = 0.2
-		pitch = 1
-		soundlevel = 80
-		distance_max = 1600
-	}
-	BB.Back_reflect = 
-	{
-		vsnd_files = 
-		[
-			"sounds/items/linkens_target.vsnd",
-		]
-		type = "dota_src1_3d"
-		volume = 1.2
-		pitch_rand_min = -0.05
-		pitch_rand_max = 0.05
-		pitch = 1
-		soundlevel = 80
-		distance_max = 1600
 	}
 	BB.Back_legendary_active_vo = 
 	{
@@ -316,34 +218,6 @@
 		soundlevel = 80
 		distance_max = 1600
 	}
-	BB.Goo_legendary_proc = 
-	{
-		vsnd_files = 
-		[
-			"sounds/weapons/hero/bristlebog/goo_cast_layer.vsnd",
-		]
-		type = "dota_src1_3d"
-		volume = 0.9
-		pitch_rand_min = -0.12
-		pitch_rand_max = -0.08
-		pitch = 1
-		soundlevel = 80
-		distance_max = 1600
-	}
-	BB.Goo_legendary_proc2 = 
-	{
-		vsnd_files = 
-		[
-			"sounds/weapons/hero/sand_king/sand_king_caustic_bodyexplode.vsnd",
-		]
-		type = "dota_src1_3d"
-		volume = 1
-		pitch_rand_min = -0.12
-		pitch_rand_max = -0.08
-		pitch = 1
-		soundlevel = 80
-		distance_max = 1600
-	}
 	BB.Back_legendary_active = 
 	{
 		vsnd_files = 
@@ -368,20 +242,6 @@
 		volume = 1.4
 		pitch_rand_min = -0.000001
 		pitch_rand_max = -0.0
-		pitch = 1
-		soundlevel = 80
-		distance_max = 1600
-	}
-	BB.Back_legendary_attack = 
-	{
-		vsnd_files = 
-		[
-			"sounds/items/nullifier_slow.vsnd",
-		]
-		type = "dota_src1_3d"
-		volume = 0.5
-		pitch_rand_min = -0.3
-		pitch_rand_max = -0.200001
 		pitch = 1
 		soundlevel = 80
 		distance_max = 1600

@@ -168,20 +168,6 @@
 			"sounds/items/rune_arcane.vsnd",
 		]
 	}
-	Maiden.Arcane_legendary_attack_end = 
-	{
-		pitch = 1
-		soundlevel = 100
-		type = "dota_src1_3d"
-		distance_max = 1600
-		pitch_rand_min = 0
-		volume = 1
-		vsnd_files = 
-		[
-			"sounds/weapons/hero/ancient_apparition/chilling_touch_target.vsnd",
-		]
-		pitch_rand_max = 0.1
-	}
 	Maiden.Arcane_shield = 
 	{
 		pitch = 1
@@ -209,34 +195,6 @@
 		]
 		pitch_rand_max = 0.3
 		pitch_rand_min = 0.1
-	}
-	Maiden.Crystal_armor = 
-	{
-		pitch = 1
-		soundlevel = 100
-		type = "dota_src1_3d"
-		distance_max = 1600
-		pitch_rand_min = -0.05
-		volume = 1.2
-		vsnd_files = 
-		[
-			"sounds/weapons/hero/lich/frost_armor.vsnd",
-		]
-		pitch_rand_max = 0.05
-	}
-	Maiden.Arcane_legendary_regen = 
-	{
-		pitch = 1
-		soundlevel = 100
-		type = "dota_src1_3d"
-		distance_max = 1600
-		pitch_rand_min = 0
-		volume = 1
-		vsnd_files = 
-		[
-			"sounds/weapons/hero/oracle/false_promise_heal.vsnd",
-		]
-		pitch_rand_max = 0.1
 	}
 	Maiden.Frostbite_max_slow = 
 	{

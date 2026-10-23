@@ -52,17 +52,6 @@ function tinker_innate_custom:UpdateTalents()
 	if not self.init then
 		self.init = true
 		self.talents = {
-			has_q4 = 0,
-			q4_heal = caster:GetTalentValue("modifier_tinker_laser_4", "heal", true) / 100,
-			q4_health = caster:GetTalentValue("modifier_tinker_laser_4", "health", true),
-			q4_bonus = caster:GetTalentValue("modifier_tinker_laser_4", "bonus", true),
-
-			has_w2 = 0,
-			w2_heal = 0,
-
-			has_e7 = 0,
-			e7_heal = caster:GetTalentValue("modifier_tinker_matrix_7", "heal", true) / 100,
-
 			has_h1 = 0,
 			h1_mana = 0,
 
@@ -81,22 +70,6 @@ function tinker_innate_custom:UpdateTalents()
 			has_h6 = 0,
 			h6_damage_reduce = caster:GetTalentValue("modifier_tinker_hero_6", "damage_reduce", true) / 100,
 		}
-	end
-
-	if caster:HasTalent("modifier_tinker_laser_4") then
-		self.talents.has_q4 = 1
-		caster:AddDamageEvent_out(self.tracker, true)
-	end
-
-	if caster:HasTalent("modifier_tinker_march_2") then
-		self.talents.has_w2 = 1
-		self.talents.w2_heal = caster:GetTalentValue("modifier_tinker_march_2", "heal") / 100
-		caster:AddDamageEvent_out(self.tracker, true)
-	end
-
-	if caster:HasTalent("modifier_tinker_matrix_7") then
-		self.talents.has_e7 = 1
-		caster:AddDamageEvent_out(self.tracker, true)
 	end
 
 	if caster:HasTalent("modifier_tinker_hero_1") then
@@ -204,56 +177,6 @@ function modifier_tinker_innate_custom:OnDestroy()
 		return
 	end
 	self.parent:RemoveModifierByName("modifier_tinker_innate_custom_shield")
-end
-
-function modifier_tinker_innate_custom:DamageEvent_out(params)
-	if not IsServer() then
-		return
-	end
-	local result = self.parent:CheckLifesteal(params)
-	if not result then
-		return
-	end
-
-	if self.ability.talents.has_q4 == 1 and params.inflictor then
-		local heal = self.ability.talents.q4_heal * result * params.damage
-		if self.parent:GetHealthPercent() <= self.ability.talents.q4_health then
-			heal = heal * self.ability.talents.q4_bonus
-		end
-		self.parent:GenericHeal(
-			heal,
-			self.ability,
-			true,
-			"particles/items3_fx/octarine_core_lifesteal.vpcf",
-			"modifier_tinker_laser_4"
-		)
-	end
-
-	if
-		self.ability.talents.has_w2 == 1
-		and (not params.inflictor or (self.parent.turret_ability and params.inflictor == self.parent.turret_ability))
-	then
-		self.parent:GenericHeal(
-			self.ability.talents.w2_heal * result * params.damage,
-			self.ability,
-			true,
-			false,
-			"modifier_tinker_march_2"
-		)
-	end
-
-	if
-		self.ability.talents.has_e7 == 1
-		and self.parent:HasModifier("modifier_tinker_deploy_turrets_custom_legendary_speed")
-	then
-		self.parent:GenericHeal(
-			self.ability.talents.e7_heal * result * params.damage,
-			self.ability,
-			true,
-			"particles/items3_fx/octarine_core_lifesteal.vpcf",
-			"modifier_tinker_matrix_7"
-		)
-	end
 end
 
 function modifier_tinker_innate_custom:DamageEvent_inc(params)

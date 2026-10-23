@@ -218,7 +218,6 @@ end
 function modifier_item_bloodthorn_custom:OnCreated()
 	self.ability = self:GetAbility()
 	self.parent = self:GetParent()
-	self.records = {}
 
 	if not IsServer() then
 		return
@@ -226,78 +225,18 @@ function modifier_item_bloodthorn_custom:OnCreated()
 	if not self.parent:IsRealHero() then
 		return
 	end
-	self:RollProc()
-
-	self.parent:AddRecordDestroyEvent(self, true)
-	self.parent:AddAttackStartEvent_out(self)
+	self.parent:AddProc(self, { accuracy = true })
 end
 
-function modifier_item_bloodthorn_custom:CheckState()
-	if not IsServer() then
-		return
-	end
-	if not IsValid(self.parent) then
-		return
-	end
-	if not self.parent:HasCd("bloodthorn_proc", 3) then
-		return
-	end
-	return {
-		[MODIFIER_STATE_CANNOT_MISS] = true,
-	}
-end
-
-function modifier_item_bloodthorn_custom:RecordDestroyEvent(params)
-	if not self.records[params.record] then
-		return
-	end
-	self.records[params.record] = nil
-end
-
-function modifier_item_bloodthorn_custom:RollProc()
-	if not IsServer() then
-		return
-	end
-	if not RollPseudoRandomPercentage(self.ability.proc_chance, 4261, self.parent) then
-		return
-	end
-
-	self.parent:StartCd("bloodthorn_proc")
-end
-
-function modifier_item_bloodthorn_custom:AttackStartEvent_out(params)
-	if not IsServer() then
-		return
-	end
-	if not IsValid(self.ability) then
-		return
-	end
-	if not params.target:IsUnit() then
-		return
-	end
-	if self.parent ~= params.attacker then
-		return
-	end
-
-	if self.parent:HasCd("bloodthorn_proc", 3) then
-		self.records[params.record] = true
-	end
-
-	self.parent:RemoveCd("bloodthorn_proc")
-	self:RollProc()
+function modifier_item_bloodthorn_custom:GetProcChance()
+	return self.ability.proc_chance
 end
 
 function modifier_item_bloodthorn_custom:GetModifierProcAttack_BonusDamage_Magical(params)
 	if not IsServer() then
 		return
 	end
-	if not params.target:IsUnit() then
-		return
-	end
-	if self.parent ~= params.attacker then
-		return
-	end
-	if not self.records[params.record] then
+	if not self.parent:IsProc(self, params.record) then
 		return
 	end
 

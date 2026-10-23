@@ -10,20 +10,6 @@
 
 <!-- kv3 encoding:text:version{e21c7f3c-8a33-41c5-9977-a76d3a32aa0d} format:generic:version{7412167c-06e9-4698-aff2-e63eb59037e7} -->
 {
-	MK.Arena_buff2 = 
-	{
-		soundlevel = 100
-		type = "dota_src1_3d"
-		vsnd_files = 
-		[
-			"sounds/weapons/hero/centaur/retaliate_cast.vsnd",
-		]
-		pitch_rand_max = 0.2
-		volume = 1.9
-		pitch_rand_min = 0.1
-		distance_max = 1600
-		pitch = 1
-	}
 	MK.Arena_proc = 
 	{
 		soundlevel = 100
@@ -64,20 +50,6 @@
 		pitch_rand_max = 0.05
 		pitch_rand_min = 0.05
 		volume = 1.1
-		distance_max = 1600
-		pitch = 1
-	}
-	MK.Arena_heal = 
-	{
-		soundlevel = 100
-		type = "dota_src1_3d"
-		vsnd_files = 
-		[
-			"sounds/items/magic_lamp.vsnd",
-		]
-		pitch_rand_max = 0.05
-		volume = 1.4
-		pitch_rand_min = -0.05
 		distance_max = 1600
 		pitch = 1
 	}
@@ -216,20 +188,6 @@
 		]
 		type = "dota_src1_3d"
 	}
-	MK.Strike_hit_ready = 
-	{
-		soundlevel = 81
-		type = "dota_src1_3d"
-		vsnd_files = 
-		[
-			"sounds/weapons/hero/dawnbreaker/healing_touch_powerup.vsnd",
-		]
-		pitch_rand_max = 0.01
-		volume = 2.1
-		pitch_rand_min = -0.01
-		distance_max = 1600
-		pitch = 1
-	}
 	MK.Tree_shield = 
 	{
 		soundlevel = 100
@@ -302,20 +260,6 @@
 		distance_max = 1600
 		pitch = 1
 	}
-	MK.Arena_bkb = 
-	{
-		soundlevel = 100
-		type = "dota_src1_3d"
-		vsnd_files = 
-		[
-			"sounds/items/minotaur_horn.vsnd",
-		]
-		pitch_rand_max = 0.05
-		volume = 1.2
-		pitch_rand_min = -0.05
-		distance_max = 1600
-		pitch = 1
-	}
 	Voice.Monkey.3_2 = 
 	{
 		volume = 1.6
@@ -370,20 +314,6 @@
 			"sounds/vo/monkey_king/monkey_deny_06.vsnd",
 		]
 		type = "dota_src1_3d"
-	}
-	MK.Arena_buff = 
-	{
-		soundlevel = 100
-		type = "dota_src1_3d"
-		vsnd_files = 
-		[
-			"sounds/weapons/hero/beastmaster/drum_strike.vsnd",
-		]
-		pitch_rand_max = 0.2
-		volume = 2.5
-		pitch_rand_min = 0.1
-		distance_max = 1600
-		pitch = 1
 	}
 	Voice.Monkey.5_1 = 
 	{

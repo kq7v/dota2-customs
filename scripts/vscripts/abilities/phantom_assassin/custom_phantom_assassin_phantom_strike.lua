@@ -124,9 +124,6 @@ function custom_phantom_assassin_phantom_strike:UpdateTalents(name)
 			w7_speed = caster:GetTalentValue("modifier_phantom_assassin_blink_7", "speed", true),
 			w7_duration_hero = caster:GetTalentValue("modifier_phantom_assassin_blink_7", "duration_hero", true),
 			w7_duration_creeps = caster:GetTalentValue("modifier_phantom_assassin_blink_7", "duration_creeps", true),
-
-			has_r7 = 0,
-			r7_blink_cd = caster:GetTalentValue("modifier_phantom_assassin_crit_7", "blink_cd", true) / 100,
 		}
 	end
 
@@ -158,10 +155,6 @@ function custom_phantom_assassin_phantom_strike:UpdateTalents(name)
 	if caster:HasTalent("modifier_phantom_assassin_blink_7") then
 		self.talents.has_w7 = 1
 	end
-
-	if caster:HasTalent("modifier_phantom_assassin_crit_7") then
-		self.talents.has_r7 = 1
-	end
 end
 
 function custom_phantom_assassin_phantom_strike:GetAbilityTextureName()
@@ -180,8 +173,7 @@ function custom_phantom_assassin_phantom_strike:GetBehavior()
 end
 
 function custom_phantom_assassin_phantom_strike:GetCooldown(iLevel)
-	return (self.BaseClass.GetCooldown(self, iLevel) + (self.talents.w2_cd or 0))
-		* (1 + (self.talents.has_r7 == 1 and self.talents.r7_blink_cd or 0))
+	return self.BaseClass.GetCooldown(self, iLevel) + (self.talents.w2_cd or 0)
 end
 
 function custom_phantom_assassin_phantom_strike:GetCastPoint()
@@ -267,13 +259,18 @@ function custom_phantom_assassin_phantom_strike:OnSpellStart()
 
 	blinkPosition = GetGroundPosition(blinkPosition, nil)
 
-	self.caster:RemoveModifierByName("modifier_phantom_assassin_phantom_strike_buff")
-	self.caster:AddNewModifier(
-		self.caster,
-		self,
-		"modifier_phantom_assassin_phantom_strike_buff",
-		{ duration = self.duration + self.talents.e2_duration }
-	)
+	local buff_duration = self.duration + self.talents.e2_duration
+	local buff = self.caster:FindModifierByName("modifier_phantom_assassin_phantom_strike_buff")
+
+	if not buff or buff:GetRemainingTime() < buff_duration then
+		self.caster:RemoveModifierByName("modifier_phantom_assassin_phantom_strike_buff")
+		self.caster:AddNewModifier(
+			self.caster,
+			self,
+			"modifier_phantom_assassin_phantom_strike_buff",
+			{ duration = buff_duration }
+		)
+	end
 
 	local particle_start = wearables_system:GetParticleReplacementAbility(
 		self.caster,

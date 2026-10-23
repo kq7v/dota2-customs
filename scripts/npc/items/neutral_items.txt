@@ -549,7 +549,7 @@
     {
         "bonus_damage_pct"
         {
-            "value"                 "15"
+            "value"                 "12"
             "apply_curio_bonus"     "1"
         }
     }
@@ -1527,7 +1527,6 @@
     {
         "lifesteal"                 "35"
         "heal_bonus"                "25"
-        "creeps"                    "3"
     }
 }
 
@@ -1701,7 +1700,6 @@
     {
         "lifesteal"                 "12 16 20"
         "health_regen"              "10 20 30"
-        "creeps"                    "3"
     }
 }
 

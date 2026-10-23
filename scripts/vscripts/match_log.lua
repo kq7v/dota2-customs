@@ -645,6 +645,10 @@ function CDOTA_BaseNPC:LogProc(key, value, target)
 	match_log:Call("Proc", self, "procs", key, value, target)
 end
 
+function CDOTA_BaseNPC:LogFight()
+	return match_log.member[players[self:GetId()]]
+end
+
 function CDOTA_BaseNPC:LogWatch(key, holder, field, target)
 	local fields = match_log.watch[holder] or {}
 	fields[field] = { self, key, target }

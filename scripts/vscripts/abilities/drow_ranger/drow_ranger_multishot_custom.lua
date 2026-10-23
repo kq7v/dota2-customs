@@ -54,6 +54,7 @@ function drow_ranger_multishot_custom:UpdateTalents()
 		self.init = true
 		self.talents = {
 			e1_damage = 0,
+			e1_heal = 0,
 
 			e2_cd = 0,
 			e2_range = 0,
@@ -83,6 +84,11 @@ function drow_ranger_multishot_custom:UpdateTalents()
 
 	if caster:HasTalent("modifier_drow_multishot_1") then
 		self.talents.e1_damage = caster:GetTalentValue("modifier_drow_multishot_1", "damage") / 100
+		self.talents.e1_heal = caster:GetTalentValue("modifier_drow_multishot_1", "heal") / 100
+		caster:AddLifesteal(
+			self.tracker,
+			{ name = "modifier_drow_multishot_1", type = 1, value = self.talents.e1_heal, text = true }
+		)
 	end
 
 	if caster:HasTalent("modifier_drow_multishot_2") then

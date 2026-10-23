@@ -98,7 +98,11 @@ function modifier_high_five_search:OnCreated(params)
 	end
 	self.selected_id = 0
 	local get_player_data = CustomNetTables:GetTableValue("sub_data", tostring(self.parent:GetPlayerOwnerID()))
-	if get_player_data and get_player_data.selected_high_five ~= nil then
+	if
+		get_player_data
+		and get_player_data.selected_high_five ~= nil
+		and shop:HasSelectItem(self.parent:GetPlayerOwnerID(), high_five_item_list, get_player_data.selected_high_five)
+	then
 		self.selected_id = get_player_data.selected_high_five
 	end
 

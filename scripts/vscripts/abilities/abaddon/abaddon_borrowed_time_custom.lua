@@ -108,6 +108,7 @@ function abaddon_borrowed_time_custom:UpdateTalents(name)
 			r1_max = caster:GetTalentValue("modifier_abaddon_borrowed_1", "max", true),
 
 			r2_heal_inc = 0,
+			r2_heal = 0,
 
 			has_r3 = 0,
 			r3_damage = 0,
@@ -125,6 +126,7 @@ function abaddon_borrowed_time_custom:UpdateTalents(name)
 
 			has_r7 = 0,
 			r7_duration_inc = caster:GetTalentValue("modifier_abaddon_borrowed_7", "duration_inc", true) / 100,
+			r7_heal = caster:GetTalentValue("modifier_abaddon_borrowed_7", "heal", true) / 100,
 
 			has_h6 = 0,
 			h6_status = caster:GetTalentValue("modifier_abaddon_hero_6", "status", true),
@@ -140,23 +142,51 @@ function abaddon_borrowed_time_custom:UpdateTalents(name)
 
 	if caster:HasTalent("modifier_abaddon_borrowed_2") then
 		self.talents.r2_heal_inc = caster:GetTalentValue("modifier_abaddon_borrowed_2", "heal_inc")
+		self.talents.r2_heal = caster:GetTalentValue("modifier_abaddon_borrowed_2", "heal") / 100
+		caster:AddLifesteal(
+			self.tracker,
+			{ name = "modifier_abaddon_borrowed_2", type = 2, value = self.talents.r2_heal }
+		)
 	end
 
 	if caster:HasTalent("modifier_abaddon_borrowed_3") then
 		self.talents.has_r3 = 1
 		self.talents.r3_damage = caster:GetTalentValue("modifier_abaddon_borrowed_3", "damage")
 		self.talents.r3_heal = caster:GetTalentValue("modifier_abaddon_borrowed_3", "heal") / 100
-		caster:AddAttackEvent_out(self.tracker, true)
-		caster:AddDamageEvent_out(self.tracker, true)
+		caster:AddProc(self.tracker, { land = true })
+		caster:AddLifesteal(self.tracker, {
+			name = "modifier_abaddon_borrowed_3",
+			text = true,
+			proc = "LifestealRecord",
+			value = function(params)
+				if not params.record then
+					return 0
+				end
+				if params.record ~= self.tracker.record then
+					return 0
+				end
+				return self.talents.r3_heal
+			end,
+		})
 	end
 
 	if caster:HasTalent("modifier_abaddon_borrowed_4") then
 		self.talents.has_r4 = 1
-		caster:AddAttackEvent_out(self.tracker, true)
+		caster:AddProc(self.tracker, { land = true })
 	end
 
 	if caster:HasTalent("modifier_abaddon_borrowed_7") then
 		self.talents.has_r7 = 1
+		caster:AddLifesteal(self.tracker, {
+			name = "modifier_abaddon_borrowed_7",
+			type = 2,
+			text = true,
+			effect = false,
+			proc = "LifestealBeam",
+			value = function()
+				return caster:HasModifier("modifier_abaddon_borrowed_time_custom") and self.talents.r7_heal or 0
+			end,
+		})
 	end
 
 	if caster:HasTalent("modifier_abaddon_hero_6") then
@@ -173,6 +203,10 @@ function abaddon_borrowed_time_custom:GetIntrinsicModifierName()
 		return
 	end
 	return "modifier_abaddon_borrowed_time_custom_tracker"
+end
+
+function abaddon_borrowed_time_custom:GetProcMax()
+	return self:GetCooldownTimeRemaining() > 0 and self.talents.r3_max_inc or self.talents.r3_max
 end
 
 function abaddon_borrowed_time_custom:OnSpellStart()
@@ -422,18 +456,12 @@ function modifier_abaddon_borrowed_time_custom_tracker:CheckState()
 	}
 end
 
-function modifier_abaddon_borrowed_time_custom_tracker:AttackEvent_out(params)
-	if not IsServer() then
-		return
-	end
-	if self.parent ~= params.attacker then
-		return
-	end
-	local target = params.target
+function modifier_abaddon_borrowed_time_custom_tracker:GetProcChance()
+	return 100
+end
 
-	if not target:IsUnit() then
-		return
-	end
+function modifier_abaddon_borrowed_time_custom_tracker:AttackProc(params, name)
+	local target = params.target
 
 	if self.ability.talents.has_r4 == 1 then
 		local mod = self.parent:FindModifierByName("modifier_abaddon_borrowed_time_custom")
@@ -509,6 +537,11 @@ function modifier_abaddon_borrowed_time_custom_tracker:AttackEvent_out(params)
 		)
 		self.record = params.record
 		mod.proced = true
+		Timers:CreateTimer(FrameTime(), function()
+			if IsValid(mod) then
+				mod:Destroy()
+			end
+		end)
 	else
 		self.parent:AddNewModifier(
 			self.parent,
@@ -519,31 +552,34 @@ function modifier_abaddon_borrowed_time_custom_tracker:AttackEvent_out(params)
 	end
 end
 
-function modifier_abaddon_borrowed_time_custom_tracker:DamageEvent_out(params)
-	if not IsServer() then
-		return
+function modifier_abaddon_borrowed_time_custom_tracker:GetAccuracyChance()
+	if self.ability.talents.has_r3 == 0 then
+		return 0
 	end
-	if self.parent ~= params.attacker then
-		return
-	end
-	if self.record ~= params.record then
-		return
-	end
-	local result = self.parent:CanLifesteal(params.unit)
+	return 100 / self.ability:GetProcMax()
+end
 
+function modifier_abaddon_borrowed_time_custom_tracker:LifestealRecord()
 	self.record = nil
-	self.parent:RemoveModifierByName("modifier_abaddon_borrowed_time_custom_proc")
-	if not result then
-		return
-	end
+end
 
-	self.parent:GenericHeal(
-		result * self.ability.talents.r3_heal * params.damage,
-		self.ability,
-		false,
-		"",
-		"modifier_abaddon_borrowed_3"
+function modifier_abaddon_borrowed_time_custom_tracker:LifestealBeam(params)
+	local heal_particle = ParticleManager:CreateParticle(
+		"particles/units/heroes/hero_abaddon/abaddon_borrowed_time_heal.vpcf",
+		PATTACH_CUSTOMORIGIN_FOLLOW,
+		self.parent
 	)
+	ParticleManager:SetParticleControlEnt(
+		heal_particle,
+		0,
+		self.parent,
+		PATTACH_POINT_FOLLOW,
+		"attach_hitloc",
+		self.parent:GetAbsOrigin(),
+		true
+	)
+	ParticleManager:SetParticleControl(heal_particle, 1, params.unit:GetAbsOrigin())
+	ParticleManager:ReleaseParticleIndex(heal_particle)
 end
 
 function modifier_abaddon_borrowed_time_custom_tracker:GetMinHealth()
@@ -710,8 +746,6 @@ function modifier_abaddon_borrowed_time_custom_proc_count:OnCreated()
 	self.parent = self:GetParent()
 	self.ability = self:GetAbility()
 
-	self.max = self.ability.talents.r3_max
-	self.max_inc = self.ability.talents.r3_max_inc
 	if not IsServer() then
 		return
 	end
@@ -725,8 +759,7 @@ function modifier_abaddon_borrowed_time_custom_proc_count:OnRefresh()
 	end
 	self:IncrementStackCount()
 
-	local max = self.ability:GetCooldownTimeRemaining() > 0 and self.max_inc or self.max
-	if self:GetStackCount() < (max - 1) then
+	if self:GetStackCount() < (self.ability:GetProcMax() - 1) then
 		return
 	end
 

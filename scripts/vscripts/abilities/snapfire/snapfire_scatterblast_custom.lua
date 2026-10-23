@@ -71,7 +71,6 @@ function snapfire_scatterblast_custom:Precache(context)
 		return
 	end
 	PrecacheResource("particle", "particles/units/heroes/hero_snapfire/hero_snapfire_shotgun.vpcf", context)
-	PrecacheResource("particle", "particles/units/heroes/hero_marci/marci_rebound_allymovespeed.vpcf", context)
 	PrecacheResource("particle", "particles/units/heroes/hero_snapfire/hero_snapfire_shells_impact.vpcf", context)
 	PrecacheResource(
 		"particle",
@@ -80,8 +79,6 @@ function snapfire_scatterblast_custom:Precache(context)
 	)
 	PrecacheResource("particle", "particles/units/heroes/hero_snapfire/hero_snapfire_shotgun_impact.vpcf", context)
 	PrecacheResource("particle", "particles/units/heroes/hero_snapfire/hero_snapfire_shotgun_debuff.vpcf", context)
-	PrecacheResource("particle", "particles/status_fx/status_effect_snapfire_slow.vpcf", context)
-	PrecacheResource("particle", "particles/units/heroes/hero_huskar/huskar_inner_fire_debuff.vpcf", context)
 	PrecacheResource("particle", "particles/snapfire/snapfire_scatter_stack.vpcf", context)
 	PrecacheResource(
 		"particle",
@@ -565,11 +562,6 @@ function modifier_snapfire_scatterblast_custom_tracker:OnCreated()
 	if not IsServer() then
 		return
 	end
-	CustomGameEventManager:Send_ServerToPlayer(
-		PlayerResource:GetPlayer(self.parent:GetPlayerOwnerID()),
-		"ability_snapfire_scatter",
-		{}
-	)
 	self:StartIntervalThink(1)
 end
 

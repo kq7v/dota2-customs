@@ -96,7 +96,7 @@ function modifier_juggernaut_innate_custom:OnCreated(table)
 	self.ability.duration = self.ability:GetSpecialValueFor("duration")
 	self.ability.duration_creeps = self.ability:GetSpecialValueFor("duration_creeps")
 
-	self.parent:AddAttackEvent_out(self, true)
+	self.parent:AddProc(self, { land = true })
 end
 
 function modifier_juggernaut_innate_custom:OnRefresh(table)
@@ -113,17 +113,11 @@ function modifier_juggernaut_innate_custom:GetModifierExtraHealthPercentage()
 	return self.ability.talents.h1_health
 end
 
-function modifier_juggernaut_innate_custom:AttackEvent_out(params)
-	if not IsServer() then
-		return
-	end
-	if self.parent ~= params.attacker then
-		return
-	end
-	if not params.target:IsUnit() then
-		return
-	end
+function modifier_juggernaut_innate_custom:GetProcChance()
+	return 100
+end
 
+function modifier_juggernaut_innate_custom:AttackProc(params, name)
 	self.ability:AddStack(params.target)
 end
 

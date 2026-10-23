@@ -404,20 +404,6 @@
 		volume_fade_out = 1.5
 		type = "dota_src1_3d"
 	}
-	Veil.Cast = 
-	{
-		vsnd_files = 
-		[
-			"sounds/items/bullwhip_cast.vsnd",
-		]
-		volume = 0.6
-		pitch_rand_min = -0.05
-		pitch_rand_max = 0.05
-		type = "dota_src1_3d"
-		soundlevel = 100
-		distance_max = 1600
-		pitch = 1
-	}
 	Patrol.Gem_heal = 
 	{
 		vsnd_files = 
@@ -437,20 +423,6 @@
 		vsnd_files = 
 		[
 			"sounds/ui/npe_objective_given.vsnd",
-		]
-		volume = 2
-		pitch_rand_min = -0.05
-		pitch_rand_max = 0.05
-		type = "dota_src1_3d"
-		soundlevel = 100
-		distance_max = 1600
-		pitch = 1
-	}
-	Hunt.End = 
-	{
-		vsnd_files = 
-		[
-			"sounds/ui/npe_objective_complete.vsnd",
 		]
 		volume = 2
 		pitch_rand_min = -0.05
@@ -498,36 +470,6 @@
 		distance_max = 1600
 		pitch = 1
 		vsnd_duration = 1.880816
-	}
-	Portal.Channel = 
-	{
-		distance_max = 1600
-		pitch_rand_min = -0.05
-		volume = 2.5
-		vsnd_files = 
-		[
-			"sounds/ambient/twin_gate_channel.vsnd",
-		]
-		pitch_rand_max = 0.05
-		pitch = 1
-		soundlevel = 100
-		volume_fade_out = 1.5
-		type = "dota_src1_3d"
-	}
-	Portal.End = 
-	{
-		distance_max = 1600
-		pitch_rand_min = -0.05
-		volume = 2.5
-		vsnd_files = 
-		[
-			"sounds/ambient/twin_gate_out.vsnd",
-		]
-		pitch_rand_max = 0.05
-		pitch = 1
-		soundlevel = 100
-		volume_fade_out = 1.5
-		type = "dota_src1_3d"
 	}
 	Enigma_boss.eidolon_spawn = 
 	{
@@ -673,20 +615,6 @@
 		[
 			"sounds/ui/compendium_levelup.vsnd",
 		]
-		distance_max = 1600
-		pitch = 1
-	}
-	Patrol.Ravager = 
-	{
-		vsnd_files = 
-		[
-			"sounds/items/meteor_impact.vsnd",
-		]
-		volume = 1
-		pitch_rand_min = 0
-		pitch_rand_max = 0
-		type = "dota_src1_3d"
-		soundlevel = 81
 		distance_max = 1600
 		pitch = 1
 	}
@@ -1022,20 +950,6 @@
 		distance_max = 1600
 		pitch = 1
 	}
-	Juggernaut.Omni_cd = 
-	{
-		vsnd_files = 
-		[
-			"sounds/items/butterfly.vsnd",
-		]
-		volume = 0.7
-		pitch_rand_min = -0.05
-		pitch_rand_max = -0.05
-		type = "dota_src1_3d"
-		soundlevel = 100
-		distance_max = 1600
-		pitch = 1
-	}
 	Celestial_spear.Cast = 
 	{
 		distance_max = 1600
@@ -1102,34 +1016,6 @@
 		volume = 1.2
 		pitch_rand_min = 0
 		pitch_rand_max = -0.02
-		type = "dota_src1_3d"
-		soundlevel = 100
-		distance_max = 1600
-		pitch = 1
-	}
-	UI.Talent_matrix = 
-	{
-		vsnd_files = 
-		[
-			"sounds/weapons/hero/tinker/matrix_grid.vsnd",
-		]
-		volume = 1.2
-		pitch_rand_min = 0
-		pitch_rand_max = 0
-		type = "dota_src1_3d"
-		soundlevel = 100
-		distance_max = 1600
-		pitch = 1
-	}
-	UI.Talent_buff = 
-	{
-		vsnd_files = 
-		[
-			"sounds/weapons/hero/ogre_magi/bloodlust_target.vsnd",
-		]
-		volume = 1.2
-		pitch_rand_min = -0.05
-		pitch_rand_max = 0.05
 		type = "dota_src1_3d"
 		soundlevel = 100
 		distance_max = 1600
@@ -1559,20 +1445,6 @@
 		distance_max = 1600
 		pitch = 1
 	}
-	Necro.Wave_spawn = 
-	{
-		vsnd_files = 
-		[
-			"sounds/items/item_necro_spawn.vsnd",
-		]
-		volume = 3
-		pitch_rand_min = -0.02
-		pitch_rand_max = 0.02
-		type = "dota_src1_3d"
-		soundlevel = 100
-		distance_max = 1600
-		pitch = 1
-	}
 	UI.Disconnect = 
 	{
 		vsnd_files = 
@@ -1795,20 +1667,6 @@
 		volume = 2
 		pitch_rand_min = 0
 		pitch_rand_max = 0
-		type = "dota_src1_3d"
-		soundlevel = 100
-		distance_max = 1600
-		pitch = 1
-	}
-	UI.Choise_hide = 
-	{
-		vsnd_files = 
-		[
-			"sounds/ui/panorama/panorama_rollover_micro_01.vsnd",
-		]
-		volume = 0.8
-		pitch_rand_min = -0.05
-		pitch_rand_max = 0.05
 		type = "dota_src1_3d"
 		soundlevel = 100
 		distance_max = 1600
@@ -2088,21 +1946,6 @@
 		distance_max = 1600
 		pitch = 1
 	}
-	UI.Chest_end = 
-	{
-		distance_max = 1600
-		pitch_rand_min = 0
-		volume = 2
-		vsnd_files = 
-		[
-			"sounds/ui/spin_music_end.vsnd",
-		]
-		pitch_rand_max = 0
-		pitch = 1
-		soundlevel = 100
-		volume_fade_out = 1
-		type = "dota_src1_3d"
-	}
 	Enigma_boss.Summon_start = 
 	{
 		vsnd_files = 
@@ -2115,20 +1958,6 @@
 		pitch_rand_max = 0
 		type = "dota_src1_3d"
 		soundlevel = 100
-		distance_max = 1600
-		pitch = 1
-	}
-	Item.CloakFlames_active = 
-	{
-		vsnd_files = 
-		[
-			"sounds/items/glimmer_cape.vsnd",
-		]
-		volume = 1
-		pitch_rand_min = -0.15
-		pitch_rand_max = -0.15
-		type = "dota_src1_3d"
-		soundlevel = 81
 		distance_max = 1600
 		pitch = 1
 	}
@@ -2530,20 +2359,6 @@
 		volume_fade_out = 0.5
 		type = "dota_src1_3d"
 	}
-	UI.Talent_phoenix = 
-	{
-		vsnd_files = 
-		[
-			"sounds/weapons/hero/phoenix/super_nova_explode.vsnd",
-		]
-		volume = 1.4
-		pitch_rand_min = -0.05
-		pitch_rand_max = 0.05
-		type = "dota_src1_3d"
-		soundlevel = 100
-		distance_max = 1600
-		pitch = 1
-	}
 	Lina.Array_triple = 
 	{
 		vsnd_files = 
@@ -2637,20 +2452,6 @@
 			"sounds/ui/badge_levelup.vsnd",
 		]
 		volume = 1.9
-		pitch_rand_min = -0.01
-		pitch_rand_max = 0.01
-		type = "dota_src1_3d"
-		soundlevel = 81
-		distance_max = 1600
-		pitch = 1
-	}
-	Patrol.Global_vision = 
-	{
-		vsnd_files = 
-		[
-			"sounds/items/seer_stone.vsnd",
-		]
-		volume = 3
 		pitch_rand_min = -0.01
 		pitch_rand_max = 0.01
 		type = "dota_src1_3d"

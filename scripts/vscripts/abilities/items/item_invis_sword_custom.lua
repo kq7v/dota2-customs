@@ -58,6 +58,11 @@ function item_invis_sword_custom_surge:OnCreated(table)
 	self.duration = self.ability.damage_reduce_duration
 	self.speed = self.ability.movement_speed
 	self.damage = self.ability.windwalk_bonus_damage
+
+	if not IsServer() then
+		return
+	end
+	self.parent:AddProc(self, { land = true, property = true, any = true })
 end
 
 function item_invis_sword_custom_surge:CheckState()
@@ -77,11 +82,19 @@ function item_invis_sword_custom_surge:GetModifierMoveSpeedBonus_Percentage()
 	return self.speed
 end
 
+function item_invis_sword_custom_surge:GetProcChance(params)
+	if not params.target:IsRealHero() then
+		return 0
+	end
+	return 100
+end
+
 function item_invis_sword_custom_surge:GetModifierProcAttack_BonusDamage_Physical(params)
 	if not IsServer() then
 		return
 	end
-	if not params.target:IsRealHero() then
+	self.parent:LandProcs(params, true)
+	if not self.parent:IsProc(self, params.record) then
 		return
 	end
 	params.target:AddNewModifier(

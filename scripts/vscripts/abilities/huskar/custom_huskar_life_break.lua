@@ -133,6 +133,7 @@ function custom_huskar_life_break:UpdateTalents()
 		self.talents.r3_heal = caster:GetTalentValue("modifier_huskar_leap_3", "heal") / 100
 		self.talents.r3_damage = caster:GetTalentValue("modifier_huskar_leap_3", "damage") / 100
 		caster:AddDamageEvent_out(self.tracker, true)
+		caster:AddLifesteal(self.tracker, { name = "modifier_huskar_leap_3", type = 1, value = self.talents.r3_heal })
 	end
 
 	if caster:HasTalent("modifier_huskar_leap_4") then
@@ -649,25 +650,11 @@ function modifier_custom_huskar_life_break_tracker:DamageEvent_out(params)
 	if self.ability.talents.has_r3 == 0 then
 		return
 	end
-	local damage = params.damage
 
 	local mod = params.unit:FindModifierByName("modifier_custom_huskar_life_delay_damage")
 	if mod then
 		mod.damage = mod.damage + params.original_damage * self.ability.talents.r3_damage
 	end
-
-	local result = self.parent:CheckLifesteal(params, 1)
-	if not result then
-		return
-	end
-
-	self.parent:GenericHeal(
-		result * damage * self.ability.talents.r3_heal,
-		self.ability,
-		true,
-		"",
-		"modifier_huskar_leap_3"
-	)
 end
 
 function modifier_custom_huskar_life_break_tracker:OnIntervalThink()

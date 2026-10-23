@@ -84,6 +84,7 @@ function nyx_assassin_impale_custom:UpdateTalents()
 		self.init = true
 		self.talents = {
 			q1_damage = 0,
+			q1_heal = 0,
 
 			q2_cd = 0,
 			q2_stun = 0,
@@ -105,6 +106,8 @@ function nyx_assassin_impale_custom:UpdateTalents()
 
 	if caster:HasTalent("modifier_nyx_impale_1") then
 		self.talents.q1_damage = caster:GetTalentValue("modifier_nyx_impale_1", "damage") / 100
+		self.talents.q1_heal = caster:GetTalentValue("modifier_nyx_impale_1", "heal") / 100
+		caster:AddLifesteal(self.tracker, { name = "modifier_nyx_impale_1", type = 1, value = self.talents.q1_heal })
 	end
 
 	if caster:HasTalent("modifier_nyx_impale_2") then

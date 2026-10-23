@@ -44,32 +44,13 @@ function abaddon_innate_custom:UpdateTalents(name)
 	if not self.init then
 		self.init = true
 		self.talents = {
-			has_q2 = 0,
-			q2_heal = 0,
-
-			has_r2 = 0,
-			r2_heal = 0,
-
 			h1_move = 0,
 
 			has_h3 = 0,
 			h3_heal = 0,
 			h3_cdr = 0,
 			h3_duration = caster:GetTalentValue("modifier_abaddon_hero_3", "duration", true),
-
-			has_r7 = 0,
-			r7_heal = caster:GetTalentValue("modifier_abaddon_borrowed_7", "heal", true) / 100,
 		}
-	end
-
-	if caster:HasTalent("modifier_abaddon_mist_2") then
-		self.talents.has_q2 = 1
-		self.talents.q2_heal = caster:GetTalentValue("modifier_abaddon_mist_2", "heal") / 100
-	end
-
-	if caster:HasTalent("modifier_abaddon_borrowed_2") then
-		self.talents.has_r2 = 1
-		self.talents.r2_heal = caster:GetTalentValue("modifier_abaddon_borrowed_2", "heal") / 100
 	end
 
 	if caster:HasTalent("modifier_abaddon_hero_1") then
@@ -81,10 +62,6 @@ function abaddon_innate_custom:UpdateTalents(name)
 		self.talents.h3_cdr = caster:GetTalentValue("modifier_abaddon_hero_3", "cdr")
 		self.talents.h3_heal = caster:GetTalentValue("modifier_abaddon_hero_3", "heal")
 		caster:AddSpellEvent(self.tracker, true)
-	end
-
-	if caster:HasTalent("modifier_abaddon_borrowed_7") then
-		self.talents.has_r7 = 1
 	end
 end
 
@@ -150,61 +127,6 @@ function modifier_abaddon_font_of_avernus_custom:DamageEvent_out(params)
 	if self.parent:GetTeamNumber() == unit:GetTeamNumber() then
 		return
 	end
-
-	if self.ability.talents.has_q2 == 1 or self.ability.talents.has_r2 == 1 or self.ability.talents.has_r7 == 1 then
-		local result = self.parent:CheckLifesteal(params)
-		if result then
-			if self.ability.talents.has_q2 == 1 and params.inflictor then
-				self.parent:GenericHeal(
-					result * params.damage * self.ability.talents.q2_heal,
-					self.ability,
-					false,
-					"",
-					"modifier_abaddon_mist_2"
-				)
-			end
-			if not params.inflictor then
-				if self.ability.talents.has_r2 == 1 then
-					self.parent:GenericHeal(
-						result * params.damage * self.ability.talents.r2_heal,
-						self.ability,
-						true,
-						"",
-						"modifier_abaddon_borrowed_2"
-					)
-				end
-				if
-					self.parent:HasModifier("modifier_abaddon_borrowed_time_custom")
-					and self.ability.talents.has_r7 == 1
-				then
-					local heal_particle = ParticleManager:CreateParticle(
-						"particles/units/heroes/hero_abaddon/abaddon_borrowed_time_heal.vpcf",
-						PATTACH_CUSTOMORIGIN_FOLLOW,
-						self.parent
-					)
-					ParticleManager:SetParticleControlEnt(
-						heal_particle,
-						0,
-						self.parent,
-						PATTACH_POINT_FOLLOW,
-						"attach_hitloc",
-						self.parent:GetAbsOrigin(),
-						true
-					)
-					ParticleManager:SetParticleControl(heal_particle, 1, unit:GetAbsOrigin())
-					ParticleManager:ReleaseParticleIndex(heal_particle)
-					self.parent:GenericHeal(
-						result * params.damage * self.ability.talents.r7_heal,
-						self.ability,
-						false,
-						"",
-						"modifier_abaddon_borrowed_7"
-					)
-				end
-			end
-		end
-	end
-
 	if self.parent:PassivesDisabled() then
 		return
 	end

@@ -152,21 +152,6 @@
 			"sounds/items/wraith_totem_pulse.vsnd",
 		]
 	}
-	WK.Totem_purge = 
-	{
-		type = "dota_src1_3d"
-		volume = 0.6
-		pitch_rand_min = -0.3
-		pitch_rand_max = -0.1
-		pitch = 1
-		soundlevel = 100
-		volume_fade_out = 0.5
-		distance_max = 1600
-		vsnd_files = 
-		[
-			"sounds/weapons/hero/brewmaster/dispel_magic.vsnd",
-		]
-	}
 	DoubleRating.npc_dota_hero_skeleton_king = 
 	{
 		volume = 1.3
@@ -218,20 +203,6 @@
 		type = "dota_src1_3d"
 		distance_max = 1600
 	}
-	WK.skelet_heal = 
-	{
-		volume = 0.3
-		vsnd_files = 
-		[
-			"sounds/weapons/creep/neutral/troll_priest_heal.vsnd",
-		]
-		pitch_rand_max = 0.03
-		pitch = 1
-		soundlevel = 81
-		type = "dota_src1_3d"
-		distance_max = 1600
-		pitch_rand_min = -0.03
-	}
 	WK.crit_buf = 
 	{
 		volume = 1.4
@@ -276,20 +247,6 @@
 			"sounds/weapons/hero/phantom_assassin/crit_spatter02.vsnd",
 		]
 	}
-	WK.res_legen = 
-	{
-		volume = 1.6
-		vsnd_files = 
-		[
-			"sounds/weapons/hero/skeleton_king/scepter_target.vsnd",
-		]
-		pitch_rand_max = 0.03
-		pitch = 1
-		soundlevel = 81
-		type = "dota_src1_3d"
-		distance_max = 1600
-		pitch_rand_min = -0.03
-	}
 	WK.Skelet_buff = 
 	{
 		type = "dota_src1_3d"
@@ -304,20 +261,6 @@
 		[
 			"sounds/weapons/hero/ogre_magi/bloodlust_target.vsnd",
 		]
-	}
-	WK.res_active = 
-	{
-		volume = 1.2
-		vsnd_files = 
-		[
-			"sounds/items/ascetic_cap.vsnd",
-		]
-		pitch_rand_max = 0.03
-		pitch = 1
-		soundlevel = 81
-		type = "dota_src1_3d"
-		distance_max = 1600
-		pitch_rand_min = -0.03
 	}
 	WK.Stun_legendary_damage = 
 	{
@@ -356,35 +299,6 @@
 			"sounds/vo/skeleton_king/wraith_move_09.vsnd",
 		]
 		type = "dota_src1_3d"
-	}
-	WK.Stun_burn = 
-	{
-		type = "dota_src1_3d"
-		volume = 0.7
-		pitch_rand_min = -0.1
-		pitch_rand_max = -0.1
-		pitch = 1
-		soundlevel = 81
-		volume_fade_out = 1.5
-		distance_max = 1600
-		vsnd_files = 
-		[
-			"sounds/weapons/hero/silencer/curse_tick.vsnd",
-		]
-	}
-	WK.Ult_refresh = 
-	{
-		volume = 1
-		vsnd_files = 
-		[
-			"sounds/weapons/hero/rattletrap/overclock_cast.vsnd",
-		]
-		pitch_rand_max = -0.05
-		pitch = 1
-		soundlevel = 81
-		type = "dota_src1_3d"
-		distance_max = 1600
-		pitch_rand_min = -0.05
 	}
 	WK.Stun_legendary = 
 	{

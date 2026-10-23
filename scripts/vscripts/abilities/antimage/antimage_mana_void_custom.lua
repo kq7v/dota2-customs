@@ -85,8 +85,8 @@ function antimage_mana_void_custom:UpdateTalents(name)
 			r1_mana = caster:GetTalentValue("modifier_antimage_void_1", "mana", true) / 100,
 			r1_damage_type = caster:GetTalentValue("modifier_antimage_void_1", "damage_type", true),
 
-			has_r2 = 0,
 			r2_cd = 0,
+			r2_heal = 0,
 
 			has_r3 = 0,
 			r3_mana = 0,
@@ -123,8 +123,9 @@ function antimage_mana_void_custom:UpdateTalents(name)
 	end
 
 	if caster:HasTalent("modifier_antimage_void_2") then
-		self.talents.has_r2 = 1
 		self.talents.r2_cd = caster:GetTalentValue("modifier_antimage_void_2", "cd")
+		self.talents.r2_heal = caster:GetTalentValue("modifier_antimage_void_2", "heal") / 100
+		caster:AddLifesteal(self.tracker, { name = "modifier_antimage_void_2", type = 1, value = self.talents.r2_heal })
 	end
 
 	if caster:HasTalent("modifier_antimage_void_3") then

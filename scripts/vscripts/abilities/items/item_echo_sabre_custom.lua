@@ -22,12 +22,6 @@ LinkLuaModifier(
 
 item_echo_sabre_custom = class({})
 
-function item_echo_sabre_custom:Precache(context)
-	if self:GetCaster() and self:GetCaster():IsIllusion() then
-		return
-	end
-end
-
 function item_echo_sabre_custom:GetIntrinsicModifierName()
 	return "modifier_item_echo_sabre_custom"
 end
@@ -53,6 +47,7 @@ function modifier_item_echo_sabre_custom:OnCreated()
 		self.parent:IsRealHero() and not self.parent:HasModifier("modifier_monkey_king_wukongs_command_custom_soldier")
 	then
 		self.parent:AddAttackStartEvent_out(self)
+		self.parent:AddProc(self, { group = "echo_harpoon", extra = false, any = true })
 	end
 
 	self.regen = self.ability.bonus_mana_regen
@@ -100,6 +95,16 @@ function modifier_item_echo_sabre_custom:StartSpeed(target, slow)
 	)
 end
 
+function modifier_item_echo_sabre_custom:GetProcChance()
+	if self.parent:IsRangedAttacker() then
+		return 0
+	end
+	if not self.ability:IsFullyCastable() then
+		return 0
+	end
+	return 100
+end
+
 function modifier_item_echo_sabre_custom:AttackStartEvent_out(params)
 	if not IsServer() then
 		return
@@ -115,7 +120,7 @@ function modifier_item_echo_sabre_custom:AttackStartEvent_out(params)
 	end
 
 	local mod = self.parent:FindModifierByName("modifier_item_echo_sabre_custom_speed")
-	if mod then
+	if mod and mod:GetAbility() == self.ability then
 		params.target:AddNewModifier(
 			self.parent,
 			self.ability,
@@ -125,16 +130,9 @@ function modifier_item_echo_sabre_custom:AttackStartEvent_out(params)
 		mod:Destroy()
 	end
 
-	if self.parent:HasModifier("modifier_item_harpoon_custom") then
+	if not params.procs or not params.procs[self] then
 		return
 	end
-	if not self.ability:IsFullyCastable() then
-		return
-	end
-	if self.parent:IsRangedAttacker() then
-		return
-	end
-
 	self:StartSpeed(params.target, true)
 end
 

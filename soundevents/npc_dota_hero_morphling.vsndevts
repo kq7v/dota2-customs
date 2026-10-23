@@ -102,38 +102,6 @@
 		volume_fade_out = 0.2
 		distance_max = 1600
 	}
-	Morph.Replicate_legendary_attack = 
-	{
-		type = "dota_src1_3d"
-		volume = 1
-		pitch_rand_min = -0.1
-		pitch_rand_max = 0.1
-		vsnd_files = 
-		[
-			"sounds/weapons/hero/morphling/adaptive_strike_str_target.vsnd",
-		]
-		pitch = 1
-		soundlevel = 100
-		volume_fade_out = 0.2
-		distance_max = 1600
-	}
-	Morph.Replicate_legendary_attack2 = 
-	{
-		type = "dota_src1_3d"
-		volume = 0.6
-		pitch_rand_max = 0.2
-		pitch_rand_min = 0.1
-		vsnd_files = 
-		[
-			"sounds/weapons/hero/naga_siren/riptide02.vsnd",
-			"sounds/weapons/hero/naga_siren/riptide01.vsnd",
-			"sounds/weapons/hero/naga_siren/riptide03.vsnd",
-		]
-		pitch = 1
-		soundlevel = 100
-		volume_fade_out = 1
-		distance_max = 1600
-	}
 	Morph.Replicate_pick = 
 	{
 		type = "dota_update_vo_switch"

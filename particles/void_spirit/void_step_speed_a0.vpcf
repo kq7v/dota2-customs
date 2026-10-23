@@ -72,10 +72,6 @@
 			_class = "C_INIT_InitialVelocityNoise"
 			m_vecOutputMin = [ -22.0, -22.0, 28.0 ]
 			m_vecOutputMax = [ 22.0, 22.0, 52.0 ]
-			m_TransformInput = 
-			{
-				m_nType = "PT_TYPE_INVALID"
-			}
 		},
 	]
 	m_Operators = 

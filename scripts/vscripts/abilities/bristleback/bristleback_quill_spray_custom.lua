@@ -74,6 +74,7 @@ function bristleback_quill_spray_custom:UpdateTalents(name)
 
 			has_w3 = 0,
 			w3_damage = 0,
+			w3_heal = 0,
 			w3_chance_inc = caster:GetTalentValue("modifier_bristle_spray_3", "chance_inc", true),
 			w3_interval = caster:GetTalentValue("modifier_bristle_spray_3", "interval", true),
 			w3_chance = caster:GetTalentValue("modifier_bristle_spray_3", "chance", true),
@@ -108,6 +109,8 @@ function bristleback_quill_spray_custom:UpdateTalents(name)
 	if caster:HasTalent("modifier_bristle_spray_3") then
 		self.talents.has_w3 = 1
 		self.talents.w3_damage = caster:GetTalentValue("modifier_bristle_spray_3", "damage") / 100
+		self.talents.w3_heal = caster:GetTalentValue("modifier_bristle_spray_3", "heal") / 100
+		caster:AddLifesteal(self.tracker, { name = "modifier_bristle_spray_3", type = 1, value = self.talents.w3_heal })
 	end
 
 	if caster:HasTalent("modifier_bristle_spray_7") then

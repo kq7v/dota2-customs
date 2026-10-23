@@ -152,12 +152,12 @@ function axe_berserkers_call_custom:UpdateTalents()
 		self.talents.has_q3 = 1
 		self.talents.q3_crit = caster:GetTalentValue("modifier_axe_call_3", "crit")
 		self.talents.q3_armor = caster:GetTalentValue("modifier_axe_call_3", "armor")
-		caster:AddAttackEvent_out(self.tracker, true)
+		caster:AddProc(self.tracker, { land = true })
 	end
 
 	if caster:HasTalent("modifier_axe_call_4") then
 		self.talents.has_q4 = 1
-		caster:AddAttackEvent_out(self.tracker, true)
+		caster:AddProc(self.tracker, { land = true })
 	end
 
 	if caster:HasTalent("modifier_axe_hero_1") then
@@ -496,6 +496,13 @@ function modifier_axe_berserkers_call_custom_tracker:GetModifierHPRegenAmplify_P
 	return self.ability.talents.h1_heal_inc
 end
 
+function modifier_axe_berserkers_call_custom_tracker:GetCritChance()
+	if self.ability.talents.has_q3 == 0 then
+		return 0
+	end
+	return self.ability.talents.q3_chance
+end
+
 function modifier_axe_berserkers_call_custom_tracker:GetCritDamage()
 	if self.ability.talents.has_q3 == 0 then
 		return
@@ -512,23 +519,18 @@ function modifier_axe_berserkers_call_custom_tracker:GetModifierPreAttack_Critic
 	end
 	self.record = nil
 
-	if not RollPseudoRandomPercentage(self.ability.talents.q3_chance, 4452, self.parent) then
+	if not RollPseudoRandomPercentage(self:GetCritChance(), 4452, self.parent) then
 		return
 	end
 	self.record = params.record
 	return self:GetCritDamage()
 end
 
-function modifier_axe_berserkers_call_custom_tracker:AttackEvent_out(params)
-	if not IsServer() then
-		return
-	end
-	if self.parent ~= params.attacker then
-		return
-	end
-	if not params.target:IsUnit() then
-		return
-	end
+function modifier_axe_berserkers_call_custom_tracker:GetProcChance()
+	return 100
+end
+
+function modifier_axe_berserkers_call_custom_tracker:AttackProc(params, name)
 	local target = params.target
 
 	if self.record and params.record == self.record then
@@ -968,32 +970,18 @@ function modifier_axe_berserkers_call_custom_legendary:OnCreated()
 	self.parent:GenericParticle("particles/econ/events/fall_2022/radiance/radiance_owner_fall2022.vpcf", self)
 	self.parent:GenericParticle("particles/axe/calling_legendary_cast.vpcf")
 
-	self.parent:AddDamageEvent_out(self, true)
+	self.parent:AddLifesteal(self, {
+		name = "modifier_axe_call_7",
+		type = 2,
+		text = true,
+		value = function()
+			return self.parent:HasModifier("modifier_axe_berserkers_call_custom_buff") and self.ability.talents.q7_heal
+				or 0
+		end,
+	})
 
 	self:OnIntervalThink()
 	self:StartIntervalThink(self.ability.talents.q7_interval)
-end
-
-function modifier_axe_berserkers_call_custom_legendary:DamageEvent_out(params)
-	if not IsServer() then
-		return
-	end
-	if not self.parent:HasModifier("modifier_axe_berserkers_call_custom_buff") then
-		return
-	end
-
-	local result = self.parent:CheckLifesteal(params, 2)
-	if not result then
-		return
-	end
-
-	self.parent:GenericHeal(
-		result * params.damage * self.ability.talents.q7_heal,
-		self.ability,
-		nil,
-		nil,
-		"modifier_axe_call_7"
-	)
 end
 
 function modifier_axe_berserkers_call_custom_legendary:OnIntervalThink()

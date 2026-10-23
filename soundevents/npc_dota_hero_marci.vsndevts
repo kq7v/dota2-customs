@@ -86,20 +86,6 @@
 		]
 		type = "dota_src1_3d"
 	}
-	Marci.Dispose_swap = 
-	{
-		vsnd_files = 
-		[
-			"sounds/ui/panorama/panorama_rollover_micro_01.vsnd",
-		]
-		volume = 1
-		pitch_rand_min = -0.01
-		type = "dota_src1_3d"
-		pitch = 1
-		soundlevel = 81
-		pitch_rand_max = 0.01
-		distance_max = 1600
-	}
 	Marci.Launge_start = 
 	{
 		vsnd_files = 
@@ -243,20 +229,6 @@
 		vsnd_files = "sounds/weapons/hero/shadowshaman/projectile_impact.vsnd"
 		vsnd_duration = 0.578027
 	}
-	Marci.Dispose_purge = 
-	{
-		vsnd_files = 
-		[
-			"sounds/items/nullifier_target.vsnd",
-		]
-		volume = 0.75
-		pitch_rand_min = 0.05
-		type = "dota_src1_3d"
-		pitch = 1
-		soundlevel = 81
-		pitch_rand_max = 0.05
-		distance_max = 1600
-	}
 	Marci.Dispose_hits_pre = 
 	{
 		vsnd_files = 
@@ -273,20 +245,6 @@
 		pitch_rand_max = 0.01
 		distance_max = 1600
 	}
-	Marci.Sidekick_heal = 
-	{
-		vsnd_files = 
-		[
-			"sounds/weapons/hero/oracle/false_promise_heal.vsnd",
-		]
-		volume = 1.1
-		pitch_rand_min = -0.01
-		type = "dota_src1_3d"
-		pitch = 1
-		soundlevel = 81
-		pitch_rand_max = 0.01
-		distance_max = 1600
-	}
 	npc_marci_summon_luna_spawn = 
 	{
 		vsnd_files = 
@@ -294,20 +252,6 @@
 			"sounds/vo/luna/luna_spawn_01.vsnd",
 		]
 		volume = 1.5
-		pitch_rand_min = -0.01
-		type = "dota_src1_3d"
-		pitch = 1
-		soundlevel = 81
-		pitch_rand_max = 0.01
-		distance_max = 1600
-	}
-	Marci.Unleash_rage = 
-	{
-		vsnd_files = 
-		[
-			"sounds/weapons/hero/marci/unleash_charged.vsnd",
-		]
-		volume = 1.6
 		pitch_rand_min = -0.01
 		type = "dota_src1_3d"
 		pitch = 1

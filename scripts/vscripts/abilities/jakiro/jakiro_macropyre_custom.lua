@@ -73,6 +73,7 @@ function jakiro_macropyre_custom:Precache(context)
 	PrecacheResource("particle", "particles/units/heroes/hero_jakiro/jakiro_liquid_fire_debuff.vpcf", context)
 	PrecacheResource("particle", "particles/jakiro/path_legendary_caster_fire.vpcf", context)
 	PrecacheResource("particle", "particles/jakiro/liquid_fire_legendary_timer.vpcf", context)
+	PrecacheResource("particle", "particles/drow_ranger/frost_heal.vpcf", context)
 end
 
 function jakiro_macropyre_custom:UpdateTalents(name)
@@ -96,7 +97,7 @@ function jakiro_macropyre_custom:UpdateTalents(name)
 			r4_root = caster:GetTalentValue("modifier_jakiro_macropyre_4", "root", true),
 			r4_radius_legendary = caster:GetTalentValue("modifier_jakiro_macropyre_4", "radius_legendary", true),
 
-			has_r3 = 0,
+			r3_heal = 0,
 			r3_slow = caster:GetTalentValue("modifier_jakiro_macropyre_3", "slow", true),
 
 			has_r7 = 0,
@@ -135,7 +136,22 @@ function jakiro_macropyre_custom:UpdateTalents(name)
 	end
 
 	if caster:HasTalent("modifier_jakiro_macropyre_3") then
-		self.talents.has_r3 = 1
+		self.talents.r3_heal = caster:GetTalentValue("modifier_jakiro_macropyre_3", "heal") / 100
+		caster:AddLifesteal(self.tracker, {
+			name = "modifier_jakiro_macropyre_3",
+			type = 1,
+			value = function(params)
+				if not params.unit then
+					return 0
+				end
+				for mod in pairs(caster.jakiro_innate.ice_mods) do
+					if params.unit:HasModifier(mod) then
+						return self.talents.r3_heal
+					end
+				end
+				return 0
+			end,
+		})
 	end
 
 	if caster:HasTalent("modifier_jakiro_macropyre_4") then
@@ -278,6 +294,21 @@ function modifier_jakiro_macropyre_custom_tracker:OnCreated(table)
 	self.ability.frost_duration = self.ability:GetSpecialValueFor("frost_duration")
 	self.ability.AbilityCastRange = self.ability:GetSpecialValueFor("AbilityCastRange")
 	self.ability.AbilityChargeRestoreTime = self.ability:GetSpecialValueFor("AbilityChargeRestoreTime")
+
+	self.parent:AddLifesteal(self, {
+		value = function(params)
+			if not params.unit then
+				return 0
+			end
+			if not params.unit:HasModifier("modifier_jakiro_macropyre_custom_frost") then
+				return 0
+			end
+			if self.parent:CheckCd("jakiro_visual", 0.5) then
+				return self.ability.frost_heal, "particles/drow_ranger/frost_heal.vpcf"
+			end
+			return self.ability.frost_heal, false
+		end,
+	})
 end
 
 function modifier_jakiro_macropyre_custom_tracker:OnRefresh(table)

@@ -10622,6 +10622,98 @@ var ITEM_CHANGED_INFORMATION =
     {
         "model" : 33300,
     },
+    6671 :
+    {
+        model : 6671,
+        changed_icons :
+        [
+            ["custom_puck_illusory_orb", "puck_illusory_orb_merry"],
+        ],
+        changed_effects :
+        [
+            ["custom_puck_illusory_orb", "puck_illusory_orb"],
+        ],
+    },
+    37108 :
+    {
+        model : 37108,
+        changed_icons :
+        [
+            ["custom_puck_illusory_orb", "puck_illusory_orb_merry_crimson"],
+        ],
+        changed_effects :
+        [
+            ["custom_puck_illusory_orb", "puck_illusory_orb"],
+        ],
+    },
+    13767 :
+    {
+        model : 13767,
+        changed_icons :
+        [
+            ["custom_puck_dream_coil", "puck/puck_ti10_immortal_ability_icons/puck_dream_coil_ti10"],
+        ],
+        changed_effects :
+        [
+            ["custom_puck_dream_coil", "puck_dream_coil"],
+        ],
+    },
+    6290 :
+    {
+        model : 6290,
+        changed_effects :
+        [
+            ["custom_puck_waning_rift", "puck_waning_rift"],
+        ],
+    },
+    13340 :
+    {
+        model : 13340,
+    },
+    13341 :
+    {
+        model : 13341,
+    },
+    13342 :
+    {
+        model : 13342,
+    },
+    9580 :
+    {
+        model : 9580,
+    },
+    9581 :
+    {
+        model : 9581,
+    },
+    9582 :
+    {
+        model : 9582,
+    },
+    14643 :
+    {
+        model : 14643,
+    },
+    14644 :
+    {
+        model : 14644,
+    },
+    14645 :
+    {
+        model : 14645,
+    },
+    13129 :
+    {
+        model : 13129,
+    },
+    13130 :
+    {
+        model : 13130,
+    },
+    13131 :
+    {
+        model : 13131,
+    },
 }
 
 
@@ -11174,6 +11266,11 @@ var SETS_TEXTURE_FULL_ICON =
     mane_attraction : "econ/sets/v2/mane_attraction",
     age_of_attrition : "econ/sets/v2/age_of_attrition",
     slobbering_strongbox : "econ/sets/v2/slobbering_strongbox",
+
+    amusements_of_the_ageless_fae : "econ/sets/v2/amusements_of_the_ageless_fae",
+    curious_coldspell : "econ/sets/v2/curious_coldspell",
+    vanishing_pearl : "econ/sets/v2/vanishing_pearl",
+    faeriesnap_spriteleaf : "econ/sets/v2/faeriesnap_spriteleaf",
 }
 
 var OTHER_BACKGROUND_HEROES =
@@ -11782,6 +11879,14 @@ var SETS_PRIORITY =
         "primeval_abomination",
         "age_of_attrition",
     ],
+    npc_dota_hero_puck :
+    [
+        "rare",
+        "faeriesnap_spriteleaf",
+        "curious_coldspell",
+        "amusements_of_the_ageless_fae",
+        "vanishing_pearl",
+    ],
 }
 
 
@@ -11899,10 +12004,10 @@ var ITEMS_EFFECTS_DATA =
 
     npc_dota_hero_puck:
     {
-        custom_puck_illusory_orb : [],
-        custom_puck_waning_rift : [],
+        custom_puck_illusory_orb : [6671, 37108],
+        custom_puck_waning_rift : [6290],
         custom_puck_phase_shift : [],
-        custom_puck_dream_coil : [],
+        custom_puck_dream_coil : [13767],
     },
 
     npc_dota_hero_void_spirit:

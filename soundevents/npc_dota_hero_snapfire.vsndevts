@@ -55,21 +55,6 @@
 		pitch = 1
 		volume_fade_out = 1.5
 	}
-	Snapfire.Shredder_bash = 
-	{
-		vsnd_files = 
-		[
-			"sounds/items/skull_basher.vsnd",
-		]
-		volume = 1.2
-		pitch_rand_min = 0.3
-		pitch_rand_max = 0.3
-		type = "dota_src1_3d"
-		soundlevel = 100
-		distance_max = 1600
-		pitch = 1
-		volume_fade_out = 1.5
-	}
 	Snapfire.Shredder_silence = 
 	{
 		vsnd_files = 
@@ -184,36 +169,6 @@
 		volume = 1.2
 		pitch_rand_min = -0.1
 		pitch_rand_max = 0.1
-		type = "dota_src1_3d"
-		soundlevel = 100
-		distance_max = 1600
-		pitch = 1
-		volume_fade_out = 1.5
-	}
-	Snapfire.cookie_lowhp = 
-	{
-		vsnd_files = 
-		[
-			"sounds/weapons/hero/snapfire/cookie_impact.vsnd",
-		]
-		volume = 1.2
-		pitch_rand_min = 0.1
-		pitch_rand_max = 0.1
-		type = "dota_src1_3d"
-		soundlevel = 100
-		distance_max = 1600
-		pitch = 1
-		volume_fade_out = 1.5
-	}
-	Snapfire.cookie_lowhp2 = 
-	{
-		vsnd_files = 
-		[
-			"sounds/weapons/hero/snapfire/cookie_target.vsnd",
-		]
-		volume = 1.2
-		pitch_rand_min = 0
-		pitch_rand_max = 0
 		type = "dota_src1_3d"
 		soundlevel = 100
 		distance_max = 1600

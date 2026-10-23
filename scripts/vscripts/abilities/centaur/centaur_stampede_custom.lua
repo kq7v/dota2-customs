@@ -155,7 +155,7 @@ function centaur_stampede_custom:UpdateTalents(name)
 		self.talents.has_r1 = 1
 		self.talents.r1_damage = caster:GetTalentValue("modifier_centaur_stampede_1", "damage")
 		self.talents.r1_speed = caster:GetTalentValue("modifier_centaur_stampede_1", "speed")
-		caster:AddAttackEvent_out(self.tracker, true)
+		caster:AddProc(self.tracker, { land = true, extra = false })
 	end
 
 	if caster:HasTalent("modifier_centaur_stampede_2") then
@@ -167,7 +167,23 @@ function centaur_stampede_custom:UpdateTalents(name)
 	if caster:HasTalent("modifier_centaur_stampede_3") then
 		self.talents.has_r3 = 1
 		self.talents.r3_cd = caster:GetTalentValue("modifier_centaur_stampede_3", "cd")
-		caster:AddDamageEvent_out(self.tracker, true)
+		caster:AddProc(self.tracker, { name = "crit", damage = true })
+		caster:AddLifesteal(self.tracker, {
+			name = "modifier_centaur_stampede_3",
+			type = 2,
+			text = true,
+			effect = "particles/units/heroes/hero_bloodseeker/bloodseeker_bloodbath.vpcf",
+			proc = "LifestealRecord",
+			value = function(params)
+				if not params.record then
+					return 0
+				end
+				if params.record ~= self.tracker.r3_record then
+					return 0
+				end
+				return self.talents.r3_heal
+			end,
+		})
 		if IsServer() then
 			self.tracker:StartIntervalThink(1)
 		end
@@ -175,7 +191,7 @@ function centaur_stampede_custom:UpdateTalents(name)
 
 	if caster:HasTalent("modifier_centaur_stampede_4") then
 		self.talents.has_r4 = 1
-		caster:AddAttackEvent_out(self.tracker, true)
+		caster:AddProc(self.tracker, { land = true, extra = false })
 	end
 
 	if caster:HasTalent("modifier_centaur_hero_6") then
@@ -185,7 +201,7 @@ function centaur_stampede_custom:UpdateTalents(name)
 	if caster:HasTalent("modifier_centaur_stampede_7") then
 		self.talents.has_r7 = 1
 		self.tracker:UpdateUI()
-		caster:AddAttackEvent_out(self.tracker, true)
+		caster:AddProc(self.tracker, { land = true, extra = false })
 	end
 end
 
@@ -474,20 +490,18 @@ function modifier_centaur_stampede_custom_tracker:GetModifierAttackRangeBonus()
 		* (self.parent:HasModifier("modifier_centaur_stampede_custom") and self.ability.talents.r2_bonus or 1)
 end
 
-function modifier_centaur_stampede_custom_tracker:AttackEvent_out(params)
-	if not IsServer() then
-		return
+function modifier_centaur_stampede_custom_tracker:GetProcChance(params, name)
+	if name ~= "crit" then
+		return 100
 	end
-	if self.parent ~= params.attacker then
-		return
+	local mod = self.parent:FindModifierByName("modifier_centaur_stampede_custom_crit_attack")
+	if not mod or mod.record ~= params.record then
+		return 0
 	end
-	if not params.target:IsUnit() then
-		return
-	end
-	if params.no_attack_cooldown then
-		return
-	end
+	return 100
+end
 
+function modifier_centaur_stampede_custom_tracker:AttackProc(params, name)
 	local mod = self.parent:FindModifierByName("modifier_centaur_stampede_custom")
 	if self.ability.talents.has_r1 == 1 and mod then
 		self.parent:AddNewModifier(
@@ -521,33 +535,18 @@ function modifier_centaur_stampede_custom_tracker:AttackEvent_out(params)
 	)
 end
 
-function modifier_centaur_stampede_custom_tracker:DamageEvent_out(params)
-	if not IsServer() then
-		return
-	end
-	if self.parent ~= params.attacker then
-		return
-	end
-	if not params.unit:IsUnit() then
-		return
-	end
+function modifier_centaur_stampede_custom_tracker:LifestealRecord()
+	self.r3_record = nil
+end
 
-	local target = params.unit
-
+function modifier_centaur_stampede_custom_tracker:DamageProc(params, name)
+	local target = params.target
 	local mod = self.parent:FindModifierByName("modifier_centaur_stampede_custom_crit_attack")
-	if not mod or not mod.record or mod.record ~= params.record then
+	if not mod then
 		return
 	end
 
-	local heal = params.damage * self.ability.talents.r3_heal
-
-	self.parent:GenericHeal(
-		heal,
-		self.ability,
-		false,
-		"particles/units/heroes/hero_bloodseeker/bloodseeker_bloodbath.vpcf",
-		"modifier_centaur_stampede_3"
-	)
+	self.r3_record = params.record
 	target:EmitSound("Centaur.Stomp_crit_attack1")
 	target:EmitSound("Centaur.Stomp_crit_attack2")
 
@@ -904,7 +903,6 @@ end
 
 function centaur_stampede_custom_legendary:CreateTalent()
 	self:SetHidden(false)
-	self:UpdateVectorValues()
 end
 
 function centaur_stampede_custom_legendary:UpdateTalents(name)

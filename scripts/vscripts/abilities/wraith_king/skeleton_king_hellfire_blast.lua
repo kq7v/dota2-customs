@@ -161,7 +161,7 @@ function skeleton_king_hellfire_blast_custom:UpdateTalents(name)
 
 	if caster:HasTalent("modifier_skeleton_hero_4") then
 		self.talents.has_h4 = 1
-		caster:AddAttackEvent_out(self.tracker, true)
+		caster:AddProc(self.tracker, { land = true, illusion = true })
 	end
 
 	if caster:HasTalent("modifier_skeleton_reincarnation_3") then
@@ -698,14 +698,11 @@ function modifier_skeleton_king_hellfire_blast_custom_tracker:GetModifierSpellAm
 	return self.ability.talents.q1_spell
 end
 
-function modifier_skeleton_king_hellfire_blast_custom_tracker:AttackEvent_out(params)
-	if not IsServer() then
-		return
-	end
-	if not params.target:IsUnit() then
-		return
-	end
+function modifier_skeleton_king_hellfire_blast_custom_tracker:GetProcChance()
+	return 100
+end
 
+function modifier_skeleton_king_hellfire_blast_custom_tracker:AttackProc(params, name)
 	local attacker = params.attacker
 
 	if

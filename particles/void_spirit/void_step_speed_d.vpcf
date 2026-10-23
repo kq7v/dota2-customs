@@ -104,10 +104,6 @@
 			m_vecOutputMin = [ -122.0, -122.0, 8.0 ]
 			m_vecOutputMax = [ 122.0, 122.0, 12.0 ]
 			m_flNoiseScaleLoc = 4.0
-			m_TransformInput = 
-			{
-				m_nType = "PT_TYPE_INVALID"
-			}
 		},
 	]
 	m_Operators = 

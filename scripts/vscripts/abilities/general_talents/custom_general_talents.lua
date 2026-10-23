@@ -25,7 +25,6 @@ custom_general_talents = class({})
 custom_general_talents.talents = {}
 
 custom_general_talents.damage_out_mods = {
-	"modifier_up_lifesteal",
 	"modifier_up_damage",
 	"modifier_up_aoe_damage",
 }
@@ -39,7 +38,6 @@ custom_general_talents.stats_functions = {
 	[MODIFIER_PROPERTY_MOVESPEED_BONUS_CONSTANT] = { "has_gray_movespeed" },
 	[MODIFIER_PROPERTY_STATUS_RESISTANCE_STACKING] = { "has_gray_movespeed", "duo" },
 	[MODIFIER_PROPERTY_SPELL_AMPLIFY_PERCENTAGE] = { "has_gray_spelldamage" },
-	[MODIFIER_PROPERTY_TOTALDAMAGEOUTGOING_PERCENTAGE] = { "has_gray_spelldamage" },
 	[MODIFIER_PROPERTY_PHYSICAL_ARMOR_BONUS] = { "has_gray_armor" },
 	[MODIFIER_PROPERTY_EVASION_CONSTANT] = { "has_gray_armor" },
 	[MODIFIER_PROPERTY_MANA_BONUS] = { "has_gray_mana" },
@@ -267,6 +265,10 @@ function custom_general_talents:UpdateTalents()
 		caster:RemoveModifierByName("modifier_general_stats_aura")
 	end
 
+	if self.talents.has_gray_lifesteal == 1 then
+		caster:AddLifesteal(self.tracker, { name = "modifier_up_lifesteal", value = self.talents.gray_lifesteal })
+	end
+
 	for _, check_name in pairs(self.damage_out_mods) do
 		if caster:HasTalent(check_name) then
 			caster:AddDamageEvent_out(self.tracker, true)
@@ -274,7 +276,7 @@ function custom_general_talents:UpdateTalents()
 	end
 
 	if self.talents.has_gray_javelin == 1 then
-		caster:AddAttackEvent_out(self.tracker, true)
+		caster:AddProc(self.tracker, { land = true })
 	end
 
 	if self.talents.has_gray_control_shield == 1 then
@@ -378,23 +380,9 @@ function modifier_general_stats:DamageEvent_out(params)
 	end
 	local unit = params.unit
 	local attacker = params.attacker
-	local damage = params.damage
 
 	if self.parent ~= attacker or unit:GetTeamNumber() == attacker:GetTeamNumber() or not unit:IsUnit() then
 		return
-	end
-
-	if self.ability.talents.has_gray_lifesteal == 1 then
-		local result = self.parent:CheckLifesteal(params)
-		if result then
-			self.parent:GenericHeal(
-				self.ability.talents.gray_lifesteal * result * damage,
-				self.ability,
-				true,
-				"",
-				"modifier_up_lifesteal"
-			)
-		end
 	end
 
 	if self.ability.talents.has_gray_debuff_max == 1 and unit:CheckCd("up_debuff_max", 3) then
@@ -407,23 +395,11 @@ function modifier_general_stats:DamageEvent_out(params)
 	end
 end
 
-function modifier_general_stats:AttackEvent_out(params)
-	if not IsServer() then
-		return
-	end
-	if self.ability.talents.has_gray_javelin == 0 then
-		return
-	end
-	if self.parent ~= params.attacker then
-		return
-	end
-	if not params.target:IsUnit() or params.target:GetTeamNumber() == self.parent:GetTeamNumber() then
-		return
-	end
-	if not RollPseudoRandomPercentage(self.ability.talents.gray_javelin_chance, 9954, self.parent) then
-		return
-	end
+function modifier_general_stats:GetProcChance()
+	return self.ability.talents.gray_javelin_chance
+end
 
+function modifier_general_stats:AttackProc(params)
 	for _, target in
 		pairs(self.parent:FindTargets(self.ability.talents.gray_javelin_radius, params.target:GetAbsOrigin()))
 	do
@@ -667,11 +643,7 @@ function modifier_general_stats:StateEvent(params)
 	end
 end
 
-function modifier_general_stats:GetModifierTotalDamageOutgoing_Percentage(params)
-	if not params.inflictor or not params.inflictor:IsItem() then
-		return 0
-	end
-
+function modifier_general_stats:GetItemDamage()
 	return self.ability.talents.gray_spelldamage_max
 end
 

@@ -63,6 +63,8 @@ function marci_companion_run_custom:Precache(context)
 	PrecacheResource("particle", "particles/alchemist/alch_stun_legendary.vpcf", context)
 	PrecacheResource("particle", "particles/marci/rebound_legendary_stack.vpcf", context)
 	PrecacheResource("particle", "particles/units/heroes/hero_marci/marci_unleash_attack.vpcf", context)
+	PrecacheResource("particle", "particles/ui_mouseactions/range_finder_generic_aoe_nocenter.vpcf", context)
+	PrecacheResource("particle", "particles/ui_mouseactions/range_finder_line_moving_dash.vpcf", context)
 end
 
 function marci_companion_run_custom:UpdateTalents(name)

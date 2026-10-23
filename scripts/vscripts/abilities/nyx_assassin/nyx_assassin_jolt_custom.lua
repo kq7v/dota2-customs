@@ -82,7 +82,6 @@ function nyx_assassin_jolt_custom:UpdateTalents()
 			w2_slow = 0,
 			w2_duration = caster:GetTalentValue("modifier_nyx_mind_2", "duration", true),
 
-			has_h1 = 0,
 			h1_mana = 0,
 
 			has_w3 = 0,
@@ -109,13 +108,6 @@ function nyx_assassin_jolt_custom:UpdateTalents()
 			w7_mana = caster:GetTalentValue("modifier_nyx_mind_7", "mana", true) / 100,
 			w7_mana_damage = caster:GetTalentValue("modifier_nyx_mind_7", "mana_damage", true) / 100,
 			w7_duration = caster:GetTalentValue("modifier_nyx_mind_7", "duration", true),
-
-			has_q1 = 0,
-			q1_heal = 0,
-
-			has_e2 = 0,
-			e2_heal = 0,
-			e2_bonus = caster:GetTalentValue("modifier_nyx_carapace_2", "bonus", true),
 		}
 	end
 
@@ -130,8 +122,11 @@ function nyx_assassin_jolt_custom:UpdateTalents()
 	end
 
 	if caster:HasTalent("modifier_nyx_hero_1") then
-		self.talents.has_h1 = 1
 		self.talents.h1_mana = caster:GetTalentValue("modifier_nyx_hero_1", "mana") / 100
+		caster:AddLifesteal(
+			self.tracker,
+			{ name = "modifier_nyx_hero_1", heal = false, proc = "LifestealMana", value = self.talents.h1_mana }
+		)
 		if IsServer() then
 			local stats = caster:GetTalentValue("modifier_nyx_hero_1", "stats") / 100
 			caster:AddPercentStat({ agi = stats, str = stats, int = stats }, self.tracker)
@@ -143,6 +138,14 @@ function nyx_assassin_jolt_custom:UpdateTalents()
 		self.talents.w3_heal = caster:GetTalentValue("modifier_nyx_mind_3", "heal") / 100
 		self.talents.w3_cd = caster:GetTalentValue("modifier_nyx_mind_3", "cd") / 100
 		caster:AddSpellEvent(self.tracker, true)
+		caster:AddLifesteal(self.tracker, {
+			name = "modifier_nyx_mind_3",
+			type = 1,
+			effect = "particles/generic/lifesteal_blue.vpcf",
+			value = function(params)
+				return params.inflictor == self and self.talents.w3_heal or 0
+			end,
+		})
 	end
 
 	if caster:HasTalent("modifier_nyx_mind_4") then
@@ -156,16 +159,6 @@ function nyx_assassin_jolt_custom:UpdateTalents()
 
 	if caster:HasTalent("modifier_nyx_mind_7") then
 		self.talents.has_w7 = 1
-	end
-
-	if caster:HasTalent("modifier_nyx_impale_1") then
-		self.talents.has_q1 = 1
-		self.talents.q1_heal = caster:GetTalentValue("modifier_nyx_impale_1", "heal") / 100
-	end
-
-	if caster:HasTalent("modifier_nyx_carapace_2") then
-		self.talents.has_e2 = 1
-		self.talents.e2_heal = caster:GetTalentValue("modifier_nyx_carapace_2", "heal") / 100
 	end
 end
 
@@ -388,15 +381,6 @@ function modifier_nyx_assassin_jolt_custom_tracker:DamageEvent_out(params)
 		return
 	end
 
-	if self.ability.talents.has_h1 == 1 then
-		local mana_add = params.damage * self.ability.talents.h1_mana
-
-		local result = self.parent:CanLifesteal(unit)
-		if result then
-			self.parent:GiveMana(mana_add * result)
-		end
-	end
-
 	if self.ability.talents.has_w4 == 1 then
 		local mana_burn = params.damage * self.ability.talents.w4_mana
 
@@ -428,45 +412,6 @@ function modifier_nyx_assassin_jolt_custom_tracker:DamageEvent_out(params)
 		end
 	end
 
-	if self.ability.talents.has_w3 == 1 or self.ability.talents.has_q1 == 1 or self.ability.talents.has_e2 == 1 then
-		local result = self.parent:CanLifesteal(unit)
-		if result then
-			if self.ability.talents.has_w3 == 1 and params.inflictor and params.inflictor == self.ability then
-				self.parent:GenericHeal(
-					result * params.damage * self.ability.talents.w3_heal,
-					self.ability,
-					true,
-					"particles/generic/lifesteal_blue.vpcf",
-					"modifier_nyx_mind_3"
-				)
-			end
-			if self.ability.talents.has_q1 == 1 and params.inflictor then
-				self.parent:GenericHeal(
-					params.damage * self.ability.talents.q1_heal * result,
-					self.ability,
-					true,
-					"particles/items3_fx/octarine_core_lifesteal.vpcf",
-					"modifier_nyx_impale_1"
-				)
-			end
-			if self.ability.talents.has_e2 == 1 and not params.inflictor then
-				local bonus = 1
-				local hide = true
-				if self.parent:HasModifier("modifier_nyx_assassin_spiked_carapace_custom_heal_bonus") then
-					bonus = self.ability.talents.e2_bonus
-					hide = false
-				end
-				self.parent:GenericHeal(
-					params.damage * self.ability.talents.e2_heal * result * bonus,
-					self.ability,
-					hide,
-					false,
-					"modifier_nyx_carapace_2"
-				)
-			end
-		end
-	end
-
 	local damage = math.floor(params.damage * self.ability.damage_echo_pct)
 	if damage <= 0 then
 		return
@@ -478,6 +423,10 @@ function modifier_nyx_assassin_jolt_custom_tracker:DamageEvent_out(params)
 		"modifier_nyx_assassin_jolt_custom_damage_count",
 		{ duration = self.ability.damage_echo_duration, damage = damage }
 	)
+end
+
+function modifier_nyx_assassin_jolt_custom_tracker:LifestealMana(params, mana)
+	self.parent:GiveMana(mana)
 end
 
 function modifier_nyx_assassin_jolt_custom_tracker:SpellEvent(params)

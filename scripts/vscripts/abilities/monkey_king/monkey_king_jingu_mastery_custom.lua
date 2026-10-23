@@ -115,9 +115,6 @@ function monkey_king_jingu_mastery_custom:UpdateTalents(name)
 
 			has_q7 = 0,
 
-			has_r1 = 0,
-			r1_heal = 0,
-
 			has_w7 = 0,
 
 			has_r7 = 0,
@@ -172,11 +169,6 @@ function monkey_king_jingu_mastery_custom:UpdateTalents(name)
 
 	if caster:HasTalent("modifier_monkey_king_boundless_7") then
 		self.talents.has_q7 = 1
-	end
-
-	if caster:HasTalent("modifier_monkey_king_command_1") then
-		self.talents.has_r1 = 1
-		self.talents.r1_heal = caster:GetTalentValue("modifier_monkey_king_command_1", "heal") / 100
 	end
 
 	if caster:HasTalent("modifier_monkey_king_command_7") then
@@ -274,9 +266,19 @@ function modifier_monkey_king_jingu_mastery_custom_tracker:OnCreated()
 
 	self.records = {}
 
-	self.parent:AddAttackEvent_out(self, true)
-	self.parent:AddDamageEvent_out(self, true)
+	self.parent:AddProc(self, { land = true })
 	self.parent:AddRecordDestroyEvent(self, true)
+	self.parent:AddLifesteal(self, {
+		type = 2,
+		text = true,
+		proc = "LifestealQuest",
+		value = function(params)
+			if not self.records[params.record] then
+				return 0
+			end
+			return self.ability.lifesteal + self.ability.talents.e2_heal
+		end,
+	})
 end
 
 function modifier_monkey_king_jingu_mastery_custom_tracker:OnRefresh()
@@ -349,10 +351,11 @@ function modifier_monkey_king_jingu_mastery_custom_tracker:OnIntervalThink()
 	end
 end
 
-function modifier_monkey_king_jingu_mastery_custom_tracker:AttackEvent_out(params)
-	if not IsServer() then
-		return
-	end
+function modifier_monkey_king_jingu_mastery_custom_tracker:GetProcChance()
+	return 100
+end
+
+function modifier_monkey_king_jingu_mastery_custom_tracker:AttackProc(params, name)
 	if self.parent:HasModifier("modifier_monkey_king_jingu_mastery_custom_buff") then
 		return
 	end
@@ -370,10 +373,6 @@ function modifier_monkey_king_jingu_mastery_custom_tracker:AttackEvent_out(param
 	end
 
 	local target = params.target
-	if not target:IsUnit() then
-		return
-	end
-
 	local attacker = params.attacker
 	if
 		attacker ~= self.parent
@@ -394,46 +393,17 @@ function modifier_monkey_king_jingu_mastery_custom_tracker:RecordDestroyEvent(pa
 	self.records[params.record] = nil
 end
 
-function modifier_monkey_king_jingu_mastery_custom_tracker:DamageEvent_out(params)
-	if not IsServer() then
+function modifier_monkey_king_jingu_mastery_custom_tracker:LifestealQuest(params, heal, target, real_heal)
+	if self.parent:GetQuest() ~= "Monkey.Quest_7" then
 		return
 	end
-
-	local result = nil
-	if self.records[params.record] or (self.ability.talents.has_r1 == 1 and params.inflictor) then
-		result = self.parent:CheckLifesteal(params)
-	end
-
-	if not result then
+	if not params.unit:IsRealHero() then
 		return
 	end
-
-	if not params.inflictor and self.records[params.record] then
-		local real_heal = self.parent:GenericHeal(
-			result * params.damage * (self.ability.lifesteal + self.ability.talents.e2_heal),
-			self.ability,
-			false,
-			false
-		)
-
-		if
-			self.parent:GetQuest() == "Monkey.Quest_7"
-			and params.unit:IsRealHero()
-			and not self.parent:QuestCompleted()
-		then
-			self.parent:UpdateQuest(real_heal)
-		end
+	if self.parent:QuestCompleted() then
+		return
 	end
-
-	if params.inflictor and self.ability.talents.has_r1 == 1 then
-		self.parent:GenericHeal(
-			self.ability.talents.r1_heal * result * params.damage,
-			self.ability,
-			true,
-			"particles/items3_fx/octarine_core_lifesteal.vpcf",
-			"modifier_monkey_king_command_1"
-		)
-	end
+	self.parent:UpdateQuest(real_heal)
 end
 
 function modifier_monkey_king_jingu_mastery_custom_tracker:DeclareFunctions()

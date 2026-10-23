@@ -13,11 +13,6 @@ LinkLuaModifier(
 	"abilities/items/item_abyssal_blade_custom",
 	LUA_MODIFIER_MOTION_NONE
 )
-LinkLuaModifier(
-	"modifier_item_abyssal_blade_custom_cd",
-	"abilities/items/item_abyssal_blade_custom",
-	LUA_MODIFIER_MOTION_NONE
-)
 
 item_abyssal_blade_custom = class({})
 
@@ -34,7 +29,6 @@ function item_abyssal_blade_custom:Precache(context)
 	PrecacheResource("particle", "particles/items_fx/abyssal_blade_crimson_jugger.vpcf", context)
 	PrecacheResource("particle", "particles/items_fx/abyssal_blade_jugger.vpcf", context)
 	PrecacheResource("particle", "particles/items_fx/abyssal_blade_jugger_golden.vpcf", context)
-	PrecacheResource("particle", "particles/generic_gameplay/generic_minibash.vpcf", context)
 end
 
 function item_abyssal_blade_custom:Spawn()
@@ -65,14 +59,17 @@ function item_abyssal_blade_custom:OnSpellStart()
 
 	target:GenericParticle(effect)
 	target:AddNewModifier(caster, self, "modifier_bashed", { duration = (1 - target:GetStatusResistance()) * stun })
-	caster:AddNewModifier(caster, self, "modifier_item_abyssal_blade_custom_cd", { duration = self.bash_cooldown })
+	caster:StartCd("proc_skull_basher")
 end
 
 modifier_item_abyssal_blade_custom = class(mod_hidden)
 function modifier_item_abyssal_blade_custom:GetAttributes()
 	return MODIFIER_ATTRIBUTE_MULTIPLE
 end
-function modifier_item_abyssal_blade_custom:OnCreated(table)
+function modifier_item_abyssal_blade_custom:GetUniqueStat(name)
+	return self[name]
+end
+function modifier_item_abyssal_blade_custom:OnCreated()
 	self.parent = self:GetParent()
 	self.ability = self:GetAbility()
 
@@ -86,6 +83,28 @@ function modifier_item_abyssal_blade_custom:OnCreated(table)
 	self.bash_duration = self.ability.bash_duration
 	self.bash_damage = self.ability.bonus_chance_damage
 	self.slow_resistance = self.ability.slow_resistance
+	self.parent:AddUniqueStat(self, "heal_amp", "slow_resistance")
+
+	if not IsServer() then
+		return
+	end
+	if not self.parent:IsRealHero() then
+		return
+	end
+	if self.parent:IsTempestDouble() then
+		return
+	end
+	self.parent:AddProc(
+		self,
+		{
+			group = "skull_basher",
+			priority = 1,
+			cd = self.bash_cd,
+			cd_name = "proc_skull_basher",
+			land = true,
+			property = true,
+		}
+	)
 end
 
 function modifier_item_abyssal_blade_custom:DeclareFunctions()
@@ -107,49 +126,33 @@ function modifier_item_abyssal_blade_custom:GetModifierPreAttack_BonusDamage()
 end
 
 function modifier_item_abyssal_blade_custom:GetModifierSlowResistance_Stacking()
-	return self.slow_resistance
+	return self.parent:UniqueStat(self, "slow_resistance")
 end
 
 function modifier_item_abyssal_blade_custom:GetModifierHealChange()
-	return self.heal_amp
+	return self.parent:UniqueStat(self, "heal_amp")
 end
 
 function modifier_item_abyssal_blade_custom:GetModifierHPRegenAmplify_Percentage()
-	return self.heal_amp
+	return self.parent:UniqueStat(self, "heal_amp")
+end
+
+function modifier_item_abyssal_blade_custom:GetProcChance(params)
+	if self.parent.has_basher_talent == 1 then
+		return 0
+	end
+	if params.ranged_attack then
+		return self.chance_range
+	end
+	return self.chance_melee
 end
 
 function modifier_item_abyssal_blade_custom:GetModifierProcAttack_BonusDamage_Physical(params)
 	if not IsServer() then
 		return
 	end
-	if self.parent:HasModifier("modifier_item_abyssal_blade_custom_cd") then
-		return
-	end
-	if not self.parent:IsRealHero() or self.parent:IsTempestDouble() then
-		return
-	end
-	if self.parent:FindAllModifiersByName(self:GetName())[1] ~= self then
-		return
-	end
-	if self.parent ~= params.attacker then
-		return
-	end
-	if self.parent.has_basher_talent and self.parent.has_basher_talent == 1 then
-		return
-	end
-	if not params.target:IsUnit() then
-		return
-	end
-	if params.target:GetTeamNumber() == self.parent:GetTeamNumber() then
-		return
-	end
-
-	local chance = self.chance_melee
-	if params.ranged_attack then
-		chance = self.chance_range
-	end
-
-	if not RollPseudoRandomPercentage(chance, 4516, self.parent) then
+	self.parent:LandProcs(params, true)
+	if not self.parent:IsProc(self, params.record) then
 		return
 	end
 
@@ -162,13 +165,6 @@ function modifier_item_abyssal_blade_custom:GetModifierProcAttack_BonusDamage_Ph
 		"modifier_bashed",
 		{ duration = (1 - target:GetStatusResistance()) * self.bash_duration }
 	)
-	self.parent:AddNewModifier(
-		self.parent,
-		self.ability,
-		"modifier_item_abyssal_blade_custom_cd",
-		{ duration = self.bash_cd }
-	)
-
 	target:SendNumber(4, self.bash_damage)
 
 	local troll_bash = wearables_system:GetParticleReplacementAbility(
@@ -186,9 +182,4 @@ function modifier_item_abyssal_blade_custom:GetModifierProcAttack_BonusDamage_Ph
 	end
 
 	return self.bash_damage
-end
-
-modifier_item_abyssal_blade_custom_cd = class(mod_hidden)
-function modifier_item_abyssal_blade_custom_cd:RemoveOnDeath()
-	return false
 end

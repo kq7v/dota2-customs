@@ -10,20 +10,6 @@
 
 <!-- kv3 encoding:text:version{e21c7f3c-8a33-41c5-9977-a76d3a32aa0d} format:generic:version{7412167c-06e9-4698-aff2-e63eb59037e7} -->
 {
-	PBeast.Trample_mini = 
-	{
-		vsnd_files = 
-		[
-			"sounds/weapons/hero/primal_beast/ground_pound.vsnd",
-		]
-		volume = 0.4
-		pitch_rand_min = -0.05
-		pitch_rand_max = 0.05
-		type = "dota_src1_3d"
-		soundlevel = 81
-		distance_max = 1600
-		pitch = 1
-	}
 	PBeast.Trample_dash = 
 	{
 		vsnd_files = 
@@ -38,62 +24,6 @@
 		pitch = 1
 		pitch_rand_min = 0
 		pitch_rand_max = 0.05
-	}
-	PBeast.Onslaught_knock = 
-	{
-		vsnd_files = 
-		[
-			"sounds/weapons/hero/primal_beast/rock_impact.vsnd",
-		]
-		volume = 2.5
-		pitch_rand_min = -0.01
-		pitch_rand_max = 0.01
-		type = "dota_src1_3d"
-		soundlevel = 81
-		distance_max = 1600
-		pitch = 1
-	}
-	PBeast.Onslaught_knock_caster = 
-	{
-		vsnd_files = 
-		[
-			"sounds/weapons/hero/primal_beast/impact_layer.vsnd",
-		]
-		volume = 2.5
-		pitch_rand_min = -0.01
-		pitch_rand_max = 0.01
-		type = "dota_src1_3d"
-		soundlevel = 81
-		distance_max = 1600
-		pitch = 1
-	}
-	PBeast.Uproar_proc = 
-	{
-		vsnd_files = 
-		[
-			"sounds/weapons/hero/bloodseeker/blood_rite_cast.vsnd",
-		]
-		volume = 2
-		pitch_rand_min = -0.01
-		pitch_rand_max = 0.01
-		type = "dota_src1_3d"
-		soundlevel = 81
-		distance_max = 1600
-		pitch = 1
-	}
-	PBeast.Uproar_proc_attack = 
-	{
-		vsnd_files = 
-		[
-			"sounds/weapons/hero/marci/unleash_pulse.vsnd",
-		]
-		volume = 1.4
-		pitch_rand_min = -0.05
-		pitch_rand_max = -0.1
-		type = "dota_src1_3d"
-		soundlevel = 81
-		distance_max = 1600
-		pitch = 1
 	}
 	PBeast.Uproar_legendary = 
 	{

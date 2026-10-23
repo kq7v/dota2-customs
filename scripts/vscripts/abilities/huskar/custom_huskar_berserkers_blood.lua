@@ -54,7 +54,6 @@ function custom_huskar_berserkers_blood:UpdateTalents()
 			e1_bonus = caster:GetTalentValue("modifier_huskar_passive_1", "bonus", true),
 			e1_duration = caster:GetTalentValue("modifier_huskar_passive_1", "duration", true),
 
-			has_e2 = 0,
 			e2_heal = 0,
 			e2_regen = 0,
 
@@ -98,10 +97,12 @@ function custom_huskar_berserkers_blood:UpdateTalents()
 	end
 
 	if caster:HasTalent("modifier_huskar_passive_2") then
-		self.talents.has_e2 = 1
 		self.talents.e2_heal = caster:GetTalentValue("modifier_huskar_passive_2", "heal") / 100
 		self.talents.e2_regen = caster:GetTalentValue("modifier_huskar_passive_2", "regen") / 100
-		caster:AddDamageEvent_out(self.tracker, true)
+		caster:AddLifesteal(
+			self.tracker,
+			{ name = "modifier_huskar_passive_2", type = 2, value = self.talents.e2_heal }
+		)
 	end
 
 	if caster:HasTalent("modifier_huskar_passive_3") then
@@ -122,7 +123,16 @@ function custom_huskar_berserkers_blood:UpdateTalents()
 
 	if caster:HasTalent("modifier_huskar_passive_7") then
 		self.talents.has_e7 = 1
-		caster:AddDamageEvent_out(self.tracker, true)
+		caster:AddLifesteal(
+			self.tracker,
+			{
+				name = "modifier_huskar_passive_7",
+				type = 2,
+				heal = false,
+				proc = "LifestealStack",
+				value = self.talents.e7_heal,
+			}
+		)
 	end
 
 	if caster:HasTalent("modifier_huskar_hero_2") then
@@ -133,7 +143,10 @@ function custom_huskar_berserkers_blood:UpdateTalents()
 
 	if caster:HasTalent("modifier_huskar_hero_5") then
 		self.talents.has_h5 = 1
-		caster:AddDamageEvent_out(self.tracker, true)
+		caster:AddLifesteal(
+			self.tracker,
+			{ name = "modifier_huskar_hero_5", heal = false, proc = "LifestealMana", value = self.talents.h5_mana }
+		)
 	end
 end
 
@@ -227,32 +240,16 @@ function modifier_custom_huskar_berserkers_blood:OnIntervalThink()
 	end
 end
 
-function modifier_custom_huskar_berserkers_blood:DamageEvent_out(params)
-	if not IsServer() then
-		return
-	end
-	local result = self.parent:CheckLifesteal(params)
-	if not result then
-		return
-	end
+function modifier_custom_huskar_berserkers_blood:LifestealMana(params, mana)
+	self.parent:GiveMana(mana)
+end
 
-	local heal = params.damage * result
-	if self.ability.talents.has_h5 == 1 then
-		self.parent:GiveMana(heal * self.ability.talents.h5_mana)
-	end
-
-	if params.inflictor then
-		return
-	end
+function modifier_custom_huskar_berserkers_blood:LifestealStack(params, stack)
 	local mod = self.parent:FindModifierByName("modifier_custom_huskar_berserkers_blood_legendary_attack")
-	if mod then
-		mod:SetStackCount(mod:GetStackCount() + heal * self.ability.talents.e7_heal)
-	end
-
-	if self.ability.talents.has_e2 == 0 then
+	if not mod then
 		return
 	end
-	self.parent:GenericHeal(heal * self.ability.talents.e2_heal, self.ability, true, nil, "modifier_huskar_passive_2")
+	mod:SetStackCount(mod:GetStackCount() + stack)
 end
 
 function modifier_custom_huskar_berserkers_blood:DeclareFunctions()
@@ -439,7 +436,8 @@ function modifier_custom_huskar_berserkers_blood_bonus:OnCreated(table)
 
 	self.records = {}
 	if self.ability.talents.has_e3 == 1 then
-		self.parent:AddAttackEvent_out(self, true)
+		self.parent:AddProc(self, { land = true })
+		self.parent:AddRecordDestroyEvent(self, true)
 	end
 
 	self.parent:EmitSound("Huskar.Passive_LowHp")
@@ -484,6 +482,17 @@ function modifier_custom_huskar_berserkers_blood_bonus:GetModifierBaseAttackTime
 	return self.bva
 end
 
+function modifier_custom_huskar_berserkers_blood_bonus:GetCritChance()
+	if self.ability.talents.has_e3 == 0 then
+		return 0
+	end
+	return self.ability.talents.e3_chance
+end
+
+function modifier_custom_huskar_berserkers_blood_bonus:GetCritDamage()
+	return self.crit
+end
+
 function modifier_custom_huskar_berserkers_blood_bonus:GetModifierPreAttack_CriticalStrike(params)
 	if self.ability.talents.has_e3 == 0 then
 		return
@@ -491,22 +500,21 @@ function modifier_custom_huskar_berserkers_blood_bonus:GetModifierPreAttack_Crit
 	if not params.target:IsUnit() then
 		return
 	end
-	if not RollPseudoRandomPercentage(self.ability.talents.e3_chance, 9141, self.parent) then
+	if not RollPseudoRandomPercentage(self:GetCritChance(), 9141, self.parent) then
 		return
 	end
 	self.records[params.record] = true
-	return self.crit
+	return self:GetCritDamage()
 end
 
-function modifier_custom_huskar_berserkers_blood_bonus:AttackEvent_out(params)
-	if not IsServer() then
-		return
-	end
-	if self.parent ~= params.attacker then
-		return
-	end
-	if not params.record or not self.records[params.record] then
-		return
-	end
+function modifier_custom_huskar_berserkers_blood_bonus:GetProcChance(params)
+	return self.records[params.record] and 100 or 0
+end
+
+function modifier_custom_huskar_berserkers_blood_bonus:AttackProc(params)
 	params.target:EmitSound("DOTA_Item.Daedelus.Crit")
+end
+
+function modifier_custom_huskar_berserkers_blood_bonus:RecordDestroyEvent(params)
+	self.records[params.record] = nil
 end

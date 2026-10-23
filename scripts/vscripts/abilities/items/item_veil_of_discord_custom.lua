@@ -27,7 +27,6 @@ function item_veil_of_discord_custom:Precache(context)
 	end
 	PrecacheResource("particle", "particles/items2_fx/veil_of_discord.vpcf", context)
 	PrecacheResource("particle", "particles/items2_fx/veil_of_discord_debuff.vpcf", context)
-	PrecacheResource("particle", "particles/items3_fx/octarine_core_lifesteal.vpcf", context)
 end
 
 function item_veil_of_discord_custom:Spawn()
@@ -68,9 +67,21 @@ function modifier_item_veil_of_discord_custom:OnCreated(table)
 	self.ability = self:GetAbility()
 	self.parent = self:GetParent()
 
-	if self.parent:IsRealHero() then
-		self.parent:AddDamageEvent_out(self, true)
+	if not IsServer() then
+		return
 	end
+	if not self.parent:IsRealHero() then
+		return
+	end
+	self.parent:AddLifesteal(self, {
+		type = 1,
+		value = function(params)
+			if params.unit and (params.unit:GetAbsOrigin() - self.parent:GetAbsOrigin()):Length2D() > 2000 then
+				return 0
+			end
+			return self.ability.spell_lifesteal
+		end,
+	})
 end
 
 function modifier_item_veil_of_discord_custom:DeclareFunctions()
@@ -86,28 +97,6 @@ end
 
 function modifier_item_veil_of_discord_custom:GetModifierBonusStats_Intellect()
 	return self.ability.bonus_intellect
-end
-
-function modifier_item_veil_of_discord_custom:DamageEvent_out(params)
-	if not IsServer() then
-		return
-	end
-	if not IsValid(self.ability) then
-		return
-	end
-	local result = self.parent:CheckLifesteal(params, 1)
-	if not result then
-		return
-	end
-	if (params.unit:GetAbsOrigin() - self.parent:GetAbsOrigin()):Length2D() > 2000 then
-		return
-	end
-	self.parent:GenericHeal(
-		params.damage * self.ability.spell_lifesteal * result,
-		self.ability,
-		false,
-		"particles/items3_fx/octarine_core_lifesteal.vpcf"
-	)
 end
 
 modifier_item_veil_of_discord_custom_damage_inc = class(mod_visible)

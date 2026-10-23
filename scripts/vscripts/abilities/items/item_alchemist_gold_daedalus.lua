@@ -261,17 +261,18 @@ function modifier_item_alchemist_gold_daedalus:GetModifierPreAttack_CriticalStri
 		return
 	end
 
-	local chance = self.parent:HasModifier("modifier_item_alchemist_gold_daedalus_bonus")
-			and (self.crit_chance + self.bonus_chance)
-		or self.crit_chance
-
-	local random = RollPseudoRandomPercentage(chance, 109, self.parent)
+	local random = RollPseudoRandomPercentage(self:GetCritChance(), 109, self.parent)
 	if not random then
 		return
 	end
 
 	self.record = params.record
-	return self.crit_multiplier
+	return self:GetCritDamage()
+end
+
+function modifier_item_alchemist_gold_daedalus:GetCritChance()
+	return self.crit_chance
+		+ (self.parent:HasModifier("modifier_item_alchemist_gold_daedalus_bonus") and self.bonus_chance or 0)
 end
 
 modifier_item_alchemist_gold_daedalus_debuff = class(mod_visible)

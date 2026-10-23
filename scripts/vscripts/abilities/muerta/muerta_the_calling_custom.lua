@@ -82,14 +82,13 @@ function muerta_the_calling_custom:Precache(context)
 	end
 
 	PrecacheResource("particle", "particles/econ/events/ti7/blink_dagger_start_ti7.vpcf", context)
+	PrecacheResource("particle", "particles/units/heroes/hero_muerta/muerta_calling_reticule_2.vpcf", context)
 	PrecacheResource("particle", "particles/units/heroes/hero_muerta/muerta_calling_impact.vpcf", context)
 	PrecacheResource("particle", "particles/muerta/calling_aoe.vpcf", context)
 	PrecacheResource("particle", "particles/units/heroes/hero_muerta/muerta_calling_aoe.vpcf", context)
 	PrecacheResource("particle", "particles/units/heroes/hero_muerta/muerta_calling.vpcf", context)
-	PrecacheResource("particle", "particles/items_fx/force_staff.vpcf", context)
 	PrecacheResource("particle", "particles/muerta/muerta_calling_target.vpcf", context)
 	PrecacheResource("particle", "particles/units/heroes/hero_muerta/muerta_calling_debuff_slow.vpcf", context)
-	PrecacheResource("particle", "particles/units/heroes/hero_oracle/oracle_purifyingflames.vpcf", context)
 	PrecacheResource("particle", "particles/muerta/calling_hero.vpcf", context)
 	PrecacheResource("particle", "particles/muerta/muerta_calling_caster_start_2.vpcf", context)
 	PrecacheResource("particle", "particles/muerta/muerta_calling_caster_end.vpcf", context)
@@ -109,6 +108,8 @@ function muerta_the_calling_custom:UpdateTalents(name)
 			has_w1 = 0,
 			w1_cd = 0,
 			w1_damage = 0,
+
+			w2_heal = 0,
 
 			has_w3 = 0,
 			w3_magic_resist = 0,
@@ -156,6 +157,14 @@ function muerta_the_calling_custom:UpdateTalents(name)
 		self.talents.has_w1 = 1
 		self.talents.w1_cd = caster:GetTalentValue("modifier_muerta_calling_1", "cd")
 		self.talents.w1_damage = caster:GetTalentValue("modifier_muerta_calling_1", "damage") / 100
+	end
+
+	if caster:HasTalent("modifier_muerta_calling_2") then
+		self.talents.w2_heal = caster:GetTalentValue("modifier_muerta_calling_2", "heal") / 100
+		caster:AddLifesteal(
+			self.tracker,
+			{ name = "modifier_muerta_calling_2", type = 1, value = self.talents.w2_heal }
+		)
 	end
 
 	if caster:HasTalent("modifier_muerta_calling_3") then
@@ -1019,30 +1028,12 @@ function modifier_muerta_the_calling_custom_tracker:OnCreated()
 	self.ability.silence_creeps = self.ability:GetSpecialValueFor("silence_creeps")
 	self.ability.aura_linger = self.ability:GetSpecialValueFor("aura_linger")
 	self.ability.creeps_damage = self.ability:GetSpecialValueFor("creeps_damage") / 100
-
-	if not IsServer() then
-		return
-	end
-	CustomGameEventManager:Send_ServerToPlayer(
-		PlayerResource:GetPlayer(self.parent:GetPlayerOwnerID()),
-		"ability_muerta_call",
-		{}
-	)
 end
 
 function modifier_muerta_the_calling_custom_tracker:OnRefresh()
 	self.ability.damage = self.ability:GetSpecialValueFor("damage")
 	self.ability.duration = self.ability:GetSpecialValueFor("duration")
 	self.ability.silence_duration = self.ability:GetSpecialValueFor("silence_duration")
-
-	if not IsServer() then
-		return
-	end
-	CustomGameEventManager:Send_ServerToPlayer(
-		PlayerResource:GetPlayer(self.parent:GetPlayerOwnerID()),
-		"ability_muerta_call",
-		{}
-	)
 end
 
 modifier_muerta_the_calling_custom_magic_reduce = class(mod_visible)

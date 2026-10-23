@@ -224,10 +224,6 @@
 				}
 			}
 			m_flNoiseScaleLoc = 1.0
-			m_TransformInput = 
-			{
-				m_nType = "PT_TYPE_INVALID"
-			}
 		},
 		{
 			_class = "C_INIT_InitFloat"

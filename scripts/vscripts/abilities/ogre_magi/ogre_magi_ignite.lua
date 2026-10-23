@@ -53,9 +53,7 @@ function ogre_magi_ignite_custom:Precache(context)
 	PrecacheResource("particle", "particles/units/heroes/hero_ogre_magi/ogre_magi_ignite.vpcf", context)
 	PrecacheResource("particle", "particles/units/heroes/hero_ogre_magi/ogre_magi_ignite_debuff.vpcf", context)
 	PrecacheResource("particle", "particles/units/heroes/hero_ogre_magi/ogre_magi_fireblast.vpcf", context)
-	PrecacheResource("particle", "particles/status_fx/status_effect_huskar_lifebreak.vpcf", context)
 	PrecacheResource("particle", "particles/ogre_magi/ignite_aoe_proc.vpcf", context)
-	PrecacheResource("particle", "particles/units/heroes/hero_sniper/sniper_headshot_slow.vpcf", context)
 	PrecacheResource(
 		"particle",
 		"particles/econ/items/huskar/huskar_2021_immortal/huskar_2021_immortal_burning_spear_debuff.vpcf",
@@ -82,6 +80,8 @@ function ogre_magi_ignite_custom:UpdateTalents(name)
 			w1_bonus = 0,
 
 			w2_cd = 0,
+			w2_heal = 0,
+			w2_bonus = caster:GetTalentValue("modifier_ogremagi_ignite_2", "bonus", true),
 
 			has_w3 = 0,
 			w3_bva = 0,
@@ -126,13 +126,26 @@ function ogre_magi_ignite_custom:UpdateTalents(name)
 
 	if caster:HasTalent("modifier_ogremagi_ignite_2") then
 		self.talents.w2_cd = caster:GetTalentValue("modifier_ogremagi_ignite_2", "cd")
+		self.talents.w2_heal = caster:GetTalentValue("modifier_ogremagi_ignite_2", "heal") / 100
+		caster:AddLifesteal(self.tracker, {
+			name = "modifier_ogremagi_ignite_2",
+			value = function(params)
+				if not params.inflictor then
+					return self.talents.w2_heal
+				end
+				if params.inflictor ~= self then
+					return 0
+				end
+				return self.talents.w2_heal * self.talents.w2_bonus
+			end,
+		})
 	end
 
 	if caster:HasTalent("modifier_ogremagi_ignite_3") then
 		self.talents.has_w3 = 1
 		self.talents.w3_bva = caster:GetTalentValue("modifier_ogremagi_ignite_3", "bva")
 		self.talents.w3_damage = caster:GetTalentValue("modifier_ogremagi_ignite_3", "damage") / 100
-		caster:AddAttackEvent_out(self.tracker, true)
+		caster:AddProc(self.tracker, { land = true })
 	end
 
 	if caster:HasTalent("modifier_ogremagi_ignite_4") then
@@ -440,26 +453,12 @@ function modifier_ogre_magi_ignite_custom_tracker:OnRefresh()
 	self.ability.burn_damage = self.ability:GetSpecialValueFor("burn_damage")
 end
 
-function modifier_ogre_magi_ignite_custom_tracker:AttackEvent_out(params)
-	if not IsServer() then
-		return
-	end
-	if self.parent ~= params.attacker then
-		return
-	end
+function modifier_ogre_magi_ignite_custom_tracker:GetProcChance()
+	return self.ability.talents.w3_chance
+end
 
+function modifier_ogre_magi_ignite_custom_tracker:AttackProc(params)
 	local target = params.target
-	if not target:IsUnit() then
-		return
-	end
-
-	if self.ability.talents.has_w3 == 0 then
-		return
-	end
-	if not RollPseudoRandomPercentage(self.ability.talents.w3_chance, 9129, self.parent) then
-		return
-	end
-
 	local point = target:GetAbsOrigin()
 
 	local particle = ParticleManager:CreateParticle(
@@ -614,7 +613,7 @@ function modifier_ogre_magi_ignite_custom_buff:OnCreated()
 	end
 
 	if self.ability.talents.has_w7 == 1 then
-		self.parent:AddAttackStartEvent_out(self, true)
+		self.parent:AddProc(self, {})
 	end
 
 	self.parent:EmitSound("Ogre.Ignite_legendary_start")
@@ -650,23 +649,12 @@ function modifier_ogre_magi_ignite_custom_buff:OnDestroy()
 	end
 end
 
-function modifier_ogre_magi_ignite_custom_buff:AttackStartEvent_out(params)
-	if not IsServer() then
-		return
-	end
-	if self.parent ~= params.attacker then
-		return
-	end
+function modifier_ogre_magi_ignite_custom_buff:GetProcChance()
+	return self.ability.talents.w7_chance
+end
 
-	local target = params.target
-	if not target:IsUnit() then
-		return
-	end
-	if not RollPseudoRandomPercentage(self.ability.talents.w7_chance, 8719, self.parent) then
-		return
-	end
-
-	self.ability:OnSpellStart(target)
+function modifier_ogre_magi_ignite_custom_buff:AttackProcStart(params)
+	self.ability:OnSpellStart(params.target)
 end
 
 function modifier_ogre_magi_ignite_custom_buff:DeclareFunctions()

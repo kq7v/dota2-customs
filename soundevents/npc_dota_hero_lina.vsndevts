@@ -140,22 +140,6 @@
 		volume = 1.5
 		distance_max = 1600
 	}
-	Lina.Laguna_knock = 
-	{
-		pitch_rand_max = -0.15
-		type = "dota_src1_3d"
-		soundlevel = 81
-		pitch_rand_min = -0.25
-		pitch = 1
-		vsnd_files = 
-		[
-			"sounds/weapons/hero/leshrac/lightning_storm03.vsnd",
-			"sounds/weapons/hero/leshrac/lightning_storm01.vsnd",
-			"sounds/weapons/hero/leshrac/lightning_storm02.vsnd",
-		]
-		volume = 1.2
-		distance_max = 1600
-	}
 	Lina.Soul_Active = 
 	{
 		pitch_rand_max = 0.03
@@ -235,20 +219,6 @@
 		volume = 1
 		distance_max = 1600
 	}
-	Lina.Soul_proc = 
-	{
-		pitch_rand_max = 0.03
-		type = "dota_src1_3d"
-		soundlevel = 81
-		pitch_rand_min = -0.03
-		pitch = 1
-		vsnd_files = 
-		[
-			"sounds/weapons/hero/invoker/alacrity.vsnd",
-		]
-		volume = 0.7
-		distance_max = 1600
-	}
 	Lina.Soul_attack_start = 
 	{
 		pitch_rand_min = 0.1
@@ -262,21 +232,6 @@
 		vsnd_files = 
 		[
 			"sounds/weapons/hero/lina/attack.vsnd",
-		]
-	}
-	Lina.Array_burn_target = 
-	{
-		pitch_rand_max = 0.1
-		type = "dota_src1_3d"
-		soundlevel = 81
-		volume_fade_out = 1
-		distance_max = 1600
-		pitch_rand_min = 0.1
-		pitch = 1
-		volume = 0.5
-		vsnd_files = 
-		[
-			"sounds/weapons/hero/phoenix/icarus_dive_stop.vsnd",
 		]
 	}
 	Voice.Lina.2_1 = 
@@ -388,21 +343,6 @@
 		vsnd_files = 
 		[
 			"sounds/vo/lina/lina_purch_02.vsnd",
-		]
-	}
-	Lina.Array_burn = 
-	{
-		pitch_rand_max = -0.05
-		type = "dota_src1_3d"
-		soundlevel = 81
-		volume_fade_out = 1
-		distance_max = 1600
-		pitch_rand_min = -0.05
-		pitch = 1
-		volume = 1.5
-		vsnd_files = 
-		[
-			"sounds/physics/movement/hero/warlock/golem_spawn_loop.vsnd",
 		]
 	}
 	Voice.Lina.4_1 = 

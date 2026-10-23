@@ -133,7 +133,26 @@ function nyx_assassin_vendetta_custom:UpdateTalents()
 
 			has_h4 = 0,
 			h4_radius = caster:GetTalentValue("modifier_nyx_hero_4", "radius", true),
+
+			q1_heal = 0,
+
+			e2_heal = 0,
+			e2_bonus = caster:GetTalentValue("modifier_nyx_carapace_2", "bonus", true),
+
+			h1_mana = 0,
 		}
+	end
+
+	if caster:HasTalent("modifier_nyx_impale_1") then
+		self.talents.q1_heal = caster:GetTalentValue("modifier_nyx_impale_1", "heal") / 100
+	end
+
+	if caster:HasTalent("modifier_nyx_carapace_2") then
+		self.talents.e2_heal = caster:GetTalentValue("modifier_nyx_carapace_2", "heal") / 100
+	end
+
+	if caster:HasTalent("modifier_nyx_hero_1") then
+		self.talents.h1_mana = caster:GetTalentValue("modifier_nyx_hero_1", "mana") / 100
 	end
 
 	if caster:HasTalent("modifier_nyx_vendetta_1") then
@@ -156,6 +175,7 @@ function nyx_assassin_vendetta_custom:UpdateTalents()
 
 	if caster:HasTalent("modifier_nyx_vendetta_4") then
 		self.talents.has_r4 = 1
+		caster:AddProc(self.tracker, { land = true })
 	end
 
 	if caster:HasTalent("modifier_nyx_vendetta_7") then
@@ -168,7 +188,21 @@ function nyx_assassin_vendetta_custom:UpdateTalents()
 			self.tracker:StartIntervalThink(self.tracker.interval)
 		end
 		caster:AddAttackRecordEvent_out(self.tracker, true)
-		caster:AddDamageEvent_out(self.tracker, true)
+		caster:AddLifesteal(self.tracker, {
+			name = "modifier_nyx_vendetta_7",
+			type = 2,
+			text = true,
+			proc = "LifestealRecord",
+			value = function(params)
+				if not params.record then
+					return 0
+				end
+				if params.record ~= self.tracker.record then
+					return 0
+				end
+				return self.talents.r7_heal
+			end,
+		})
 	end
 
 	if caster:HasTalent("modifier_nyx_hero_4") then
@@ -287,7 +321,7 @@ function nyx_assassin_vendetta_custom:SpawnScarab(point)
 	FindClearSpaceForUnit(unit, unit:GetAbsOrigin(), true)
 end
 
-function nyx_assassin_vendetta_custom:ProcBash(target, bash_proc)
+function nyx_assassin_vendetta_custom:ProcBash(target)
 	if not IsServer() then
 		return
 	end
@@ -296,15 +330,6 @@ function nyx_assassin_vendetta_custom:ProcBash(target, bash_proc)
 	end
 	if self.talents.has_r4 == 0 then
 		return
-	end
-
-	if not bash_proc then
-		if target:HasModifier("modifier_nyx_assassin_vendetta_custom_bash_cd") then
-			return
-		end
-		if not RollPseudoRandomPercentage(self.talents.r4_chance, 9953, self.caster) then
-			return
-		end
 	end
 
 	local effect =
@@ -369,7 +394,7 @@ function modifier_nyx_assassin_vendetta_custom_tracker:OnCreated(table)
 	self.ability.shard_move = self.ability:GetSpecialValueFor("shard_move")
 
 	self.record = true
-	self.parent:AddAttackEvent_out(self)
+	self.parent:AddProc(self, { name = "hit", land = true, sync = true, ally = true, any = true })
 end
 
 function modifier_nyx_assassin_vendetta_custom_tracker:OnRefresh()
@@ -469,37 +494,25 @@ function modifier_nyx_assassin_vendetta_custom_tracker:GetModifierBaseAttackTime
 	return self.base_bva + self.ability.talents.r7_bva
 end
 
-function modifier_nyx_assassin_vendetta_custom_tracker:DamageEvent_out(params)
-	if not IsServer() then
-		return
-	end
-	if params.record ~= self.record then
-		return
-	end
-	if params.inflictor then
-		return
-	end
-
-	local result = self.parent:CheckLifesteal(params)
-	if not result then
-		return
-	end
-
-	self.parent:GenericHeal(
-		self.ability.talents.r7_heal * result * params.damage,
-		self.ability,
-		false,
-		false,
-		"modifier_nyx_vendetta_7"
-	)
+function modifier_nyx_assassin_vendetta_custom_tracker:LifestealRecord()
 	self.record = nil
 end
 
-function modifier_nyx_assassin_vendetta_custom_tracker:AttackEvent_out(params)
-	if not IsServer() then
-		return
+function modifier_nyx_assassin_vendetta_custom_tracker:GetProcChance(params, name)
+	if name == "hit" then
+		return 100
 	end
-	if params.attacker ~= self.parent then
+	if params.target:HasModifier("modifier_nyx_assassin_vendetta_custom_bash_cd") then
+		return 0
+	end
+	if not params.no_attack_cooldown and self.parent:HasModifier("modifier_nyx_assassin_vendetta_custom") then
+		return 0
+	end
+	return self.ability.talents.r4_chance
+end
+
+function modifier_nyx_assassin_vendetta_custom_tracker:AttackProc(params, name)
+	if name ~= "hit" then
 		return
 	end
 
@@ -615,8 +628,8 @@ function modifier_nyx_assassin_vendetta_custom_tracker:AttackEvent_out(params)
 		)
 	end
 
-	if self.ability.talents.has_r4 == 1 then
-		self.ability:ProcBash(target, bash_proc)
+	if bash_proc or params.procs[self].default then
+		self.ability:ProcBash(target)
 	end
 end
 
@@ -960,8 +973,41 @@ function modifier_nyx_assassin_vendetta_custom_scarab:OnCreated()
 	self.vec = RandomVector(200)
 	self.radius = 1000
 
+	self.parent:AddLifesteal(self, {
+		name = "modifier_nyx_impale_1",
+		type = 1,
+		heal_unit = self.caster,
+		value = function()
+			return self.ability.talents.q1_heal
+		end,
+	})
+	self.parent:AddLifesteal(self, {
+		name = "modifier_nyx_carapace_2",
+		type = 2,
+		heal_unit = self.caster,
+		value = function()
+			if self.caster:HasModifier("modifier_nyx_assassin_spiked_carapace_custom_heal_bonus") then
+				return self.ability.talents.e2_heal * self.ability.talents.e2_bonus, nil, true
+			end
+			return self.ability.talents.e2_heal
+		end,
+	})
+	self.parent:AddLifesteal(self, {
+		name = "modifier_nyx_hero_1",
+		heal_unit = self.caster,
+		heal = false,
+		proc = "LifestealMana",
+		value = function()
+			return self.ability.talents.h1_mana
+		end,
+	})
+
 	self:OnIntervalThink()
 	self:StartIntervalThink(0.5)
+end
+
+function modifier_nyx_assassin_vendetta_custom_scarab:LifestealMana(params, mana, target)
+	target:GiveMana(mana)
 end
 
 function modifier_nyx_assassin_vendetta_custom_scarab:DeclareFunctions()

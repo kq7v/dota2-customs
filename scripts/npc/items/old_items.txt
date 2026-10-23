@@ -23,7 +23,7 @@
     "ItemResult"                    "item_revenants_brooch_custom"
     "ItemRequirements"
     {
-        "01"                        "item_relic;item_voodoo_mask"
+        "01"                        "item_relic;item_voodoo_mask_custom"
     }
 }
 
@@ -94,7 +94,7 @@
     "ItemResult"                    "item_revenants_brooch_custom"
     "ItemRequirements"
     {
-        "01"                        "item_lesser_crit_custom;item_voodoo_mask"
+        "01"                        "item_lesser_crit_custom;item_voodoo_mask_custom"
     }
 }
 

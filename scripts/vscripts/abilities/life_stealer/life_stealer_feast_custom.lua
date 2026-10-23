@@ -172,30 +172,30 @@ function life_stealer_feast_custom:UpdateTalents(name)
 
 	if caster:HasTalent("modifier_lifestealer_ghoul_1") then
 		self.talents.has_e1 = 1
-		caster:AddAttackEvent_out(self.tracker, true)
+		caster:AddProc(self.tracker, { name = "hit", land = true, illusion = true })
 	end
 
 	if caster:HasTalent("modifier_lifestealer_ghoul_2") then
 		self.talents.has_e2 = 1
 		self.talents.e2_cleave = caster:GetTalentValue("modifier_lifestealer_ghoul_2", "cleave") / 100
 		self.talents.e2_range = caster:GetTalentValue("modifier_lifestealer_ghoul_2", "range")
-		caster:AddAttackEvent_out(self.tracker, true)
+		caster:AddProc(self.tracker, { name = "hit", land = true, illusion = true })
 	end
 
 	if caster:HasTalent("modifier_lifestealer_ghoul_3") then
 		self.talents.has_e3 = 1
 		self.talents.e3_attacks = caster:GetTalentValue("modifier_lifestealer_ghoul_3", "attacks")
-		caster:AddAttackStartEvent_out(self.tracker, true)
+		caster:AddProc(self.tracker, { illusion = true })
 	end
 
 	if caster:HasTalent("modifier_lifestealer_ghoul_4") then
 		self.talents.has_e4 = 1
-		caster:AddAttackEvent_out(self.tracker, true)
+		caster:AddProc(self.tracker, { name = "hit", land = true, illusion = true })
 	end
 
 	if caster:HasTalent("modifier_lifestealer_ghoul_7") then
 		self.talents.has_e7 = 1
-		caster:AddAttackEvent_out(self.tracker, true)
+		caster:AddProc(self.tracker, { name = "hit", land = true, illusion = true })
 	end
 
 	if caster:HasTalent("modifier_lifestealer_hero_2") then
@@ -207,7 +207,7 @@ function life_stealer_feast_custom:UpdateTalents(name)
 		self.talents.has_h3 = 1
 		self.talents.h3_heal_reduce = caster:GetTalentValue("modifier_lifestealer_hero_3", "heal_reduce")
 		self.talents.h3_slow = caster:GetTalentValue("modifier_lifestealer_hero_3", "slow")
-		caster:AddAttackEvent_out(self.tracker, true)
+		caster:AddProc(self.tracker, { name = "hit", land = true, illusion = true })
 	end
 
 	if caster:HasTalent("modifier_lifestealer_rage_1") then
@@ -258,6 +258,30 @@ function life_stealer_feast_custom:OnSpellStart()
 	)
 end
 
+function life_stealer_feast_custom:GetDoubleChance(unit, target)
+	if not self:IsTrained() then
+		return 0
+	end
+	local chance = self.talents.e3_chance
+	local mod = unit:FindModifierByName("modifier_life_stealer_feast_custom_double_chance")
+	if not mod then
+		return chance
+	end
+	if mod.target and target:entindex() ~= mod.target then
+		mod:SetStackCount(0)
+		mod.target = target:entindex()
+	end
+	return chance + mod:GetStackCount() * self.talents.e3_bonus
+end
+
+function life_stealer_feast_custom:ProcDouble(unit, target)
+	if not self:IsTrained() then
+		return
+	end
+	target:AddNewModifier(unit, self, "modifier_life_stealer_feast_custom_double", { attacker = unit:entindex() })
+	unit:AddNewModifier(unit, self, "modifier_life_stealer_feast_custom_double_chance", { target = target:entindex() })
+end
+
 modifier_life_stealer_feast_custom_tracker = class(mod_hidden)
 function modifier_life_stealer_feast_custom_tracker:IsHidden()
 	return not self.parent:HasScepter()
@@ -299,7 +323,7 @@ function modifier_life_stealer_feast_custom_tracker:OnCreated(table)
 		return
 	end
 
-	self.caster:AddAttackEvent_out(self, true)
+	self.caster:AddProc(self, { name = "hit", land = true, illusion = true })
 	self.parent:AddDeathEvent(self, true)
 
 	if not self.parent.infest_ability then
@@ -370,60 +394,25 @@ function modifier_life_stealer_feast_custom_tracker:DeclareFunctions()
 	}
 end
 
-function modifier_life_stealer_feast_custom_tracker:AttackStartEvent_out(params)
-	if not IsServer() then
-		return
-	end
-	if self.ability.talents.has_e3 == 0 then
-		return
-	end
-
-	local target = params.target
-	local real_attacker = params.attacker
-	local attacker = real_attacker.lifestealer_creep and real_attacker.owner or real_attacker
-
-	if not target:IsUnit() then
-		return
-	end
-	if self.parent ~= attacker then
-		return
+function modifier_life_stealer_feast_custom_tracker:GetProcChance(params, name)
+	if name == "hit" then
+		return 100
 	end
 	if params.pre_attack_flag == "lifestealer_double" then
-		return
+		return 0
 	end
-
-	local mod = real_attacker:FindModifierByName("modifier_life_stealer_feast_custom_double_chance")
-	local chance = self.ability.talents.e3_chance
-	if mod then
-		if mod.target and target:entindex() ~= mod.target then
-			mod:SetStackCount(0)
-			mod.target = target:entindex()
-		end
-		chance = chance + mod:GetStackCount() * self.ability.talents.e3_bonus
+	if params.attacker ~= self.parent and not params.attacker.lifestealer_creep then
+		return 0
 	end
-	if not RollPseudoRandomPercentage(chance, 1968, real_attacker) then
-		return
-	end
-
-	target:AddNewModifier(
-		real_attacker,
-		self.ability,
-		"modifier_life_stealer_feast_custom_double",
-		{ attacker = real_attacker:entindex() }
-	)
-	real_attacker:AddNewModifier(
-		real_attacker,
-		self.ability,
-		"modifier_life_stealer_feast_custom_double_chance",
-		{ target = target:entindex() }
-	)
+	return self.ability:GetDoubleChance(params.attacker, params.target)
 end
 
-function modifier_life_stealer_feast_custom_tracker:AttackEvent_out(params)
-	if not IsServer() then
-		return
-	end
-	if not params.target:IsUnit() then
+function modifier_life_stealer_feast_custom_tracker:AttackProcStart(params)
+	self.ability:ProcDouble(params.attacker, params.target)
+end
+
+function modifier_life_stealer_feast_custom_tracker:AttackProc(params, name)
+	if name ~= "hit" then
 		return
 	end
 

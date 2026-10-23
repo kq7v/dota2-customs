@@ -39,20 +39,6 @@
 			"sounds/weapons/hero/obsidian_destroyer/astral_imprison_cast.vsnd",
 		]
 	}
-	Centaur.Return_purge = 
-	{
-		soundlevel = 100
-		type = "dota_src1_3d"
-		volume = 0.9
-		pitch_rand_min = -0.05
-		pitch_rand_max = -0.05
-		pitch = 1
-		distance_max = 1600
-		vsnd_files = 
-		[
-			"sounds/items/nullifier_cast.vsnd",
-		]
-	}
 	Centaur.Return_attack = 
 	{
 		soundlevel = 100
@@ -65,20 +51,6 @@
 		vsnd_files = 
 		[
 			"sounds/weapons/hero/centaur/retaliate_target.vsnd",
-		]
-	}
-	Centaur.Return_armor = 
-	{
-		soundlevel = 100
-		type = "dota_src1_3d"
-		volume = 0.6
-		pitch_rand_min = -0.05
-		pitch_rand_max = -0.05
-		pitch = 1
-		distance_max = 1600
-		vsnd_files = 
-		[
-			"sounds/items/medallion_of_courage.vsnd",
 		]
 	}
 	Centaur.Return_legendary_banner1 = 
@@ -360,21 +332,6 @@
 		distance_max = 1600
 		volume_fade_out = 0.5
 	}
-	Centaur.Stomp_legendary_fail2 = 
-	{
-		type = "dota_src1_3d"
-		vsnd_files = 
-		[
-			"sounds/weapons/hero/lycan/wolf_hamstring.vsnd",
-		]
-		soundlevel = 100
-		volume = 1.2
-		pitch_rand_min = -0.1
-		pitch_rand_max = -0.05
-		pitch = 1
-		distance_max = 1600
-		volume_fade_out = 0.5
-	}
 	Centaur.Edge_legendary_cast1 = 
 	{
 		type = "dota_src1_3d"
@@ -449,36 +406,6 @@
 		volume = 1
 		pitch_rand_min = -0.15
 		pitch_rand_max = -0.15
-		pitch = 1
-		distance_max = 1600
-		volume_fade_out = 0.5
-	}
-	Centaur.Edge_legendary_heal = 
-	{
-		type = "dota_src1_3d"
-		vsnd_files = 
-		[
-			"sounds/weapons/hero/undying/tombstone_grab.vsnd",
-		]
-		soundlevel = 100
-		volume = 1.5
-		pitch_rand_min = -0.15
-		pitch_rand_max = -0.15
-		pitch = 1
-		distance_max = 1600
-		volume_fade_out = 0.5
-	}
-	Centaur.Edge_legendary_heal2 = 
-	{
-		type = "dota_src1_3d"
-		vsnd_files = 
-		[
-			"sounds/weapons/hero/bloodseeker/bloodbath01.vsnd",
-		]
-		soundlevel = 100
-		volume = 0.6
-		pitch_rand_min = 0.1
-		pitch_rand_max = 0.1
 		pitch = 1
 		distance_max = 1600
 		volume_fade_out = 0.5

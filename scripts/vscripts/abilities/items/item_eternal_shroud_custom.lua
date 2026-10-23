@@ -69,6 +69,7 @@ function modifier_item_eternal_shroud_custom:OnCreated()
 	self.duration = self.ability.spell_damage_duration
 
 	self.damage_count = 0
+	self.parent:AddUniqueStat(self, "magic_resist")
 end
 
 function modifier_item_eternal_shroud_custom:DeclareFunctions()
@@ -82,15 +83,10 @@ function modifier_item_eternal_shroud_custom:DeclareFunctions()
 end
 
 function modifier_item_eternal_shroud_custom:GetModifierMagicalResistanceBonus()
-	if self.parent:HasModifier("modifier_item_pipe_custom") then
-		return
-	end
-	if self.parent:HasModifier("modifier_item_spell_breaker") then
-		return
-	end
-	if self.parent:HasModifier("modifier_item_mage_slayer") then
-		return
-	end
+	return self.parent:UniqueStat(self, "magic_resist")
+end
+
+function modifier_item_eternal_shroud_custom:GetUniqueStat()
 	local bonus = 0
 	if self.parent:HasModifier("modifier_item_eternal_shroud_custom_active") then
 		bonus = self.parent:GetUpgradeStack("modifier_item_eternal_shroud_custom_active") * self.resist_bonus

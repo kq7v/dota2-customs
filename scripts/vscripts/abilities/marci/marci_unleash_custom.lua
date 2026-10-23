@@ -50,7 +50,6 @@ function marci_unleash_custom:Precache(context)
 	PrecacheResource("particle", "particles/units/heroes/hero_marci/marci_unleash_pulse.vpcf", context)
 	PrecacheResource("particle", "particles/units/heroes/hero_marci/marci_unleash_cast.vpcf", context)
 	PrecacheResource("particle", "particles/units/heroes/hero_marci/marci_unleash_pulse_debuff.vpcf", context)
-	PrecacheResource("particle", "particles/status_fx/status_effect_snapfire_slow.vpcf", context)
 	PrecacheResource("particle", "particles/units/heroes/hero_marci/marci_unleash_buff.vpcf", context)
 	PrecacheResource("particle", "particles/marci/unleash_stack.vpcf", context)
 	PrecacheResource("particle", "particles/units/heroes/hero_marci/marci_unleash_attack.vpcf", context)
@@ -114,7 +113,7 @@ function marci_unleash_custom:UpdateTalents(name)
 		self.talents.has_r1 = 1
 		self.talents.r1_stats_inc = caster:GetTalentValue("modifier_marci_unleash_1", "stats_inc")
 		if IsServer() then
-			caster:AddAttackEvent_out(self.tracker, true)
+			caster:AddProc(self.tracker, { name = "hit", land = true })
 			caster:CalculateStatBonus(true)
 		end
 	end
@@ -128,7 +127,8 @@ function marci_unleash_custom:UpdateTalents(name)
 		self.talents.has_r3 = 1
 		self.talents.r3_damage = caster:GetTalentValue("modifier_marci_unleash_3", "damage") / 100
 		self.talents.r3_damage_inc = caster:GetTalentValue("modifier_marci_unleash_3", "damage_inc")
-		caster:AddAttackEvent_out(self.tracker, true)
+		caster:AddProc(self.tracker, { name = "hit", land = true })
+		caster:AddProc(self.tracker, { land = true })
 	end
 
 	if caster:HasTalent("modifier_marci_unleash_4") then
@@ -933,18 +933,18 @@ function modifier_marci_unleash_custom_tracker:OnRefresh()
 	self.ability.cdr_bonus = self.ability:GetSpecialValueFor("cdr_bonus")
 end
 
-function modifier_marci_unleash_custom_tracker:AttackEvent_out(params)
-	if not IsServer() then
-		return
+function modifier_marci_unleash_custom_tracker:GetProcChance(params, name)
+	if name == "hit" then
+		return 100
 	end
-	if self.parent ~= params.attacker then
+	return self.ability.talents.r3_chance
+end
+
+function modifier_marci_unleash_custom_tracker:AttackProc(params, name)
+	if name ~= "hit" then
 		return
 	end
 	local target = params.target
-
-	if not target:IsUnit() then
-		return
-	end
 
 	if self.ability.talents.has_r1 == 1 then
 		local duration = target:IsCreep() and self.ability.talents.r1_duration_creeps
@@ -961,10 +961,7 @@ function modifier_marci_unleash_custom_tracker:AttackEvent_out(params)
 		)
 	end
 
-	if
-		self.ability.talents.has_r3 == 1
-		and RollPseudoRandomPercentage(self.ability.talents.r3_chance, 9243, self.parent)
-	then
+	if params.procs[self].default then
 		self.ability:Pulse(target:GetAbsOrigin(), false, "modifier_marci_unleash_3")
 	end
 end

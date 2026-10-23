@@ -154,6 +154,24 @@ function custom_legion_commander_moment_of_courage:UpdateTalents(name)
 		self.talents.e3_stun = caster:GetTalentValue("modifier_legion_moment_3", "stun")
 		caster:AddAttackStartEvent_out(self.tracker, true)
 		caster:AddAttackRecordEvent_out(self.tracker)
+		caster:AddLifesteal(self.tracker, {
+			name = "modifier_legion_moment_3",
+			type = 2,
+			text = true,
+			proc = "LifestealRecord",
+			value = function(params)
+				if not params.record then
+					return 0
+				end
+				if params.record ~= self.tracker.record then
+					return 0
+				end
+				if params.attack_damage_flag == "lc_moment" then
+					return 0
+				end
+				return self.talents.e3_heal
+			end,
+		})
 	end
 
 	if caster:HasTalent("modifier_legion_moment_4") then
@@ -230,7 +248,18 @@ function modifier_moment_of_courage_custom_tracker:OnCreated()
 	self.record = nil
 
 	self.parent:AddAttackRecordEvent_inc(self)
-	self.parent:AddDamageEvent_out(self, true)
+	self.parent:AddProc(self, { damage = true })
+	self.parent:AddLifesteal(self, {
+		type = 2,
+		text = true,
+		proc = "LifestealQuest",
+		value = function(params)
+			if params.attack_damage_flag ~= "lc_moment" then
+				return 0
+			end
+			return self.ability.hp_leech_percent
+		end,
+	})
 	self:RefreshStack()
 end
 
@@ -436,25 +465,13 @@ function modifier_moment_of_courage_custom_tracker:ProcAttack(target, is_attack)
 	end
 end
 
-function modifier_moment_of_courage_custom_tracker:DamageEvent_out(params)
-	if not IsServer() then
-		return
-	end
-	if self.parent ~= params.attacker then
-		return
-	end
-	local target = params.unit
+function modifier_moment_of_courage_custom_tracker:GetProcChance()
+	return 100
+end
 
-	if not target:IsUnit() then
-		return
-	end
-	if params.inflictor then
-		return
-	end
-
+function modifier_moment_of_courage_custom_tracker:DamageProc(params, name)
+	local target = params.target
 	local cleave_effect
-	local heal_damage
-	local heal_ability
 
 	if self.record and self.record == params.record then
 		target:AddNewModifier(
@@ -464,31 +481,11 @@ function modifier_moment_of_courage_custom_tracker:DamageEvent_out(params)
 			{ duration = self.ability.talents.e3_stun }
 		)
 		target:EmitSound("Lc.Moment_bash")
-
 		cleave_effect = "particles/econ/items/sven/sven_ti7_sword/sven_ti7_sword_spell_great_cleave_gods_strength.vpcf"
-		heal_damage = params.damage * self.ability.talents.e3_heal
-		heal_ability = "modifier_legion_moment_3"
-		self.record = nil
 	end
 
 	if params.attack_damage_flag and params.attack_damage_flag == "lc_moment" then
-		heal_damage = self.ability.hp_leech_percent * params.damage
 		cleave_effect = "particles/bloodseeker/thirst_cleave.vpcf"
-	end
-
-	if heal_damage then
-		local result = self.parent:CanLifesteal(target)
-		if result then
-			local real_heal = self.parent:GenericHeal(heal_damage * result, self.ability, false, false, heal_ability)
-			if
-				self.parent:GetQuest() == "Legion.Quest_7"
-				and not self.parent:QuestCompleted()
-				and target:IsRealHero()
-				and real_heal > 0
-			then
-				self.parent:UpdateQuest(real_heal)
-			end
-		end
 	end
 
 	if cleave_effect then
@@ -522,6 +519,27 @@ function modifier_moment_of_courage_custom_tracker:DamageEvent_out(params)
 			"modifier_legion_moment_7"
 		)
 	end
+end
+
+function modifier_moment_of_courage_custom_tracker:LifestealQuest(params, heal, target, real_heal)
+	if self.parent:GetQuest() ~= "Legion.Quest_7" then
+		return
+	end
+	if self.parent:QuestCompleted() then
+		return
+	end
+	if not params.unit:IsRealHero() then
+		return
+	end
+	if real_heal <= 0 then
+		return
+	end
+	self.parent:UpdateQuest(real_heal)
+end
+
+function modifier_moment_of_courage_custom_tracker:LifestealRecord(params, heal, target, real_heal)
+	self.record = nil
+	self:LifestealQuest(params, heal, target, real_heal)
 end
 
 function modifier_moment_of_courage_custom_tracker:DeclareFunctions()

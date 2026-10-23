@@ -97,6 +97,10 @@ function jakiro_ice_path_custom:Precache(context)
 	PrecacheResource("particle", "particles/units/heroes/hero_jakiro/jakiro_base_attack.vpcf", context)
 	PrecacheResource("particle", "particles/units/heroes/hero_jakiro/jakiro_base_attack_dual.vpcf", context)
 	PrecacheResource("particle", "particles/units/heroes/hero_jakiro/jakiro_icepath_debuff.vpcf", context)
+	PrecacheResource("particle", "particles/drow_ranger/frost_heal.vpcf", context)
+	PrecacheResource("particle", "particles/jakiro/scepter_shield_ice_start.vpcf", context)
+	PrecacheResource("particle", "particles/crystal_maiden/maiden_arcane.vpcf", context)
+	PrecacheResource("particle", "particles/jakiro/scepter_shield_ice.vpcf", context)
 end
 
 function jakiro_ice_path_custom:UpdateTalents(name)
@@ -140,6 +144,11 @@ function jakiro_ice_path_custom:UpdateTalents(name)
 			w7_speed = caster:GetTalentValue("modifier_jakiro_path_7", "speed", true),
 			w7_stun = caster:GetTalentValue("modifier_jakiro_path_7", "stun", true),
 			w7_max = caster:GetTalentValue("modifier_jakiro_path_7", "max", true),
+			w7_cleave = caster:GetTalentValue("modifier_jakiro_path_7", "cleave", true) / 100,
+			w7_cleave_radius = caster:GetTalentValue("modifier_jakiro_path_7", "cleave_radius", true),
+			w7_shield_duration = caster:GetTalentValue("modifier_jakiro_path_7", "shield_duration", true),
+			w7_shield_duration_creeps = caster:GetTalentValue("modifier_jakiro_path_7", "shield_duration_creeps", true),
+			w7_shield = caster:GetTalentValue("modifier_jakiro_path_7", "shield", true) / 100,
 
 			has_h1 = 0,
 			h1_range = 0,
@@ -166,7 +175,7 @@ function jakiro_ice_path_custom:UpdateTalents(name)
 		self.talents.has_w3 = 1
 		self.talents.w3_damage = caster:GetTalentValue("modifier_jakiro_path_3", "damage")
 		self.talents.w3_crit = caster:GetTalentValue("modifier_jakiro_path_3", "crit")
-		caster:AddAttackEvent_out(self.tracker, true)
+		caster:AddProc(self.tracker, { land = true })
 		caster:AddRecordDestroyEvent(self.tracker, true)
 	end
 
@@ -181,9 +190,21 @@ function jakiro_ice_path_custom:UpdateTalents(name)
 			self.w7_init = true
 			self.tracker:UpdateUI()
 			caster:AddAttackStartEvent_out(self.tracker)
-			caster:AddAttackEvent_out(self.tracker, true)
+			caster:AddProc(self.tracker, { land = true })
 			caster:AddRecordDestroyEvent(self.tracker, true)
 		end
+		caster:AddLifesteal(self.tracker, {
+			name = "modifier_jakiro_path_7",
+			type = 2,
+			heal = false,
+			proc = "LifestealPath",
+			value = function(params)
+				if not self.tracker.legendary_records[params.record] then
+					return 0
+				end
+				return self.talents.w7_shield
+			end,
+		})
 	end
 
 	if caster:HasTalent("modifier_jakiro_hero_1") then
@@ -449,18 +470,12 @@ function modifier_jakiro_ice_path_custom_tracker:SpellEvent(params)
 	)
 end
 
-function modifier_jakiro_ice_path_custom_tracker:AttackEvent_out(params)
-	if not IsServer() then
-		return
-	end
-	if self.parent ~= params.attacker then
-		return
-	end
-	local target = params.target
+function modifier_jakiro_ice_path_custom_tracker:GetProcChance()
+	return 100
+end
 
-	if not target:IsUnit() then
-		return
-	end
+function modifier_jakiro_ice_path_custom_tracker:AttackProc(params, name)
+	local target = params.target
 
 	if self.crit_records[params.record] then
 		target:EmitSound("DOTA_Item.Daedelus.Crit")
@@ -513,6 +528,70 @@ function modifier_jakiro_ice_path_custom_tracker:RecordDestroyEvent(params)
 	end
 	self.crit_records[params.record] = nil
 	self.legendary_records[params.record] = nil
+end
+
+function modifier_jakiro_ice_path_custom_tracker:LifestealPath(params, shield)
+	local target = params.unit
+	if
+		self.legendary_records[params.record] == 1
+		or self.parent:HasModifier("modifier_jakiro_liquid_fire_custom_legendary_acitve")
+	then
+		self.parent:GenericParticle("particles/drow_ranger/frost_heal.vpcf")
+
+		local duration = target:IsCreep() and self.ability.talents.w7_shield_duration_creeps
+			or self.ability.talents.w7_shield_duration
+
+		if not IsValid(self.path_shield) then
+			self.path_shield =
+				self.parent:AddNewModifier(self.parent, self.ability, "modifier_generic_shield_multiple", {
+					duration = duration,
+					shield_talent = "modifier_jakiro_path_7",
+				})
+
+			if self.path_shield then
+				self.path_shield.shield_attack_max = 0
+				self.parent:GenericParticle("particles/jakiro/scepter_shield_ice_start.vpcf", self.path_shield)
+				self.parent:GenericParticle("particles/crystal_maiden/maiden_arcane.vpcf")
+
+				local pfx = ParticleManager:CreateParticle(
+					"particles/jakiro/scepter_shield_ice.vpcf",
+					PATTACH_ABSORIGIN_FOLLOW,
+					self.parent
+				)
+				ParticleManager:SetParticleControlEnt(
+					pfx,
+					1,
+					self.parent,
+					PATTACH_POINT_FOLLOW,
+					"attach_hitloc",
+					self.parent:GetAbsOrigin(),
+					false
+				)
+				ParticleManager:SetParticleControl(pfx, 2, Vector(90, 90, 90))
+				self.path_shield:AddParticle(pfx, false, false, -1, false, false)
+			end
+		end
+
+		if self.path_shield then
+			self.path_shield.shield_attack_max = self.path_shield.shield_attack_max + shield
+			self.path_shield:AddShield(shield, self.path_shield.shield_attack_max)
+			self.path_shield:SetDuration(duration, true)
+		end
+	end
+
+	local damageTable = {
+		attacker = self.parent,
+		ability = self.ability,
+		damage_type = DAMAGE_TYPE_PURE,
+		damage_flags = DOTA_DAMAGE_FLAG_NO_SPELL_AMPLIFICATION,
+		damage = params.damage * self.ability.talents.w7_cleave,
+	}
+	for _, aoe_target in pairs(self.parent:FindTargets(self.ability.talents.w7_cleave_radius, target:GetAbsOrigin())) do
+		if target ~= aoe_target then
+			damageTable.victim = aoe_target
+			DoDamage(damageTable, "modifier_jakiro_path_7")
+		end
+	end
 end
 
 function modifier_jakiro_ice_path_custom_tracker:GetModifierProcAttack_Feedback(params)

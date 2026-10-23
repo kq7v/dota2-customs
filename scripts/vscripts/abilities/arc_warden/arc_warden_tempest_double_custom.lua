@@ -161,7 +161,6 @@ function arc_warden_tempest_double_custom:UpdateTalents()
 	if caster:HasTalent("modifier_arc_warden_double_1") then
 		self.talents.has_r1 = 1
 		self.talents.r1_crit = caster:GetTalentValue("modifier_arc_warden_double_1", "crit")
-		caster:AddDamageEvent_out(self.tracker, true)
 		caster:AddRecordDestroyEvent(self.tracker, true)
 	end
 
@@ -575,6 +574,21 @@ function modifier_arc_warden_tempest_double_custom:OnCreated()
 
 	self:StartIntervalThink(0.5)
 
+	local tracker = self.parent:FindAbilityByName(self.ability:GetName()).tracker
+	self.parent:AddLifesteal(self, {
+		name = "modifier_arc_warden_double_1",
+		type = 2,
+		text = true,
+		heal_unit = self.caster,
+		proc = "LifestealSound",
+		value = function(params)
+			if not tracker.records[params.record] then
+				return 0
+			end
+			return self.ability.talents.r1_heal
+		end,
+	})
+
 	local counter = 0
 	Timers:CreateTimer(FrameTime(), function()
 		local wearables_list = self.parent:GetPlayerWearables()
@@ -589,6 +603,10 @@ function modifier_arc_warden_tempest_double_custom:OnCreated()
 		end
 		return FrameTime()
 	end)
+end
+
+function modifier_arc_warden_tempest_double_custom:LifestealSound(params)
+	params.unit:EmitSound("Arc.Field_crit")
 end
 
 function modifier_arc_warden_tempest_double_custom:OnIntervalThink()
@@ -871,6 +889,16 @@ function modifier_arc_warden_tempest_double_custom_tracker:OnIntervalThink()
 	self.ability:ManageBuffs(tempest)
 end
 
+function modifier_arc_warden_tempest_double_custom_tracker:GetCritChance()
+	if self.ability.talents.has_r1 == 0 then
+		return 0
+	end
+	if not self.parent:HasModifier("modifier_arc_warden_tempest_double_custom") then
+		return 0
+	end
+	return self.ability.talents.r1_chance
+end
+
 function modifier_arc_warden_tempest_double_custom_tracker:GetCritDamage()
 	if self.ability.talents.has_r1 == 0 then
 		return
@@ -948,47 +976,12 @@ function modifier_arc_warden_tempest_double_custom_tracker:GetModifierPreAttack_
 		return
 	end
 
-	if not RollPseudoRandomPercentage(self.ability.talents.r1_chance, 830, self.parent) then
+	if not RollPseudoRandomPercentage(self:GetCritChance(), 830, self.parent) then
 		return
 	end
 
 	self.records[params.record] = true
-	return self.ability.talents.r1_crit
-end
-
-function modifier_arc_warden_tempest_double_custom_tracker:DamageEvent_out(params)
-	if not IsServer() then
-		return
-	end
-	if self.ability.talents.has_r1 == 0 then
-		return
-	end
-	if not self.parent:HasModifier("modifier_arc_warden_tempest_double_custom") then
-		return
-	end
-	if not params.unit:IsUnit() then
-		return
-	end
-	if self.parent ~= params.attacker then
-		return
-	end
-	if not self.records[params.record] then
-		return
-	end
-
-	local result = self.parent:CheckLifesteal(params, 2)
-
-	if result and self.parent.owner then
-		self.parent.owner:GenericHeal(
-			params.damage * self.ability.talents.r1_heal * result,
-			self.ability,
-			nil,
-			nil,
-			"modifier_arc_warden_double_1"
-		)
-	end
-
-	params.unit:EmitSound("Arc.Field_crit")
+	return self:GetCritDamage()
 end
 
 function modifier_arc_warden_tempest_double_custom_tracker:RecordDestroyEvent(params)

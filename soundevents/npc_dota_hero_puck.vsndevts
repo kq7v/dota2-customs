@@ -16,27 +16,80 @@
 		[
 			"sounds/weapons/hero/dark_willow/wisp_damage.vsnd",
 		]
-		volume = 0.4
+		volume = 0.3
 		pitch_rand_min = -0.1
-		pitch_rand_max = 0.05
+		pitch_rand_max = 0
+		type = "dota_src1_3d"
+		soundlevel = 100
+		distance_max = 1600
+		soundevent_layer2 = "Puck.Shift_attack2"
+		soundevent_layer2_on = 1.0
+		pitch = 1
+	}
+	Puck.Shift_attack2 = 
+	{
+		vsnd_files = 
+		[
+			"sounds/weapons/hero/dark_willow/shadow_realm_damage.vsnd",
+		]
+		volume = 0.8
+		pitch_rand_min = 0.2
+		pitch_rand_max = 0.3
 		type = "dota_src1_3d"
 		soundlevel = 100
 		distance_max = 1600
 		pitch = 1
 	}
-	Puck.Orb_wall = 
+	Puck.Orb = 
 	{
 		vsnd_files = 
 		[
-			"sounds/weapons/hero/dark_seer/dota_dark_seer_wall_start.vsnd",
+			"sounds/weapons/hero/puck/illusory_orb_lp.vsnd",
 		]
 		volume = 1
-		pitch_rand_min = -0.05
-		pitch_rand_max = 0.05
-		type = "dota_src1_3d"
-		soundlevel = 100
-		distance_max = 1600
 		pitch = 1
+		type = "dota_update_default"
+		soundlevel = 81
+		mixgroup = "Weapons"
+		volume_fade_out = 0.5
+		spread_radius = 600
+		use_entity_position = 1
+		volume_use_FOW = 1
+		stop_at_time = 10
+	}
+	Puck.Orb_Legendary = 
+	{
+		vsnd_files = 
+		[
+			"sounds/weapons/hero/puck/illusory_orb_lp.vsnd",
+		]
+		volume = 0.9
+		pitch = 1.4
+		type = "dota_update_default"
+		soundlevel = 81
+		mixgroup = "Weapons"
+		volume_fade_out = 0.5
+		spread_radius = 600
+		use_entity_position = 1
+		volume_use_FOW = 1
+		stop_at_time = 10
+	}
+	Puck.Orb_Legendary_charge = 
+	{
+		vsnd_files = 
+		[
+			"sounds/weapons/hero/wisp/relocate.vsnd",
+		]
+		volume = 0.6
+		pitch = 1.2
+		type = "dota_update_default"
+		soundlevel = 100
+		distance_max = 4000
+		mixgroup = "Weapons"
+		volume_fade_out = 1.5
+		spread_radius = 600
+		use_entity_position = 1
+		volume_use_FOW = 1
 	}
 	Puck.Shift_Stun = 
 	{
@@ -82,49 +135,35 @@
 		pitch = 1
 		volume_fade_out = 0.5
 	}
-	Puck.Orb_stack_max = 
+	Puck.Shift_max = 
 	{
 		vsnd_files = 
 		[
-			"sounds/weapons/hero/arc_warden/rune_forge.vsnd",
+			"sounds/weapons/hero/keeper/solar_bind_target.vsnd",
 		]
-		volume = 0.7
-		pitch_rand_min = 0.15
-		pitch_rand_max = 0.2
+		volume = 1.4
+		pitch_rand_min = 0.1
+		pitch_rand_max = 0.1
 		type = "dota_src1_3d"
-		soundlevel = 100
+		soundlevel = 81
 		distance_max = 1600
-		pitch = 1
-		volume_fade_out = 0.5
+		soundevent_layer2 = "Puck.Shift_max2"
+		soundevent_layer2_on = 1.0
+		pitch = 1.2
 	}
-	Puck.Rift_Stun = 
+	Puck.Shift_max2 = 
 	{
 		vsnd_files = 
 		[
-			"sounds/weapons/hero/void_spirit/dissimilate_stun.vsnd",
+			"sounds/weapons/hero/enchantress/little_friends_target.vsnd",
 		]
-		volume = 1.3
-		pitch_rand_min = -0.05
-		pitch_rand_max = 0.05
+		volume = 1.2
+		pitch_rand_min = 0.4
+		pitch_rand_max = 0.4
 		type = "dota_src1_3d"
-		soundlevel = 100
+		soundlevel = 81
 		distance_max = 1600
-		pitch = 1
-	}
-	Puck.Rift_Damage = 
-	{
-		vsnd_files = 
-		[
-			"sounds/weapons/hero/shadow_demon/shadow_poison_damage02.vsnd",
-			"sounds/weapons/hero/shadow_demon/shadow_poison_damage01.vsnd",
-		]
-		volume = 0.8
-		pitch_rand_min = -0.1
-		pitch_rand_max = 0
-		type = "dota_src1_3d"
-		soundlevel = 100
-		distance_max = 1600
-		pitch = 1
+		pitch = 1.2
 	}
 	Puck.Rift_Legendary = 
 	{
@@ -140,15 +179,45 @@
 		distance_max = 1600
 		pitch = 1
 	}
-	Puck.Rift_Legendary_damage = 
+	Puck.Rift_Legendary_target = 
 	{
 		vsnd_files = 
 		[
 			"sounds/weapons/hero/dark_willow/shadow_realm_damage.vsnd",
 		]
+		volume = 0.45
+		pitch_rand_min = 0.25
+		pitch_rand_max = 0.35
+		type = "dota_src1_3d"
+		soundlevel = 100
+		distance_max = 1600
+		pitch = 1
+	}
+	Puck.Rift_Legendary_damage = 
+	{
+		vsnd_files = 
+		[
+			"sounds/weapons/hero/dark_willow/shadow_realm_attack.vsnd",
+		]
+		volume = 0.7
+		pitch_rand_min = -0.1
+		pitch_rand_max = 0.0
+		type = "dota_src1_3d"
+		soundlevel = 100
+		distance_max = 1600
+		soundevent_layer2 = "Puck.Rift_Legendary_damage2"
+		soundevent_layer2_on = 1.0
+		pitch = 1
+	}
+	Puck.Rift_Legendary_damage2 = 
+	{
+		vsnd_files = 
+		[
+			"sounds/weapons/hero/puck/waning_rift.vsnd",
+		]
 		volume = 0.9
-		pitch_rand_min = -0.15
-		pitch_rand_max = -0.1
+		pitch_rand_min = 0
+		pitch_rand_max = 0.1
 		type = "dota_src1_3d"
 		soundlevel = 100
 		distance_max = 1600
@@ -199,6 +268,51 @@
 		pitch = 1
 		volume_fade_out = 1.5
 	}
+	Puck.Orb_Legendary_shot = 
+	{
+		vsnd_files = 
+		[
+			"sounds/weapons/hero/keeper/mana_leak_cast.vsnd",
+		]
+		volume = 1.2
+		pitch_rand_min = 0
+		pitch_rand_max = 0.1
+		type = "dota_src1_3d"
+		soundlevel = 100
+		distance_max = 4000
+		soundevent_layer2 = "Puck.Orb_Legendary_shot2"
+		soundevent_layer2_on = 1.0
+		pitch = 1
+	}
+	Puck.Orb_Legendary_shot2 = 
+	{
+		vsnd_files = 
+		[
+			"sounds/weapons/hero/invoker/sunstrike_ignite_apex.vsnd",
+		]
+		volume = 1
+		pitch_rand_min = 0.3
+		pitch_rand_max = 0.4
+		type = "dota_src1_3d"
+		soundlevel = 100
+		distance_max = 4000
+		pitch = 1
+	}
+	Puck.Orb_Legendary_damage = 
+	{
+		vsnd_files = 
+		[
+			"sounds/weapons/hero/dark_willow/shadow_realm_damage.vsnd",
+		]
+		volume = 1.2
+		pitch_rand_min = -0.15
+		pitch_rand_max = 0
+		type = "dota_src1_3d"
+		soundlevel = 100
+		distance_max = 1600
+		pitch = 1
+		volume_fade_out = 0.5
+	}
 	Puck.Coil_Wave = 
 	{
 		vsnd_files = 
@@ -213,6 +327,32 @@
 		distance_max = 1600
 		pitch = 1
 	}
+	Hero_Puck.Dream_Coil.TI10 = 
+	{
+		type = "dota_src1_3d"
+		volume = 1.0
+		pitch = 0.95
+		soundlevel = 84.0
+		mixgroup = "Ultimates"
+		spread_radius = 900.0
+		soundevent_layer2 = "Hero_Puck.Dream_Coil.Layer"
+		soundevent_layer2_on = 1.0
+		vsnd_files = "sounds/weapons/hero/puck/dream_coil.vsnd"
+		vsnd_duration = 5.999615
+		volume_fade_out = 1
+	}
+	Hero_Puck.Dream_Coil.Layer = 
+	{
+		type = "dota_src1_3d"
+		volume = 1.0
+		pitch = 1.0
+		soundlevel = 84.0
+		mixgroup = "Weapons"
+		spread_radius = 300.0
+		vsnd_files = "sounds/weapons/hero/puck/enc/dream_coil_layer_ti10.vsnd"
+		vsnd_duration = 7.023125
+		volume_fade_out = 1
+	}
 	Puck.Coil = 
 	{
 		vsnd_files = 
@@ -226,37 +366,7 @@
 		soundlevel = 100
 		distance_max = 1600
 		pitch = 1
-		volume_fade_out = 1.5
-	}
-	Puck.Coil_mini = 
-	{
-		vsnd_files = 
-		[
-			"sounds/weapons/hero/puck/dream_coil.vsnd",
-		]
-		volume = 1.2
-		pitch_rand_min = 0.2
-		pitch_rand_max = 0.2
-		type = "dota_src1_3d"
-		soundlevel = 100
-		distance_max = 1600
-		pitch = 1
-		volume_fade_out = 1.5
-	}
-	Puck.Coil_mini_break = 
-	{
-		vsnd_files = 
-		[
-			"sounds/weapons/hero/puck/dream_coil_snap.vsnd",
-		]
-		volume = 1.5
-		pitch_rand_min = 0.25
-		pitch_rand_max = 0.25
-		type = "dota_src1_3d"
-		soundlevel = 100
-		distance_max = 1600
-		pitch = 1
-		volume_fade_out = 1.5
+		volume_fade_out = 1
 	}
 	Puck.Coil_Attack = 
 	{
@@ -285,6 +395,34 @@
 		soundlevel = 100
 		distance_max = 1600
 		pitch = 1
+	}
+	Puck.Coil_Knock = 
+	{
+		vsnd_files = 
+		[
+			"sounds/weapons/hero/obsidian_destroyer/astral_imprison_cast.vsnd",
+		]
+		volume = 0.5
+		pitch_rand_min = -0.05
+		pitch_rand_max = -0.05
+		type = "dota_src1_3d"
+		soundlevel = 100
+		distance_max = 1600
+		pitch = 1
+	}
+	Puck.Coil_Cd = 
+	{
+		vsnd_files = 
+		[
+			"sounds/weapons/hero/dark_willow/ley_cast.vsnd",
+		]
+		volume = 1.6
+		pitch_rand_min = -0.2
+		pitch_rand_max = -0.1
+		type = "dota_src1_3d"
+		soundlevel = 81
+		distance_max = 1600
+		pitch = 1.1
 	}
 	DoubleRating.npc_dota_hero_puck = 
 	{

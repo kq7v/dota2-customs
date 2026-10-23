@@ -48,10 +48,13 @@ function item_spell_breaker:OnSpellStart()
 end
 
 modifier_item_spell_breaker = class(mod_hidden)
+function modifier_item_spell_breaker:GetUniqueStat()
+	return self.resist
+end
 function modifier_item_spell_breaker:OnCreated()
 	self.parent = self:GetParent()
 	self.ability = self:GetAbility()
-	self.parent:AddAttackEvent_out(self, true)
+	self.parent:AddProc(self, { land = true })
 
 	self.duration = self.ability.duration
 	self.damage = self.ability.bonus_damage
@@ -59,6 +62,7 @@ function modifier_item_spell_breaker:OnCreated()
 	self.health_regen = self.ability.bonus_health_regen
 	self.resist = self.ability.bonus_magical_armor
 	self.health = self.ability.bonus_health
+	self.parent:AddUniqueStat(self, "magic_resist")
 end
 
 function modifier_item_spell_breaker:DeclareFunctions()
@@ -71,17 +75,12 @@ function modifier_item_spell_breaker:DeclareFunctions()
 	}
 end
 
-function modifier_item_spell_breaker:AttackEvent_out(params)
-	if not IsServer() then
-		return
-	end
+function modifier_item_spell_breaker:GetProcChance()
+	return 100
+end
+
+function modifier_item_spell_breaker:AttackProc(params, name)
 	if not IsValid(self.ability) then
-		return
-	end
-	if self.parent ~= params.attacker then
-		return
-	end
-	if not params.target:IsUnit() then
 		return
 	end
 	params.target:AddNewModifier(
@@ -93,17 +92,7 @@ function modifier_item_spell_breaker:AttackEvent_out(params)
 end
 
 function modifier_item_spell_breaker:GetModifierMagicalResistanceBonus()
-	if self.parent:HasModifier("modifier_item_pipe_custom") then
-		return
-	end
-	if self.parent:HasModifier("modifier_item_consecrated_wraps_custom") then
-		return
-	end
-	if self.parent:HasModifier("modifier_item_mage_slayer") then
-		return
-	end
-
-	return self.resist
+	return self.parent:UniqueStat(self, "magic_resist")
 end
 
 function modifier_item_spell_breaker:GetModifierHealthBonus()
@@ -216,7 +205,7 @@ function modifier_item_spell_breaker_passive:DeclareFunctions()
 end
 
 function modifier_item_spell_breaker_passive:GetModifierSpellAmplify_Percentage()
-	if self.parent:HasModifier("modifier_item_mage_slayer_debuff") then
+	if self.parent:HasModifier("modifier_item_mage_slayer_custom_debuff") then
 		return
 	end
 	return self.amp

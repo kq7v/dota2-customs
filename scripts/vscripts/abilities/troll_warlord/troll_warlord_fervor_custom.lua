@@ -340,6 +340,17 @@ function modifier_troll_warlord_fervor_custom:RecordDestroyEvent(params)
 	self.records[params.record] = nil
 end
 
+function modifier_troll_warlord_fervor_custom:GetCritChance()
+	if not self.parent:HasTalent("modifier_troll_fervor_4") then
+		return 0
+	end
+	local mod = self.parent:FindModifierByName("modifier_troll_warlord_fervor_custom_speed")
+	if not mod then
+		return 0
+	end
+	return mod:GetStackCount() * self.crit_chance
+end
+
 function modifier_troll_warlord_fervor_custom:GetCritDamage()
 	if not self.parent:HasTalent("modifier_troll_fervor_4") then
 		return
@@ -355,19 +366,16 @@ function modifier_troll_warlord_fervor_custom:GetModifierPreAttack_CriticalStrik
 		return
 	end
 
-	local mod = self.parent:FindModifierByName("modifier_troll_warlord_fervor_custom_speed")
-	if not mod then
+	if not self.parent:HasModifier("modifier_troll_warlord_fervor_custom_speed") then
 		return
 	end
-
-	local chance = mod:GetStackCount() * self.crit_chance
-	if not RollPseudoRandomPercentage(chance, 3519, self.parent) then
+	if not RollPseudoRandomPercentage(self:GetCritChance(), 3519, self.parent) then
 		return
 	end
 
 	self.records[params.record] = true
 
-	return self.crit_damage
+	return self:GetCritDamage()
 end
 
 function modifier_troll_warlord_fervor_custom:DamageEvent_out(params)

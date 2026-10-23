@@ -1039,6 +1039,19 @@ function modifier_monkey_king_primal_spring_custom_legendary:OnRefresh(table)
 	end
 end
 
+function modifier_monkey_king_primal_spring_custom_legendary:GetRefreshChance()
+	if self:GetStackCount() < self.bonus_2 then
+		return 0
+	end
+	if self.ability:GetCurrentAbilityCharges() >= self.ability.talents.w7_charge then
+		return 0
+	end
+	if self.parent:HasCd("monkey_w7", self.ability.talents.w7_refresh_cd) then
+		return 0
+	end
+	return self.ability.talents.w7_chance
+end
+
 function modifier_monkey_king_primal_spring_custom_legendary:ChargeRefresh()
 	if not IsServer() then
 		return
@@ -1049,9 +1062,7 @@ function modifier_monkey_king_primal_spring_custom_legendary:ChargeRefresh()
 	if self.ability:GetCurrentAbilityCharges() >= self.ability.talents.w7_charge then
 		return
 	end
-	if
-		not self.parent:CheckCd("monkey_w7", self.ability.talents.w7_refresh_cd, self.ability.talents.w7_chance, 9983)
-	then
+	if not self.parent:CheckCd("monkey_w7", self.ability.talents.w7_refresh_cd) then
 		return
 	end
 

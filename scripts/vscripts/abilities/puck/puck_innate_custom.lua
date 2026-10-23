@@ -9,14 +9,71 @@
 
 
 LinkLuaModifier("modifier_puck_innate_custom", "abilities/puck/puck_innate_custom", LUA_MODIFIER_MOTION_NONE)
-LinkLuaModifier("modifier_puck_innate_custom_auto_cd", "abilities/puck/puck_innate_custom", LUA_MODIFIER_MOTION_NONE)
 LinkLuaModifier(
-	"modifier_puck_innate_custom_auto_damage",
+	"modifier_puck_innate_custom_heal_reduce",
 	"abilities/puck/puck_innate_custom",
-	LUA_MODIFIER_MOTION_NONE
+	LUA_MODIFIER_MOTION_NONE,
+	"modifier_puck_hero_3"
+)
+LinkLuaModifier(
+	"modifier_puck_innate_custom_move",
+	"abilities/puck/puck_innate_custom",
+	LUA_MODIFIER_MOTION_NONE,
+	"modifier_puck_hero_4"
 )
 
 puck_innate_custom = class({})
+puck_innate_custom.talents = {}
+
+function puck_innate_custom:Precache(context)
+	if self:GetCaster() and self:GetCaster():IsIllusion() then
+		return
+	end
+
+	PrecacheResource("particle", "particles/units/heroes/hero_keeper_of_the_light/keeper_chakra_magic.vpcf", context)
+	PrecacheResource("particle", "particles/puck/puck_orb_speed.vpcf", context)
+	PrecacheResource("soundfile", "soundevents/npc_dota_hero_puck.vsndevts", context)
+	dota1x6:PrecacheShopItems("npc_dota_hero_puck", context)
+end
+
+function puck_innate_custom:UpdateTalents(name)
+	local caster = self:GetCaster()
+	if not self.init then
+		self.init = true
+		self.talents = {
+			h1_cdr = 0,
+			h1_regen = 0,
+
+			h2_status = 0,
+
+			has_h3 = 0,
+			h3_heal_reduce = 0,
+			h3_effect_duration = caster:GetTalentValue("modifier_puck_hero_3", "effect_duration", true),
+
+			has_h4 = 0,
+			h4_move = caster:GetTalentValue("modifier_puck_hero_4", "move", true),
+			h4_duration = caster:GetTalentValue("modifier_puck_hero_4", "duration", true),
+		}
+	end
+
+	if caster:HasTalent("modifier_puck_hero_1") then
+		self.talents.h1_cdr = caster:GetTalentValue("modifier_puck_hero_1", "cdr")
+		self.talents.h1_regen = caster:GetTalentValue("modifier_puck_hero_1", "regen") / 100
+	end
+
+	if caster:HasTalent("modifier_puck_hero_2") then
+		self.talents.h2_status = caster:GetTalentValue("modifier_puck_hero_2", "status")
+	end
+
+	if caster:HasTalent("modifier_puck_hero_3") then
+		self.talents.has_h3 = 1
+		self.talents.h3_heal_reduce = caster:GetTalentValue("modifier_puck_hero_3", "heal_reduce")
+	end
+
+	if caster:HasTalent("modifier_puck_hero_4") then
+		self.talents.has_h4 = 1
+	end
+end
 
 function puck_innate_custom:GetIntrinsicModifierName()
 	if not self:GetCaster():IsRealHero() then
@@ -25,201 +82,177 @@ function puck_innate_custom:GetIntrinsicModifierName()
 	return "modifier_puck_innate_custom"
 end
 
-function puck_innate_custom:Precache(context)
-	if self:GetCaster() and self:GetCaster():IsIllusion() then
+function puck_innate_custom:ProcSpeed()
+	if not self:IsTrained() then
 		return
 	end
-	PrecacheResource("soundfile", "soundevents/npc_dota_hero_puck.vsndevts", context)
-	dota1x6:PrecacheShopItems("npc_dota_hero_puck", context)
-end
-
-modifier_puck_innate_custom = class({})
-function modifier_puck_innate_custom:IsHidden()
-	return true
-end
-function modifier_puck_innate_custom:IsPurgable()
-	return false
-end
-function modifier_puck_innate_custom:RemoveOnDeath()
-	return false
-end
-function modifier_puck_innate_custom:OnCreated(table)
-	self.parent = self:GetParent()
-	self.parent:AddAttackStartEvent_out(self)
-
-	self.ability = self:GetAbility()
-
-	self.auto_duration = self.parent:GetTalentValue("modifier_puck_coil_4", "duration", true)
-
-	self.cd_items = self.parent:GetTalentValue("modifier_puck_coil_6", "cd_items", true)
-
-	self.mana = self.ability:GetSpecialValueFor("mana") / 100
-	self.chance = self.ability:GetSpecialValueFor("chance")
-	self.parent:AddSpellEvent(self)
-end
-
-function modifier_puck_innate_custom:PuckAttackProc()
-	if not IsServer() then
-		return
-	end
-	if not self.parent:HasTalent("modifier_puck_coil_4") then
-		return
-	end
-	if self.parent:HasModifier("modifier_puck_innate_custom_auto_cd") then
+	if self.talents.has_h4 == 0 then
 		return
 	end
 
-	self:Proc()
-	self.parent:AddNewModifier(
-		self.parent,
-		self.ability,
-		"modifier_puck_innate_custom_auto_cd",
-		{ duration = self.parent:GetTalentValue("modifier_puck_coil_4", "cd") }
+	self.caster:AddNewModifier(
+		self.caster,
+		self,
+		"modifier_puck_innate_custom_move",
+		{ duration = self.talents.h4_duration }
 	)
 end
 
-function modifier_puck_innate_custom:AttackStartEvent_out(params)
+function puck_innate_custom:ProcHealReduce(target)
 	if not IsServer() then
 		return
 	end
-	if self.parent ~= params.attacker then
+	if not self:IsTrained() then
 		return
 	end
-	if not params.target:IsUnit() then
+	if self.talents.has_h3 == 0 then
 		return
 	end
-	if params.no_attack_cooldown then
+	if not target:IsRealHero() then
 		return
 	end
 
-	self:PuckAttackProc()
+	target:AddNewModifier(
+		self.caster,
+		self,
+		"modifier_puck_innate_custom_heal_reduce",
+		{ duration = self.talents.h3_effect_duration }
+	)
+end
+
+modifier_puck_innate_custom = class(mod_hidden)
+function modifier_puck_innate_custom:RemoveOnDeath()
+	return false
+end
+function modifier_puck_innate_custom:OnCreated()
+	self.parent = self:GetParent()
+	self.ability = self:GetAbility()
+	self.ability.tracker = self
+	self.ability:UpdateTalents()
+
+	self.parent.innate_ability = self.ability
+
+	self.chance = self.ability:GetSpecialValueFor("chance")
+	self.mana = self.ability:GetSpecialValueFor("mana")
+	self.mana_max = self.ability:GetSpecialValueFor("mana_max") / 100
+	self.heal = self.ability:GetSpecialValueFor("heal")
+	self.heal_max = self.ability:GetSpecialValueFor("heal_max") / 100
+
+	if not IsServer() then
+		return
+	end
+	self.parent:AddSpellEvent(self, true)
 end
 
 function modifier_puck_innate_custom:SpellEvent(params)
 	if not IsServer() then
 		return
 	end
-	if self.parent:PassivesDisabled() then
-		return
-	end
-	if params.unit ~= self.parent then
+	if self.parent ~= params.unit then
 		return
 	end
 	if params.ability:IsItem() then
 		return
 	end
-	if
-		self.parent:HasModifier("modifier_custom_puck_waning_rift_legendary_charge")
-		and params.ability:GetName() == "custom_puck_waning_rift"
-	then
-		return
+
+	if params.ability ~= self.parent.shift_ability and params.ability ~= self.parent.rift_ability then
+		self.ability:ProcSpeed()
 	end
 
+	if self.parent:PassivesDisabled() then
+		return
+	end
 	if not RollPseudoRandomPercentage(self.chance, 1223, self.parent) then
 		return
 	end
-	self:Proc()
-end
 
-function modifier_puck_innate_custom:Proc()
-	if not IsServer() then
-		return
-	end
-	local mana = self.parent:GetMaxMana() * self.mana
-	local heal = mana
+	local bonus = 1 + self.ability.talents.h1_regen
+	local mana = (self.mana + self.mana_max * self.parent:GetMaxMana()) * bonus
+	local heal = (self.heal + self.heal_max * self.parent:GetMaxHealth()) * bonus
 
-	local mana_particle = ParticleManager:CreateParticle(
+	self.parent:GenericParticle(
 		"particles/units/heroes/hero_keeper_of_the_light/keeper_chakra_magic.vpcf",
-		PATTACH_WORLDORIGIN,
-		nil
+		nil,
+		false,
+		{ 1 }
 	)
-	ParticleManager:SetParticleControl(mana_particle, 0, self.parent:GetAbsOrigin())
-	ParticleManager:SetParticleControl(mana_particle, 1, self.parent:GetAbsOrigin())
-	ParticleManager:ReleaseParticleIndex(mana_particle)
 	self.parent:EmitSound("Puck.Rift_Mana")
 
 	self.parent:GenericHeal(heal, self.ability)
 	self.parent:GiveMana(mana)
-	self.parent:SendNumber(11, mana)
-	if self.parent:HasTalent("modifier_puck_coil_4") then
-		self.parent:AddNewModifier(
-			self.parent,
-			self.ability,
-			"modifier_puck_innate_custom_auto_damage",
-			{ duration = self.auto_duration }
-		)
-	end
-
-	if self.parent:HasTalent("modifier_puck_coil_6") then
-		self.parent:CdItems(self.cd_items, "modifier_puck_coil_6")
-	end
+	self.parent:SendNumber(OVERHEAD_ALERT_MANA_ADD, mana)
 end
 
-modifier_puck_innate_custom_auto_cd = class({})
-function modifier_puck_innate_custom_auto_cd:IsHidden()
-	return false
-end
-function modifier_puck_innate_custom_auto_cd:IsPurgable()
-	return false
-end
-function modifier_puck_innate_custom_auto_cd:IsDebuff()
-	return true
-end
-
-modifier_puck_innate_custom_auto_damage = class({})
-function modifier_puck_innate_custom_auto_damage:IsHidden()
-	return false
-end
-function modifier_puck_innate_custom_auto_damage:IsPurgable()
-	return false
-end
-function modifier_puck_innate_custom_auto_damage:OnCreated(table)
-	self.caster = self:GetCaster()
-	self.parent = self:GetParent()
-
-	self.damage = self.caster:GetTalentValue("modifier_puck_coil_4", "damage")
-
-	if not IsServer() then
-		return
-	end
-
-	self.RemoveForDuel = true
-	self:AddStack(table.duration)
-end
-
-function modifier_puck_innate_custom_auto_damage:AddStack(duration)
-	if not IsServer() then
-		return
-	end
-
-	self.max_timer = self:GetRemainingTime()
-
-	Timers:CreateTimer(duration, function()
-		if self and not self:IsNull() then
-			self:DecrementStackCount()
-			if self:GetStackCount() <= 0 then
-				self:Destroy()
-			end
-		end
-	end)
-
-	self:IncrementStackCount()
-	self.parent:CalculateStatBonus(true)
-end
-
-function modifier_puck_innate_custom_auto_damage:OnRefresh(table)
-	if not IsServer() then
-		return
-	end
-	self:AddStack(table.duration)
-end
-
-function modifier_puck_innate_custom_auto_damage:DeclareFunctions()
+function modifier_puck_innate_custom:DeclareFunctions()
 	return {
-		MODIFIER_PROPERTY_SPELL_AMPLIFY_PERCENTAGE,
+		MODIFIER_PROPERTY_COOLDOWN_PERCENTAGE,
+		MODIFIER_PROPERTY_IGNORE_CAST_ANGLE,
+		MODIFIER_PROPERTY_CASTTIME_PERCENTAGE,
+		MODIFIER_PROPERTY_STATUS_RESISTANCE_STACKING,
 	}
 end
 
-function modifier_puck_innate_custom_auto_damage:GetModifierSpellAmplify_Percentage()
-	return self.damage * self:GetStackCount()
+function modifier_puck_innate_custom:GetModifierPercentageCooldown()
+	return self.ability.talents.h1_cdr
+end
+
+function modifier_puck_innate_custom:GetModifierIgnoreCastAngle()
+	return self.ability.talents.has_h4 == 1 and 1 or 0
+end
+
+function modifier_puck_innate_custom:GetModifierPercentageCasttime()
+	return self.ability.talents.has_h4 == 1 and 100 or 0
+end
+
+function modifier_puck_innate_custom:GetModifierStatusResistanceStacking()
+	return self.ability.talents.h2_status
+end
+
+modifier_puck_innate_custom_move = class(mod_hidden)
+function modifier_puck_innate_custom_move:GetEffectName()
+	return "particles/puck/puck_orb_speed.vpcf"
+end
+function modifier_puck_innate_custom_move:OnCreated()
+	self.ability = self:GetAbility()
+	self.move = self.ability.talents.h4_move
+end
+
+function modifier_puck_innate_custom_move:DeclareFunctions()
+	return {
+		MODIFIER_PROPERTY_MOVESPEED_BONUS_PERCENTAGE,
+		MODIFIER_PROPERTY_SLOW_RESISTANCE_STACKING,
+	}
+end
+
+function modifier_puck_innate_custom_move:GetModifierMoveSpeedBonus_Percentage()
+	return self.move
+end
+
+function modifier_puck_innate_custom_move:GetModifierSlowResistance_Stacking()
+	return self:GetModifierMoveSpeedBonus_Percentage()
+end
+
+modifier_puck_innate_custom_heal_reduce = class(mod_hidden)
+function modifier_puck_innate_custom_heal_reduce:OnCreated()
+	self.ability = self:GetAbility()
+	self.heal_reduce = self.ability.talents.h3_heal_reduce
+
+	if not IsServer() then
+		return
+	end
+	self.RemoveForDuel = true
+end
+
+function modifier_puck_innate_custom_heal_reduce:DeclareFunctions()
+	return {
+		MODIFIER_PROPERTY_HP_REGEN_AMPLIFY_PERCENTAGE,
+	}
+end
+
+function modifier_puck_innate_custom_heal_reduce:GetModifierHealChange()
+	return self.heal_reduce
+end
+
+function modifier_puck_innate_custom_heal_reduce:GetModifierHPRegenAmplify_Percentage()
+	return self.heal_reduce
 end

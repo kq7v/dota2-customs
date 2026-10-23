@@ -150,19 +150,7 @@ function modifier_npc_muerta_satyr_bkb:OnCreated(table)
 
 	self.lifesteal = self.ability.lifesteal
 
-	self.parent:AddDamageEvent_out(self, true)
-end
-
-function modifier_npc_muerta_satyr_bkb:DamageEvent_out(params)
-	if not IsServer() then
-		return
-	end
-	local result = self.parent:CheckLifesteal(params)
-	if not result then
-		return
-	end
-
-	self.parent:GenericHeal(result * params.damage * self.lifesteal, self.ability, false, false)
+	self.parent:AddLifesteal(self, { value = self.lifesteal, text = true })
 end
 
 npc_muerta_satyr_passive = class({})

@@ -62,12 +62,7 @@ function muerta_innate_custom:UpdateTalents()
 	if not self.init then
 		self.init = true
 		self.talents = {
-			has_w2 = 0,
-			w2_heal = 0,
 			w2_health = 0,
-
-			has_e2 = 0,
-			e2_heal = 0,
 
 			has_h3 = 0,
 			h3_mana = 0,
@@ -101,19 +96,10 @@ function muerta_innate_custom:UpdateTalents()
 	end
 
 	if caster:HasTalent("modifier_muerta_calling_2") then
-		self.talents.has_w2 = 1
-		self.talents.w2_heal = caster:GetTalentValue("modifier_muerta_calling_2", "heal") / 100
 		self.talents.w2_health = caster:GetTalentValue("modifier_muerta_calling_2", "health")
-		caster:AddDamageEvent_out(self.tracker, true)
 		if IsServer() then
 			caster:CalculateStatBonus(true)
 		end
-	end
-
-	if caster:HasTalent("modifier_muerta_gun_2") then
-		self.talents.has_e2 = 1
-		self.talents.e2_heal = caster:GetTalentValue("modifier_muerta_gun_2", "heal") / 100
-		caster:AddDamageEvent_out(self.tracker, true)
 	end
 
 	if caster:HasTalent("modifier_muerta_hero_2") then
@@ -243,34 +229,6 @@ function modifier_muerta_innate_custom_tracker:DamageEvent_out(params)
 			self.parent.veil_ability,
 			"modifier_muerta_pierce_the_veil_custom_slow_bonus",
 			{ duration = self.ability.talents.r2_duration }
-		)
-	end
-
-	local result = self.parent:CheckLifesteal(params)
-	if not result then
-		return
-	end
-
-	if self.ability.talents.has_w2 == 1 and params.inflictor then
-		self.parent:GenericHeal(
-			self.ability.talents.w2_heal * result * params.damage,
-			self.ability,
-			true,
-			"particles/items3_fx/octarine_core_lifesteal.vpcf",
-			"modifier_muerta_calling_2"
-		)
-	end
-
-	if
-		self.ability.talents.has_e2 == 1
-		and (not params.inflictor or params.inflictor:GetName() == "muerta_pierce_the_veil_custom")
-	then
-		self.parent:GenericHeal(
-			self.ability.talents.e2_heal * result * params.damage,
-			self.ability,
-			true,
-			false,
-			"modifier_muerta_gun_2"
 		)
 	end
 end

@@ -81,6 +81,9 @@ function primal_beast_trample_custom:UpdateTalents(name)
 			w1_str = 0,
 			w1_duration = 0,
 
+			w2_heal = 0,
+			w2_mana = 0,
+
 			has_w3 = 0,
 			w3_damage = 0,
 			w3_str = 0,
@@ -120,6 +123,22 @@ function primal_beast_trample_custom:UpdateTalents(name)
 	if caster:HasTalent("modifier_primal_beast_trample_1") then
 		self.talents.w1_str = caster:GetTalentValue("modifier_primal_beast_trample_1", "str") / 100
 		self.talents.w1_duration = caster:GetTalentValue("modifier_primal_beast_trample_1", "duration")
+	end
+
+	if caster:HasTalent("modifier_primal_beast_trample_2") then
+		self.talents.w2_heal = caster:GetTalentValue("modifier_primal_beast_trample_2", "heal") / 100
+		self.talents.w2_mana = caster:GetTalentValue("modifier_primal_beast_trample_2", "mana") / 100
+		caster:AddLifesteal(self.tracker, {
+			name = "modifier_primal_beast_trample_2",
+			type = 1,
+			proc = "LifestealMana",
+			value = function(params)
+				if params.inflictor == caster.innate_ability then
+					return 0
+				end
+				return self.talents.w2_heal * (params.inflictor == self and 2 or 1)
+			end,
+		})
 	end
 
 	if caster:HasTalent("modifier_primal_beast_trample_3") then
@@ -336,6 +355,10 @@ function modifier_primal_beast_trample_tracker:OnCreated()
 	self.ability.base_damage = self.ability:GetSpecialValueFor("base_damage")
 	self.ability.duration = self.ability:GetSpecialValueFor("duration")
 	self.ability.creeps_damage = self.ability:GetSpecialValueFor("creeps_damage") / 100
+end
+
+function modifier_primal_beast_trample_tracker:LifestealMana(params, heal, target, real_heal, result)
+	self.parent:GiveMana(self.ability.talents.w2_mana * params.damage * result)
 end
 
 function modifier_primal_beast_trample_tracker:OnRefresh()

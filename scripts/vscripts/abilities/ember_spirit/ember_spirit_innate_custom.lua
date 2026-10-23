@@ -53,9 +53,7 @@ function ember_spirit_innate_custom:UpdateTalents()
 
 			w1_damage = 0,
 
-			has_w2 = 0,
 			w2_heal_reduce = 0,
-			w2_heal = 0,
 
 			has_w7 = 0,
 			w7_duration = caster:GetTalentValue("modifier_ember_fist_7", "duration", true),
@@ -72,10 +70,7 @@ function ember_spirit_innate_custom:UpdateTalents()
 	end
 
 	if caster:HasTalent("modifier_ember_fist_2") then
-		self.talents.has_w2 = 1
 		self.talents.w2_heal_reduce = caster:GetTalentValue("modifier_ember_fist_2", "heal_reduce")
-		self.talents.w2_heal = caster:GetTalentValue("modifier_ember_fist_2", "heal") / 100
-		caster:AddDamageEvent_out(self.tracker, true)
 	end
 
 	if caster:HasTalent("modifier_ember_fist_7") then
@@ -106,45 +101,18 @@ function modifier_ember_spirit_innate_custom:OnCreated(table)
 	self.ability.interval = self.ability:GetSpecialValueFor("interval")
 	self.ability.damage = self.ability:GetSpecialValueFor("damage")
 
-	self.parent:AddAttackEvent_out(self, true)
+	self.parent:AddProc(self, { land = true })
 end
 
-function modifier_ember_spirit_innate_custom:DamageEvent_out(params)
-	if not IsServer() then
-		return
-	end
-	if self.ability.talents.has_w2 == 0 then
-		return
-	end
-
-	local result = self.parent:CheckLifesteal(params, 1)
-	if not result then
-		return
-	end
-
-	self.parent:GenericHeal(
-		result * params.damage * self.ability.talents.w2_heal,
-		self.ability,
-		true,
-		"particles/items3_fx/octarine_core_lifesteal.vpcf",
-		"modifier_ember_fist_2"
-	)
+function modifier_ember_spirit_innate_custom:GetProcChance()
+	return 100
 end
 
-function modifier_ember_spirit_innate_custom:AttackEvent_out(params)
-	if not IsServer() then
-		return
-	end
+function modifier_ember_spirit_innate_custom:AttackProc(params, name)
 	if self.parent:PassivesDisabled() then
 		return
 	end
-	if self.parent ~= params.attacker then
-		return
-	end
 	local target = params.target
-	if not target:IsUnit() then
-		return
-	end
 
 	if self.ability.talents.has_q1 == 1 then
 		DoCleaveAttack(

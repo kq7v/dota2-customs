@@ -73,6 +73,13 @@ function skeleton_king_innate_custom:GetIntrinsicModifierName()
 	return "modifier_skeleton_king_innate_custom"
 end
 
+function skeleton_king_innate_custom:GetLifesteal()
+	if self.caster:PassivesDisabled() then
+		return 0
+	end
+	return self.heal + math.min(self.level_max, self.caster:GetLevel()) * self.heal_inc + self.talents.h2_heal
+end
+
 modifier_skeleton_king_innate_custom = class(mod_hidden)
 function modifier_skeleton_king_innate_custom:RemoveOnDeath()
 	return false
@@ -83,8 +90,15 @@ function modifier_skeleton_king_innate_custom:OnCreated(table)
 	self.ability.tracker = self
 	self.ability:UpdateTalents()
 
-	self.parent:AddDamageEvent_out(self, true)
+	self.parent.wk_innate = self.ability
 	self.parent:AddDamageEvent_inc(self, true)
+	self.parent:AddLifesteal(self, {
+		effect = false,
+		proc = "LifestealParticle",
+		value = function()
+			return self.ability:GetLifesteal()
+		end,
+	})
 
 	self.ability.heal = self.ability:GetSpecialValueFor("heal") / 100
 	self.ability.heal_inc = self.ability:GetSpecialValueFor("heal_inc") / 100
@@ -143,73 +157,26 @@ function modifier_skeleton_king_innate_custom:DamageEvent_inc(params)
 	)
 end
 
-function modifier_skeleton_king_innate_custom:DamageEvent_out(params)
+function modifier_skeleton_king_innate_custom:LifestealParticle(params, heal, target)
 	if not IsServer() then
-		return
-	end
-	if self.parent == params.unit then
-		return
-	end
-	if not params.unit:IsUnit() then
-		return
-	end
-	if self.parent:PassivesDisabled() then
-		return
-	end
-
-	local result = self.parent:CheckLifesteal(params, nil, true)
-	if not result then
-		return
-	end
-
-	local attacker = params.attacker
-	local is_skelet = false
-	if attacker.owner and attacker.owner == self.parent and attacker.is_wk_skelet then
-		is_skelet = true
-	end
-
-	if is_skelet == false and attacker ~= self.parent then
-		return
-	end
-	local heal_k = result
-		* (
-			self.ability.heal
-			+ math.min(self.ability.level_max, self.parent:GetLevel()) * self.ability.heal_inc
-			+ self.ability.talents.h2_heal
-		)
-
-	self:DoHeal(attacker, params.damage * heal_k)
-
-	if is_skelet == true then
-		self:DoHeal(self.parent, params.damage * heal_k)
-	end
-end
-
-function modifier_skeleton_king_innate_custom:DoHeal(unit, heal)
-	if not IsServer() then
-		return
-	end
-	if not heal then
 		return
 	end
 	if heal < 1 then
 		return
 	end
 
-	unit:GenericHeal(heal, self.ability, true, "")
-
 	local effect_cast = ParticleManager:CreateParticle(
 		"particles/units/heroes/hero_skeletonking/wraith_king_vampiric_aura_lifesteal.vpcf",
 		PATTACH_ABSORIGIN_FOLLOW,
-		unit
+		target
 	)
 	ParticleManager:SetParticleControlEnt(
 		effect_cast,
 		1,
-		unit,
+		target,
 		PATTACH_POINT_FOLLOW,
 		"attach_hitloc",
-		unit:GetAbsOrigin(),
+		target:GetAbsOrigin(),
 		true
 	)
 	ParticleManager:ReleaseParticleIndex(effect_cast)

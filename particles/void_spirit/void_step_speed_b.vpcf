@@ -144,10 +144,6 @@
 			m_vecOutputMin = [ -50.0, -50.0, 50.0 ]
 			m_vecOutputMax = [ 50.0, 50.0, 100.0 ]
 			m_flNoiseScaleLoc = 2.0
-			m_TransformInput = 
-			{
-				m_nType = "PT_TYPE_INVALID"
-			}
 		},
 		{
 			_class = "C_INIT_RandomYawFlip"

@@ -87,6 +87,7 @@ function primal_beast_uproar_custom:UpdateTalents(name)
 			e1_bva = 0,
 
 			e2_duration = 0,
+			e2_heal = 0,
 
 			has_e3 = 0,
 			e3_damage = 0,
@@ -134,6 +135,14 @@ function primal_beast_uproar_custom:UpdateTalents(name)
 
 	if caster:HasTalent("modifier_primal_beast_uproar_2") then
 		self.talents.e2_duration = caster:GetTalentValue("modifier_primal_beast_uproar_2", "duration")
+		self.talents.e2_heal = caster:GetTalentValue("modifier_primal_beast_uproar_2", "heal") / 100
+		caster:AddLifesteal(self.tracker, {
+			name = "modifier_primal_beast_uproar_2",
+			type = 2,
+			value = function()
+				return (1 - caster:GetHealthPercent() / 100) * self.talents.e2_heal
+			end,
+		})
 	end
 
 	if caster:HasTalent("modifier_primal_beast_uproar_3") then
@@ -760,7 +769,7 @@ function modifier_primal_beast_uproar_custom_legendary:OnCreated(params)
 	if not IsServer() then
 		return
 	end
-	self.parent:AddAttackEvent_out(self, true)
+	self.parent:AddProc(self, { land = true })
 
 	local effect_cast = self.parent:GenericParticle("particles/primal_beast/beast_hands.vpcf", self, true)
 	ParticleManager:SetParticleControlEnt(
@@ -838,17 +847,11 @@ function modifier_primal_beast_uproar_custom_legendary:GetModifierAttackSpeedBon
 	return self.speed
 end
 
-function modifier_primal_beast_uproar_custom_legendary:AttackEvent_out(params)
-	if not IsServer() then
-		return
-	end
-	if self.parent ~= params.attacker then
-		return
-	end
-	if not params.target:IsUnit() then
-		return
-	end
+function modifier_primal_beast_uproar_custom_legendary:GetProcChance()
+	return 100
+end
 
+function modifier_primal_beast_uproar_custom_legendary:AttackProc(params, name)
 	self.ability:AddStack()
 	self.parent:LogProc("modifier_primal_beast_uproar_7")
 end

@@ -133,36 +133,6 @@
 		pitch = 1
 		volume_fade_out = 1.5
 	}
-	Sniper.Aim_blink = 
-	{
-		vsnd_files = 
-		[
-			"sounds/weapons/hero/enchantress/sproink.vsnd",
-		]
-		volume = 0.6
-		pitch_rand_min = 0.25
-		pitch_rand_max = 0.25
-		type = "dota_src1_3d"
-		soundlevel = 100
-		distance_max = 2500
-		pitch = 1
-		volume_fade_out = 1.5
-	}
-	Sniper.Aim_evasion = 
-	{
-		vsnd_files = 
-		[
-			"sounds/items/butterfly.vsnd",
-		]
-		volume = 1
-		pitch_rand_min = 0.15
-		pitch_rand_max = 0.15
-		type = "dota_src1_3d"
-		soundlevel = 100
-		distance_max = 2500
-		pitch = 1
-		volume_fade_out = 1.5
-	}
 	Sniper.Assassinate_purge = 
 	{
 		vsnd_files = 
@@ -177,21 +147,6 @@
 		distance_max = 1600
 		pitch = 1
 		volume_fade_out = 0.5
-	}
-	Sniper.Headshot_status = 
-	{
-		vsnd_files = 
-		[
-			"sounds/items/star_emblem_ally.vsnd",
-		]
-		volume = 0.6
-		pitch_rand_min = 0.05
-		pitch_rand_max = 0.05
-		type = "dota_src1_3d"
-		soundlevel = 100
-		distance_max = 2500
-		pitch = 1
-		volume_fade_out = 1.5
 	}
 	Sniper.Assassinate_mark_damage = 
 	{

@@ -101,6 +101,7 @@ function leshrac_split_earth_custom:Precache(context)
 	PrecacheResource("particle", "particles/status_fx/status_effect_enchantress_shard_debuff.vpcf", context)
 	PrecacheResource("particle", "particles/lina/stun_stack.vpcf", context)
 	PrecacheResource("particle", "particles/units/heroes/hero_leshrac/leshrac_base_attack.vpcf", context)
+	PrecacheResource("particle", "particles/units/heroes/hero_monkey_king/monkey_king_quad_tap_hit.vpcf", context)
 end
 
 function leshrac_split_earth_custom:UpdateTalents(name)
@@ -122,6 +123,8 @@ function leshrac_split_earth_custom:UpdateTalents(name)
 
 			has_q3 = 0,
 			q3_damage = 0,
+			q3_heal = 0,
+			q3_bonus = caster:GetTalentValue("modifier_leshrac_earth_3", "bonus", true),
 			q3_duration = caster:GetTalentValue("modifier_leshrac_earth_3", "duration", true),
 
 			has_q4 = 0,
@@ -170,17 +173,29 @@ function leshrac_split_earth_custom:UpdateTalents(name)
 		self.talents.has_q2 = 1
 		self.talents.q2_cd = caster:GetTalentValue("modifier_leshrac_earth_2", "cd")
 		self.talents.q2_slow = caster:GetTalentValue("modifier_leshrac_earth_2", "slow")
-		caster:AddAttackEvent_out(self.tracker, true)
+		caster:AddProc(self.tracker, { name = "hit", land = true })
 	end
 
 	if caster:HasTalent("modifier_leshrac_earth_3") then
 		self.talents.has_q3 = 1
 		self.talents.q3_damage = caster:GetTalentValue("modifier_leshrac_earth_3", "damage")
+		self.talents.q3_heal = caster:GetTalentValue("modifier_leshrac_earth_3", "heal") / 100
+		caster:AddLifesteal(self.tracker, {
+			name = "modifier_leshrac_earth_3",
+			type = 2,
+			proc = "LifestealHit",
+			value = function(params)
+				if params.unit and params.unit:HasModifier("modifier_leshrac_split_earth_custom_damage_inc") then
+					return self.talents.q3_heal * self.talents.q3_bonus, nil, true
+				end
+				return self.talents.q3_heal
+			end,
+		})
 	end
 
 	if caster:HasTalent("modifier_leshrac_earth_4") then
 		self.talents.has_q4 = 1
-		caster:AddAttackEvent_out(self.tracker, true)
+		caster:AddProc(self.tracker, { target_cd = self.talents.q4_talent_cd, target_prd = true, land = true })
 	end
 
 	if caster:HasTalent("modifier_leshrac_earth_7") then
@@ -624,47 +639,70 @@ function modifier_leshrac_split_earth_custom_tracker:OnRefresh(table)
 	self.ability.stun = self.ability:GetSpecialValueFor("stun")
 end
 
-function modifier_leshrac_split_earth_custom_tracker:AttackEvent_out(params)
-	if not IsServer() then
+function modifier_leshrac_split_earth_custom_tracker:LifestealHit(params)
+	local target = params.unit
+	if not target:HasModifier("modifier_leshrac_split_earth_custom_damage_inc") then
 		return
-	end
-	if self.parent ~= params.attacker then
-		return
-	end
-	if not params.target:IsUnit() then
-		return
-	end
-	local target = params.target
-
-	if self.ability.talents.has_q2 == 1 then
-		target:AddNewModifier(
-			self.parent,
-			self.ability,
-			"modifier_leshrac_split_earth_custom_slow",
-			{ duration = self.ability.talents.q2_duration }
-		)
 	end
 
-	if
-		self.ability.talents.has_q4 == 1
-		and target:CheckCd("leshrac_stun", self.ability.talents.q4_talent_cd, self.ability.talents.q4_chance, 9530)
-	then
-		target:EmitSound("Leshrac.Earth_legendary_pre")
-		CreateModifierThinker(
-			self.parent,
-			self.ability,
-			"modifier_leshrac_split_earth_custom",
-			{
-				duration = self.ability.talents.q4_delay,
-				radius = self.ability.talents.q4_radius,
-				active = 0,
-				is_auto = 1,
-			},
-			target:GetAbsOrigin(),
-			self.parent:GetTeamNumber(),
-			false
-		)
+	target:EmitSound("Leshrac.Earth_attack_hit")
+	local hit_effect = ParticleManager:CreateParticle(
+		"particles/units/heroes/hero_monkey_king/monkey_king_quad_tap_hit.vpcf",
+		PATTACH_CUSTOMORIGIN,
+		target
+	)
+	ParticleManager:SetParticleControlEnt(
+		hit_effect,
+		0,
+		target,
+		PATTACH_POINT_FOLLOW,
+		"attach_hitloc",
+		target:GetAbsOrigin(),
+		false
+	)
+	ParticleManager:SetParticleControlEnt(
+		hit_effect,
+		1,
+		target,
+		PATTACH_POINT_FOLLOW,
+		"attach_hitloc",
+		target:GetAbsOrigin(),
+		false
+	)
+	ParticleManager:ReleaseParticleIndex(hit_effect)
+end
+
+function modifier_leshrac_split_earth_custom_tracker:GetProcChance(params, name)
+	if name == "hit" then
+		return 100
 	end
+	return self.ability.talents.q4_chance
+end
+
+function modifier_leshrac_split_earth_custom_tracker:AttackProc(params, name)
+	if name == "hit" then
+		local target = params.target
+		if self.ability.talents.has_q2 == 1 then
+			target:AddNewModifier(
+				self.parent,
+				self.ability,
+				"modifier_leshrac_split_earth_custom_slow",
+				{ duration = self.ability.talents.q2_duration }
+			)
+		end
+		return
+	end
+
+	params.target:EmitSound("Leshrac.Earth_legendary_pre")
+	CreateModifierThinker(
+		self.parent,
+		self.ability,
+		"modifier_leshrac_split_earth_custom",
+		{ duration = self.ability.talents.q4_delay, radius = self.ability.talents.q4_radius, active = 0, is_auto = 1 },
+		params.target:GetAbsOrigin(),
+		self.parent:GetTeamNumber(),
+		false
+	)
 end
 
 function modifier_leshrac_split_earth_custom_tracker:SpellEvent(params)

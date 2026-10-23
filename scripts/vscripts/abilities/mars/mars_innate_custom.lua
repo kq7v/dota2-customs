@@ -30,7 +30,6 @@ function mars_innate_custom:Precache(context)
 		return
 	end
 	PrecacheResource("particle", "particles/mars/innate_effect.vpcf", context)
-	PrecacheResource("particle", "particles/wraith_king/reinc_shield.vpcf", context)
 	PrecacheResource("soundfile", "soundevents/npc_dota_hero_mars.vsndevts", context)
 	dota1x6:PrecacheShopItems("npc_dota_hero_mars", context)
 end
@@ -40,13 +39,6 @@ function mars_innate_custom:UpdateTalents(name)
 	if not self.init then
 		self.init = true
 		self.talents = {
-			has_e2 = 0,
-			e2_heal = 0,
-			e2_bonus = caster:GetTalentValue("modifier_mars_bulwark_2", "bonus", true),
-
-			has_e3 = 0,
-			e3_heal = 0,
-
 			has_h1 = 0,
 			h1_status = 0,
 			h1_move = 0,
@@ -62,24 +54,7 @@ function mars_innate_custom:UpdateTalents(name)
 			has_h3 = 0,
 			h3_mana = 0,
 			h3_cdr = 0,
-
-			has_r4 = 0,
-			r4_heal = caster:GetTalentValue("modifier_mars_arena_4", "heal", true) / 100,
-			r4_duration = caster:GetTalentValue("modifier_mars_arena_4", "duration", true),
-			r4_shield = caster:GetTalentValue("modifier_mars_arena_4", "shield", true) / 100,
 		}
-	end
-
-	if caster:HasTalent("modifier_mars_bulwark_2") then
-		self.talents.has_e2 = 1
-		self.talents.e2_heal = caster:GetTalentValue("modifier_mars_bulwark_2", "heal") / 100
-		caster:AddDamageEvent_out(self.tracker, true)
-	end
-
-	if caster:HasTalent("modifier_mars_bulwark_3") then
-		self.talents.has_e3 = 1
-		self.talents.e3_heal = caster:GetTalentValue("modifier_mars_bulwark_3", "heal") / 100
-		caster:AddDamageEvent_out(self.tracker, true)
 	end
 
 	if caster:HasTalent("modifier_mars_hero_1") then
@@ -101,11 +76,6 @@ function mars_innate_custom:UpdateTalents(name)
 		self.talents.has_h3 = 1
 		self.talents.h3_mana = caster:GetTalentValue("modifier_mars_hero_3", "mana") / 100
 		self.talents.h3_cdr = caster:GetTalentValue("modifier_mars_hero_3", "cdr")
-	end
-
-	if caster:HasTalent("modifier_mars_arena_4") then
-		self.talents.has_r4 = 1
-		caster:AddDamageEvent_out(self.tracker, true)
 	end
 end
 
@@ -243,88 +213,6 @@ function modifier_mars_innate_custom:DamageEvent_inc(params)
 
 	self.parent:RemoveModifierByName("modifier_mars_innate_custom_effect")
 	self:StartIntervalThink(self.ability.timer)
-end
-
-function modifier_mars_innate_custom:DamageEvent_out(params)
-	if not IsServer() then
-		return
-	end
-	local result = self.parent:CheckLifesteal(params)
-	if not result then
-		return
-	end
-
-	if self.ability.talents.has_e2 == 1 and not params.inflictor then
-		local heal = params.damage * result * self.ability.talents.e2_heal
-		if self.parent:HasModifier("modifier_mars_innate_custom_effect") then
-			heal = heal * self.ability.talents.e2_bonus
-		end
-		self.parent:GenericHeal(heal, self.ability, true, false, "modifier_mars_bulwark_2")
-	end
-
-	if self.ability.talents.has_e3 == 1 and not params.inflictor and params.attack_damage_flag == "mars_e3" then
-		self.parent:GenericHeal(
-			params.damage * result * self.ability.talents.e3_heal,
-			self.ability,
-			true,
-			"",
-			"modifier_mars_bulwark_3"
-		)
-	end
-
-	if self.ability.talents.has_r4 == 1 and params.inflictor then
-		local heal = params.damage * result * self.ability.talents.r4_heal
-		self.parent:GenericHeal(
-			heal,
-			self.ability,
-			true,
-			"particles/items3_fx/octarine_core_lifesteal.vpcf",
-			"modifier_mars_arena_4"
-		)
-
-		if self.parent:HasModifier("modifier_mars_arena_of_blood_custom_projectile_aura") then
-			local max_shield = self.parent:GetMaxHealth() * self.ability.talents.r4_shield
-
-			if not IsValid(self.shield_mod) then
-				self.shield_mod =
-					self.parent:AddNewModifier(self.parent, self.ability, "modifier_generic_shield_multiple", {
-						duration = self.ability.talents.r4_duration,
-						shield_talent = "modifier_mars_arena_4",
-						max_shield = max_shield,
-					})
-				if self.shield_mod then
-					self.particle = ParticleManager:CreateParticle(
-						"particles/wraith_king/reinc_shield.vpcf",
-						PATTACH_CUSTOMORIGIN_FOLLOW,
-						self.parent
-					)
-					ParticleManager:SetParticleControlEnt(
-						self.particle,
-						0,
-						self.parent,
-						PATTACH_POINT_FOLLOW,
-						"attach_hitloc",
-						self.parent:GetAbsOrigin(),
-						true
-					)
-					self.shield_mod:AddParticle(self.particle, false, false, -1, false, false)
-
-					self.shield_mod:SetReduceDamage(function(params)
-						local caster = params.caster
-						local result = 1
-						if IsValid(caster.bulwark_ability) then
-							result = caster.bulwark_ability:GetReduction(params)
-						end
-						return 1 + result / 100
-					end)
-				end
-			end
-			if IsValid(self.shield_mod) then
-				self.shield_mod:AddShield(heal, max_shield)
-				self.shield_mod:SetDuration(self.ability.talents.r4_duration, true)
-			end
-		end
-	end
 end
 
 modifier_mars_innate_custom_effect = class(mod_visible)

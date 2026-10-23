@@ -38,15 +38,6 @@ function modifier_item_partisans_brand_custom:OnCreated()
 	self.bonus_damage = self.ability.bonus_damage_pct
 end
 
-function modifier_item_partisans_brand_custom:DeclareFunctions()
-	return {
-		MODIFIER_PROPERTY_TOTALDAMAGEOUTGOING_PERCENTAGE,
-	}
-end
-
-function modifier_item_partisans_brand_custom:GetModifierTotalDamageOutgoing_Percentage(params)
-	if not params.inflictor or not params.inflictor:IsItem() then
-		return 0
-	end
+function modifier_item_partisans_brand_custom:GetItemDamage()
 	return self.bonus_damage
 end

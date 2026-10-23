@@ -25,6 +25,7 @@ function item_greater_crit_custom:Spawn()
 	self.bonus_health = self:GetSpecialValueFor("bonus_health")
 	self.crit_chance = self:GetSpecialValueFor("crit_chance")
 	self.crit_multiplier = self:GetSpecialValueFor("crit_multiplier")
+	self.crit_bonus = self:GetSpecialValueFor("crit_bonus")
 end
 
 function item_greater_crit_custom:GetAbilityTextureName()
@@ -41,6 +42,12 @@ end
 function modifier_item_greater_crit_custom:GetCritDamage()
 	return self.crit_multiplier
 end
+function modifier_item_greater_crit_custom:GetCritChance()
+	return self.crit_chance
+end
+function modifier_item_greater_crit_custom:GetCritDamageBonus()
+	return self.crit_bonus
+end
 function modifier_item_greater_crit_custom:OnCreated()
 	self.ability = self:GetAbility()
 	self.parent = self:GetParent()
@@ -49,6 +56,7 @@ function modifier_item_greater_crit_custom:OnCreated()
 	self.bonus_health = self.ability.bonus_health
 	self.crit_chance = self.ability.crit_chance
 	self.crit_multiplier = self.ability.crit_multiplier
+	self.crit_bonus = self.ability.crit_bonus
 	self.records = {}
 
 	self.parent:AddRecordDestroyEvent(self, true)
@@ -96,16 +104,16 @@ function modifier_item_greater_crit_custom:GetModifierPreAttack_CriticalStrike(p
 	if not params.target:IsUnit() then
 		return
 	end
-	if not RollPseudoRandomPercentage(self.crit_chance, 1094, self.parent) then
+	if not RollPseudoRandomPercentage(self:GetCritChance(), 1094, self.parent) then
 		return
 	end
 	if self.parent.wd_ward_attack then
-		return self.crit_multiplier / 100
+		return self:GetCritDamage() / 100
 	end
 	if params.record then
 		self.records[params.record] = true
 	end
-	return self.crit_multiplier
+	return self:GetCritDamage()
 end
 
 function modifier_item_greater_crit_custom:RecordDestroyEvent(params)

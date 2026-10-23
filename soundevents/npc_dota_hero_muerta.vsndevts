@@ -10,20 +10,6 @@
 
 <!-- kv3 encoding:text:version{e21c7f3c-8a33-41c5-9977-a76d3a32aa0d} format:generic:version{7412167c-06e9-4698-aff2-e63eb59037e7} -->
 {
-	Muerta.Gun_slow = 
-	{
-		pitch_rand_max = 0.2
-		pitch = 1
-		soundlevel = 100
-		pitch_rand_min = 0.1
-		type = "dota_src1_3d"
-		distance_max = 1600
-		volume = 0.9
-		vsnd_files = 
-		[
-			"sounds/weapons/hero/hoodwink/boomerang_slow.vsnd",
-		]
-	}
 	Muerta.Item_activate = 
 	{
 		pitch_rand_max = -0.2
@@ -64,20 +50,6 @@
 		vsnd_files = 
 		[
 			"sounds/weapons/hero/rattletrap/overclock_cast.vsnd",
-		]
-	}
-	Muerta.Item_attack = 
-	{
-		pitch_rand_max = 0
-		pitch = 1
-		soundlevel = 100
-		pitch_rand_min = -0.2
-		type = "dota_src1_3d"
-		distance_max = 1600
-		volume = 0.8
-		vsnd_files = 
-		[
-			"sounds/weapons/hero/skywrath/mystic_flare_target.vsnd",
 		]
 	}
 	Muerta.Quest_Creep = 

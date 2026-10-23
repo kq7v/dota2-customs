@@ -43,20 +43,15 @@ function modifier_item_possessed_mask_custom:OnCreated(table)
 	self.ability = self:GetAbility()
 
 	self.duration = self.ability.duration
-	self.parent:AddAttackEvent_out(self, true)
+	self.parent:AddProc(self, { land = true })
 end
 
-function modifier_item_possessed_mask_custom:AttackEvent_out(params)
-	if not IsServer() then
-		return
-	end
+function modifier_item_possessed_mask_custom:GetProcChance()
+	return 100
+end
+
+function modifier_item_possessed_mask_custom:AttackProc(params, name)
 	if not IsValid(self.ability) then
-		return
-	end
-	if self.parent ~= params.attacker then
-		return
-	end
-	if not params.target:IsUnit() then
 		return
 	end
 

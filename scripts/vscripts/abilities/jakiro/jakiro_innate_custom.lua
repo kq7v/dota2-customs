@@ -81,7 +81,6 @@ function jakiro_innate_custom:Precache(context)
 	end
 
 	PrecacheResource("particle", "particles/jakiro/innate_switch.vpcf", context)
-	PrecacheResource("particle", "particles/drow_ranger/frost_heal.vpcf", context)
 	PrecacheResource("particle", "particles/units/heroes/hero_jakiro/jakiro_liquid_fire_ready.vpcf", context)
 	PrecacheResource("particle", "particles/units/heroes/hero_jakiro/jakiro_liquid_ice_ready.vpcf", context)
 	PrecacheResource("particle", "particles/jakiro/path_legendary_proj_ice.vpcf", context)
@@ -138,23 +137,13 @@ function jakiro_innate_custom:UpdateTalents(name)
 
 			has_w7 = 0,
 			w7_duration = caster:GetTalentValue("modifier_jakiro_path_7", "duration", true),
-			w7_cleave = caster:GetTalentValue("modifier_jakiro_path_7", "cleave", true) / 100,
-			w7_cleave_radius = caster:GetTalentValue("modifier_jakiro_path_7", "cleave_radius", true),
-			w7_shield_duration = caster:GetTalentValue("modifier_jakiro_path_7", "shield_duration", true),
-			w7_shield_duration_creeps = caster:GetTalentValue("modifier_jakiro_path_7", "shield_duration_creeps", true),
 			w7_effect_duration = caster:GetTalentValue("modifier_jakiro_path_7", "effect_duration", true),
-			w7_shield = caster:GetTalentValue("modifier_jakiro_path_7", "shield", true) / 100,
-
-			has_e2 = 0,
-			e2_heal = 0,
 
 			has_e3 = 0,
 			e3_duration_creeps = caster:GetTalentValue("modifier_jakiro_liquid_3", "duration_creeps", true),
 			e3_duration = caster:GetTalentValue("modifier_jakiro_liquid_3", "duration", true),
 
-			has_r3 = 0,
 			r3_damage = 0,
-			r3_heal = 0,
 			r3_talent_cd = caster:GetTalentValue("modifier_jakiro_macropyre_3", "talent_cd", true),
 			r3_chance = caster:GetTalentValue("modifier_jakiro_macropyre_3", "chance", true),
 			r3_slow_duration = caster:GetTalentValue("modifier_jakiro_macropyre_3", "slow_duration", true),
@@ -223,19 +212,13 @@ function jakiro_innate_custom:UpdateTalents(name)
 		self.talents.has_h5 = 1
 	end
 
-	if caster:HasTalent("modifier_jakiro_liquid_2") then
-		self.talents.has_e2 = 1
-		self.talents.e2_heal = caster:GetTalentValue("modifier_jakiro_liquid_2", "heal") / 100
-	end
-
 	if caster:HasTalent("modifier_jakiro_liquid_3") then
 		self.talents.has_e3 = 1
 	end
 
 	if caster:HasTalent("modifier_jakiro_macropyre_3") then
-		self.talents.has_r3 = 1
-		self.talents.r3_heal = caster:GetTalentValue("modifier_jakiro_macropyre_3", "heal") / 100
 		self.talents.r3_damage = caster:GetTalentValue("modifier_jakiro_macropyre_3", "damage") / 100
+		caster:AddDamageEvent_out(self.tracker, true)
 	end
 end
 
@@ -428,7 +411,6 @@ function modifier_jakiro_innate_custom_tracker:OnCreated(table)
 	self.ability.scepter_fire_interval = self.ability:GetSpecialValueFor("scepter_fire_interval")
 	self.ability.scepter_ice_stun = self.ability:GetSpecialValueFor("scepter_ice_stun")
 
-	self.parent:AddDamageEvent_out(self, true)
 	if not IsServer() then
 		return
 	end
@@ -810,167 +792,46 @@ function modifier_jakiro_innate_custom_tracker:DamageEvent_out(params)
 	if self.parent ~= params.attacker then
 		return
 	end
-
-	if
-		self.ability.talents.has_r3 == 1
-		and self.parent.macropyre_ability
-		and params.custom_flag == "jakiro_fire"
-		and target:CheckCd("jakiro_r3", self.ability.talents.r3_talent_cd, self.ability.talents.r3_chance, 9121)
-	then
-		target:EmitSound("Jakiro.Macropyre_proc")
-
-		local effect =
-			ParticleManager:CreateParticle("particles/jakiro/macropyre_proc.vpcf", PATTACH_CUSTOMORIGIN_FOLLOW, target)
-		ParticleManager:SetParticleControlEnt(
-			effect,
-			0,
-			target,
-			PATTACH_POINT_FOLLOW,
-			"attach_hitloc",
-			target:GetAbsOrigin(),
-			false
-		)
-		ParticleManager:ReleaseParticleIndex(effect)
-
-		target:AddNewModifier(
-			self.parent,
-			self.parent.macropyre_ability,
-			"modifier_jakiro_macropyre_custom_slow",
-			{ duration = self.ability.talents.r3_slow_duration }
-		)
-
-		local damageTable = {
-			victim = target,
-			attacker = self.parent,
-			ability = self.parent.macropyre_ability,
-			damage_type = DAMAGE_TYPE_MAGICAL,
-			damage = self.parent.macropyre_ability:GetDamage(target) * self.ability.talents.r3_damage,
-		}
-		DoDamage(damageTable, "modifier_jakiro_macropyre_3")
+	if not self.parent.macropyre_ability then
+		return
 	end
-
-	local result = self.parent:CheckLifesteal(params)
-	if not result then
+	if params.custom_flag ~= "jakiro_fire" then
+		return
+	end
+	if not target:CheckCd("jakiro_r3", self.ability.talents.r3_talent_cd, self.ability.talents.r3_chance, 9121) then
 		return
 	end
 
-	local mod = params.unit:FindModifierByName("modifier_jakiro_macropyre_custom_frost")
-	if mod and IsValid(self.parent.macropyre_ability) then
-		local heal = self.parent.macropyre_ability.frost_heal * params.damage * result
-		local effect = ""
-		if self.parent:CheckCd("jakiro_visual", 0.5) then
-			effect = "particles/drow_ranger/frost_heal.vpcf"
-		end
-		self.parent:GenericHeal(heal, self.parent.macropyre_ability, true, effect)
-	end
+	target:EmitSound("Jakiro.Macropyre_proc")
 
-	if
-		self.ability.talents.has_e2 == 1
-		and IsValid(self.parent.liquid_ability)
-		and (
-			not params.inflictor
-			or params.inflictor == self.parent.liquid_ability
-			or params.inflictor == self.parent.liquid_ability_frost
-		)
-	then
-		self.parent:GenericHeal(
-			params.damage * self.ability.talents.e2_heal * result,
-			self.parent.liquid_ability,
-			true,
-			"particles/items3_fx/octarine_core_lifesteal.vpcf",
-			"modifier_jakiro_liquid_2"
-		)
-	end
+	local effect =
+		ParticleManager:CreateParticle("particles/jakiro/macropyre_proc.vpcf", PATTACH_CUSTOMORIGIN_FOLLOW, target)
+	ParticleManager:SetParticleControlEnt(
+		effect,
+		0,
+		target,
+		PATTACH_POINT_FOLLOW,
+		"attach_hitloc",
+		target:GetAbsOrigin(),
+		false
+	)
+	ParticleManager:ReleaseParticleIndex(effect)
 
-	if self.ability.talents.has_r3 == 1 and params.inflictor and self.parent.macropyre_ability then
-		for mod, _ in pairs(self.ability.ice_mods) do
-			if target:HasModifier(mod) then
-				self.parent:GenericHeal(
-					params.damage * self.ability.talents.r3_heal * result,
-					self.parent.macropyre_ability,
-					true,
-					"particles/items3_fx/octarine_core_lifesteal.vpcf",
-					"modifier_jakiro_macropyre_3"
-				)
-				break
-			end
-		end
-	end
+	target:AddNewModifier(
+		self.parent,
+		self.parent.macropyre_ability,
+		"modifier_jakiro_macropyre_custom_slow",
+		{ duration = self.ability.talents.r3_slow_duration }
+	)
 
-	if params.inflictor then
-		return
-	end
-	if not IsValid(self.parent.path_ability) then
-		return
-	end
-	if
-		not self.parent.path_ability.tracker or not self.parent.path_ability.tracker.legendary_records[params.record]
-	then
-		return
-	end
-
-	if
-		self.parent.path_ability.tracker.legendary_records[params.record] == 1
-		or self.parent:HasModifier("modifier_jakiro_liquid_fire_custom_legendary_acitve")
-	then
-		local heal = params.damage * self.ability.talents.w7_shield * result
-		self.parent:GenericParticle("particles/drow_ranger/frost_heal.vpcf")
-
-		local duration = target:IsCreep() and self.ability.talents.w7_shield_duration_creeps
-			or self.ability.talents.w7_shield_duration
-
-		if not IsValid(self.path_shield) then
-			self.path_shield =
-				self.parent:AddNewModifier(self.parent, self.parent.path_ability, "modifier_generic_shield_multiple", {
-					duration = duration,
-					shield_talent = "modifier_jakiro_path_7",
-				})
-
-			if self.path_shield then
-				self.path_shield.shield_attack_max = 0
-				self.parent:GenericParticle("particles/jakiro/scepter_shield_ice_start.vpcf", self.path_shield)
-				self.parent:GenericParticle("particles/crystal_maiden/maiden_arcane.vpcf")
-
-				self.pfx = ParticleManager:CreateParticle(
-					"particles/jakiro/scepter_shield_ice.vpcf",
-					PATTACH_ABSORIGIN_FOLLOW,
-					self.parent
-				)
-				ParticleManager:SetParticleControlEnt(
-					self.pfx,
-					1,
-					self.parent,
-					PATTACH_POINT_FOLLOW,
-					"attach_hitloc",
-					self.parent:GetAbsOrigin(),
-					false
-				)
-				ParticleManager:SetParticleControl(self.pfx, 2, Vector(90, 90, 90))
-				self.path_shield:AddParticle(self.pfx, false, false, -1, false, false)
-			end
-		end
-
-		if self.path_shield then
-			self.path_shield.shield_attack_max = self.path_shield.shield_attack_max + heal
-			self.path_shield:AddShield(heal, self.path_shield.shield_attack_max)
-			self.path_shield:SetDuration(duration, true)
-		end
-	end
-
-	local damage = params.damage * self.ability.talents.w7_cleave
 	local damageTable = {
+		victim = target,
 		attacker = self.parent,
-		ability = self.parent.path_ability,
-		damage_type = DAMAGE_TYPE_PURE,
-		damage_flags = DOTA_DAMAGE_FLAG_NO_SPELL_AMPLIFICATION,
-		damage = damage,
+		ability = self.parent.macropyre_ability,
+		damage_type = DAMAGE_TYPE_MAGICAL,
+		damage = self.parent.macropyre_ability:GetDamage(target) * self.ability.talents.r3_damage,
 	}
-	for _, aoe_target in pairs(self.parent:FindTargets(self.ability.talents.w7_cleave_radius, target:GetAbsOrigin())) do
-		if target ~= aoe_target then
-			damageTable.victim = aoe_target
-			DoDamage(damageTable, "modifier_jakiro_path_7")
-		end
-	end
+	DoDamage(damageTable, "modifier_jakiro_macropyre_3")
 end
 
 function modifier_jakiro_innate_custom_tracker:DeclareFunctions()

@@ -101,14 +101,14 @@ function alchemist_chemical_rage_custom:UpdateTalents()
 		self.talents.has_r1 = 1
 		self.talents.r1_damage = caster:GetTalentValue("modifier_alchemist_rage_1", "damage")
 		self.talents.r1_gold = caster:GetTalentValue("modifier_alchemist_rage_1", "gold")
-		caster:AddAttackEvent_out(self.tracker, true)
+		caster:AddProc(self.tracker, { land = true })
 	end
 
 	if caster:HasTalent("modifier_alchemist_rage_2") then
 		self.talents.has_r2 = 1
 		self.talents.r2_cleave = caster:GetTalentValue("modifier_alchemist_rage_2", "cleave") / 100
 		self.talents.r2_move = caster:GetTalentValue("modifier_alchemist_rage_2", "move")
-		caster:AddAttackEvent_out(self.tracker, true)
+		caster:AddProc(self.tracker, { land = true })
 	end
 
 	if caster:HasTalent("modifier_alchemist_rage_3") then
@@ -412,17 +412,11 @@ function modifier_alchemist_chemical_rage_tracker:DamageEvent_inc(params)
 	)
 end
 
-function modifier_alchemist_chemical_rage_tracker:AttackEvent_out(params)
-	if not IsServer() then
-		return
-	end
-	if self.parent ~= params.attacker then
-		return
-	end
-	if not params.target:IsUnit() then
-		return
-	end
+function modifier_alchemist_chemical_rage_tracker:GetProcChance()
+	return 100
+end
 
+function modifier_alchemist_chemical_rage_tracker:AttackProc(params, name)
 	if self.ability.talents.has_r2 == 1 then
 		DoCleaveAttack(
 			self.parent,
@@ -641,7 +635,10 @@ function modifier_alchemist_chemical_rage_custom_legendary:UpdateEvents()
 		return
 	end
 
-	self.parent:AddDamageEvent_out(self, true)
+	self.parent:AddLifesteal(
+		self,
+		{ name = "modifier_alchemist_rage_3", type = 2, value = self.ability.talents.r3_heal }
+	)
 end
 
 function modifier_alchemist_chemical_rage_custom_legendary:OnDestroy()
@@ -668,22 +665,4 @@ end
 
 function modifier_alchemist_chemical_rage_custom_legendary:GetModifierModelScale()
 	return 20
-end
-
-function modifier_alchemist_chemical_rage_custom_legendary:DamageEvent_out(params)
-	if not IsServer() then
-		return
-	end
-	local result = self.parent:CheckLifesteal(params, 2)
-	if not result then
-		return
-	end
-
-	self.parent:GenericHeal(
-		self.ability.talents.r3_heal * params.damage * result,
-		self.ability,
-		true,
-		false,
-		"modifier_alchemist_rage_3"
-	)
 end

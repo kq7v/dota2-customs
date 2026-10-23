@@ -57,7 +57,7 @@ end
 function modifier_item_bfury_custom:OnCreated()
 	self.parent = self:GetParent()
 	self.ability = self:GetAbility()
-	self.parent:AddAttackEvent_out(self, true)
+	self.parent:AddProc(self, { land = true, group = "modifier_item_bfury_custom_" .. self.ability:entindex() })
 
 	self.damage_bonus = self.ability.bonus_damage
 	self.hp_regen = self.ability.bonus_health_regen
@@ -120,10 +120,11 @@ function modifier_item_bfury_custom:GetModifierConstantHealthRegen()
 	return self.hp_regen
 end
 
-function modifier_item_bfury_custom:AttackEvent_out(params)
-	if not IsServer() then
-		return
-	end
+function modifier_item_bfury_custom:GetProcChance()
+	return 100
+end
+
+function modifier_item_bfury_custom:AttackProc(params, name)
 	if not IsValid(self.ability) then
 		return
 	end
@@ -133,13 +134,7 @@ function modifier_item_bfury_custom:AttackEvent_out(params)
 	if self.parent:HasModifier("modifier_no_cleave") then
 		return
 	end
-	if self.parent ~= params.attacker then
-		return
-	end
 	if self.parent:IsRangedAttacker() then
-		return
-	end
-	if not params.target:IsUnit() then
 		return
 	end
 	if params.no_cleave_flag then

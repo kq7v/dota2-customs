@@ -50,7 +50,12 @@ const ability_tooltip_status =
 {
 	aghs: {native: "DOTAHUDAghsStatusTooltip", show: "DOTAShowAghsStatusDisplayTooltip", hide: "DOTAHideAghsStatusDisplayTooltip"},
 	innate: {native: "DOTAHUDInnateStatusTooltip", show: "DOTAShowInnateDisplayTooltip", hide: "DOTAHideInnateDisplayTooltip"},
+	stats: {native: "DOTAHUDDamageArmorTooltip", show: "DOTAHUDShowDamageArmorTooltip", hide: "DOTAHUDHideDamageArmorTooltip"},
 }
+
+const item_tooltip_target = ["CastType", "DamageType", "SpellImmunityType", "DispelType", "Breakable"]
+
+const item_tooltip_groups = {cdr: "item_octarine_core_custom", magic_resist: "item_cloak_custom", boots: "item_boots", kaya: "item_kaya_custom", sange: "item_sange_custom", yasha: "item_yasha_custom"}
 
 const ability_tooltip_branches = (() =>
 {
@@ -64,11 +69,14 @@ const ability_tooltip_branches = (() =>
 
 let ability_tooltip_schedule = null
 let ability_tooltip_panel = null
+let ability_tooltip_range = null
+let ability_tooltip_attack_range = null
 let ability_tooltip_stretch = 0
 let ability_tooltip_reveal = 0
 let ability_tooltip_tooltips = null
 let ability_tooltip_colors = {}
 let ability_tooltip_status_schedule = {}
+let item_tooltip_sell = 0
 
 function AbilityTooltipNative(id)
 {
@@ -95,18 +103,61 @@ function AbilityTooltipShow(panel, ability_name, unit)
 	let native = AbilityTooltipNative("DOTAAbilityTooltip")
 	let entity = unit !== -1 ? Entities.GetAbilityByName(unit, ability_name) : -1
 	let custom = entity !== -1 && panel.id !== "ItemImage" && !Abilities.IsItem(entity)
+	let shop = entity === -1 && (ability_name || "").startsWith("item_") && (panel.paneltype === "DOTAShopItem" || panel.id === "ItemImage" && !!panel.GetParent() && panel.GetParent().paneltype === "DOTAShopItem")
 
 	if (native)
-		native.style.opacity = custom ? "0" : null
+		native.style.opacity = custom || shop ? "0" : null
+
+	if (shop)
+	{
+		ability_tooltip_panel = panel
+		AbilityTooltipOpen(panel, "mode=item&entity=-1&item=" + ability_name)
+		return
+	}
 
 	if (!custom)
 		return
 
 	ability_tooltip_panel = panel
+
+	let caster = Abilities.GetCaster(entity)
+	let owner = Entities.GetPlayerOwnerID(caster)
+	let range = Abilities.GetCastRange(entity) + (Players.GetPlayerHeroEntityIndex(owner) === caster ? (Game.player_stats[owner] || {}).cast_range || 0 : 0)
+
+	if (range > 0)
+	{
+		ability_tooltip_range = Particles.CreateParticle("particles/ui_mouseactions/range_display.vpcf", ParticleAttachment_t.PATTACH_ABSORIGIN_FOLLOW, caster)
+		Particles.SetParticleControl(ability_tooltip_range, 1, [range, 0, 0])
+	}
+
+	AbilityTooltipOpen(panel, "entity=" + entity + "&ability=" + ability_name)
+}
+
+function ItemTooltipShow(panel, unit, slot)
+{
+	AbilityTooltipCancel()
+	AbilityTooltipHide()
+
+	let item = Entities.GetItemInSlot(unit, slot)
+	let native = AbilityTooltipNative("DOTAAbilityTooltip")
+
+	if (item === -1)
+		return
+
+	if (native)
+		native.style.opacity = "0"
+
+	ability_tooltip_panel = panel
+	Game.item_tooltip = item
+	AbilityTooltipOpen(panel, "mode=item&entity=" + item)
+}
+
+function AbilityTooltipOpen(panel, params)
+{
 	ability_tooltip_schedule = $.Schedule(0, () =>
 	{
 		ability_tooltip_schedule = null
-		$.DispatchEvent("UIShowCustomLayoutParametersTooltip", panel, "ability_tooltip", "file://{resources}/layout/custom_game/ability_tooltip/ability_tooltip.xml", "entity=" + entity + "&ability=" + ability_name)
+		$.DispatchEvent("UIShowCustomLayoutParametersTooltip", panel, "ability_tooltip", "file://{resources}/layout/custom_game/ability_tooltip/ability_tooltip.xml", params)
 	})
 }
 
@@ -127,12 +178,21 @@ function AbilityTooltipHide()
 	if (ability_tooltip_panel.IsValid())
 		$.DispatchEvent("UIHideCustomLayoutTooltip", ability_tooltip_panel, "ability_tooltip")
 
+	if (ability_tooltip_range !== null)
+	{
+		Particles.DestroyParticleEffect(ability_tooltip_range, true)
+		Particles.ReleaseParticleIndex(ability_tooltip_range)
+		ability_tooltip_range = null
+	}
+
 	let native = AbilityTooltipNative("DOTAAbilityTooltip")
 
 	if (native)
 		native.style.opacity = null
 
 	ability_tooltip_panel = null
+	Game.item_tooltip = -1
+	Game.item_tooltip_fill = null
 }
 
 function AbilityTooltipNumber(value)
@@ -161,7 +221,7 @@ function AbilityTooltipOrbs(caster, keys)
 	{
 		let levelkey = keys[key]
 
-		if (levelkey === "dynamic")
+		if (levelkey === "dynamic" || levelkey === "sum")
 			continue
 
 		if (!(levelkey in orbs))
@@ -193,10 +253,10 @@ function AbilityTooltipKey(text)
 	return text.replace(/<[^>]*>/g, "").replace(/^[%+$\-]+/, "").replace(/:\s*$/, "").trim().toUpperCase()
 }
 
-function AbilityTooltipCopy(details, id, visible)
+function AbilityTooltipCopy(details, id, visible, target_id = id)
 {
 	let source = details.FindChildTraverse(id)
-	let target = $("#" + id)
+	let target = $("#" + target_id)
 	let show = visible && source !== null && !source.BHasClass("Hidden") && source.text !== "" && source.text !== "0"
 
 	target.SetHasClass("Hidden", !show)
@@ -207,15 +267,27 @@ function AbilityTooltipCopy(details, id, visible)
 	return show
 }
 
-function AbilityTooltipCost(details, id, level, max)
+function AbilityTooltipCost(details, id, level, max, current, fallback)
 {
-	if (!AbilityTooltipCopy(details, id, true))
-		return
-
 	let target = $("#" + id)
-	let values = target.text.split(" / ")
 
-	target.text = AbilityTooltipSpans(values, AbilityTooltipActive(values.length, level, max), "")
+	if (!AbilityTooltipCopy(details, id, true))
+	{
+		if (level === 0 || !fallback)
+			return
+
+		target.text = AbilityTooltipSpans([AbilityTooltipNumber(fallback)], 0, "")
+		target.SetHasClass("Hidden", false)
+		return
+	}
+
+	let values = target.text.split(" / ")
+	let active = AbilityTooltipActive(values.length, level, max)
+
+	if (current && active >= 0)
+		target.text = AbilityTooltipSpans([values[active]], 0, "")
+	else
+		target.text = AbilityTooltipSpans(values, active, "")
 }
 
 function AbilityTooltipStat(caster, player_id, stat)
@@ -254,37 +326,35 @@ function AbilityTooltipBonus(entity, ability_name)
 	{
 		let data = talents[name]
 
-		if (!data.tooltip)
+		if (!data.tooltip && !data.tooltip_damage)
 			continue
+
+		if (!Game.HasTalent(player_id, name))
+			continue
+
+		let spell = spells[data.skill_number]
+
+		if (data.tooltip_damage && spell && spell.name === ability_name)
+			bonus.damage = data.tooltip_damage
 
 		let rules = data.alt_talent && Game.HasTalent(player_id, data.alt_talent) ? data.tooltip_alt : data.tooltip
 
 		if (!rules)
 			continue
 
-		let spell = spells[data.skill_number]
 		let keys = rules[ability_name] || (spell && spell.name === ability_name ? rules.default : undefined)
 
 		if (!keys)
 			continue
 
-		let taken = Game.HasTalent(player_id, name)
-		let talent = {hero: hero, icon: data.mini_icon, rarity: data.rarity, taken: taken}
-		let buff = taken && data.mod_name ? Game.FindModifier(caster, data.mod_name) : -1
+		let talent = {hero: hero, icon: data.mini_icon, rarity: data.rarity}
+		let buff = data.mod_name ? Game.FindModifier(caster, data.mod_name) : -1
 		let stacks = buff !== -1 ? Buffs.GetStackCount(caster, buff) : 0
 
 		for (let key in keys)
 		{
 			let penalty = keys[key].trim().startsWith("~")
 			let expression = keys[key].trim().replace(/^~/, "")
-
-			if (!taken)
-			{
-				if (!penalty)
-					(bonus.talents[key] = bonus.talents[key] || []).push(talent)
-
-				continue
-			}
 
 			let marker = ability_tooltip_costs.includes(key) || expression === "icon"
 			let add = 0
@@ -376,7 +446,6 @@ function AbilityTooltipTalentIcon(parent, talent)
 	let icon = $.CreatePanel("Panel", parent, "")
 	icon.AddClass("AbilityTalentIcon")
 	icon.AddClass("AbilityTalentIcon_" + talent.rarity)
-	icon.SetHasClass("AbilityTalentIcon_off", !talent.taken)
 
 	let image = $.CreatePanel("Panel", icon, "")
 	image.AddClass("AbilityTalentIconImage")
@@ -398,7 +467,7 @@ function AbilityTooltipLevels(entity, key, max, bonus)
 
 	for (let i = 0; i < (orb ? orb.count : max); i++)
 	{
-		let base = bonus.replace[key] !== undefined ? bonus.replace[key] : Abilities.GetLevelSpecialValueFor(entity, name, i)
+		let base = bonus.replace[key] !== undefined ? bonus.replace[key] : entity !== -1 ? Abilities.GetLevelSpecialValueFor(entity, name, i) : 0
 		values.push(AbilityTooltipNumber((base*(1 + (bonus.percent[key] || 0)/100) + (bonus.value[key] || 0))*(1 + (bonus.all[key] || 0)/100)))
 	}
 
@@ -455,19 +524,23 @@ function AbilityTooltipLegendary(container, prefix, entity, level, max, bonus)
 
 	for (let branches of ability_tooltip_branches)
 	{
-		let key = prefix + branches
-		let text = $.Localize(key)
-
-		if (text === key)
-			continue
-
 		let shown = branches.split("")
-
-		if (taken && !shown.some(branch => legendary[branch] && legendary[branch].taken))
-			continue
-
+		let shown_taken = shown.some(branch => legendary[branch] && legendary[branch].taken)
 		let build = shown.map(branch => legendary[branch] && legendary[branch].build).find(value => value) || 0
-		variants.push({shown: shown, build: build, text: text})
+
+		for (let suffix of ["", "_only"])
+		{
+			let key = prefix + branches + suffix
+			let text = $.Localize(key)
+
+			if (text === key)
+				continue
+
+			if ((taken || suffix !== "") && !shown_taken)
+				continue
+
+			variants.push({shown: shown, build: build, text: text})
+		}
 	}
 
 	variants.sort((a, b) => (a.build || 3) - (b.build || 3))
@@ -538,7 +611,7 @@ function AbilityTooltipExtra(details, details_v2, entity, ability_name, level, m
 		for (let name in ability_tooltip_stats)
 		{
 			if (row.BHasClass(name))
-				stats[AbilityTooltipKey(label.text)] = ability_tooltip_stats[name]
+				stats[AbilityTooltipKey(label.text)] = bonus.damage ? ability_tooltip_damage[bonus.damage] : ability_tooltip_stats[name]
 		}
 	}
 
@@ -546,6 +619,7 @@ function AbilityTooltipExtra(details, details_v2, entity, ability_name, level, m
 	let sources = {}
 	let row_orbs = {}
 	let dynamic = {}
+	let sums = []
 
 	for (let key of new Set(Object.keys(bonus.talents).concat(Object.keys(bonus.changed), Object.keys(bonus.keys))))
 	{
@@ -557,6 +631,18 @@ function AbilityTooltipExtra(details, details_v2, entity, ability_name, level, m
 
 		let line_key = AbilityTooltipKey(label)
 		let percent = label.trim().startsWith("%") ? "%" : ""
+
+		if (bonus.keys[key] === "sum")
+		{
+			let terms = key.split("+")
+			let levels = terms.map(term => AbilityTooltipLevels(entity, term.replace(/%$/, ""), max, bonus))
+			let count = Math.max(...levels.map(values => values.length))
+
+			overrides[line_key] = Array.from({length: count}, (value, index) => terms.map((term, number) => (levels[number][index] || levels[number][0]) + (term.endsWith("%") ? "%" : "")).join(" + "))
+			sources[line_key] = terms.reduce((result, term) => result.concat(bonus.talents[term.replace(/%$/, "")] || []), []).filter((talent, index, list) => list.findIndex(other => other.icon === talent.icon) === index)
+			sums.push({key: key, label: label.trim(), line_key: line_key})
+			continue
+		}
 
 		if (bonus.orbs[key] || bonus.changed[key])
 			overrides[line_key] = AbilityTooltipLevels(entity, key, max, bonus).map(value => value + percent)
@@ -607,6 +693,11 @@ function AbilityTooltipExtra(details, details_v2, entity, ability_name, level, m
 		let split = line.indexOf(": ")
 		rows.push({line: line, wrap: wrap, split: split, key: split === -1 ? "" : AbilityTooltipKey(line.substring(0, split + 1))})
 	}
+
+	sums.sort((a, b) => a.key < b.key ? -1 : 1)
+
+	for (let sum of sums)
+		rows.push({line: sum.label + " ", wrap: false, split: sum.label.length - 1, key: sum.line_key})
 
 	container.RemoveAndDeleteChildren()
 
@@ -673,16 +764,66 @@ function AbilityTooltipStretch(id, attempt)
 
 	for (let name of ["AbilityLegendaryBlock", "AbilityLegendaryText", "AbilityCreeps", "AbilityCreepsLine"])
 	{
-		for (let panel of $.GetContextPanel().FindChildrenWithClassTraverse(name))
+		for (let panel of $("#AbilityCard").FindChildrenWithClassTraverse(name))
 			panel.style.width = (322 + extra) + "px"
+	}
+
+}
+
+function AbilityTooltipBlocks(prefix, ability_name, entity, level, max, bonus)
+{
+	let blocks = {Diff: [], Features: [], Creeps: [], Buildings: []}
+	let creeps_damage = AbilityTooltipLevels(entity, "creeps_damage", max, bonus)
+
+	if (creeps_damage.some(value => value !== "0"))
+	{
+		let type = creeps_damage.some(value => value.startsWith("-")) ? "nerf" : "buff"
+		blocks.Creeps.push(AbilityTooltipValues($.Localize("#tooltip_ability_creeps_damage_" + type), entity, level, max, bonus))
+	}
+
+	for (let group in blocks)
+	{
+		let block = blocks[group]
+
+		for (let i = 1; ; i++)
+		{
+			let key = "#DOTA_Tooltip_ability_" + ability_name + "_" + group.toLowerCase() + i
+			let text = $.Localize(key)
+
+			if (text === key)
+				break
+
+			block.push(AbilityTooltipValues(text, entity, level, max, bonus))
+		}
+
+		let panel = $("#" + prefix + group)
+		panel.SetHasClass("Hidden", block.length === 0)
+
+		if (block.length > 0 && ability_tooltip_block_icons[group])
+		{
+			let icon = panel.FindChildrenWithClassTraverse("AbilityCreepsIcon")[0]
+			icon.style.backgroundImage = "url('file://{images}/custom_game/icons/mini/info_table/" + ability_tooltip_block_icons[group] + ".png')"
+			icon.style.backgroundSize = "contain"
+		}
+
+		let lines = $("#" + prefix + group + "Text")
+		lines.RemoveAndDeleteChildren()
+
+		for (let line of block)
+		{
+			let label = $.CreatePanel("Label", lines, "")
+			label.html = true
+			label.AddClass("AbilityCreepsLine")
+			label.text = line
+		}
 	}
 
 }
 
 function AbilityTooltipBody(details, details_v2, entity, ability_name, level, max)
 {
-	AbilityTooltipCost(details, "AbilityCooldown", level, max)
-	AbilityTooltipCost(details, "AbilityManaCost", level, max)
+	AbilityTooltipCost(details, "AbilityCooldown", level, max, false, Abilities.GetCooldown(entity))
+	AbilityTooltipCost(details, "AbilityManaCost", level, max, true, Abilities.GetManaCost(entity))
 	AbilityTooltipCost(details, "AbilityHealthCost", level, max)
 	AbilityTooltipCost(details, "AbilityCastRange", level, max)
 
@@ -692,6 +833,15 @@ function AbilityTooltipBody(details, details_v2, entity, ability_name, level, ma
 	$("#AbilityCastPoint").text = AbilityTooltipSpans([AbilityTooltipNumber(cast_point)], 0, "")
 
 	let bonus = AbilityTooltipBonus(entity, ability_name)
+	let damage = ability_tooltip_damage[bonus.damage || Abilities.GetAbilityDamageType(entity)]
+	let damage_label = $("#AbilityDamageType")
+	let split = damage_label.text.indexOf(": ")
+
+	if (damage && !damage_label.BHasClass("Hidden") && split !== -1)
+	{
+		let word = bonus.damage ? $.Localize("#DOTA_ToolTip_Damage_" + damage.replace("DamageType", "")).replace(/<[^>]*>/g, "") : damage_label.text.substring(split + 2)
+		damage_label.text = damage_label.text.substring(0, split + 2) + "<span class='GameplayValues " + damage + "'>" + word + "</span>"
+	}
 
 	for (let id of ability_tooltip_costs)
 	{
@@ -724,52 +874,7 @@ function AbilityTooltipBody(details, details_v2, entity, ability_name, level, ma
 	$("#AbilityDescriptionAfter").text = after
 
 	AbilityTooltipLegendary($("#AbilityLegendary"), "#DOTA_Tooltip_ability_" + ability_name + "_legendary_", entity, level, max, bonus)
-
-	let blocks = {Diff: [], Features: [], Creeps: [], Buildings: []}
-	let creeps_damage = AbilityTooltipLevels(entity, "creeps_damage", max, bonus)
-
-	if (creeps_damage.some(value => value !== "0"))
-	{
-		let type = creeps_damage.some(value => value.startsWith("-")) ? "nerf" : "buff"
-		blocks.Creeps.push(AbilityTooltipValues($.Localize("#tooltip_ability_creeps_damage_" + type), entity, level, max, bonus))
-	}
-
-	for (let group in blocks)
-	{
-		let block = blocks[group]
-
-		for (let i = 1; ; i++)
-		{
-			let key = "#DOTA_Tooltip_ability_" + ability_name + "_" + group.toLowerCase() + i
-			let text = $.Localize(key)
-
-			if (text === key)
-				break
-
-			block.push(AbilityTooltipValues(text, entity, level, max, bonus))
-		}
-
-		let panel = $("#Ability" + group)
-		panel.SetHasClass("Hidden", block.length === 0)
-
-		if (block.length > 0 && ability_tooltip_block_icons[group])
-		{
-			let icon = panel.FindChildrenWithClassTraverse("AbilityCreepsIcon")[0]
-			icon.style.backgroundImage = "url('file://{images}/custom_game/icons/mini/info_table/" + ability_tooltip_block_icons[group] + ".png')"
-			icon.style.backgroundSize = "contain"
-		}
-
-		let lines = $("#Ability" + group + "Text")
-		lines.RemoveAndDeleteChildren()
-
-		for (let line of block)
-		{
-			let label = $.CreatePanel("Label", lines, "")
-			label.html = true
-			label.AddClass("AbilityCreepsLine")
-			label.text = line
-		}
-	}
+	AbilityTooltipBlocks("Ability", ability_name, entity, level, max, bonus)
 
 	let extra = AbilityTooltipExtra(details, details_v2, entity, ability_name, level, max, bonus)
 	$("#AbilityExtraAttributes").SetHasClass("Hidden", extra === 0)
@@ -791,6 +896,8 @@ function AbilityTooltipLoaded()
 	let mode = $.GetContextPanel().GetAttributeString("mode", "")
 	$.GetContextPanel().SetHasClass("AghsMode", mode === "aghs")
 	$.GetContextPanel().SetHasClass("InnateMode", mode === "innate")
+	$.GetContextPanel().SetHasClass("StatsMode", mode === "stats")
+	$.GetContextPanel().SetHasClass("ItemMode", mode === "item")
 
 	if (mode === "aghs")
 	{
@@ -801,6 +908,18 @@ function AbilityTooltipLoaded()
 	if (mode === "innate")
 	{
 		InnateTooltipLoaded()
+		return
+	}
+
+	if (mode === "stats")
+	{
+		StatsTooltipLoaded()
+		return
+	}
+
+	if (mode === "item")
+	{
+		ItemTooltipLoaded()
 		return
 	}
 
@@ -828,16 +947,7 @@ function AbilityTooltipLoaded()
 	AbilityTooltipCopy(details, "AbilityBreakable", details.BHasClass("is_breakable"))
 	$("#AbilityLoreBox").SetHasClass("Hidden", !AbilityTooltipCopy(details, "AbilityLore", !details.BHasClass("HideLore")))
 
-	let damage = ability_tooltip_damage[Abilities.GetAbilityDamageType(entity)]
-
-	if (AbilityTooltipCopy(details, "AbilityDamageType", true) && damage)
-	{
-		let damage_label = $("#AbilityDamageType")
-		let split = damage_label.text.indexOf(": ")
-
-		if (split !== -1)
-			damage_label.text = damage_label.text.substring(0, split + 2) + "<span class='GameplayValues " + damage + "'>" + damage_label.text.substring(split + 2) + "</span>"
-	}
+	AbilityTooltipCopy(details, "AbilityDamageType", true)
 
 	let target = ["AbilityDamageType", "AbilitySpellImmunityType", "AbilityDispelType", "AbilityBreakable"].some(id => !$("#" + id).BHasClass("Hidden"))
 	$("#AbilityTarget").SetHasClass("Hidden", !target)
@@ -863,6 +973,7 @@ if (!$.GetContextPanel().BHasClass("AbilityTooltip") && !$.DbgIsReloadingScript(
 	$.RegisterEventHandler("DOTAShowAbilityTooltip", ability_tooltip_hud, (panel, ability_name) => AbilityTooltipShow(panel, ability_name, -1))
 	$.RegisterEventHandler("DOTAShowAbilityTooltipForEntityIndex", ability_tooltip_hud, (panel, ability_name, unit) => AbilityTooltipShow(panel, ability_name, unit))
 	$.RegisterEventHandler("DOTAHideAbilityTooltip", ability_tooltip_hud, panel => AbilityTooltipLeave(panel))
+	$.RegisterEventHandler("DOTAShowAbilityInventoryItemTooltip", ability_tooltip_hud, (panel, unit, slot) => ItemTooltipShow(panel, unit, slot))
 }
 
 function StatusTooltipShow(panel, mode)
@@ -874,6 +985,14 @@ function StatusTooltipShow(panel, mode)
 		native.style.opacity = "0"
 
 	$.DispatchEvent(status.show, panel)
+
+	if (mode === "stats" && ability_tooltip_attack_range === null)
+	{
+		let unit = Players.GetLocalPlayerPortraitUnit()
+
+		ability_tooltip_attack_range = Particles.CreateParticle("particles/ui_mouseactions/range_display.vpcf", ParticleAttachment_t.PATTACH_ABSORIGIN_FOLLOW, unit)
+		Particles.SetParticleControl(ability_tooltip_attack_range, 1, [Entities.GetAttackRange(unit), 0, 0])
+	}
 
 	if (ability_tooltip_status_schedule[mode])
 		$.CancelScheduled(ability_tooltip_status_schedule[mode])
@@ -904,10 +1023,49 @@ function StatusTooltipHide(panel, mode)
 	$.DispatchEvent("UIHideCustomLayoutTooltip", panel, mode + "_tooltip")
 	$.DispatchEvent(status.hide, panel)
 
+	if (ability_tooltip_attack_range !== null)
+	{
+		Particles.DestroyParticleEffect(ability_tooltip_attack_range, true)
+		Particles.ReleaseParticleIndex(ability_tooltip_attack_range)
+		ability_tooltip_attack_range = null
+	}
+
 	let native = AbilityTooltipNative(status.native)
 
 	if (native)
 		native.style.opacity = null
+}
+
+function StatusTooltipPanels(panel, id, result)
+{
+	if (panel.id === id)
+		result.push(panel)
+
+	for (let child of panel.Children())
+		StatusTooltipPanels(child, id, result)
+
+	return result
+}
+
+function StatusTooltipHook(mode, root, id, attempt)
+{
+	let parent = ability_tooltip_hud.FindChildTraverse(root)
+	let panels = parent ? StatusTooltipPanels(parent, id, []) : []
+
+	if (panels.length === 0)
+	{
+		if (attempt < 30)
+			$.Schedule(1, () => StatusTooltipHook(mode, root, id, attempt + 1))
+
+		return
+	}
+
+	for (let panel of panels)
+	{
+		panel.SetPanelEvent("onmouseover", () => StatusTooltipShow(panel, mode))
+		panel.SetPanelEvent("onmouseout", () => StatusTooltipHide(panel, mode))
+	}
+
 }
 
 function AghsTooltipText(card, text, prefix, entity, level, max, bonus)
@@ -1087,7 +1245,7 @@ function AghsTooltipLoaded()
 		let innate = {}
 		let entries = []
 		cards.RemoveAndDeleteChildren()
-		$("#Aghs" + kind + "Section").SetHasClass("AghsOwned", native.BHasClass("Has" + kind))
+		$("#Aghs" + kind + "Section").SetHasClass("AghsOwned", kind === "Scepter" ? Entities.HasScepter(unit) : Game.HasModifier(unit, "modifier_item_aghanims_shard"))
 
 		for (let index = 1; index <= 3; index++)
 		{
@@ -1098,6 +1256,10 @@ function AghsTooltipLoaded()
 
 			let image = source.FindChildTraverse("ScepterAbilityImage")
 			let ability_name = image ? image.abilityname : ""
+
+			if (Entities.GetAbilityByName(unit, ability_name) === -1)
+				continue
+
 			listed[ability_name] = true
 			entries.push({name: ability_name, granted: source.FindChildrenWithClassTraverse("GrantedAbility").length > 0, source: source})
 		}
@@ -1126,41 +1288,6 @@ function AghsTooltipLoaded()
 	}
 
 }
-
-function AghsTooltipDisplays(panel, result)
-{
-	if (panel.id === "AghsStatusContainer")
-		result.push(panel)
-
-	for (let child of panel.Children())
-		AghsTooltipDisplays(child, result)
-
-	return result
-}
-
-function AghsTooltipHook(attempt)
-{
-	let branch = ability_tooltip_hud.FindChildTraverse("AbilitiesAndStatBranch")
-	let displays = branch ? AghsTooltipDisplays(branch, []) : []
-
-	if (displays.length === 0)
-	{
-		if (attempt < 30)
-			$.Schedule(1, () => AghsTooltipHook(attempt + 1))
-
-		return
-	}
-
-	for (let display of displays)
-	{
-		display.SetPanelEvent("onmouseover", () => StatusTooltipShow(display, "aghs"))
-		display.SetPanelEvent("onmouseout", () => StatusTooltipHide(display, "aghs"))
-	}
-
-}
-
-if (!$.GetContextPanel().BHasClass("AbilityTooltip"))
-	AghsTooltipHook(0)
 
 function InnateTooltipLegendary(unit)
 {
@@ -1272,22 +1399,497 @@ function InnateTooltipLoaded()
 
 }
 
-function InnateTooltipHook(attempt)
+function StatsTooltipSigned(value, suffix = "")
 {
-	let branch = ability_tooltip_hud.FindChildTraverse("AbilitiesAndStatBranch")
-	let icon = branch ? branch.FindChildTraverse("InnateIcon") : null
+	return (value > 0 ? "+" : "") + value + suffix
+}
 
-	if (!icon)
+function StatsTooltipBonus(label, value, suffix = "")
+{
+	label.text = StatsTooltipSigned(value, suffix)
+	label.SetHasClass("Hidden", value === 0)
+	label.SetHasClass("StatsNegative", value < 0)
+}
+
+function StatsTooltipValue(id, base, bonus, suffix = "")
+{
+	$("#Stats" + id).text = base + suffix
+	StatsTooltipBonus($("#Stats" + id + "Bonus"), bonus, suffix)
+}
+
+function StatsTooltipNoBonus(panel, root)
+{
+	for (; panel && panel !== root; panel = panel.GetParent())
+		if (panel.BHasClass("NoBonus"))
+			return true
+
+	return root.BHasClass("NoBonus")
+}
+
+function StatsTooltipServer(data)
+{
+	let tooltip = Game.stats_tooltip
+
+	if (!tooltip || tooltip.request !== data.request || !tooltip.panel.IsValid())
+		return
+
+	Game.stats_tooltip_cache = {unit: tooltip.unit, time: Date.now(), data: data}
+	tooltip.fill(data)
+}
+
+function StatsTooltipCrit(damage)
+{
+	return "x" + Number((damage/100).toFixed(2))
+}
+
+function StatsTooltipData(data)
+{
+	let mana_cost = Number(data.mana_cost.toFixed(1))
+	let heal = Number(data.heal.toFixed(1))
+	let crits = Object.values(data.crits || {})
+	let miss = 1
+	let bonus = 0
+
+	for (let crit of crits)
 	{
-		if (attempt < 30)
-			$.Schedule(1, () => InnateTooltipHook(attempt + 1))
+		bonus += miss*crit.chance*(crit.damage - 100)/100
+		miss *= 1 - crit.chance/100
+	}
 
+	$("#StatsCooldown").text = Number(data.cooldown.toFixed(1)) + "%"
+	StatsTooltipValue("Mana", Math.round(data.mana), Math.round(data.mana_bonus))
+	StatsTooltipValue("Health", Math.round(data.health), Math.round(data.health_bonus))
+	for (let id in data.percent)
+		StatsTooltipBonus($("#Stats" + id + "Percent"), Number(data.percent[id].toFixed(1)), "%")
+
+	if (data.primary_damage > 0)
+		$("#Stats" + data.primary + "Damage").text = "(+" + Math.round(data.primary_damage) + " " + $.Localize("#tooltip_stats_damage_bonus") + ")"
+
+	StatsTooltipValue("AttackSpeed", Math.round(data.attack_speed), Math.round(data.attack_speed_bonus))
+	$("#StatsManaCost").text = StatsTooltipSigned(mana_cost, "%")
+	$("#StatsCastRange").text = StatsTooltipSigned(Math.round(data.cast_range))
+	$("#StatsItemDamage").text = Math.round(data.item_damage) + "%"
+	$("#StatsAttackLifesteal").text = Math.round(data.attack_lifesteal) + "%"
+	$("#StatsSpellLifesteal").text = Math.round(data.spell_lifesteal) + "%"
+	$("#StatsAccuracy").text = Math.round(data.accuracy) + "%"
+	$("#StatsHeal").text = StatsTooltipSigned(heal, "%")
+	$("#StatsHeal").SetHasClass("StatsNegative", heal < 0)
+	$("#StatsCritChance").text = crits.length > 0 ? Number((100 - miss*100).toFixed(1)) + "%" : ""
+	$("#StatsCritDamage").text = crits.length === 1 ? StatsTooltipCrit(crits[0].damage) : crits.length > 1 ? "~" : ""
+	$("#StatsCritBonus").text = crits.length > 0 ? "+" + Math.round(bonus) + "% " + $.Localize("#tooltip_stats_damage_bonus") : "0%"
+	$("#StatsCritBonus").SetHasClass("StatsCritEmpty", crits.length === 0)
+
+	if (crits.length < 2)
+		return
+
+	for (let crit of crits)
+	{
+		let line = $.CreatePanel("Panel", $("#StatsCritList"), "")
+		let chance = $.CreatePanel("Label", line, "")
+		let damage = $.CreatePanel("Label", line, "")
+
+		line.AddClass("StatsCritLine")
+		chance.AddClass("StatsCritChance")
+		chance.text = Number(crit.chance.toFixed(1)) + "%"
+		damage.AddClass("StatsCritDamage")
+		damage.text = StatsTooltipCrit(crit.damage)
+		$.CreatePanel("Label", line, "").AddClass("StatsCritBonus")
+	}
+
+}
+
+function StatsTooltipLoaded()
+{
+	let unit = Number($.GetContextPanel().GetAttributeString("unit", "-1"))
+	let native = AbilityTooltipNative(ability_tooltip_status.stats.native)
+
+	if (unit === -1 || !native)
+		return
+
+	let previous = Game.stats_tooltip
+	let cache = Game.stats_tooltip_cache
+	let time = Date.now()
+	let pending = previous && previous.unit === unit && time - previous.time < 500
+	let tooltip = pending ? previous : {unit: unit, request: (previous ? previous.request : 0) + 1, time: time, fill: StatsTooltipData}
+
+	tooltip.panel = $.GetContextPanel()
+	Game.stats_tooltip = tooltip
+	$("#StatsCritList").RemoveAndDeleteChildren()
+
+	if (cache && cache.unit === unit && time - cache.time < 500)
+		StatsTooltipData(cache.data)
+	else
+	{
+		for (let label of $.GetContextPanel().FindChildrenWithClassTraverse("StatsServer"))
+			label.text = ""
+
+		if (!pending)
+			$.Schedule(Math.max(0, (Game.stats_tooltip_sent || 0) + 500 - time)/1000, () =>
+			{
+				if (Game.stats_tooltip !== tooltip)
+					return
+
+				Game.stats_tooltip_sent = Date.now()
+				GameEvents.SendCustomGameEventToServer_custom("stats_tooltip_request", {unit: unit, request: tooltip.request})
+			})
+	}
+
+	let speed = Entities.GetBaseMoveSpeed(unit)
+	let magic = Math.round(Entities.GetBaseMagicalResistanceValue(unit))
+
+	$("#StatsDamage").text = String(Math.round((Entities.GetDamageMin(unit) + Entities.GetDamageMax(unit))/2 + Entities.GetDamageBonus(unit)))
+	$("#StatsAttackTime").text = native.FindChildTraverse("AttacksPerSecond").text
+	$("#StatsBat").text = String(Number(Entities.GetBaseAttackTime(unit).toFixed(2)))
+	$("#StatsAttackRange").text = String(Math.round(Entities.GetAttackRange(unit)))
+	$("#StatsSpellAmp").text = Math.round(parseFloat(native.FindChildTraverse("SpellAmp").text)) + "%"
+	$("#StatsSpellAmp").SetHasClass("StatsNegative", parseFloat($("#StatsSpellAmp").text) < 0)
+	$("#StatsStatusResist").text = Math.round(parseFloat(native.FindChildTraverse("StatusResist").text)) + "%"
+	$("#StatsSlowResist").text = Math.round(parseFloat(native.FindChildTraverse("SlowResist").text)) + "%"
+	$("#StatsEvasion").text = native.FindChildTraverse("Evasion").text
+	$("#StatsArmor").text = Number(Entities.GetPhysicalArmorValue(unit).toFixed(1)) + " (" + native.FindChildTraverse("PhysicalResist").text + ")"
+	StatsTooltipValue("MoveSpeed", Math.round(speed), Math.round(Entities.GetMoveSpeedModifier(unit, speed) - speed))
+	StatsTooltipValue("MagicResist", magic, Math.round(Entities.GetMagicalArmorValue(unit)*100) - magic, "%")
+
+	let hero = Entities.IsHero(unit)
+	$("#StatsAttributes").SetHasClass("Hidden", !hero)
+
+	if (!hero)
+		return
+
+	let gain_total = 0
+
+	for (let attribute of ["Agility", "Intelligence", "Strength", "All"])
+	{
+		let container = native.FindChildTraverse(attribute + "Container")
+		let primary = container.BHasClass("PrimaryAttribute")
+		let column = $("#StatsColumn" + attribute)
+		let gain = attribute === "All" ? gain_total : Number((container.FindChildrenWithClassTraverse("AttributeGain")[0].text.match(/\d+(\.\d+)?/) || [0])[0])
+		let bonus = container.FindChildrenWithClassTraverse("BonusAttributeValue")[0]
+
+		gain_total += gain
+		column.SetHasClass("StatsPrimary", primary)
+		column.SetHasClass("Hidden", attribute === "All" && !primary)
+		$("#Stats" + attribute + "Gain").text = "+" + Number(gain.toFixed(1))
+		StatsTooltipValue(attribute, container.FindChildrenWithClassTraverse("BaseAttributeValue")[0].text, StatsTooltipNoBonus(bonus, native) ? 0 : Math.round(Number(bonus.text.replace(/\s/g, "")) || 0))
+	}
+
+	$("#StatsAttributes").SetHasClass("StatsFour", !$("#StatsColumnAll").BHasClass("Hidden"))
+}
+
+function ItemTooltipSell(text, plain, end, entity, id)
+{
+	if (id !== item_tooltip_sell || Game.item_tooltip !== entity || !$.GetContextPanel().IsValid())
+		return
+
+	let left = Math.ceil(end - Game.GetGameTime())
+	let label = $("#ItemSellPriceTime")
+
+	if (left <= 0)
+	{
+		label.SetHasClass("Hidden", true)
+		$("#ItemSellPrice").text = plain
+		$("#ItemSellPrice").SetHasClass("Hidden", false)
 		return
 	}
 
-	icon.SetPanelEvent("onmouseover", () => StatusTooltipShow(icon, "innate"))
-	icon.SetPanelEvent("onmouseout", () => StatusTooltipHide(icon, "innate"))
+	label.text = text.replace(/\d+:\d{2}/, Math.floor(left/60) + ":" + String(left % 60).padStart(2, "0"))
+	$.Schedule(0.3, () => ItemTooltipSell(text, plain, end, entity, id))
+}
+
+function ItemTooltipAttributes(source, name, level, max, keys)
+{
+	let labels = {}
+
+	for (let key of keys)
+	{
+		let match = $.Localize("#DOTA_Tooltip_ability_" + name + "_" + key).match(/^%?[+-](.*)$/)
+
+		if (!match)
+			continue
+
+		let raw = match[1].trim()
+		let text = raw.replace(/^!/, "").replace(/^\$(\w+)/, (all, variable) => $.Localize("#dota_ability_variable_" + (variable === "selected_attribute" ? "selected_attrib" : variable)))
+
+		if (raw.startsWith("!"))
+			text = "<font color='#53ea48'>" + text + "</font>"
+
+		labels[text.replace(/<[^>]*>/g, "").replace(/\s+/g, " ").trim()] = text
+		labels[raw] = text
+	}
+
+	let lines = (source && !source.BHasClass("Hidden") ? source.text : "").split("\n").filter(line => line.trim() !== "").map(line =>
+	{
+		let match = line.trim().match(/^([+-])\s*([\d.,]+%?(?:\s*\/\s*[\d.,]+%?)*)\s*(.*)$/)
+
+		if (!match)
+			return line
+
+		let values = match[2].split("/").map(value => value.trim())
+		let text = match[3].replace(/\s+/g, " ").trim()
+
+		return match[1] + " " + AbilityTooltipSpans(values, AbilityTooltipActive(values.length, level, max), "") + " " + (labels[text] || text)
+	})
+
+	let label = $("#ItemAttributes")
+	label.text = lines.join("<br>")
+	label.SetHasClass("Hidden", lines.length === 0)
+}
+
+function ItemTooltipKeys(data)
+{
+	let tooltip = Game.item_tooltip_fill
+
+	Game.item_tooltip_data[data.item] = {keys: data.keys || {}, damage: data.damage || 0}
+
+	if (!tooltip || tooltip.item !== data.item || !tooltip.panel.IsValid())
+		return
+
+	tooltip.fill()
+	tooltip.panel.RemoveClass("TooltipPending")
+}
+
+function ItemTooltipLoaded()
+{
+	let entity = Number($.GetContextPanel().GetAttributeString("entity", "-1"))
+	let name = entity !== -1 ? Abilities.GetAbilityName(entity) : $.GetContextPanel().GetAttributeString("item", "")
+	let native = AbilityTooltipNative("DOTAAbilityTooltip")
+
+	if (name === "" || !native)
+		return
+
+	Game.item_tooltip_data = Game.item_tooltip_data || {}
+
+	let data = Game.item_tooltip_data[name]
+	let details = native.FindChildTraverse("AbilityDetails")
+	let attributes = details.FindChildTraverse("AbilityAttributes")
+	let item = $("#ItemDetails")
+	let image = $("#ItemImage")
+	let level = entity !== -1 ? Abilities.GetLevel(entity) : 0
+	let bonus = entity !== -1 ? AbilityTooltipBonus(entity, name) : {value: {}, percent: {}, all: {}, replace: {}, changed: {}, talents: {}, levels: {}, keys: {}, orbs: {}}
+
+	if (entity === -1)
+	{
+		let server = data ? data.keys : {}
+		let tokens = [...$.Localize("#DOTA_Tooltip_ability_" + name + "_Description").matchAll(/%([A-Za-z0-9_]+)%/g)].map(match => match[1])
+
+		for (let key of Object.keys(server).concat(tokens))
+		{
+			let levels = String(server[key] || server[key.toLowerCase()] || "0").trim().split(/\s+/).map(value => AbilityTooltipNumber(Number(value)))
+			bonus.levels[key] = levels.every(value => value === levels[0]) ? [levels[0]] : levels
+		}
+	}
+
+	let max = entity !== -1 ? Math.max(Abilities.GetMaxLevel(entity), 1) : Math.max(1, ...Object.values(bonus.levels).map(levels => levels.length))
+
+	image.itemname = name
+	image.contextEntityIndex = entity
+	item.SetHasClass("Consumable", details.BHasClass("Consumable"))
+	item.SetHasClass("HideLore", details.BHasClass("HideLore"))
+
+	AbilityTooltipCopy(details, "AbilityName", true, "ItemName")
+	AbilityTooltipCopy(details, "AbilityLevel", true, "ItemLevel")
+	AbilityTooltipCopy(details, "BuyCostLabel", details.BHasClass("ShowItemCost"), "ItemBuyCost")
+	AbilityTooltipCopy(details, "BuyCostDeficit", details.BHasClass("NotEnoughGold"), "ItemBuyCostDeficit")
+	AbilityTooltipCopy(details, "RestockTime", details.BHasClass("OutOfStock"), "ItemRestockTime")
+	AbilityTooltipCopy(details, "StockAmount", details.BHasClass("ShowStockAmount"), "ItemStockAmount")
+	AbilityTooltipCopy(details, "CostToComplete", details.BHasClass("ShowCostToComplete"), "ItemCostToComplete")
+	$("#ItemCost").SetHasClass("Hidden", $("#ItemBuyCost").BHasClass("Hidden"))
+	$("#ItemSubHeader").SetHasClass("Hidden", $("#ItemSubHeader").Children().every(child => child.BHasClass("Hidden")))
+
+	for (let id of item_tooltip_target)
+		AbilityTooltipCopy(details, "Ability" + id, id !== "Breakable" || details.BHasClass("is_breakable"), "Item" + id)
+
+	$("#ItemTarget").SetHasClass("Hidden", item_tooltip_target.every(id => $("#Item" + id).BHasClass("Hidden")))
+
+	let damage = ability_tooltip_damage[entity !== -1 ? Abilities.GetAbilityDamageType(entity) : data ? data.damage : 0]
+	let damage_label = $("#ItemDamageType")
+	let split = damage_label.text.indexOf(": ")
+
+	if (damage && !damage_label.BHasClass("Hidden") && split !== -1)
+		damage_label.text = damage_label.text.substring(0, split + 2) + "<span class='GameplayValues " + damage + "'>" + damage_label.text.substring(split + 2) + "</span>"
+
+	Game.item_tooltip_fill = {item: name, panel: $.GetContextPanel(), fill: ItemTooltipLoaded}
+	ItemTooltipAttributes(attributes, name, level, max, data ? Object.keys(data.keys) : [])
+
+	if (data === undefined)
+	{
+		Game.item_tooltip_data[name] = null
+		GameEvents.SendCustomGameEventToServer_custom("item_tooltip_request", {item: name})
+	}
+
+	if (!data && entity === -1)
+	{
+		let reveal = ++ability_tooltip_reveal
+
+		$.Schedule(0.5, () =>
+		{
+			if (reveal === ability_tooltip_reveal && $.GetContextPanel().IsValid())
+				$.GetContextPanel().RemoveClass("TooltipPending")
+		})
+	}
+
+	let costs = details.FindChildTraverse("CurrentItemCosts")
+	let values = {}
+
+	for (let id of ["Cooldown", "ManaCost", "HealthCost", "CastRange"])
+	{
+		let source = costs ? costs.FindChildrenWithClassTraverse(id)[0] : undefined
+
+		if (source && details.BHasClass("Has" + id) && !details.BHasClass("IsRecipe") && source.text !== "")
+			values[id] = source.text
+	}
+
+	$("#ItemCooldown").text = values.Cooldown || ""
+	$("#ItemCooldown").SetHasClass("Hidden", !values.Cooldown)
+
+	let description = $("#ItemDescription")
+	let sections = details.FindChildTraverse("AbilityDescriptionContainer")
+	let headers = (sections ? sections.Children() : []).filter(child => child.BHasClass("Header"))
+	let target = Math.max(headers.findIndex(header => header.BHasClass("Active")), 0)
+	let basher_player = entity !== -1 ? Entities.GetPlayerOwnerID(Abilities.GetCaster(entity)) : Players.GetLocalPlayer()
+	let basher = Game.basher_items.includes(name) ? Game.GetBasherTalents(basher_player) : []
+	let anchor = null
+	let section = -1
+	let bash = false
+	description.RemoveAndDeleteChildren()
+
+	for (let chunk of AbilityTooltipDescription(entity, name, level, max, bonus).split("\n"))
+	{
+		let parts = chunk.split(/<h1>(.*?)<\/h1>/)
+
+		for (let index = 0; index < parts.length; index++)
+		{
+			let text = parts[index].replace(/^(?:\s|<br\s*\/?>)+|(?:\s|<br\s*\/?>)+$/g, "")
+			let header = index % 2 === 1
+
+			if (header)
+			{
+				section++
+				bash = basher.length > 0 && text.includes("Bash")
+			}
+
+			if (text === "")
+				continue
+
+			let label = $.CreatePanel("Label", description, "")
+			label.html = true
+			label.SetHasClass("Header", header)
+			label.SetHasClass("Active", index > 0 && !!headers[section] && headers[section].BHasClass("Active"))
+			label.SetHasClass("BasherDisabled", bash)
+			label.text = header ? "<h1>" + text + "</h1>" : bash ? $.Localize("#tooltip_item_basher_disabled") : text
+
+			if (index > 0 && section === target)
+				anchor = label
+		}
+	}
+
+	let row_costs = ["ManaCost", "HealthCost", "CastRange"].filter(id => values[id])
+	anchor = anchor || description.GetChild(description.GetChildCount() - 1)
+
+	if (anchor && row_costs.length > 0)
+	{
+		let row = $.CreatePanel("Panel", description, "")
+		row.AddClass("ItemSectionCosts")
+		row.SetHasClass("Active", anchor.BHasClass("Active"))
+		$.CreatePanel("Panel", row, "").AddClass("ItemSectionCostsSeparator")
+
+		let line = $.CreatePanel("Panel", row, "")
+		line.AddClass("ItemSectionCostsLine")
+
+		for (let id of row_costs)
+		{
+			let label = $.CreatePanel("Label", line, "")
+			label.html = true
+			label.AddClass(id)
+			label.text = AbilityTooltipSpans([values[id]], 0, "")
+		}
+
+		anchor.AddClass("ItemBeforeCosts")
+		description.MoveChildAfter(row, anchor)
+	}
+
+	AbilityTooltipBlocks("Item", name, entity, level, max, bonus)
+
+	let basher_block = $("#ItemBasher")
+	basher_block.RemoveAndDeleteChildren()
+
+	for (let talent of basher)
+	{
+		let header = $.CreatePanel("Panel", basher_block, "")
+		header.AddClass("ItemGroupHeader")
+		header.SetHasClass("ItemGroupNext", basher_block.GetChildCount() > 1)
+		AbilityTooltipTalentIcon(header, talent).AddClass("ItemBasherIcon")
+
+		let title = $.CreatePanel("Label", header, "")
+		title.AddClass("ItemGroupTitle")
+		title.text = $.Localize("#tooltip_item_basher_talent")
+
+		$.CreatePanel("Panel", basher_block, "").AddClass("ItemGroupSeparator")
+
+		let text = $.CreatePanel("Label", basher_block, "")
+		text.html = true
+		text.AddClass("ItemGroupDescription")
+		text.text = Game.ShowTalentValues(Game.GetTalentTextKey("#upgrade_disc_" + talent.name, talent.name, talent.hero, basher_player), talent.name, Game.HasTalent(basher_player, talent.name, true), false, talent.rarity == "legendary", true, false, undefined, talent.hero, basher_player)
+	}
+
+	basher_block.SetHasClass("Hidden", basher.length === 0)
+
+	let group_key = "#DOTA_Tooltip_ability_" + name + "_group"
+	let group_text = $.Localize(group_key)
+	let groups = $("#ItemGroups")
+	groups.RemoveAndDeleteChildren()
+
+	for (let group of group_text === group_key ? [] : group_text.trim().split(/\s+/))
+	{
+		let header = $.CreatePanel("Panel", groups, "")
+		header.AddClass("ItemGroupHeader")
+		header.SetHasClass("ItemGroupNext", groups.GetChildCount() > 1)
+		$.CreatePanel("DOTAItemImage", header, "", {itemname: item_tooltip_groups[group]}).AddClass("ItemGroupIcon")
+
+		let title = $.CreatePanel("Label", header, "")
+		title.AddClass("ItemGroupTitle")
+		title.text = $.Localize("#tooltip_item_group_" + group)
+
+		$.CreatePanel("Panel", groups, "").AddClass("ItemGroupSeparator")
+
+		let description = $.CreatePanel("Label", groups, "")
+		description.html = true
+		description.AddClass("ItemGroupDescription")
+		description.text = $.Localize("#tooltip_item_group_" + group + "_Description")
+	}
+
+	groups.SetHasClass("Hidden", groups.GetChildCount() === 0)
+	AbilityTooltipCopy(details, "AbilityCharges", details.BHasClass("UsesAbilityCharges"), "ItemCharges")
+	AbilityTooltipCopy(details, "AbilityExtraAttributes", true, "ItemExtraAttributes")
+	AbilityTooltipCopy(details, "AbilityLore", !details.BHasClass("HideLore"), "ItemLore")
+	AbilityTooltipCopy(details, "OwnedBy", details.BHasClass("ShowOwnedBy"), "ItemOwnedBy")
+	AbilityTooltipCopy(details, "ConsumableAbilityInfo", details.BHasClass("IsConsumableAbility"), "ItemConsumableInfo")
+	AbilityTooltipCopy(details, "SellPriceLabel", details.BHasClass("ShowSellPrice"), "ItemSellPrice")
+	AbilityTooltipCopy(details, "SellPriceTimeLabel", details.BHasClass("ShowSellPriceTime"), "ItemSellPriceTime")
+	AbilityTooltipCopy(details, "DisassembleLabel", details.BHasClass("ShowDisassemble"), "ItemDisassemble")
+	AbilityTooltipCopy(details, "DisassembleTimeLabel", details.BHasClass("ShowDisassembleTime"), "ItemDisassembleTime")
+
+	let sell = $("#ItemSellPriceTime")
+	let time = sell.text.match(/(\d+):(\d{2})/)
+	let plain = details.FindChildTraverse("SellPriceLabel")
+	item_tooltip_sell++
+
+	if (!sell.BHasClass("Hidden") && time && plain)
+		ItemTooltipSell(sell.text, plain.text.replace(/\d+/, price => Math.floor(Number(price)/2)), Game.GetGameTime() + Number(time[1])*60 + Number(time[2]), entity, item_tooltip_sell)
 }
 
 if (!$.GetContextPanel().BHasClass("AbilityTooltip"))
-	InnateTooltipHook(0)
+{
+	if (Game.stats_tooltip_listener !== undefined)
+		GameEvents.Unsubscribe(Game.stats_tooltip_listener)
+
+	Game.stats_tooltip_listener = GameEvents.Subscribe_custom("stats_tooltip_data", StatsTooltipServer)
+
+	if (Game.item_tooltip_listener !== undefined)
+		GameEvents.Unsubscribe(Game.item_tooltip_listener)
+
+	Game.item_tooltip_listener = GameEvents.Subscribe_custom("item_tooltip_keys", ItemTooltipKeys)
+	StatusTooltipHook("aghs", "AbilitiesAndStatBranch", "AghsStatusContainer", 0)
+	StatusTooltipHook("innate", "AbilitiesAndStatBranch", "InnateIcon", 0)
+	StatusTooltipHook("stats", "stats_container", "stats_tooltip_region", 0)
+}

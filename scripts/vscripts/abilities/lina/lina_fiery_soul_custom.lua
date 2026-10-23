@@ -125,6 +125,7 @@ function lina_fiery_soul_custom:UpdateTalents(name)
 			e3_duration = caster:GetTalentValue("modifier_lina_soul_3", "duration", true),
 
 			has_e4 = 0,
+			e4_heal = caster:GetTalentValue("modifier_lina_soul_4", "heal", true) / 100,
 			e4_str = caster:GetTalentValue("modifier_lina_soul_4", "str", true),
 			e4_duration = caster:GetTalentValue("modifier_lina_soul_4", "duration", true),
 			e4_max = caster:GetTalentValue("modifier_lina_soul_4", "max", true),
@@ -164,27 +165,34 @@ function lina_fiery_soul_custom:UpdateTalents(name)
 		self.talents.has_e1 = 1
 		self.talents.e1_speed = caster:GetTalentValue("modifier_lina_soul_1", "speed")
 		self.talents.e1_slow = caster:GetTalentValue("modifier_lina_soul_1", "slow")
-		caster:AddAttackEvent_out(self.tracker, true)
+		caster:AddProc(self.tracker, { land = true })
 	end
 
 	if caster:HasTalent("modifier_lina_soul_2") then
 		self.talents.has_e2 = 1
 		self.talents.e2_armor_reduce = caster:GetTalentValue("modifier_lina_soul_2", "armor_reduce")
 		self.talents.e2_armor = caster:GetTalentValue("modifier_lina_soul_2", "armor")
-		caster:AddAttackEvent_out(self.tracker, true)
+		caster:AddProc(self.tracker, { land = true })
 	end
 
 	if caster:HasTalent("modifier_lina_soul_3") then
 		self.talents.has_e3 = 1
 		self.talents.e3_damage = caster:GetTalentValue("modifier_lina_soul_3", "damage")
 		self.talents.e3_crit = caster:GetTalentValue("modifier_lina_soul_3", "crit")
-		caster:AddAttackEvent_out(self.tracker, true)
+		caster:AddProc(self.tracker, { land = true })
 		caster:AddRecordDestroyEvent(self.tracker, true)
 	end
 
 	if caster:HasTalent("modifier_lina_soul_4") then
 		self.talents.has_e4 = 1
-		caster:AddAttackEvent_out(self.tracker, true)
+		caster:AddProc(self.tracker, { land = true })
+		caster:AddLifesteal(self.tracker, {
+			name = "modifier_lina_soul_4",
+			type = 2,
+			value = function()
+				return (1 - caster:GetHealthPercent() / 100) * self.talents.e4_heal
+			end,
+		})
 	end
 
 	if caster:HasTalent("modifier_lina_soul_7") then
@@ -440,18 +448,12 @@ function modifier_lina_fiery_soul_custom:OnIntervalThink()
 	)
 end
 
-function modifier_lina_fiery_soul_custom:AttackEvent_out(params)
-	if not IsServer() then
-		return
-	end
-	if self.parent ~= params.attacker then
-		return
-	end
-	local target = params.target
+function modifier_lina_fiery_soul_custom:GetProcChance()
+	return 100
+end
 
-	if not params.target:IsUnit() then
-		return
-	end
+function modifier_lina_fiery_soul_custom:AttackProc(params, name)
+	local target = params.target
 
 	if self.ability.talents.has_e2 == 1 then
 		target:AddNewModifier(

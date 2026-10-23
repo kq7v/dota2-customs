@@ -113,19 +113,12 @@ function slark_innate_custom:UpdateTalents()
 			r3_damage_type = caster:GetTalentValue("modifier_slark_dance_3", "damage_type", true),
 
 			has_r4 = 0,
-			r4_heal = caster:GetTalentValue("modifier_slark_dance_4", "heal", true) / 100,
-			r4_bonus = caster:GetTalentValue("modifier_slark_dance_4", "bonus", true),
 
 			has_h5 = 0,
 			h5_bonus = caster:GetTalentValue("modifier_slark_hero_5", "bonus", true),
 			h5_max = caster:GetTalentValue("modifier_slark_hero_5", "max", true),
 			h5_status = caster:GetTalentValue("modifier_slark_hero_5", "status", true),
 			h5_str = caster:GetTalentValue("modifier_slark_hero_5", "str", true),
-
-			has_q2 = 0,
-			q2_heal = 0,
-			q2_mana = caster:GetTalentValue("modifier_slark_pact_2", "mana", true) / 100,
-			q2_bonus = caster:GetTalentValue("modifier_slark_pact_2", "bonus", true),
 		}
 	end
 
@@ -166,17 +159,10 @@ function slark_innate_custom:UpdateTalents()
 
 	if caster:HasTalent("modifier_slark_dance_4") then
 		self.talents.has_r4 = 1
-		caster:AddDamageEvent_out(self.tracker, true)
 	end
 
 	if caster:HasTalent("modifier_slark_hero_5") then
 		self.talents.has_h5 = 1
-	end
-
-	if caster:HasTalent("modifier_slark_pact_2") then
-		self.talents.has_q2 = 1
-		self.talents.q2_heal = caster:GetTalentValue("modifier_slark_pact_2", "heal") / 100
-		caster:AddDamageEvent_out(self.tracker, true)
 	end
 end
 
@@ -231,7 +217,7 @@ function modifier_slark_innate_custom:OnCreated(table)
 	if not IsServer() then
 		return
 	end
-	self.parent:AddAttackEvent_out(self, true)
+	self.parent:AddProc(self, { land = true })
 end
 
 function modifier_slark_innate_custom:OnRefresh()
@@ -266,54 +252,12 @@ function modifier_slark_innate_custom:GetModifierAttackRangeBonus()
 	return self.ability.talents.e1_range
 end
 
-function modifier_slark_innate_custom:DamageEvent_out(params)
-	if not IsServer() then
-		return
-	end
-	local result = self.parent:CheckLifesteal(params)
-	if not result then
-		return
-	end
-
-	if self.ability.talents.has_q2 == 1 and params.inflictor then
-		local heal = self.ability.talents.q2_heal * params.damage * result
-		if self.parent.pact_ability and params.inflictor == self.parent.pact_ability then
-			heal = self.ability.talents.q2_bonus * heal
-			self.parent:GiveMana(heal * self.ability.talents.q2_mana)
-		end
-		self.parent:GenericHeal(
-			heal,
-			self.ability,
-			true,
-			"particles/items3_fx/octarine_core_lifesteal.vpcf",
-			"modifier_slark_pact_2"
-		)
-	end
-
-	if self.ability.talents.has_r4 == 1 and not params.inflictor then
-		local heal = result * params.damage * self.ability.talents.r4_heal
-		local effect = ""
-		if self.parent:HasModifier("modifier_slark_shadow_dance_custom_effect") then
-			heal = heal * self.ability.talents.r4_bonus
-			effect = "particles/slark/dance_lifesteal.vpcf"
-		end
-		self.parent:GenericHeal(heal, self.ability, true, effect, "modifier_slark_dance_4")
-	end
+function modifier_slark_innate_custom:GetProcChance()
+	return 100
 end
 
-function modifier_slark_innate_custom:AttackEvent_out(params)
-	if not IsServer() then
-		return
-	end
-	if self.parent ~= params.attacker then
-		return
-	end
-
+function modifier_slark_innate_custom:AttackProc(params, name)
 	local target = params.target
-
-	if not target:IsUnit() then
-		return
-	end
 
 	if self.ability.talents.has_e2 == 1 then
 		DoCleaveAttack(
@@ -396,9 +340,6 @@ function modifier_slark_innate_custom:AttackEvent_out(params)
 		return
 	end
 	if self.parent:PassivesDisabled() and self.ability.talents.has_e4 == 0 then
-		return
-	end
-	if target:GetTeamNumber() == self.parent:GetTeamNumber() then
 		return
 	end
 

@@ -44,12 +44,18 @@ function item_ethereal_blade_custom:Spawn()
 	self.blast_damage_base = self:GetSpecialValueFor("blast_damage_base")
 	self.duration_ally = self:GetSpecialValueFor("duration_ally")
 	self.extra_spell_damage_percent = self:GetSpecialValueFor("extra_spell_damage_percent")
+	self.enemy_cd = self:GetSpecialValueFor("enemy_cd") / 100
 	self.projectile_speed = self:GetSpecialValueFor("projectile_speed")
 end
 
 function item_ethereal_blade_custom:OnSpellStart()
 	local caster = self:GetCaster()
+	local target = self:GetCursorTarget()
 	caster:EmitSound("DOTA_Item.EtherealBlade.Activate")
+
+	if target:GetTeamNumber() ~= caster:GetTeamNumber() then
+		caster:CdAbility(self, nil, self.enemy_cd, "item_ethereal_blade_custom")
+	end
 
 	self.start_index = self.start_index + 1
 	if self.start_index > 10 then
@@ -58,7 +64,7 @@ function item_ethereal_blade_custom:OnSpellStart()
 	self.damage_table[self.start_index] = self.multicast_k or 1
 
 	local info = {
-		Target = self:GetCursorTarget(),
+		Target = target,
 		Source = caster,
 		Ability = self,
 		EffectName = "particles/items_fx/ethereal_blade.vpcf",

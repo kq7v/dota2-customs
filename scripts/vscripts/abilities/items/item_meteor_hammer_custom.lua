@@ -233,6 +233,9 @@ function modifier_item_meteor_hammer_custom_burn:GetModifierMoveSpeedBonus_Perce
 end
 
 modifier_item_meteor_hammer_custom_stats = class(mod_hidden)
+function modifier_item_meteor_hammer_custom_stats:GetUniqueStat(name)
+	return self[name]
+end
 function modifier_item_meteor_hammer_custom_stats:OnCreated()
 	self.parent = self:GetParent()
 	self.ability = self:GetAbility()
@@ -240,9 +243,11 @@ function modifier_item_meteor_hammer_custom_stats:OnCreated()
 	self.agi = self.ability.stats_agi
 	self.str = self.ability.stats_str
 	self.int = self.ability.stats_int
-	self.amp = self.ability.spell_amp
-	self.regen = self.ability.mana_regen_multiplier
-	self.health_bonus = self.ability.health_bonus / 100
+
+	self.spell_amp = self.ability.spell_amp
+	self.mana_regen = self.ability.mana_regen_multiplier
+	self.mana_health = self.ability.health_bonus / 100
+	self.parent:AddUniqueStat(self, "spell_amp", "mana_regen", "mana_health")
 end
 
 function modifier_item_meteor_hammer_custom_stats:DeclareFunctions()
@@ -269,51 +274,19 @@ function modifier_item_meteor_hammer_custom_stats:GetModifierBonusStats_Intellec
 end
 
 function modifier_item_meteor_hammer_custom_stats:GetModifierSpellAmplify_Percentage()
-	if self.parent:HasModifier("modifier_item_yasha_and_kaya_custom") then
-		return
-	end
-	if self.parent:HasModifier("modifier_item_kaya_and_sange_custom") then
-		return
-	end
-	if self.parent:HasModifier("modifier_item_kaya_custom") then
-		return
-	end
-	if self.parent:HasModifier("modifier_item_starforge_seal_custom_stats") then
-		return
-	end
-	return self.amp
+	return self.parent:UniqueStat(self, "spell_amp")
 end
 
 function modifier_item_meteor_hammer_custom_stats:GetModifierMPRegenAmplify_Percentage()
-	if self.parent:HasModifier("modifier_item_yasha_and_kaya_custom") then
-		return
-	end
-	if self.parent:HasModifier("modifier_item_kaya_and_sange_custom") then
-		return
-	end
-	if self.parent:HasModifier("modifier_item_kaya_custom") then
-		return
-	end
-	if self.parent:HasModifier("modifier_item_starforge_seal_custom_stats") then
-		return
-	end
-	return self.regen
+	return self.parent:UniqueStat(self, "mana_regen")
 end
 
 function modifier_item_meteor_hammer_custom_stats:GetModifierHealthBonus()
-	if self.parent:HasModifier("modifier_item_starforge_seal_custom_stats") then
+	local bonus = self.parent:UniqueStat(self, "mana_health")
+	if not bonus then
 		return
 	end
-	if self.parent:HasModifier("modifier_item_yasha_and_kaya_custom") then
-		return
-	end
-	if self.parent:HasModifier("modifier_item_kaya_and_sange_custom") then
-		return
-	end
-	if self.parent:HasModifier("modifier_item_kaya_custom") then
-		return
-	end
-	return self.health_bonus * self.parent:GetMaxMana()
+	return bonus * self.parent:GetMaxMana()
 end
 
 modifier_item_meteor_hammer_custom_cast = class(mod_visible)

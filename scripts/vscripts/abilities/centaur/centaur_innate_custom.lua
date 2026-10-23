@@ -38,9 +38,6 @@ function centaur_innate_custom:UpdateTalents(name)
 	if not self.init then
 		self.init = true
 		self.talents = {
-			has_w3 = 0,
-			w3_heal = 0,
-
 			has_w4 = 0,
 			w4_duration = caster:GetTalentValue("modifier_centaur_edge_4", "duration", true),
 			w4_resist = caster:GetTalentValue("modifier_centaur_edge_4", "resist", true),
@@ -48,26 +45,22 @@ function centaur_innate_custom:UpdateTalents(name)
 			w4_max_shield = caster:GetTalentValue("modifier_centaur_edge_4", "max_shield", true) / 100,
 			w4_shield = caster:GetTalentValue("modifier_centaur_edge_4", "shield", true) / 100,
 			w4_health = caster:GetTalentValue("modifier_centaur_edge_4", "health", true),
-
-			has_e2 = 0,
 		}
-	end
-
-	if caster:HasTalent("modifier_centaur_edge_3") then
-		self.talents.has_w3 = 1
-		self.talents.w3_heal = caster:GetTalentValue("modifier_centaur_edge_3", "heal") / 100
-		caster:AddDamageEvent_out(self.tracker, true)
 	end
 
 	if caster:HasTalent("modifier_centaur_edge_4") then
 		self.talents.has_w4 = 1
 		caster:AddDamageEvent_inc(self.tracker, true)
-		caster:AddDamageEvent_out(self.tracker, true)
-	end
-
-	if caster:HasTalent("modifier_centaur_retaliate_2") then
-		self.talents.has_e2 = 1
-		caster:AddDamageEvent_out(self.tracker, true)
+		caster:AddLifesteal(
+			self.tracker,
+			{
+				name = "modifier_centaur_edge_4",
+				type = 1,
+				heal = false,
+				proc = "LifestealShield",
+				value = self.talents.w4_shield,
+			}
+		)
 	end
 end
 
@@ -128,32 +121,8 @@ function modifier_centaur_innate_custom:ScepterInit()
 	self:StartIntervalThink(self.ability.scepter_rate)
 end
 
-function modifier_centaur_innate_custom:DamageEvent_out(params)
-	if not IsServer() then
-		return
-	end
-	local result = self.parent:CheckLifesteal(params)
-	if not result then
-		return
-	end
-
-	if self.ability.talents.has_w3 == 1 and params.inflictor then
-		self.parent:GenericHeal(
-			result * params.damage * self.ability.talents.w3_heal,
-			self.ability,
-			true,
-			"particles/items3_fx/octarine_core_lifesteal.vpcf",
-			"modifier_centaur_edge_3"
-		)
-	end
-
-	if self.ability.talents.has_e2 == 1 and not params.inflictor and IsValid(self.parent.retaliate_ability) then
-		self.parent.retaliate_ability:ProcHeal(params.damage * result)
-	end
-
-	if self.ability.talents.has_w4 == 1 and params.inflictor then
-		self:AddShield(result * params.damage * self.ability.talents.w4_shield)
-	end
+function modifier_centaur_innate_custom:LifestealShield(params, shield)
+	self:AddShield(shield)
 end
 
 function modifier_centaur_innate_custom:DamageEvent_inc(params)

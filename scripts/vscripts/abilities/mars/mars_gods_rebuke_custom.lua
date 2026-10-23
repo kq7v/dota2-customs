@@ -307,7 +307,7 @@ function mars_gods_rebuke_custom:OnSpellStart(skip_charge)
 				end
 
 				if IsValid(self.caster.bulwark_ability) then
-					self.caster.bulwark_ability:ProcStun(enemy, true)
+					self.caster.bulwark_ability:ProcStun(enemy, "rebuke")
 				end
 
 				self.caster:PerformAttack(enemy, true, true, true, true, true, false, true)
@@ -331,6 +331,11 @@ function mars_gods_rebuke_custom:OnSpellStart(skip_charge)
 
 	local sound_cast = "Hero_Mars.Shield.Cast.Small"
 	if caught then
+		local legendary = self.caster:FindModifierByName("modifier_mars_gods_rebuke_custom_legendary")
+		if legendary then
+			legendary:Extend(hit_hero, true)
+		end
+
 		if IsValid(self.caster.bulwark_ability) then
 			self.caster.bulwark_ability:AddDamage(hit_hero, true)
 			self.caster.bulwark_ability:ProcSoldier(nil, true)
@@ -425,13 +430,15 @@ function modifier_mars_gods_rebuke_custom:OnCreated(kv)
 		return
 	end
 
-	self.bonus_crit = (self.ability.damage_crit + self.ability.talents.w3_crit) - 100
+	self.crit = self.ability.damage_crit + self.ability.talents.w3_crit
 
 	local mod = self.parent:FindModifierByName("modifier_mars_gods_rebuke_custom_legendary")
 	if mod then
-		self.bonus_crit = self.bonus_crit
-			* (1 + self.ability.talents.w7_damage_reduce)
-			* (1 + self.ability.talents.w7_damage_inc * mod:GetStackCount())
+		self.crit = 100 + (self.crit - 100) * (1 + self.ability.talents.w7_damage_inc * mod:GetStackCount())
+	end
+
+	if self.ability.talents.has_w7 == 1 then
+		self.crit = self.crit * (1 + self.ability.talents.w7_damage_reduce)
 	end
 end
 
@@ -451,7 +458,7 @@ function modifier_mars_gods_rebuke_custom:GetModifierPreAttack_CriticalStrike(pa
 end
 
 function modifier_mars_gods_rebuke_custom:GetCritDamage()
-	return self.bonus_crit + 100
+	return self.crit
 end
 
 modifier_mars_gods_rebuke_custom_slow = class(mod_hidden)
@@ -743,6 +750,9 @@ function mars_avatar_custom:UpdateTalents(name)
 			w7_duration = caster:GetTalentValue("modifier_mars_rebuke_7", "duration", true),
 			w7_max = caster:GetTalentValue("modifier_mars_rebuke_7", "max", true),
 			w7_talent_cd = caster:GetTalentValue("modifier_mars_rebuke_7", "talent_cd", true),
+			w7_extend = caster:GetTalentValue("modifier_mars_rebuke_7", "extend", true) / 100,
+			w7_extend_creeps = caster:GetTalentValue("modifier_mars_rebuke_7", "extend_creeps", true) / 100,
+			w7_extend_rebuke = caster:GetTalentValue("modifier_mars_rebuke_7", "extend_rebuke", true) / 100,
 		}
 	end
 end
@@ -818,7 +828,7 @@ function modifier_mars_gods_rebuke_custom_legendary:OnCreated(table)
 	self.max_time = self.ability.talents.w7_duration
 
 	self.interval = 0.1
-	self.parent:AddAttackEvent_out(self, true)
+	self.parent:AddProc(self, { land = true, extra = false })
 
 	self:OnIntervalThink()
 	self:StartIntervalThink(self.interval)
@@ -849,6 +859,19 @@ function modifier_mars_gods_rebuke_custom_legendary:AddStack()
 	self:IncrementStackCount()
 end
 
+function modifier_mars_gods_rebuke_custom_legendary:Extend(hero, rebuke)
+	if not IsServer() then
+		return
+	end
+	local extend = self.ability.talents.w7_extend_creeps
+
+	if hero then
+		extend = rebuke and self.ability.talents.w7_extend_rebuke or self.ability.talents.w7_extend
+	end
+
+	self:SetDuration(math.min(self:GetRemainingTime() + self.max_time * extend, self.max_time), true)
+end
+
 function modifier_mars_gods_rebuke_custom_legendary:OnDestroy()
 	if not IsServer() then
 		return
@@ -857,23 +880,12 @@ function modifier_mars_gods_rebuke_custom_legendary:OnDestroy()
 	self.ability:StartCd()
 end
 
-function modifier_mars_gods_rebuke_custom_legendary:AttackEvent_out(params)
-	if not IsServer() then
-		return
-	end
-	if self.parent ~= params.attacker then
-		return
-	end
+function modifier_mars_gods_rebuke_custom_legendary:GetProcChance()
+	return 100
+end
 
-	local target = params.target
-	if not target:IsUnit() then
-		return
-	end
-	if params.attack_flag == "mars_e3" or params.attack_flag == "mars_e7" then
-		return
-	end
-
-	self:SetDuration(self.max_time, true)
+function modifier_mars_gods_rebuke_custom_legendary:AttackProc(params, name)
+	self:Extend(params.target:IsRealHero())
 end
 
 function modifier_mars_gods_rebuke_custom_legendary:DeclareFunctions()

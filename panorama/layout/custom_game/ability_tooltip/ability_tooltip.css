@@ -345,18 +345,18 @@
 	border: 0px solid transparent;
 }
 
-#AbilityCreeps,#AbilityBuildings
+#AbilityCreeps,#AbilityBuildings,#ItemCreeps,#ItemBuildings
 {
 	border-color: #6a879a66;
 	background-color: gradient( linear, 0% 0%, 100% 0%, from( #1b2a34cc ), to( #0d1519cc ) );
 }
 
-#AbilityCreeps .AbilityCreepsIcon,#AbilityBuildings .AbilityCreepsIcon
+#AbilityCreeps .AbilityCreepsIcon,#AbilityBuildings .AbilityCreepsIcon,#ItemCreeps .AbilityCreepsIcon,#ItemBuildings .AbilityCreepsIcon
 {
 	border-color: #6a879a80;
 }
 
-#AbilityCreeps .AbilityCreepsTitle,#AbilityBuildings .AbilityCreepsTitle
+#AbilityCreeps .AbilityCreepsTitle,#AbilityBuildings .AbilityCreepsTitle,#ItemCreeps .AbilityCreepsTitle,#ItemBuildings .AbilityCreepsTitle
 {
 	color: gradient( linear, 0% 0%, 0% 100%, from( #bccfdc ), to( #7193a8 ) );
 }
@@ -413,32 +413,6 @@
 	width: 100%;
 	height: 100%;
 	background-repeat: no-repeat;
-}
-
-.AbilityTalentIcon_off
-{
-	border-color: #484848;
-}
-
-.AbilityTalentIcon_off.AbilityTalentIcon_blue
-{
-	border-color: #1f4f91;
-}
-
-.AbilityTalentIcon_off.AbilityTalentIcon_purple
-{
-	border-color: #5f2685;
-}
-
-.AbilityTalentIcon_off.AbilityTalentIcon_orange
-{
-	border-color: #8a5218;
-}
-
-.AbilityTalentIcon_off .AbilityTalentIconImage
-{
-	saturation: 0.4;
-	brightness: 0.2;
 }
 
 .AbilityCostTalents
@@ -824,6 +798,383 @@
 	color: #856e45;
 }
 
+#Contents.StatsMode
+{
+	border: 3px solid black;
+}
+
+#StatsDetails
+{
+	width: 740px;
+	flow-children: down;
+}
+
+.StatsRow
+{
+	width: 100%;
+	flow-children: right;
+}
+
+#StatsGroups
+{
+	background-color: gradient( linear, 0% 0%, 0% 100%, from( #182229 ), to( #0d1317 ) );
+}
+
+.StatsGroupBack
+{
+	ignore-parent-flow: true;
+	width: 33.33%;
+	height: 100%;
+	border-left: 2px solid #000000cc;
+}
+
+.StatsBackGeneral
+{
+	border-left: 0px solid transparent;
+	background-color: gradient( linear, 0% 0%, 0% 100%, from( #1d2830cc ), to( #080c0fcc ) );
+}
+
+.StatsBackAttack
+{
+	horizontal-align: center;
+	background-color: gradient( linear, 0% 0%, 0% 100%, from( #340808cc ), to( #140202cc ) );
+}
+
+.StatsBackMagic
+{
+	horizontal-align: right;
+	background-color: gradient( linear, 0% 0%, 0% 100%, from( #091737cc ), to( #030614cc ) );
+}
+
+.StatsGroup
+{
+	width: fill-parent-flow( 1.0 );
+	flow-children: down;
+	padding: 8px 10px 10px 10px;
+}
+
+.StatsMode .StatsGroupTitle
+{
+	horizontal-align: center;
+	margin-bottom: 6px;
+	font-family: titleFont;
+	font-size: 17px;
+	font-weight: semi-bold;
+	color: #8a9ba8;
+	text-transform: uppercase;
+	letter-spacing: 1px;
+}
+
+.StatsMode .StatsGroupGeneral .StatsGroupTitle
+{
+	color: gradient( linear, 0% 0%, 0% 100%, from( #a6b4be ), to( #56687a ) );
+}
+
+.StatsMode .StatsGroupAttack .StatsGroupTitle
+{
+	color: gradient( linear, 0% 0%, 0% 100%, from( #e0a090 ), to( #c4503a ) );
+}
+
+.StatsMode .StatsGroupMagic .StatsGroupTitle
+{
+	color: gradient( linear, 0% 0%, 0% 100%, from( #a4bfe6 ), to( #4a80cc ) );
+}
+
+.StatsLine
+{
+	width: 100%;
+	flow-children: right;
+	padding: 3px 0px;
+	border-top: 1px solid #ffffff05;
+}
+
+.StatsMode .StatsName
+{
+	width: fill-parent-flow( 1.0 );
+	vertical-align: center;
+	font-size: 15px;
+	color: #a2a2a2;
+}
+
+.StatsNameBox
+{
+	width: fill-parent-flow( 1.0 );
+	flow-children: right;
+	vertical-align: center;
+}
+
+.StatsMode .StatsNameBox .StatsName
+{
+	width: fit-children;
+}
+
+.StatsMode .StatsValue
+{
+	vertical-align: center;
+	margin-left: 6px;
+	font-size: 15px;
+	color: #e1e1e1;
+}
+
+.StatsMode .StatsBonus
+{
+	vertical-align: center;
+	margin-left: 3px;
+	font-size: 15px;
+	color: #3ed038;
+}
+
+.StatsMode .StatsBonus.StatsNegative,.StatsMode .StatsValue.StatsNegative
+{
+	color: #ec3d06;
+}
+
+#StatsCritList
+{
+	width: 100%;
+	flow-children: down;
+}
+
+.StatsCritLine
+{
+	horizontal-align: right;
+	flow-children: right;
+}
+
+.StatsMode .StatsCritChance,.StatsMode .StatsCritDamage,.StatsMode .StatsCritBonus
+{
+	vertical-align: center;
+	margin-left: 4px;
+	font-size: 15px;
+	color: #e1e1e1;
+	text-align: right;
+}
+
+.StatsMode .StatsCritChance
+{
+	width: 44px;
+}
+
+.StatsMode .StatsCritDamage
+{
+	width: 40px;
+}
+
+.StatsMode .StatsCritBonus
+{
+	width: 88px;
+	color: #3ed038;
+	text-overflow: shrink;
+}
+
+.StatsMode .StatsCritBonus.StatsCritEmpty
+{
+	color: #e1e1e1;
+}
+
+.StatsMode .StatsCritLine .StatsCritChance,.StatsMode .StatsCritLine .StatsCritDamage
+{
+	font-size: 14px;
+	color: #8a9ba8;
+}
+
+#StatsAttributes
+{
+	border-top: 3px solid black;
+}
+
+.StatsAttribute
+{
+	width: fill-parent-flow( 1.0 );
+	flow-children: right;
+	padding: 8px 10px;
+	border-left: 2px solid #000000cc;
+	background-color: gradient( linear, 0% 0%, 0% 100%, from( #141c21 ), to( #0b1014 ) );
+}
+
+#StatsColumnStrength
+{
+	border-left: 0px solid transparent;
+}
+
+#StatsColumnAgility.StatsPrimary
+{
+	background-color: gradient( linear, 0% 0%, 100% 0%, from( #09360b ), to( #0b1014 ) );
+}
+
+#StatsColumnIntelligence.StatsPrimary
+{
+	background-color: gradient( linear, 0% 0%, 100% 0%, from( #003237 ), to( #0b1014 ) );
+}
+
+#StatsColumnStrength.StatsPrimary
+{
+	background-color: gradient( linear, 0% 0%, 100% 0%, from( #380f01 ), to( #0b1014 ) );
+}
+
+#StatsColumnAll.StatsPrimary
+{
+	background-color: gradient( linear, 0% 0%, 100% 0%, from( #323700 ), to( #0b1014 ) );
+}
+
+.StatsAttributeIcon
+{
+	width: 32px;
+	height: 32px;
+	vertical-align: center;
+	margin-right: 8px;
+	background-size: 100%;
+}
+
+#StatsColumnAgility .StatsAttributeIcon
+{
+	background-image: url("s2r://panorama/images/primary_attribute_icons/primary_attribute_icon_agility_psd.vtex");
+}
+
+#StatsColumnIntelligence .StatsAttributeIcon
+{
+	background-image: url("s2r://panorama/images/primary_attribute_icons/primary_attribute_icon_intelligence_psd.vtex");
+}
+
+#StatsColumnStrength .StatsAttributeIcon
+{
+	background-image: url("s2r://panorama/images/primary_attribute_icons/primary_attribute_icon_strength_psd.vtex");
+}
+
+#StatsColumnAll .StatsAttributeIcon
+{
+	background-image: url("s2r://panorama/images/primary_attribute_icons/primary_attribute_icon_all_psd.vtex");
+}
+
+.StatsAttributeText
+{
+	flow-children: down;
+	vertical-align: center;
+}
+
+.StatsMode .StatsAttributeTitle
+{
+	font-size: 14px;
+	color: #8a9ba8;
+	text-transform: uppercase;
+}
+
+.StatsPrimary .StatsAttributeTitle
+{
+	color: #e1e1e1;
+}
+
+.StatsFour .StatsAttribute
+{
+	padding: 8px 6px;
+}
+
+.StatsFour .StatsAttributeIcon
+{
+	width: 26px;
+	height: 26px;
+	margin-right: 5px;
+}
+
+.StatsMode .StatsFour .StatsAttributeTitle
+{
+	font-size: 12px;
+}
+
+.StatsMode .StatsFour .StatsAttributeGain
+{
+	margin-left: 3px;
+	font-size: 11px;
+}
+
+.StatsMode .StatsFour .StatsAttributeValue
+{
+	font-size: 16px;
+}
+
+.StatsAttributeHeader
+{
+	flow-children: right;
+}
+
+.StatsMode .StatsAttributeGain
+{
+	vertical-align: center;
+	margin-bottom: 1px;
+	margin-left: 4px;
+	font-size: 13px;
+	color: #6f8090;
+}
+
+.StatsMode .StatsAttributePercent
+{
+	ignore-parent-flow: true;
+	horizontal-align: right;
+	vertical-align: top;
+	font-size: 14px;
+	color: #3ed038;
+}
+
+.StatsMode .StatsAttributePercent.StatsNegative
+{
+	color: #ec3d06;
+}
+
+.StatsMode .StatsAttributeDamage
+{
+	vertical-align: center;
+	margin-left: 5px;
+	font-size: 13px;
+}
+
+.StatsMode .StatsFour .StatsAttributeDamage
+{
+	font-size: 11px;
+}
+
+#StatsColumnStrength .StatsAttributeDamage
+{
+	color: #ec3d06;
+}
+
+#StatsColumnAgility .StatsAttributeDamage
+{
+	color: #3ed038;
+}
+
+#StatsColumnIntelligence .StatsAttributeDamage
+{
+	color: #00d9ec;
+}
+
+#StatsColumnAll .StatsAttributeDamage
+{
+	color: #d9ec00;
+}
+
+.StatsAttributeValues
+{
+	flow-children: right;
+}
+
+.StatsMode .StatsAttributeValue
+{
+	font-size: 18px;
+	font-weight: bold;
+	color: #ffffff;
+}
+
+.StatsMode .StatsAttributeValue.StatsBonus
+{
+	margin-left: 3px;
+	color: #3ed038;
+}
+
+.StatsMode .StatsAttributeValue.StatsBonus.StatsNegative
+{
+	color: #ec3d06;
+}
+
 #Contents.InnateMode
 {
 	padding: 0px;
@@ -1026,17 +1377,481 @@
 	color: #596e89;
 }
 
-#AghsDetails,#InnateLegendary,#InnateConnector,#InnateHeader,#AbilityCard .InnateCardTexture
+#Contents.ItemMode
+{
+	width: 360px;
+	background-image: url("s2r://panorama/images/hud/reborn/bg_tooltip_psd.vtex");
+	background-repeat: no-repeat;
+	background-position: left top;
+}
+
+#ItemDetails
+{
+	width: 100%;
+	flow-children: down;
+	padding: 8px;
+	background-image: url("s2r://panorama/images/hud/ability_tooltip_psd.vtex");
+	background-repeat: no-repeat;
+	background-position: 0px -44px;
+}
+
+#ItemHeader
+{
+	width: 100%;
+	flow-children: right;
+}
+
+#ItemImage
+{
+	width: 66px;
+	height: 48px;
+	margin: 4px 8px 6px 4px;
+	box-shadow: 0px 0px 4px black;
+}
+
+#ItemHeaderLabels
+{
+	width: fill-parent-flow( 1.0 );
+	flow-children: down;
+}
+
+#ItemTitle
+{
+	width: 100%;
+	flow-children: right;
+}
+
+#ItemName
+{
+	width: fill-parent-flow( 1.0 );
+	vertical-align: middle;
+	margin-top: 2px;
+	padding-left: 4px;
+	font-family: titleFont;
+	font-size: 18px;
+	font-weight: semi-bold;
+	color: #e1e1e1;
+	text-transform: uppercase;
+	letter-spacing: 0.5px;
+	text-overflow: shrink;
+	text-shadow: 2px 2px 0px 1.0 #00000090;
+}
+
+#ItemLevel
+{
+	horizontal-align: right;
+	vertical-align: middle;
+	margin-left: 8px;
+	font-size: 15px;
+	color: white;
+}
+
+#ItemSubHeader
+{
+	width: 100%;
+	flow-children: right;
+	margin-top: -4px;
+}
+
+#ItemCost
+{
+	flow-children: right;
+	vertical-align: center;
+}
+
+#ItemCostIcon
+{
+	width: 23px;
+	height: 23px;
+	margin-right: 5px;
+	margin-left: 4px;
+	background-image: url("s2r://panorama/images/hud/icon_gold_psd.vtex");
+	background-size: 100%;
+}
+
+#ItemBuyCost,#ItemBuyCostDeficit
+{
+	margin-top: 3px;
+	font-family: monospaceNumbersFont;
+	font-size: 16px;
+	font-weight: bold;
+	color: #FFCC33;
+	text-shadow: 2px 2px 0px 1.0 #00000088;
+}
+
+#ItemBuyCostDeficit
+{
+	margin-left: 4px;
+	color: #e03e2e;
+}
+
+#ItemRestockTime,#ItemStockAmount
+{
+	margin-top: 3px;
+	margin-left: 6px;
+	font-size: 16px;
+	color: #e03e2e;
+	text-shadow: 2px 2px 0px 1.0 #00000090;
+}
+
+#ItemStockAmount
+{
+	horizontal-align: right;
+	color: #e1e1e1;
+}
+
+#ItemCostToComplete
+{
+	font-size: 16px;
+	font-weight: bold;
+	color: #FFCC33;
+}
+
+#ItemTarget
+{
+	width: 100%;
+	flow-children: down;
+	margin-top: 5px;
+	margin-bottom: 5px;
+	padding: 5px 0px 2px 8px;
+	border-top: 1px solid #29353b;
+	border-bottom: 1px solid #29353b;
+}
+
+#ItemTarget Label
+{
+	font-size: 16px;
+	color: #596e89;
+}
+
+#ItemCoreDetails
+{
+	flow-children: down;
+	margin-top: 16px;
+	horizontal-align: center;
+}
+
+#ItemAttributes
+{
+	width: 400px;
+	margin: 0px 0px 10px 4px;
+	font-size: 17px;
+	color: #748090;
+	text-shadow: 2px 2px 0px 1.0 #00000088;
+}
+
+#ItemDescriptionOuter
+{
+	flow-children: none;
+	margin-left: 2px;
+}
+
+#ItemCosts
+{
+	width: 100%;
+	flow-children: left;
+	margin-top: 4px;
+	margin-right: 8px;
+	margin-bottom: 5px;
+	z-index: 1;
+}
+
+#ItemCosts Label
+{
+	margin-left: 10px;
+	padding-top: 2px;
+	padding-left: 25px;
+	font-size: 16px;
+	font-weight: semi-bold;
+	color: #e1e1e1;
+	text-shadow: 2px 2px 0px 1.0 #00000088;
+	background-position: 0% 50%;
+	background-repeat: no-repeat;
+}
+
+#ItemDescription
+{
+	width: 330px;
+	flow-children: down;
+}
+
+#ItemDescription > Label
+{
+	width: 330px;
+	margin-bottom: 8px;
+	padding: 6px 8px 8px 8px;
+	font-size: 16px;
+	color: #626d7b;
+	text-shadow: 2px 2px 0px 1.0 #00000090;
+	background-color: gradient( linear, 0% 0%, 0% 100%, from( #1c262f ), to( #1b262f ) );
+}
+
+.HideLore #ItemDescription > Label,.HideLore #ItemDescription > .ItemSectionCosts,#ItemDescription > Label.ItemBeforeCosts
+{
+	margin-bottom: 0px;
+}
+
+#ItemDescription > Label.Header
+{
+	height: 28px;
+	margin-bottom: 0px;
+	padding-top: 4px;
+	background-image: url("s2r://panorama/images/hud/item_tooltip_passive_psd.vtex");
+	background-repeat: no-repeat;
+	background-position: top;
+}
+
+#ItemDescription .GameplayValues
+{
+	color: #474a61;
+}
+
+#ItemDescription .GameplayValues.GameplayVariable
+{
+	color: #7e8c9d;
+}
+
+#ItemDescription > Label.Active
+{
+	color: #7a80a7;
+	background-color: gradient( linear, 0% 0%, 0% 100%, from( #171d2f ), to( #1b2437 ) );
+}
+
+#ItemDescription > Label.Active.Header
+{
+	background-image: url("s2r://panorama/images/hud/item_tooltip_active_psd.vtex");
+}
+
+#ItemDescription Label.Active h1
+{
+	color: #b0b0ff;
+}
+
+#ItemDescription Label.Active .GameplayVariable
+{
+	color: #9f9fcf;
+}
+
+.Consumable #ItemDescription > Label.Active
+{
+	color: #7b8a72;
+	text-shadow: 2px 2px 0px 1.0 #00000090;
+	background-color: gradient( linear, 0% 0%, 0% 100%, from( #15221f ), to( #1a2926 ) );
+}
+
+.Consumable #ItemDescription > Label.Active.Header
+{
+	color: #95c07a;
+	background-image: url("s2r://panorama/images/hud/item_tooltip_use_psd.vtex");
+}
+
+.Consumable #ItemDescription Label.Active h1,.Consumable #ItemDescription Label.Active .GameplayVariable
+{
+	color: #95c07a;
+}
+
+#ItemDescription > .ItemSectionCosts
+{
+	width: 330px;
+	flow-children: down;
+	margin-bottom: 8px;
+	padding: 0px 8px 6px 8px;
+	background-color: #1b262f;
+}
+
+#ItemDescription > .ItemSectionCosts.Active
+{
+	background-color: #1b2437;
+}
+
+.Consumable #ItemDescription > .ItemSectionCosts.Active
+{
+	background-color: #1a2926;
+}
+
+.ItemSectionCostsSeparator
+{
+	width: 100%;
+	height: 1px;
+	margin-bottom: 4px;
+	background-color: gradient( radial, 50% 50%, 0% 0%, 50% 50%, from( #596e89aa ), to( #596e8900 ) );
+}
+
+.ItemSectionCostsLine
+{
+	flow-children: right;
+}
+
+.ItemSectionCostsLine Label
+{
+	vertical-align: center;
+	margin-right: 10px;
+	padding-left: 25px;
+	font-size: 16px;
+	color: #7D7D7D;
+	background-position: 0% 50%;
+	background-repeat: no-repeat;
+}
+
+#ItemDescription .ItemSectionCosts .GameplayValues.GameplayVariable
+{
+	color: #e1e1e1;
+}
+
+#ItemDescription > Label.BasherDisabled
+{
+	wash-color: #ff3b2f90;
+}
+
+#ItemCoreDetails .AbilityCreeps
+{
+	width: 330px;
+	margin: 0px 0px 8px 2px;
+}
+
+#ItemCoreDetails .AbilityCreepsLine
+{
+	width: 314px;
+}
+
+#ItemBasher
+{
+	width: 330px;
+	flow-children: down;
+	margin: 0px 0px 8px 2px;
+	padding: 8px 8px 8px 8px;
+	border: 1px solid #b8342a;
+	border-radius: 3px;
+	background-color: gradient( linear, 0% 0%, 100% 0%, from( #2a0606f0 ), to( #100202f0 ) );
+}
+
+#ItemBasher .ItemBasherIcon
+{
+	margin-left: 0px;
+	margin-right: 8px;
+}
+
+#ItemBasher .ItemGroupTitle
+{
+	color: #ff8a80;
+}
+
+#ItemBasher .ItemGroupSeparator
+{
+	background-color: #7a2a24;
+}
+
+#ItemBasher .ItemGroupDescription
+{
+	color: #c9a19c;
+}
+
+#ItemGroups
+{
+	width: 330px;
+	flow-children: down;
+	margin: 0px 0px 8px 2px;
+	padding: 8px 8px 8px 8px;
+	border: 1px solid #3a4b5e;
+	border-radius: 3px;
+	background-color: gradient( linear, 0% 0%, 100% 0%, from( #1c2a3acc ), to( #0c1219cc ) );
+}
+
+.ItemGroupHeader
+{
+	width: 100%;
+	flow-children: right;
+}
+
+.ItemGroupHeader.ItemGroupNext
+{
+	margin-top: 12px;
+}
+
+.ItemGroupIcon
+{
+	width: 30px;
+	height: 22px;
+	vertical-align: center;
+	margin-right: 8px;
+	border: 1px solid #5b7089;
+	border-radius: 2px;
+}
+
+.ItemGroupTitle
+{
+	vertical-align: center;
+	font-size: 17px;
+	color: #c8d2de;
+}
+
+.ItemGroupSeparator
+{
+	width: 100%;
+	height: 1px;
+	margin: 8px 0px 6px 0px;
+	background-color: #3a4b5e;
+}
+
+.ItemGroupDescription
+{
+	width: 100%;
+	font-size: 15px;
+	color: #7e8c9d;
+}
+
+#ItemCharges,#ItemExtraAttributes
+{
+	padding-left: 8px;
+	color: #596e89;
+}
+
+#ItemLore
+{
+	width: 330px;
+	margin-top: 12px;
+	margin-left: 1px;
+	padding: 5px 10px 5px 10px;
+	font-size: 14px;
+	font-style: italic;
+	color: #3d4e5b;
+	background-color: #0b1215;
+}
+
+#ItemOwnedBy
+{
+	font-size: 15px;
+	font-weight: bold;
+}
+
+#ItemCoreDetails .ItemSell
+{
+	font-size: 15px;
+	font-weight: bold;
+	color: #D58A17;
+}
+
+#ItemConsumableInfo
+{
+	width: 100%;
+	margin-top: 4px;
+	padding: 5px 10px 5px 10px;
+	font-size: 16px;
+	color: #ccc;
+	background-color: #233154;
+}
+
+#AghsDetails,#StatsDetails,#ItemDetails,#InnateLegendary,#InnateConnector,#InnateHeader,#AbilityCard .InnateCardTexture
 {
 	visibility: collapse;
 }
 
-.AghsMode #AghsDetails,.InnateMode #InnateLegendary,.InnateMode #InnateConnector,.InnateMode #InnateHeader,.InnateMode #AbilityCard .InnateCardTexture
+.AghsMode #AghsDetails,.StatsMode #StatsDetails,.ItemMode #ItemDetails,.InnateMode #InnateLegendary,.InnateMode #InnateConnector,.InnateMode #InnateHeader,.InnateMode #AbilityCard .InnateCardTexture
 {
 	visibility: visible;
 }
 
-.AghsMode #AbilityCard,.InnateMode #InnateLegendary.InnateNoLegendary,.InnateMode #InnateConnector.InnateNoLegendary,.InnateMode #AbilityCard.InnateEmpty,.InnateMode #AbilityHeader,.InnateMode #AbilityTarget,.InnateMode #AbilityLoreBox
+.AghsMode #AbilityCard,.StatsMode #AbilityCard,.ItemMode #AbilityCard,.InnateMode #InnateLegendary.InnateNoLegendary,.InnateMode #InnateConnector.InnateNoLegendary,.InnateMode #AbilityCard.InnateEmpty,.InnateMode #AbilityHeader,.InnateMode #AbilityTarget,.InnateMode #AbilityLoreBox
 {
 	visibility: collapse;
 }

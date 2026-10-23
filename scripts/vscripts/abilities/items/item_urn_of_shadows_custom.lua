@@ -121,42 +121,26 @@ function modifier_item_urn_of_shadows_custom_passive:OnCreated()
 	self.ability = self:GetAbility()
 	self.parent = self:GetParent()
 
+	if not IsServer() then
+		return
+	end
 	if not self.parent:IsRealHero() then
 		return
 	end
 
 	if self.ability.bonus_lifesteal > 0 then
-		self.parent:AddDamageEvent_out(self, true)
+		self.parent:AddLifesteal(self, {
+			type = 1,
+			value = function(params)
+				if params.inflictor == self.ability then
+					return self.ability.bonus_lifesteal + self.ability.damage_heal
+				end
+				return self.ability.bonus_lifesteal
+			end,
+		})
 	end
 
 	self.parent:AddDeathEvent(self, true)
-end
-
-function modifier_item_urn_of_shadows_custom_passive:DamageEvent_out(params)
-	if not IsServer() then
-		return
-	end
-	if not IsValid(self.ability) then
-		return
-	end
-	if self.ability.bonus_lifesteal <= 0 then
-		return
-	end
-	local result = self.parent:CheckLifesteal(params, 1)
-	if not result then
-		return
-	end
-
-	local heal = self.ability.bonus_lifesteal
-	if params.inflictor and params.inflictor == self.ability then
-		heal = heal + self.ability.damage_heal
-	end
-	self.parent:GenericHeal(
-		heal * params.damage * result,
-		self.ability,
-		true,
-		"particles/items3_fx/octarine_core_lifesteal.vpcf"
-	)
 end
 
 function modifier_item_urn_of_shadows_custom_passive:DeclareFunctions()

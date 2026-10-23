@@ -411,9 +411,6 @@
 			m_bIncludeWater = true
 		},
 		{
-			_class = "C_OP_FadeInSimple"
-		},
-		{
 			_class = "C_OP_BasicMovement"
 			m_flOpStrength = 
 			{

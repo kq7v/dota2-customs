@@ -266,10 +266,6 @@ _G.invis_mods = {
 -- Отдельные статус эффекты, из предметов доты
 _G.dota_modifiers_status = {
 	["modifier_item_shivas_guard_blast"] = { "particles/status_fx/status_effect_frost.vpcf", MODIFIER_PRIORITY_LOW },
-	["modifier_item_mage_slayer_debuff"] = {
-		"particles/items3_fx/status_effect_mage_slayer_debuff.vpcf",
-		MODIFIER_PRIORITY_LOW,
-	},
 	["modifier_ghost_state"] = { "particles/status_fx/status_effect_ghost.vpcf", MODIFIER_PRIORITY_SUPER_ULTRA },
 	["modifier_item_ethereal_blade_ethereal"] = {
 		"particles/status_fx/status_effect_ghost.vpcf",
@@ -617,7 +613,6 @@ _G.wearables_item_effects = {
 -- Модификаторы вписанные, при которых предметы должны пропасть
 _G.modifiers_alpha = {
 	["modifier_hexxed"] = true,
-	["modifier_custom_puck_phase_shift"] = true,
 	["modifier_sheepstick_debuff"] = true,
 	["modifier_item_unstable_wand_critter"] = true,
 	["modifier_monkey_king_transform"] = true,

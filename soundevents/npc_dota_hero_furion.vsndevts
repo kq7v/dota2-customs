@@ -133,21 +133,6 @@
 		volume_fade_out = 1
 		type = "dota_src1_3d"
 	}
-	Furion.WrathOfNature_break = 
-	{
-		volume = 1.2
-		pitch_rand_min = 0.15
-		pitch_rand_max = 0.15
-		distance_max = 1600
-		vsnd_files = 
-		[
-			"sounds/items/nullifier_target.vsnd",
-		]
-		pitch = 1
-		soundlevel = 81
-		volume_fade_out = 1
-		type = "dota_src1_3d"
-	}
 	Furion.WrathOfNature_Damage.Creep = 
 	{
 		volume = 1.8
@@ -157,96 +142,6 @@
 		vsnd_files = 
 		[
 			"sounds/weapons/hero/furion/wrath_damage.vsnd",
-		]
-		pitch = 1
-		soundlevel = 81
-		volume_fade_out = 1
-		type = "dota_src1_3d"
-	}
-	Furion.Sprout_slow = 
-	{
-		volume = 1.8
-		pitch_rand_min = 0.05
-		pitch_rand_max = 0.05
-		distance_max = 1600
-		vsnd_files = 
-		[
-			"sounds/weapons/hero/hoodwink/boomerang_slow.vsnd",
-		]
-		pitch = 1
-		soundlevel = 81
-		volume_fade_out = 1
-		type = "dota_src1_3d"
-	}
-	Furion.Sprout_buff = 
-	{
-		volume = 1.6
-		pitch_rand_min = 0.15
-		pitch_rand_max = 0.15
-		distance_max = 1600
-		vsnd_files = 
-		[
-			"sounds/weapons/hero/treant/natures_guise.vsnd",
-		]
-		pitch = 1
-		soundlevel = 81
-		volume_fade_out = 1
-		type = "dota_src1_3d"
-	}
-	Furion.Blink_start = 
-	{
-		volume = 1.8
-		pitch_rand_min = 0.05
-		pitch_rand_max = 0.05
-		distance_max = 1600
-		vsnd_files = 
-		[
-			"sounds/weapons/hero/antimage/blink_out.vsnd",
-		]
-		pitch = 1
-		soundlevel = 81
-		volume_fade_out = 1
-		type = "dota_src1_3d"
-	}
-	Furion.Blink_end = 
-	{
-		volume = 1.5
-		pitch_rand_min = 0.15
-		pitch_rand_max = 0.15
-		distance_max = 1600
-		vsnd_files = 
-		[
-			"sounds/weapons/hero/antimage/blink_in.vsnd",
-		]
-		pitch = 1
-		soundlevel = 81
-		volume_fade_out = 1
-		type = "dota_src1_3d"
-	}
-	Furion.Blink_end2 = 
-	{
-		volume = 1.1
-		pitch_rand_min = -0.05
-		pitch_rand_max = -0.05
-		distance_max = 1600
-		vsnd_files = 
-		[
-			"sounds/weapons/hero/treant/natures_guise_off.vsnd",
-		]
-		pitch = 1
-		soundlevel = 81
-		volume_fade_out = 1
-		type = "dota_src1_3d"
-	}
-	Furion.Wrath_bkb = 
-	{
-		volume = 2.2
-		pitch_rand_min = 0.05
-		pitch_rand_max = 0.05
-		distance_max = 1600
-		vsnd_files = 
-		[
-			"sounds/weapons/hero/brewmaster/dispel_magic.vsnd",
 		]
 		pitch = 1
 		soundlevel = 81
@@ -423,21 +318,6 @@
 			"sounds/vo/furion/furi_taunt_07.vsnd",
 		]
 	}
-	Furion.Teleport_heal = 
-	{
-		volume = 1.2
-		pitch_rand_min = 0.15
-		pitch_rand_max = 0.15
-		distance_max = 1600
-		vsnd_files = 
-		[
-			"sounds/weapons/hero/treant/living_armor.vsnd",
-		]
-		pitch = 1
-		soundlevel = 81
-		volume_fade_out = 1
-		type = "dota_src1_3d"
-	}
 	Voice.Furion.5_1 = 
 	{
 		volume = 1.9
@@ -447,21 +327,6 @@
 		[
 			"sounds/vo/furion/furi_taunt_08.vsnd",
 		]
-	}
-	Furion.Teleport_cast = 
-	{
-		volume = 0.85
-		pitch_rand_min = 0.25
-		pitch_rand_max = 0.25
-		distance_max = 1600
-		vsnd_files = 
-		[
-			"sounds/weapons/hero/furion/teleport_in.vsnd",
-		]
-		pitch = 1
-		soundlevel = 81
-		volume_fade_out = 1
-		type = "dota_src1_3d"
 	}
 	Furion.Sprout_delay_damage = 
 	{
@@ -517,21 +382,6 @@
 		vsnd_files = 
 		[
 			"sounds/weapons/hero/furion/wrath_damage.vsnd",
-		]
-		pitch = 1
-		soundlevel = 81
-		volume_fade_out = 1
-		type = "dota_src1_3d"
-	}
-	Furion.Wrath_heal = 
-	{
-		volume = 1.25
-		pitch_rand_min = 0.1
-		pitch_rand_max = 0.2
-		distance_max = 1600
-		vsnd_files = 
-		[
-			"sounds/weapons/hero/oracle/false_promise_heal.vsnd",
 		]
 		pitch = 1
 		soundlevel = 81
@@ -595,24 +445,6 @@
 			"sounds/heroes/furion/Furion.6_1.mp3",
 		]
 		vsnd_duration = 5.592
-	}
-	Furion.Shard_activate = 
-	{
-		volume = 1.5
-		pitch_rand_min = -0.1
-		pitch_rand_max = 0.1
-		distance_max = 1600
-		vsnd_files = 
-		[
-			"sounds/weapons/hero/furion/treant_spawn02.vsnd",
-			"sounds/weapons/hero/furion/treant_spawn04.vsnd",
-			"sounds/weapons/hero/furion/treant_spawn03.vsnd",
-			"sounds/weapons/hero/furion/treant_spawn01.vsnd",
-		]
-		pitch = 1
-		soundlevel = 81
-		volume_fade_out = 1
-		type = "dota_src1_3d"
 	}
 	DoubleRating.npc_dota_hero_furion = 
 	{
@@ -703,21 +535,6 @@
 		[
 			"sounds/vo/furion/furi_equipping_04.vsnd",
 		]
-	}
-	Furion.Teleport_cast2 = 
-	{
-		volume = 0.8
-		pitch_rand_min = -0.15
-		pitch_rand_max = -0.15
-		distance_max = 1600
-		vsnd_files = 
-		[
-			"sounds/weapons/hero/keeper/blinding_light.vsnd",
-		]
-		pitch = 1
-		soundlevel = 81
-		volume_fade_out = 1
-		type = "dota_src1_3d"
 	}
 	Voice.Furion.4_1 = 
 	{

@@ -24,9 +24,17 @@ function item_kaya_custom:Spawn()
 end
 
 modifier_item_kaya_custom = class(mod_hidden)
-function modifier_item_kaya_custom:OnCreated(table)
+function modifier_item_kaya_custom:GetUniqueStat(name)
+	return self[name]
+end
+function modifier_item_kaya_custom:OnCreated()
 	self.parent = self:GetParent()
 	self.ability = self:GetAbility()
+
+	self.spell_amp = self.ability.spell_amp
+	self.mana_regen = self.ability.mana_regen_multiplier
+	self.mana_health = self.ability.health_bonus
+	self.parent:AddUniqueStat(self, "spell_amp", "mana_regen", "mana_health")
 end
 
 function modifier_item_kaya_custom:DeclareFunctions()
@@ -43,31 +51,17 @@ function modifier_item_kaya_custom:GetModifierBonusStats_Intellect()
 end
 
 function modifier_item_kaya_custom:GetModifierSpellAmplify_Percentage()
-	if self.parent:HasModifier("modifier_item_yasha_and_kaya_custom") then
-		return
-	end
-	if self.parent:HasModifier("modifier_item_kaya_and_sange_custom") then
-		return
-	end
-	return self.ability.spell_amp
+	return self.parent:UniqueStat(self, "spell_amp")
 end
 
 function modifier_item_kaya_custom:GetModifierMPRegenAmplify_Percentage()
-	if self.parent:HasModifier("modifier_item_yasha_and_kaya_custom") then
-		return
-	end
-	if self.parent:HasModifier("modifier_item_kaya_and_sange_custom") then
-		return
-	end
-	return self.ability.mana_regen_multiplier
+	return self.parent:UniqueStat(self, "mana_regen")
 end
 
 function modifier_item_kaya_custom:GetModifierHealthBonus()
-	if self.parent:HasModifier("modifier_item_yasha_and_kaya_custom") then
+	local bonus = self.parent:UniqueStat(self, "mana_health")
+	if not bonus then
 		return
 	end
-	if self.parent:HasModifier("modifier_item_kaya_and_sange_custom") then
-		return
-	end
-	return self.ability.health_bonus * self.parent:GetMaxMana()
+	return bonus * self.parent:GetMaxMana()
 end

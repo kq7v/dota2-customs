@@ -26,20 +26,6 @@
 		type = "dota_src1_3d"
 		distance_max = 1600
 	}
-	Axe.Call_damage = 
-	{
-		volume = 1.2
-		pitch_rand_min = -0.03
-		pitch_rand_max = 0.03
-		pitch = 1
-		soundlevel = 81
-		vsnd_files = 
-		[
-			"sounds/weapons/hero/axe/berserkers_call.vsnd",
-		]
-		type = "dota_src1_3d"
-		distance_max = 1600
-	}
 	Axe.Hunger_damage = 
 	{
 		volume = 1.0
@@ -50,20 +36,6 @@
 		vsnd_files = 
 		[
 			"sounds/weapons/hero/doom_bringer/infernal_blade_preattack.vsnd",
-		]
-		type = "dota_src1_3d"
-		distance_max = 1600
-	}
-	Axe.Culling_execute = 
-	{
-		volume = 1.2
-		pitch_rand_min = -0.03
-		pitch_rand_max = 0.03
-		pitch = 1
-		soundlevel = 81
-		vsnd_files = 
-		[
-			"sounds/weapons/hero/axe/jungle_dunk_success.vsnd",
 		]
 		type = "dota_src1_3d"
 		distance_max = 1600
@@ -137,34 +109,6 @@
 		vsnd_files = 
 		[
 			"sounds/weapons/hero/axe/counterhelix_blood_chaser.vsnd",
-		]
-		type = "dota_src1_3d"
-		distance_max = 1600
-	}
-	Axe.Helix_charge = 
-	{
-		volume = 0.8
-		pitch_rand_min = 0.05
-		pitch_rand_max = 0.05
-		pitch = 1
-		soundlevel = 81
-		vsnd_files = 
-		[
-			"sounds/weapons/hero/axe/counterhelix_blood_chaser.vsnd",
-		]
-		type = "dota_src1_3d"
-		distance_max = 1600
-	}
-	Axe.Helix_charge2 = 
-	{
-		volume = 0.8
-		pitch_rand_min = 0.05
-		pitch_rand_max = 0.05
-		pitch = 1
-		soundlevel = 81
-		vsnd_files = 
-		[
-			"sounds/weapons/hero/phantom_lancer/phantom_edge.vsnd",
 		]
 		type = "dota_src1_3d"
 		distance_max = 1600

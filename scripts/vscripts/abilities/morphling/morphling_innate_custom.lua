@@ -43,9 +43,6 @@ function morphling_innate_custom:UpdateTalents()
 	if not self.init then
 		self.init = true
 		self.talents = {
-			has_w4 = 0,
-			w4_heal = caster:GetTalentValue("modifier_morphling_adaptive_4", "heal", true) / 100,
-
 			has_h1 = 0,
 			h1_slow = 0,
 			h1_heal_reduce = 0,
@@ -64,16 +61,7 @@ function morphling_innate_custom:UpdateTalents()
 			h6_agi = caster:GetTalentValue("modifier_morphling_hero_6", "agi", true),
 			h6_max_move_real = caster:GetTalentValue("modifier_morphling_hero_6", "max_move_real", true),
 			h6_str = caster:GetTalentValue("modifier_morphling_hero_6", "str", true),
-
-			has_r2 = 0,
-			r2_heal = 0,
-			r2_bonus = caster:GetTalentValue("modifier_morphling_morph_2", "bonus", true),
 		}
-	end
-
-	if caster:HasTalent("modifier_morphling_adaptive_4") then
-		self.talents.has_w4 = 1
-		caster:AddDamageEvent_out(self.tracker, true)
 	end
 
 	if caster:HasTalent("modifier_morphling_hero_6") then
@@ -98,12 +86,6 @@ function morphling_innate_custom:UpdateTalents()
 		self.talents.has_h2 = 1
 		self.talents.h2_speed = caster:GetTalentValue("modifier_morphling_hero_2", "speed")
 		self.talents.h2_mana = caster:GetTalentValue("modifier_morphling_hero_2", "mana")
-	end
-
-	if caster:HasTalent("modifier_morphling_morph_2") then
-		self.talents.has_r2 = 1
-		self.talents.r2_heal = caster:GetTalentValue("modifier_morphling_morph_2", "heal") / 100
-		caster:AddDamageEvent_out(self.tracker, true)
 	end
 end
 
@@ -138,7 +120,13 @@ function modifier_morphling_innate_custom:DamageEvent_out(params)
 	if not IsServer() then
 		return
 	end
+	if self.ability.talents.has_h1 == 0 then
+		return
+	end
 	if self.parent ~= params.attacker then
+		return
+	end
+	if params.inflictor and params.inflictor:IsItem() then
 		return
 	end
 
@@ -147,41 +135,11 @@ function modifier_morphling_innate_custom:DamageEvent_out(params)
 		return
 	end
 
-	if self.ability.talents.has_h1 == 1 and (not params.inflictor or not params.inflictor:IsItem()) then
-		unit:AddNewModifier(
-			self.parent,
-			self.ability,
-			"modifier_morphling_innate_custom_slow",
-			{ duration = self.ability.talents.h1_duration }
-		)
-	end
-
-	local result = self.parent:CheckLifesteal(params)
-	if not result then
-		return
-	end
-
-	if self.ability.talents.has_r2 == 1 and not params.inflictor then
-		local heal = params.damage * self.ability.talents.r2_heal * result
-		if self.parent:HasModifier("modifier_morphling_replicate_custom") then
-			heal = heal * self.ability.talents.r2_bonus
-		end
-		self.parent:GenericHeal(heal, self.ability, true, false, "modifier_morphling_morph_2")
-	end
-
-	if self.ability.talents.has_w4 == 0 then
-		return
-	end
-	if not params.inflictor then
-		return
-	end
-
-	self.parent:GenericHeal(
-		params.damage * self.ability.talents.w4_heal * result,
+	unit:AddNewModifier(
+		self.parent,
 		self.ability,
-		true,
-		"particles/items3_fx/octarine_core_lifesteal.vpcf",
-		"modifier_morphling_adaptive_4"
+		"modifier_morphling_innate_custom_slow",
+		{ duration = self.ability.talents.h1_duration }
 	)
 end
 

@@ -85,21 +85,6 @@
 		soundlevel = 100
 		volume_fade_out = 0.3
 	}
-	Enigma.Blackhole_refresh = 
-	{
-		type = "dota_src1_3d"
-		distance_max = 1600
-		vsnd_files = 
-		[
-			"sounds/weapons/hero/rattletrap/overclock_cast.vsnd",
-		]
-		volume = 0.4
-		pitch_rand_min = 0
-		pitch_rand_max = 0.05
-		pitch = 1
-		soundlevel = 100
-		volume_fade_out = 0.5
-	}
 	Voice.Enigma.1_1 = 
 	{
 		vsnd_files = 
@@ -172,21 +157,6 @@
 		type = "dota_src1_3d"
 		volume = 1.6
 	}
-	Enigma.Blackhole_legendary_switch = 
-	{
-		type = "dota_src1_3d"
-		distance_max = 1600
-		vsnd_files = 
-		[
-			"sounds/weapons/hero/obsidian_destroyer/essence_aura.vsnd",
-		]
-		volume = 0.5
-		pitch_rand_min = -0.15
-		pitch_rand_max = 0
-		pitch = 1
-		soundlevel = 100
-		volume_fade_out = 1
-	}
 	Voice.Enigma.6_1 = 
 	{
 		vsnd_files = 
@@ -252,36 +222,6 @@
 		volume = 0.3
 		pitch_rand_min = -0.35
 		pitch_rand_max = -0.2
-		pitch = 1
-		soundlevel = 100
-		volume_fade_out = 0.5
-	}
-	Enigma.Midnight_fear = 
-	{
-		type = "dota_src1_3d"
-		distance_max = 1600
-		vsnd_files = 
-		[
-			"sounds/weapons/hero/dark_willow/fear_target.vsnd",
-		]
-		volume = 0.8
-		pitch_rand_min = -0.05
-		pitch_rand_max = -0.05
-		pitch = 1
-		soundlevel = 100
-		volume_fade_out = 0.5
-	}
-	Enigma.Midnight_silence = 
-	{
-		type = "dota_src1_3d"
-		distance_max = 1600
-		vsnd_files = 
-		[
-			"sounds/weapons/hero/silencer/curse_tick.vsnd",
-		]
-		volume = 1.5
-		pitch_rand_min = -0.1
-		pitch_rand_max = -0.1
 		pitch = 1
 		soundlevel = 100
 		volume_fade_out = 0.5
@@ -566,21 +506,6 @@
 		soundlevel = 100
 		volume_fade_out = 1
 	}
-	Enigma.Summon_damage_max = 
-	{
-		type = "dota_src1_3d"
-		distance_max = 1600
-		vsnd_files = 
-		[
-			"sounds/items/star_emblem_enemy.vsnd",
-		]
-		volume = 0.7
-		pitch_rand_min = -0.05
-		pitch_rand_max = -0.05
-		pitch = 1
-		soundlevel = 100
-		volume_fade_out = 1
-	}
 	Enigma.Blackhole_delay = 
 	{
 		type = "dota_src1_3d"
@@ -592,21 +517,6 @@
 		volume = 2
 		pitch_rand_min = -0.2
 		pitch_rand_max = -0.2
-		pitch = 1
-		soundlevel = 100
-		volume_fade_out = 1
-	}
-	Enigma.Blackhole_delay_mini = 
-	{
-		type = "dota_src1_3d"
-		distance_max = 1600
-		vsnd_files = 
-		[
-			"sounds/weapons/hero/void_spirit/remnant_projectile.vsnd",
-		]
-		volume = 0.8
-		pitch_rand_min = -0.12
-		pitch_rand_max = -0.12
 		pitch = 1
 		soundlevel = 100
 		volume_fade_out = 1

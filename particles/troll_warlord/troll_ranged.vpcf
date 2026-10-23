@@ -124,6 +124,7 @@
 			m_flRotOffset = 180.0
 			m_TransformInput = 
 			{
+				m_nType = "PT_TYPE_CONTROL_POINT"
 				m_nControlPoint = 3
 			}
 		},

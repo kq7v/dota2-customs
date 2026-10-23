@@ -55,7 +55,7 @@ function modifier_item_satanic_custom:OnCreated()
 	if not self.parent:IsRealHero() then
 		return
 	end
-	self.parent:AddDamageEvent_out(self, true)
+	self.parent:AddLifesteal(self, { type = 2, value = self.ability.lifesteal_percent })
 end
 
 function modifier_item_satanic_custom:DeclareFunctions()
@@ -78,28 +78,6 @@ function modifier_item_satanic_custom:GetModifierBonusStats_Strength()
 	return self.ability.bonus_strength
 end
 
-function modifier_item_satanic_custom:DamageEvent_out(params)
-	if not IsServer() then
-		return
-	end
-	if not IsValid(self.ability) then
-		return
-	end
-	local result = self.parent:CheckLifesteal(params, 2)
-	if not result then
-		return
-	end
-
-	local heal = self.parent:HasModifier("modifier_item_satanic_custom_active")
-			and self.ability.unholy_lifesteal_total_tooltip
-		or self.ability.lifesteal_percent
-	self.parent:GenericHeal(
-		result * heal * params.damage,
-		self.ability,
-		not self.parent:HasModifier("modifier_item_satanic_custom_active")
-	)
-end
-
 modifier_item_satanic_custom_active = class(mod_visible)
 function modifier_item_satanic_custom_active:OnCreated()
 	self.parent = self:GetParent()
@@ -109,4 +87,8 @@ function modifier_item_satanic_custom_active:OnCreated()
 		return
 	end
 	self.parent:GenericParticle("particles/items2_fx/satanic_buff.vpcf", self)
+	self.parent:AddLifesteal(
+		self,
+		{ type = 2, value = self.ability.unholy_lifesteal_total_tooltip - self.ability.lifesteal_percent, text = true }
+	)
 end

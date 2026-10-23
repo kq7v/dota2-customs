@@ -314,9 +314,17 @@ function modifier_item_starforge_seal_custom_stun:OnDestroy()
 end
 
 modifier_item_starforge_seal_custom_stats = class(mod_hidden)
+function modifier_item_starforge_seal_custom_stats:GetUniqueStat(name)
+	return self[name]
+end
 function modifier_item_starforge_seal_custom_stats:OnCreated()
 	self.parent = self:GetParent()
 	self.ability = self:GetAbility()
+
+	self.spell_amp = self.ability.spell_amp
+	self.mana_regen = self.ability.mana_regen_multiplier
+	self.mana_health = self.ability.health_bonus
+	self.parent:AddUniqueStat(self, "spell_amp", "mana_regen", "mana_health")
 end
 
 function modifier_item_starforge_seal_custom_stats:DeclareFunctions()
@@ -349,47 +357,21 @@ function modifier_item_starforge_seal_custom_stats:GetModifierManaBonus()
 end
 
 function modifier_item_starforge_seal_custom_stats:GetModifierHealthBonus()
-	if self.parent:HasModifier("modifier_item_yasha_and_kaya_custom") then
+	local bonus = self.parent:UniqueStat(self, "mana_health")
+	if not bonus then
 		return
 	end
-	if self.parent:HasModifier("modifier_item_kaya_and_sange_custom") then
-		return
-	end
-	if self.parent:HasModifier("modifier_item_kaya_custom") then
-		return
-	end
-	return self.ability.health_bonus * self.parent:GetMaxMana()
+	return bonus * self.parent:GetMaxMana()
 end
 
 function modifier_item_starforge_seal_custom_stats:GetModifierCastRangeBonusStacking()
-	if self.parent:HasModifier("modifier_item_aether_lens") then
-		return
-	end
 	return self.ability.range_bonus
 end
 
 function modifier_item_starforge_seal_custom_stats:GetModifierSpellAmplify_Percentage()
-	if self.parent:HasModifier("modifier_item_yasha_and_kaya_custom") then
-		return
-	end
-	if self.parent:HasModifier("modifier_item_kaya_and_sange_custom") then
-		return
-	end
-	if self.parent:HasModifier("modifier_item_kaya_custom") then
-		return
-	end
-	return self.ability.spell_amp
+	return self.parent:UniqueStat(self, "spell_amp")
 end
 
 function modifier_item_starforge_seal_custom_stats:GetModifierMPRegenAmplify_Percentage()
-	if self.parent:HasModifier("modifier_item_yasha_and_kaya_custom") then
-		return
-	end
-	if self.parent:HasModifier("modifier_item_kaya_and_sange_custom") then
-		return
-	end
-	if self.parent:HasModifier("modifier_item_kaya_custom") then
-		return
-	end
-	return self.ability.mana_regen_multiplier
+	return self.parent:UniqueStat(self, "mana_regen")
 end

@@ -28,17 +28,19 @@ function modifier_item_enhancement_vampiric_custom:OnCreated()
 	self.parent = self:GetParent()
 	self.ability = self:GetAbility()
 	self:OnRefresh()
-
-	if not self.parent:IsRealHero() then
-		return
-	end
-	self.parent:AddDamageEvent_out(self, true)
 end
 
 function modifier_item_enhancement_vampiric_custom:OnRefresh()
 	self.health_regen = self.ability:GetSpecialValueFor("health_regen")
 	self.lifesteal = self.ability:GetSpecialValueFor("lifesteal") / 100
-	self.creeps = self.ability:GetSpecialValueFor("creeps")
+
+	if not IsServer() then
+		return
+	end
+	if not self.parent:IsRealHero() then
+		return
+	end
+	self.parent:AddLifesteal(self, { value = self.lifesteal })
 end
 
 function modifier_item_enhancement_vampiric_custom:DeclareFunctions()
@@ -49,26 +51,4 @@ end
 
 function modifier_item_enhancement_vampiric_custom:GetModifierConstantHealthRegen()
 	return self.health_regen
-end
-
-function modifier_item_enhancement_vampiric_custom:DamageEvent_out(params)
-	if not IsServer() then
-		return
-	end
-	if not IsValid(self.ability) then
-		return
-	end
-	if not self.parent:CheckLifesteal(params) then
-		return
-	end
-
-	local heal = self.lifesteal * params.damage
-	heal = params.unit:IsCreep() and heal / self.creeps or heal
-
-	self.parent:GenericHeal(
-		heal,
-		self.ability,
-		true,
-		params.inflictor and "particles/items3_fx/octarine_core_lifesteal.vpcf" or nil
-	)
 end

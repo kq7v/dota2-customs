@@ -253,7 +253,7 @@ function modifier_ember_spirit_flame_guard_custom:UpdateEvents()
 		return
 	end
 
-	self.parent:AddAttackEvent_out(self, true)
+	self.parent:AddProc(self, { land = true })
 end
 
 function modifier_ember_spirit_flame_guard_custom:OnIntervalThink()
@@ -392,17 +392,11 @@ function modifier_ember_spirit_flame_guard_custom:HandleCustomTransmitterData(da
 	self.shield = data.shield
 end
 
-function modifier_ember_spirit_flame_guard_custom:AttackEvent_out(params)
-	if not IsServer() then
-		return
-	end
-	if self.parent ~= params.attacker then
-		return
-	end
-	if not params.target:IsUnit() then
-		return
-	end
+function modifier_ember_spirit_flame_guard_custom:GetProcChance()
+	return 100
+end
 
+function modifier_ember_spirit_flame_guard_custom:AttackProc(params, name)
 	if self.ability.talents.has_e3 == 1 and params.target:IsRealHero() then
 		self.parent:AddNewModifier(
 			self.parent,

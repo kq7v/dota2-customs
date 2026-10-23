@@ -295,7 +295,7 @@ function modifier_life_stealer_ursa_crit:OnIntervalThink()
 	if not self.parent.owner then
 		return
 	end
-	self.parent.owner:AddAttackEvent_out(self, true)
+	self.parent:AddProc(self, { land = true })
 	self.parent.owner:AddAttackStartEvent_out(self)
 	self:StartIntervalThink(-1)
 end
@@ -365,14 +365,11 @@ function modifier_life_stealer_ursa_crit:AttackStartEvent_out(params)
 	)
 end
 
-function modifier_life_stealer_ursa_crit:AttackEvent_out(params)
-	if not IsServer() then
-		return
-	end
-	if self.parent ~= params.attacker then
-		return
-	end
+function modifier_life_stealer_ursa_crit:GetProcChance()
+	return 100
+end
 
+function modifier_life_stealer_ursa_crit:AttackProc(params, name)
 	if self.record == params.record then
 		params.target:EmitSound("DOTA_Item.Daedelus.Crit")
 	end

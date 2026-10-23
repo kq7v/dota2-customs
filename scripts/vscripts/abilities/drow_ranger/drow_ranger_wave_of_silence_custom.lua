@@ -111,7 +111,7 @@ function drow_ranger_wave_of_silence_custom:UpdateTalents()
 		self.talents.w3_base = caster:GetTalentValue("modifier_drow_gust_3", "base")
 		self.talents.w3_damage = caster:GetTalentValue("modifier_drow_gust_3", "damage") / 100
 		self.talents.w3_damage_creeps = caster:GetTalentValue("modifier_drow_gust_3", "damage_creeps")
-		caster:AddAttackEvent_out(self.tracker, true)
+		caster:AddProc(self.tracker, { land = true, extra = false })
 	end
 
 	if caster:HasTalent("modifier_drow_hero_5") then
@@ -369,20 +369,12 @@ function modifier_drow_ranger_wave_of_silence_custom_tracker:GetModifierSpellAmp
 	return self.ability.talents.w1_spell
 end
 
-function modifier_drow_ranger_wave_of_silence_custom_tracker:AttackEvent_out(params)
-	if not IsServer() then
-		return
-	end
+function modifier_drow_ranger_wave_of_silence_custom_tracker:GetProcChance()
+	return 100
+end
+
+function modifier_drow_ranger_wave_of_silence_custom_tracker:AttackProc(params, name)
 	if self.ability.talents.has_w3 == 0 then
-		return
-	end
-	if self.parent ~= params.attacker then
-		return
-	end
-	if not params.target:IsUnit() then
-		return
-	end
-	if params.no_attack_cooldown then
 		return
 	end
 

@@ -66,6 +66,7 @@ function axe_battle_hunger_custom:UpdateTalents()
 			has_w3 = 0,
 			w3_damage = 0,
 			w3_base = 0,
+			w3_heal = 0,
 			w3_chance = caster:GetTalentValue("modifier_axe_hunger_3", "chance", true),
 			w3_talent_cd = caster:GetTalentValue("modifier_axe_hunger_3", "talent_cd", true),
 			w3_damage_type = caster:GetTalentValue("modifier_axe_hunger_3", "damage_type", true),
@@ -110,6 +111,8 @@ function axe_battle_hunger_custom:UpdateTalents()
 		self.talents.has_w3 = 1
 		self.talents.w3_damage = caster:GetTalentValue("modifier_axe_hunger_3", "damage") / 100
 		self.talents.w3_base = caster:GetTalentValue("modifier_axe_hunger_3", "base")
+		self.talents.w3_heal = caster:GetTalentValue("modifier_axe_hunger_3", "heal") / 100
+		caster:AddLifesteal(self.tracker, { name = "modifier_axe_hunger_3", type = 1, value = self.talents.w3_heal })
 		caster:AddDamageEvent_out(self.tracker, true)
 	end
 

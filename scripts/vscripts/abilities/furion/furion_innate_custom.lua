@@ -50,29 +50,10 @@ function furion_innate_custom:UpdateTalents(name)
 	if not self.init then
 		self.init = true
 		self.talents = {
-			has_q2 = 0,
-			q2_heal = 0,
-			q2_bonus = caster:GetTalentValue("modifier_furion_sprout_2", "bonus", true),
-
-			has_e2 = 0,
-			e2_heal = 0,
-
 			has_q7 = 0,
 
 			has_r7 = 0,
 		}
-	end
-
-	if caster:HasTalent("modifier_furion_sprout_2") then
-		self.talents.has_q2 = 1
-		self.talents.q2_heal = caster:GetTalentValue("modifier_furion_sprout_2", "heal") / 100
-		self.caster:AddDamageEvent_out(self.tracker, true)
-	end
-
-	if caster:HasTalent("modifier_furion_call_2") then
-		self.talents.has_e2 = 1
-		self.talents.e2_heal = caster:GetTalentValue("modifier_furion_call_2", "heal") / 100
-		self.caster:AddDamageEvent_out(self.tracker, true)
 	end
 
 	if caster:HasTalent("modifier_furion_sprout_7") then
@@ -268,44 +249,6 @@ function modifier_furion_innate_custom:OnCreated(table)
 	self.ability.max = self.ability:GetSpecialValueFor("max")
 	self.ability.damage = self.ability:GetSpecialValueFor("damage")
 	self.ability.buff_radius = self.ability:GetSpecialValueFor("buff_radius")
-end
-
-function modifier_furion_innate_custom:DamageEvent_out(params)
-	if not IsServer() then
-		return
-	end
-	local result = self.parent:CheckLifesteal(params, false, true)
-	if not result then
-		return
-	end
-
-	if self.ability.talents.has_q2 == 1 and params.inflictor and self.parent == params.attacker then
-		local heal = params.damage * result * self.ability.talents.q2_heal
-		if self.parent:HasModifier("modifier_furion_sprout_custom_caster") then
-			heal = heal * self.ability.talents.q2_bonus
-		end
-		self.parent:GenericHeal(
-			heal,
-			self.ability,
-			true,
-			"particles/items3_fx/octarine_core_lifesteal.vpcf",
-			"modifier_furion_sprout_2"
-		)
-	end
-
-	if self.ability.talents.has_e2 == 1 and not params.inflictor then
-		local effect = ""
-		if self.parent == params.attacker then
-			effect = nil
-		end
-		self.parent:GenericHeal(
-			params.damage * result * self.ability.talents.e2_heal,
-			self.ability,
-			true,
-			effect,
-			"modifier_furion_call_2"
-		)
-	end
 end
 
 function modifier_furion_innate_custom:OnDestroy()

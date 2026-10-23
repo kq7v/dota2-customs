@@ -154,20 +154,32 @@ function bloodseeker_thirst_custom:UpdateTalents()
 		self.talents.has_e2 = 1
 		self.talents.e2_move = caster:GetTalentValue("modifier_bloodseeker_thirst_2", "move")
 		self.talents.e2_cleave = caster:GetTalentValue("modifier_bloodseeker_thirst_2", "cleave") / 100
-		caster:AddAttackEvent_out(self.tracker, true)
+		caster:AddProc(self.tracker, { land = true })
 	end
 
 	if caster:HasTalent("modifier_bloodseeker_thirst_3") then
 		self.talents.has_e3 = 1
 		self.talents.e3_heal = caster:GetTalentValue("modifier_bloodseeker_thirst_3", "heal") / 100
 		self.talents.e3_damage = caster:GetTalentValue("modifier_bloodseeker_thirst_3", "damage")
-		caster:AddDamageEvent_out(self.tracker)
+		caster:AddProc(self.tracker, { name = "crit", damage = true, sync = true })
 		caster:AddRecordDestroyEvent(self.tracker, true)
+		caster:AddLifesteal(self.tracker, {
+			name = "modifier_bloodseeker_thirst_3",
+			type = 2,
+			text = true,
+			effect = "particles/units/heroes/hero_bloodseeker/bloodseeker_bloodbath.vpcf",
+			value = function(params)
+				if not self.tracker.records[params.record] then
+					return 0
+				end
+				return self.talents.e3_heal
+			end,
+		})
 	end
 
 	if caster:HasTalent("modifier_bloodseeker_thirst_4") then
 		self.talents.has_e4 = 1
-		caster:AddDamageEvent_out(self.tracker)
+		caster:AddProc(self.tracker, { name = "bash", damage = true, sync = true })
 		caster:AddAttackRecordEvent_out(self.tracker)
 	end
 
@@ -407,6 +419,13 @@ function modifier_bloodseeker_thirst_custom:GetModifierIgnoreMovespeedLimit(para
 	return 1
 end
 
+function modifier_bloodseeker_thirst_custom:GetCritChance()
+	if self.ability.talents.has_e3 == 0 then
+		return 0
+	end
+	return 100 / self.ability.talents.e3_count
+end
+
 function modifier_bloodseeker_thirst_custom:GetCritDamage()
 	if self.ability.talents.has_e3 == 0 then
 		return
@@ -439,7 +458,7 @@ function modifier_bloodseeker_thirst_custom:GetModifierPreAttack_CriticalStrike(
 	end
 
 	self.records[params.record] = true
-	return self.ability.talents.e3_damage
+	return self:GetCritDamage()
 end
 
 function modifier_bloodseeker_thirst_custom:RecordDestroyEvent(params)
@@ -478,93 +497,6 @@ function modifier_bloodseeker_thirst_custom:DamageEvent_out(params)
 			{ duration = self.ability.talents.h5_duration }
 		)
 	end
-
-	if params.inflictor then
-		return
-	end
-
-	if
-		self.ability.talents.has_e4 == 1
-		and target:GetHealthPercent() <= self.ability.talents.e4_health
-		and not target:HasModifier("modifier_bloodseeker_thirst_custom_bash_cd")
-	then
-		target:AddNewModifier(
-			self.parent,
-			self.ability,
-			"modifier_bloodseeker_thirst_custom_bash_cd",
-			{ duration = self.ability.talents.e4_talent_cd }
-		)
-		target:AddNewModifier(
-			self.parent,
-			self.parent:BkbAbility(self.ability, true),
-			"modifier_bashed",
-			{ duration = (1 - target:GetStatusResistance()) * self.ability.talents.e4_stun }
-		)
-		target:EmitSound("BS.Thirst_bash")
-	end
-
-	if self.ability.talents.has_e3 == 0 then
-		return
-	end
-
-	if params.record and self.records[params.record] then
-		target:EmitSound("BS.Thirst_attack")
-		target:EmitSound("BS.Thirst_attack2")
-
-		local vec = (target:GetAbsOrigin() - self.parent:GetAbsOrigin()):Normalized()
-		vec.z = 0
-		local particle_edge_fx = ParticleManager:CreateParticle(
-			"particles/bloodseeker/thirst_crit.vpcf",
-			PATTACH_CUSTOMORIGIN_FOLLOW,
-			target
-		)
-		ParticleManager:SetParticleControlEnt(
-			particle_edge_fx,
-			0,
-			target,
-			PATTACH_POINT_FOLLOW,
-			"attach_hitloc",
-			target:GetAbsOrigin(),
-			true
-		)
-		ParticleManager:SetParticleControlEnt(
-			particle_edge_fx,
-			1,
-			target,
-			PATTACH_POINT_FOLLOW,
-			"attach_hitloc",
-			target:GetAbsOrigin(),
-			true
-		)
-		ParticleManager:SetParticleControlForward(particle_edge_fx, 2, vec)
-		ParticleManager:SetParticleControl(
-			particle_edge_fx,
-			5,
-			self.parent:GetAttachmentOrigin(self.parent:ScriptLookupAttachment("attach_hitloc"))
-		)
-		ParticleManager:SetParticleControlForward(particle_edge_fx, 5, vec)
-		ParticleManager:ReleaseParticleIndex(particle_edge_fx)
-
-		local heal = params.damage * self.ability.talents.e3_heal
-		local result = self.parent:CanLifesteal(target)
-		if result then
-			self.parent:GenericHeal(
-				heal * result,
-				self.ability,
-				false,
-				"particles/units/heroes/hero_bloodseeker/bloodseeker_bloodbath.vpcf",
-				"modifier_bloodseeker_thirst_3"
-			)
-		end
-		target:RemoveModifierByName("modifier_bloodseeker_thirst_custom_crit_count")
-	else
-		target:AddNewModifier(
-			self.parent,
-			self.ability,
-			"modifier_bloodseeker_thirst_custom_crit_count",
-			{ duration = self.ability.talents.e3_duration }
-		)
-	end
 end
 
 function modifier_bloodseeker_thirst_custom:AttackRecordEvent_out(params)
@@ -593,17 +525,20 @@ function modifier_bloodseeker_thirst_custom:AttackRecordEvent_out(params)
 	end
 end
 
-function modifier_bloodseeker_thirst_custom:AttackEvent_out(params)
-	if not IsServer() then
-		return
+function modifier_bloodseeker_thirst_custom:GetProcChance(params, name)
+	if name ~= "bash" then
+		return 100
 	end
-	if params.attacker ~= self.parent then
-		return
+	if params.target:GetHealthPercent() > self.ability.talents.e4_health then
+		return 0
 	end
-	if not params.target:IsUnit() then
-		return
+	if params.target:HasModifier("modifier_bloodseeker_thirst_custom_bash_cd") then
+		return 0
 	end
+	return 100
+end
 
+function modifier_bloodseeker_thirst_custom:AttackProc(params, name)
 	local target = params.target
 
 	if self.ability.talents.has_e2 == 1 then
@@ -618,6 +553,73 @@ function modifier_bloodseeker_thirst_custom:AttackEvent_out(params)
 			"particles/bloodseeker/thirst_cleave.vpcf"
 		)
 	end
+end
+
+function modifier_bloodseeker_thirst_custom:DamageProc(params, name)
+	local target = params.target
+
+	if name == "bash" then
+		target:AddNewModifier(
+			self.parent,
+			self.ability,
+			"modifier_bloodseeker_thirst_custom_bash_cd",
+			{ duration = self.ability.talents.e4_talent_cd }
+		)
+		target:AddNewModifier(
+			self.parent,
+			self.parent:BkbAbility(self.ability, true),
+			"modifier_bashed",
+			{ duration = (1 - target:GetStatusResistance()) * self.ability.talents.e4_stun }
+		)
+		target:EmitSound("BS.Thirst_bash")
+		return
+	end
+
+	if not self.records[params.record] then
+		target:AddNewModifier(
+			self.parent,
+			self.ability,
+			"modifier_bloodseeker_thirst_custom_crit_count",
+			{ duration = self.ability.talents.e3_duration }
+		)
+		return
+	end
+
+	target:EmitSound("BS.Thirst_attack")
+	target:EmitSound("BS.Thirst_attack2")
+
+	local vec = (target:GetAbsOrigin() - self.parent:GetAbsOrigin()):Normalized()
+	vec.z = 0
+	local particle_edge_fx =
+		ParticleManager:CreateParticle("particles/bloodseeker/thirst_crit.vpcf", PATTACH_CUSTOMORIGIN_FOLLOW, target)
+	ParticleManager:SetParticleControlEnt(
+		particle_edge_fx,
+		0,
+		target,
+		PATTACH_POINT_FOLLOW,
+		"attach_hitloc",
+		target:GetAbsOrigin(),
+		true
+	)
+	ParticleManager:SetParticleControlEnt(
+		particle_edge_fx,
+		1,
+		target,
+		PATTACH_POINT_FOLLOW,
+		"attach_hitloc",
+		target:GetAbsOrigin(),
+		true
+	)
+	ParticleManager:SetParticleControlForward(particle_edge_fx, 2, vec)
+	ParticleManager:SetParticleControl(
+		particle_edge_fx,
+		5,
+		self.parent:GetAttachmentOrigin(self.parent:ScriptLookupAttachment("attach_hitloc"))
+	)
+	ParticleManager:SetParticleControlForward(particle_edge_fx, 5, vec)
+	ParticleManager:ReleaseParticleIndex(particle_edge_fx)
+
+	target:RemoveModifierByName("modifier_bloodseeker_thirst_custom_crit_count")
 end
 
 function modifier_bloodseeker_thirst_custom:DeathEvent(params)

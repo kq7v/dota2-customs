@@ -8,7 +8,7 @@
 ]]
 
 
-<!-- kv3 encoding:text:version{e21c7f3c-8a33-41c5-9977-a76d3a32aa0d} format:vpcf61:version{39d3ce1d-9442-4407-9b78-8317145b1732} -->
+<!-- kv3 encoding:text:version{e21c7f3c-8a33-41c5-9977-a76d3a32aa0d} format:vpcf66:version{dd571be4-586e-4f41-8b2d-5bbc969e1c53} -->
 {
 	_class = "CParticleSystemDefinition"
 	m_bShouldHitboxesFallbackToRenderBounds = false
@@ -170,7 +170,9 @@
 			_class = "C_INIT_CreateWithinSphereTransform"
 			m_TransformInput = 
 			{
+				m_nType = "PT_TYPE_CONTROL_POINT"
 				m_nControlPoint = 3
+				m_nControlPointRangeMax = 0
 			}
 		},
 		{
@@ -441,6 +443,7 @@
 			}
 			m_TransformInput = 
 			{
+				m_nType = "PT_TYPE_CONTROL_POINT"
 				m_nControlPoint = 2
 			}
 		},
@@ -451,6 +454,7 @@
 			m_bLocalCoords = true
 			m_TransformInput = 
 			{
+				m_nType = "PT_TYPE_CONTROL_POINT"
 				m_nControlPoint = 3
 			}
 		},
@@ -591,6 +595,7 @@
 			m_fFalloffPower = 0.0
 			m_TransformInput = 
 			{
+				m_nType = "PT_TYPE_CONTROL_POINT"
 				m_nControlPoint = 2
 				m_bUseOrientation = false
 			}

@@ -98,6 +98,7 @@ function centaur_double_edge_custom:UpdateTalents()
 
 			has_w3 = 0,
 			w3_damage = 0,
+			w3_heal = 0,
 			w3_chance = caster:GetTalentValue("modifier_centaur_edge_3", "chance", true),
 
 			w7_cd_inc = caster:GetTalentValue("modifier_centaur_edge_7", "cd_inc", true) / 100,
@@ -127,6 +128,8 @@ function centaur_double_edge_custom:UpdateTalents()
 	if caster:HasTalent("modifier_centaur_edge_3") then
 		self.talents.has_w3 = 1
 		self.talents.w3_damage = caster:GetTalentValue("modifier_centaur_edge_3", "damage") / 100
+		self.talents.w3_heal = caster:GetTalentValue("modifier_centaur_edge_3", "heal") / 100
+		caster:AddLifesteal(self.tracker, { name = "modifier_centaur_edge_3", type = 1, value = self.talents.w3_heal })
 	end
 
 	if caster:HasTalent("modifier_centaur_hero_4") then

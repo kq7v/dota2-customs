@@ -53,11 +53,6 @@ LinkLuaModifier(
 	"abilities/alchemist/alchemist_corrosive_weaponry_custom",
 	LUA_MODIFIER_MOTION_NONE
 )
-LinkLuaModifier(
-	"modifier_alchemist_corrosive_weaponry_custom_proc_cd",
-	"abilities/alchemist/alchemist_corrosive_weaponry_custom",
-	LUA_MODIFIER_MOTION_NONE
-)
 
 alchemist_corrosive_weaponry_custom = class({})
 alchemist_corrosive_weaponry_custom.talents = {}
@@ -66,11 +61,8 @@ function alchemist_corrosive_weaponry_custom:Precache(context)
 	if self:GetCaster() and self:GetCaster():IsIllusion() then
 		return
 	end
-	PrecacheResource("particle", "particles/units/heroes/hero_alchemist/alchemist_lasthit_coins.vpcf", context)
-	PrecacheResource("particle", "particles/generic/generic_armor_reduction.vpcf", context)
 	PrecacheResource("particle", "particles/units/heroes/hero_alchemist/alchemist_corrosive_weaponry.vpcf", context)
 	PrecacheResource("particle", "particles/alchemist/weapon_legendary_proj.vpcf", context)
-	PrecacheResource("particle", "particles/status_fx/status_effect_poison_venomancer.vpcf", context)
 	PrecacheResource("particle", "particles/units/heroes/hero_venomancer/venomancer_venomous_gale_impact.vpcf", context)
 	PrecacheResource("particle", "particles/sand_king/finale_legendary.vpcf", context)
 	PrecacheResource("particle", "particles/sand_king/finale_legendary_poison.vpcf", context)
@@ -127,6 +119,7 @@ function alchemist_corrosive_weaponry_custom:UpdateTalents()
 	if caster:HasTalent("modifier_alchemist_greed_3") then
 		self.talents.has_e3 = 1
 		self.talents.e3_chance = caster:GetTalentValue("modifier_alchemist_greed_3", "chance")
+		caster:AddProc(self.tracker, { cd = self.talents.e3_talent_cd, land = true })
 	end
 
 	if caster:HasTalent("modifier_alchemist_greed_4") then
@@ -260,7 +253,7 @@ function modifier_alchemist_corrosive_weaponry_custom:OnCreated()
 	if not IsServer() then
 		return
 	end
-	self.parent:AddAttackEvent_out(self, true)
+	self.parent:AddProc(self, { name = "hit", land = true })
 end
 
 function modifier_alchemist_corrosive_weaponry_custom:OnRefresh()
@@ -300,35 +293,21 @@ function modifier_alchemist_corrosive_weaponry_custom:AttackRecordEvent_out(para
 	)
 end
 
-function modifier_alchemist_corrosive_weaponry_custom:AttackEvent_out(params)
-	if not IsServer() then
-		return
+function modifier_alchemist_corrosive_weaponry_custom:GetProcChance(params, name)
+	if name == "hit" then
+		return 100
 	end
-	if self.parent ~= params.attacker then
-		return
-	end
-	if not params.target:IsUnit() then
-		return
-	end
-	local target = params.target
+	return self.ability.talents.e3_chance
+end
 
-	if
-		self.ability.talents.has_e3 == 1
-		and not self.parent:HasModifier("modifier_alchemist_corrosive_weaponry_custom_proc_cd")
-	then
-		if RollPseudoRandomPercentage(self.ability.talents.e3_chance, 1532, self.parent) then
-			target:EmitSound("Alchemist.Weapon_proc")
-			self.parent:AddNewModifier(
-				self.parent,
-				self.ability,
-				"modifier_alchemist_corrosive_weaponry_custom_proc_cd",
-				{ duration = self.ability.talents.e3_talent_cd }
-			)
-			target:AddNewModifier(self.parent, self.ability, "modifier_alchemist_corrosive_weaponry_custom_poison", {})
-		end
+function modifier_alchemist_corrosive_weaponry_custom:AttackProc(params, name)
+	if name == "hit" then
+		self.ability:AddStack(params.target, self.ability.attack_stack)
+		return
 	end
 
-	self.ability:AddStack(target, self.ability.attack_stack)
+	params.target:EmitSound("Alchemist.Weapon_proc")
+	params.target:AddNewModifier(self.parent, self.ability, "modifier_alchemist_corrosive_weaponry_custom_poison", {})
 end
 
 modifier_alchemist_corrosive_weaponry_custom_debuff = class(mod_visible)
@@ -588,7 +567,6 @@ function modifier_alchemist_corrosive_weaponry_custom_legendary_str:GetModifierB
 end
 
 modifier_alchemist_corrosive_weaponry_custom_silence_cd = class(mod_hidden)
-modifier_alchemist_corrosive_weaponry_custom_proc_cd = class(mod_hidden)
 
 modifier_alchemist_corrosive_weaponry_custom_speed = class(mod_visible)
 function modifier_alchemist_corrosive_weaponry_custom_speed:GetTexture()

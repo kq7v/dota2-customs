@@ -22,7 +22,7 @@
     "AbilityUnitDamageType"         "DAMAGE_TYPE_PHYSICAL"
     "AbilityCastPoint"              "0.15"
     "AbilityCastRange"              "575 650 725 800"
-    "AbilityCooldown"               "12"
+    "AbilityCooldown"               "13"
     "AbilityManaCost"               "75 80 85 90"
 
     "AbilityValues"
@@ -74,7 +74,7 @@
         "creeps_damage"             "30"
 
         "scepter_range"             "300"
-        "scepter_attacks"           "3"
+        "scepter_attacks"           "2"
         "scepter_damage"            "50"
         "scepter_pull_distance"     "80"
     }
@@ -101,7 +101,7 @@
         "chance_pct"                "20"
         "duration"                  "2.5 3 3.5 4"
         "attack_slow"               "-30 -60 -90 -120"
-        "damage"                    "40 80 120 160"
+        "damage"                    "40 60 80 100"
         "armor"
         {
             "value"                 "-2 -4 -6 -8"

@@ -73,6 +73,10 @@ function slark_dark_pact_custom:UpdateTalents()
 			q1_base = 0,
 			q1_damage = 0,
 
+			q2_heal = 0,
+			q2_mana = caster:GetTalentValue("modifier_slark_pact_2", "mana", true) / 100,
+			q2_bonus = caster:GetTalentValue("modifier_slark_pact_2", "bonus", true),
+
 			has_q3 = 0,
 			q3_bonus_inc = 0,
 			q3_bonus = 0,
@@ -115,6 +119,18 @@ function slark_dark_pact_custom:UpdateTalents()
 		self.talents.has_q1 = 1
 		self.talents.q1_base = caster:GetTalentValue("modifier_slark_pact_1", "base")
 		self.talents.q1_damage = caster:GetTalentValue("modifier_slark_pact_1", "damage") / 100
+	end
+
+	if caster:HasTalent("modifier_slark_pact_2") then
+		self.talents.q2_heal = caster:GetTalentValue("modifier_slark_pact_2", "heal") / 100
+		caster:AddLifesteal(self.tracker, {
+			name = "modifier_slark_pact_2",
+			type = 1,
+			proc = "LifestealMana",
+			value = function(params)
+				return self.talents.q2_heal * (params.inflictor == self and self.talents.q2_bonus or 1)
+			end,
+		})
 	end
 
 	if caster:HasTalent("modifier_slark_pact_3") then
@@ -605,6 +621,13 @@ end
 
 function modifier_slark_dark_pact_custom_tracker:OnRefresh()
 	self.ability.total_damage = self.ability:GetSpecialValueFor("total_damage")
+end
+
+function modifier_slark_dark_pact_custom_tracker:LifestealMana(params, heal)
+	if params.inflictor ~= self.ability then
+		return
+	end
+	self.parent:GiveMana(heal * self.ability.talents.q2_mana)
 end
 
 function modifier_slark_dark_pact_custom_tracker:UpdateJs()

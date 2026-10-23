@@ -24,16 +24,6 @@ LinkLuaModifier(
 	LUA_MODIFIER_MOTION_NONE
 )
 LinkLuaModifier(
-	"modifier_item_alchemist_gold_cuirass_proc",
-	"abilities/items/item_alchemist_gold_cuirass",
-	LUA_MODIFIER_MOTION_NONE
-)
-LinkLuaModifier(
-	"modifier_item_alchemist_gold_cuirass_cd",
-	"abilities/items/item_alchemist_gold_cuirass",
-	LUA_MODIFIER_MOTION_NONE
-)
-LinkLuaModifier(
 	"modifier_item_alchemist_gold_cuirass_passive",
 	"abilities/items/item_alchemist_gold_cuirass",
 	LUA_MODIFIER_MOTION_NONE
@@ -62,7 +52,6 @@ function item_alchemist_gold_cuirass:Precache(context)
 
 	PrecacheResource("particle", "particles/econ/events/ti10/mjollnir_shield_ti10.vpcf", context)
 	PrecacheResource("particle", "particles/econ/events/ti10/maelstrom_ti10.vpcf", context)
-	PrecacheResource("particle", "particles/status_fx/status_effect_mjollnir_shield.vpcf", context)
 end
 
 function item_alchemist_gold_cuirass:Spawn()
@@ -132,94 +121,20 @@ function modifier_item_alchemist_gold_cuirass:OnCreated()
 	self.chance = self.ability.chain_chance
 	self.cd = self.ability.chain_cooldown
 
-	self.records = {}
-
 	if not IsServer() then
 		return
 	end
 	if not self.parent:IsRealHero() then
 		return
 	end
-	self:RollProc()
-
-	self.parent:AddRecordDestroyEvent(self, true)
-	self.parent:AddAttackEvent_out(self, true)
-	self.parent:AddAttackStartEvent_out(self)
+	self.parent:AddProc(self, { group = "chain_lightning", priority = -1, cd = self.cd, accuracy = true })
 end
 
-function modifier_item_alchemist_gold_cuirass:RecordDestroyEvent(params)
-	if not self.records[params.record] then
-		return
-	end
-	self.records[params.record] = nil
+function modifier_item_alchemist_gold_cuirass:GetProcChance()
+	return self.chance
 end
 
-function modifier_item_alchemist_gold_cuirass:RollProc()
-	if not IsServer() then
-		return
-	end
-	if self.parent:HasModifier("modifier_item_mjollnir_custom") then
-		return
-	end
-	if self.parent:HasModifier("modifier_item_maelstrom_custom") then
-		return
-	end
-	if self.parent:HasModifier("modifier_item_alchemist_gold_cuirass_cd") then
-		return
-	end
-	if not RollPseudoRandomPercentage(self.chance, 4259, self.parent) then
-		return
-	end
-
-	self.parent:AddNewModifier(self.parent, self.ability, "modifier_item_alchemist_gold_cuirass_proc", { duration = 3 })
-end
-
-function modifier_item_alchemist_gold_cuirass:AttackStartEvent_out(params)
-	if not IsServer() then
-		return
-	end
-	if not IsValid(self.ability) then
-		return
-	end
-	if not params.target:IsUnit() then
-		return
-	end
-	if self.parent ~= params.attacker then
-		return
-	end
-
-	if self.parent:HasModifier("modifier_item_alchemist_gold_cuirass_proc") then
-		self.records[params.record] = true
-		self.parent:AddNewModifier(
-			self.parent,
-			self.ability,
-			"modifier_item_alchemist_gold_cuirass_cd",
-			{ duration = self.cd }
-		)
-	end
-
-	self.parent:RemoveModifierByName("modifier_item_alchemist_gold_cuirass_proc")
-
-	self:RollProc()
-end
-
-function modifier_item_alchemist_gold_cuirass:AttackEvent_out(params)
-	if not IsServer() then
-		return
-	end
-	if not IsValid(self.ability) then
-		return
-	end
-	if not params.target:IsUnit() then
-		return
-	end
-	if self.parent ~= params.attacker then
-		return
-	end
-	if not self.records[params.record] then
-		return
-	end
-
+function modifier_item_alchemist_gold_cuirass:AttackProc(params)
 	local mod = self.parent:FindModifierByName("modifier_item_alchemist_gold_cuirass_shield")
 	if mod then
 		mod:IncrementStackCount()
@@ -257,15 +172,6 @@ end
 
 function modifier_item_alchemist_gold_cuirass:GetModifierPreAttack_BonusDamage()
 	return self.bonus_damage
-end
-
-function modifier_item_alchemist_gold_cuirass:CheckState()
-	if not IsValid(self.parent) or not self.parent:HasModifier("modifier_item_alchemist_gold_cuirass_proc") then
-		return
-	end
-	return {
-		[MODIFIER_STATE_CANNOT_MISS] = true,
-	}
 end
 
 modifier_item_alchemist_gold_cuirass_armor_reduce = class(mod_visible)
@@ -568,5 +474,3 @@ function modifier_item_alchemist_gold_cuirass_passive:OnIntervalThink()
 end
 
 modifier_item_alchemist_gold_cuirass_shield_cd = class(mod_hidden)
-modifier_item_alchemist_gold_cuirass_proc = class(mod_hidden)
-modifier_item_alchemist_gold_cuirass_cd = class(mod_hidden)

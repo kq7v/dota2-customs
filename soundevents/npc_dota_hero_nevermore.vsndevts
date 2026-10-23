@@ -38,34 +38,6 @@
 		distance_max = 1600
 		pitch = 1
 	}
-	Sf.Raze_Slow = 
-	{
-		vsnd_files = 
-		[
-			"sounds/weapons/hero/hoodwink/boomerang_slow.vsnd",
-		]
-		volume = 1
-		pitch_rand_min = -0.05
-		pitch_rand_max = 0.05
-		type = "dota_src1_3d"
-		soundlevel = 100
-		distance_max = 1600
-		pitch = 1
-	}
-	Sf.Raze_Burn = 
-	{
-		vsnd_files = 
-		[
-			"sounds/weapons/hero/phoenix/icarus_dive_stop.vsnd",
-		]
-		volume = 1
-		pitch_rand_min = -0.05
-		pitch_rand_max = 0.05
-		type = "dota_src1_3d"
-		soundlevel = 100
-		distance_max = 1600
-		pitch = 1
-	}
 	Sf.Souls_Attack = 
 	{
 		vsnd_files = 
@@ -101,20 +73,6 @@
 			"sounds/weapons/hero/visage/grave_chill_target.vsnd",
 		]
 		volume = 2
-		pitch_rand_min = -0.05
-		pitch_rand_max = 0.05
-		type = "dota_src1_3d"
-		soundlevel = 100
-		distance_max = 1600
-		pitch = 1
-	}
-	Sf.Aura_Silence_Tick = 
-	{
-		vsnd_files = 
-		[
-			"sounds/weapons/hero/silencer/curse_tick.vsnd",
-		]
-		volume = 0.5
 		pitch_rand_min = -0.05
 		pitch_rand_max = 0.05
 		type = "dota_src1_3d"
@@ -171,20 +129,6 @@
 			"sounds/weapons/hero/nevermore/ros_flames.vsnd",
 		]
 		volume = 1.8
-		pitch_rand_min = -0.05
-		pitch_rand_max = 0.05
-		type = "dota_src1_3d"
-		soundlevel = 100
-		distance_max = 1600
-		pitch = 1
-	}
-	Sf.Aura_Silence = 
-	{
-		vsnd_files = 
-		[
-			"sounds/weapons/hero/abaddon/curse_proc.vsnd",
-		]
-		volume = 1.5
 		pitch_rand_min = -0.05
 		pitch_rand_max = 0.05
 		type = "dota_src1_3d"
@@ -299,20 +243,6 @@
 		volume = 2
 		pitch_rand_min = -0.1
 		pitch_rand_max = -0.1
-		type = "dota_src1_3d"
-		soundlevel = 100
-		distance_max = 1600
-		pitch = 1
-	}
-	Sf.Requiem_Root = 
-	{
-		vsnd_files = 
-		[
-			"sounds/weapons/hero/underlord/pit_target_hero.vsnd",
-		]
-		volume = 1.3
-		pitch_rand_min = -0.05
-		pitch_rand_max = 0.05
 		type = "dota_src1_3d"
 		soundlevel = 100
 		distance_max = 1600

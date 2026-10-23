@@ -243,7 +243,7 @@ function modifier_slark_saltwater_shiv_custom_tracker:OnCreated(table)
 	self.ability.shard_cd = self.ability:GetSpecialValueFor("shard_cd")
 
 	self.parent:AddAttackRecordEvent_out(self)
-	self.parent:AddAttackEvent_out(self)
+	self.parent:AddProc(self, { land = true, sync = true })
 
 	self.spells = {
 		["custom_juggernaut_blade_dance"] = true,
@@ -542,17 +542,11 @@ function modifier_slark_saltwater_shiv_custom_tracker:CheckAttack(params)
 		or (params.no_attack_cooldown and self:CheckCd())
 end
 
-function modifier_slark_saltwater_shiv_custom_tracker:AttackEvent_out(params)
-	if not IsServer() then
-		return
-	end
-	if self.parent ~= params.attacker then
-		return
-	end
-	if not params.target:IsUnit() then
-		return
-	end
+function modifier_slark_saltwater_shiv_custom_tracker:GetProcChance()
+	return 100
+end
 
+function modifier_slark_saltwater_shiv_custom_tracker:AttackProc(params)
 	local target = params.target
 
 	if self:CheckAttack(params) then

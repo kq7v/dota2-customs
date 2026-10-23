@@ -1,0 +1,61 @@
+--[[
+  ~ dumper · customs · dota2
+  ~ credits: rou (a.k.a internetenemy), qfun(a.k.a qfun_g9s)
+  ~ special for t.me/wildguild
+
+  ~ build 1a5b3bb 
+  ~ auto-generated — do not edit
+]]
+
+
+<!-- kv3 encoding:text:version{e21c7f3c-8a33-41c5-9977-a76d3a32aa0d} format:vpcf66:version{dd571be4-586e-4f41-8b2d-5bbc969e1c53} -->
+{
+	_class = "CParticleSystemDefinition"
+	m_nMaxParticles = 0
+	m_ConstantColor = [ 255, 255, 255, 25 ]
+	m_nConstantSequenceNumber1 = 9
+	m_nBehaviorVersion = 12
+	m_bEnableNamedValues = true
+	m_flConstantLifespan = 9999.0
+	m_controlPointConfigurations = 
+	[
+		{
+			m_name = "preview"
+			m_drivers = 
+			[
+				{
+					m_iAttachType = "PATTACH_POINT_FOLLOW"
+					m_attachmentName = "attach_hitloc"
+					m_entityName = "self"
+				},
+				{
+					m_iControlPoint = 3
+					m_iAttachType = "PATTACH_WORLDORIGIN"
+					m_entityName = "self"
+				},
+			]
+			m_previewState = 
+			{
+				m_previewModel = "models/heroes/kez/kez_base.vmdl"
+				m_nModSpecificData = 818
+				m_sequenceName = "idle_loadout"
+				m_hitboxSetName = "default"
+			}
+		},
+	]
+	m_Children = 
+	[
+		{
+			m_ChildRef = resource:"particles/puck/rift_burn_hite.vpcf"
+		},
+		{
+			m_ChildRef = resource:"particles/puck/rift_burn_hitd.vpcf"
+		},
+		{
+			m_ChildRef = resource:"particles/puck/rift_burn_hitc.vpcf"
+		},
+		{
+			m_ChildRef = resource:"particles/puck/rift_burn_hitb.vpcf"
+		},
+	]
+}

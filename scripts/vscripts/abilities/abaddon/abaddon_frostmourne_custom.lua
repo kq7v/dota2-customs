@@ -274,7 +274,7 @@ function modifier_abaddon_frostmourne_custom:OnCreated(table)
 	self.ability.curse_interval = self.ability:GetSpecialValueFor("curse_interval")
 	self.ability.creeps_damage = self.ability:GetSpecialValueFor("creeps_damage") / 100
 
-	self.parent:AddAttackEvent_out(self, true)
+	self.parent:AddProc(self, { land = true, illusion = true })
 end
 
 function modifier_abaddon_frostmourne_custom:OnRefresh()
@@ -332,13 +332,11 @@ function modifier_abaddon_frostmourne_custom:OnIntervalThink()
 	})
 end
 
-function modifier_abaddon_frostmourne_custom:AttackEvent_out(params)
-	if not IsServer() then
-		return
-	end
-	if not params.target:IsUnit() then
-		return
-	end
+function modifier_abaddon_frostmourne_custom:GetProcChance()
+	return 100
+end
+
+function modifier_abaddon_frostmourne_custom:AttackProc(params, name)
 	local attacker = params.attacker
 	local target = params.target
 

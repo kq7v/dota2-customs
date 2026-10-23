@@ -357,21 +357,6 @@
 		volume_fade_out = 0.5
 		pitch = 1
 	}
-	Jakiro.Macropyre_refresh = 
-	{
-		type = "dota_src1_3d"
-		vsnd_files = 
-		[
-			"sounds/weapons/hero/rattletrap/overclock_cast.vsnd",
-		]
-		volume = 0
-		pitch_rand_min = -0.1
-		pitch_rand_max = -0.1
-		distance_max = 1600
-		soundlevel = 100
-		volume_fade_out = 0.5
-		pitch = 1
-	}
 	Jakiro.Scepter_shield_ice = 
 	{
 		type = "dota_src1_3d"

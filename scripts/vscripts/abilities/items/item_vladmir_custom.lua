@@ -90,7 +90,7 @@ function modifier_item_vladmir_custom_aura:OnCreated()
 	if not IsServer() then
 		return
 	end
-	self.parent:FindOwner():AddDamageEvent_out(self, true)
+	self.parent:AddLifesteal(self, { type = 2, value = self.heal, illusion = true })
 end
 
 function modifier_item_vladmir_custom_aura:DeclareFunctions()
@@ -111,33 +111,4 @@ end
 
 function modifier_item_vladmir_custom_aura:GetModifierBaseDamageOutgoing_Percentage()
 	return self.damage
-end
-
-function modifier_item_vladmir_custom_aura:DamageEvent_out(params)
-	if not IsServer() then
-		return
-	end
-	if not IsValid(self.ability) then
-		return
-	end
-	if not params.unit:IsUnit() then
-		return
-	end
-
-	local attacker = params.attacker
-
-	if not attacker:HasModifier(self:GetName()) then
-		return
-	end
-	if self.parent ~= attacker:FindOwner() then
-		return
-	end
-	local lifesteal = attacker:CheckLifesteal(params, 2)
-
-	if not lifesteal then
-		return
-	end
-
-	local heal = params.damage * self.heal * lifesteal
-	attacker:GenericHeal(heal, self.ability, true)
 end

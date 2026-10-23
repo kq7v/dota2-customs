@@ -13,11 +13,6 @@ LinkLuaModifier(
 	"abilities/life_stealer/life_stealer_unfettered_custom",
 	LUA_MODIFIER_MOTION_NONE
 )
-LinkLuaModifier(
-	"modifier_life_stealer_unfettered_custom_tracker",
-	"abilities/life_stealer/life_stealer_unfettered_custom",
-	LUA_MODIFIER_MOTION_NONE
-)
 
 life_stealer_unfettered_custom = class({})
 function life_stealer_unfettered_custom:Precache(context)
@@ -25,8 +20,6 @@ function life_stealer_unfettered_custom:Precache(context)
 		return
 	end
 
-	PrecacheResource("particle", "particles/queen_of_pain/blink_root.vpcf", context)
-	PrecacheResource("particle", "particles/slark/pounce_legendary_ui.vpcf", context)
 	PrecacheResource(
 		"particle",
 		"particles/econ/items/bloodseeker/bloodseeker_ti7/bloodseeker_ti7_thirst_owner.vpcf",
@@ -47,13 +40,6 @@ function life_stealer_unfettered_custom:Init()
 	self.caster = self:GetCaster()
 
 	self.min_dist = self:GetLevelSpecialValueFor("min_dist", 1)
-end
-
-function life_stealer_unfettered_custom:GetIntrinsicModifierName()
-	if not self:GetCaster():IsRealHero() or self:GetCaster():IsCreepHero() then
-		return
-	end
-	return "modifier_life_stealer_unfettered_custom_tracker"
 end
 
 function life_stealer_unfettered_custom:OnAbilityPhaseStart()
@@ -230,22 +216,4 @@ function modifier_life_stealer_unfettered_custom:OnDestroy()
 	ParticleManager:SetParticleControl(immortal_particle, 1, self.parent:GetAbsOrigin())
 	ParticleManager:Delete(immortal_particle, 1)
 	self.target:EmitSound("Lifestealer.Frenzy_bash")
-end
-
-modifier_life_stealer_unfettered_custom_tracker = class(mod_hidden)
-function modifier_life_stealer_unfettered_custom_tracker:OnCreated()
-	self.parent = self:GetParent()
-	self.ability = self:GetAbility()
-	if not IsServer() then
-		return
-	end
-	CustomGameEventManager:Send_ServerToPlayer(
-		PlayerResource:GetPlayer(self.parent:GetPlayerOwnerID()),
-		"ability_lifestealer_unfettered",
-		{}
-	)
-end
-
-function modifier_life_stealer_unfettered_custom_tracker:OnRefresh()
-	self:OnCreated()
 end

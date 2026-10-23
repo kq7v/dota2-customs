@@ -106,9 +106,6 @@ function zuus_arc_lightning_custom:UpdateTalents(name)
 			q7_charge = caster:GetTalentValue("modifier_zuus_arc_7", "charge", true),
 			q7_radius = caster:GetTalentValue("modifier_zuus_arc_7", "radius", true),
 			q7_mana = caster:GetTalentValue("modifier_zuus_arc_7", "mana", true) / 100,
-
-			has_r2 = 0,
-			r2_heal = 0,
 		}
 	end
 
@@ -129,22 +126,16 @@ function zuus_arc_lightning_custom:UpdateTalents(name)
 		self.talents.has_q3 = 1
 		self.talents.q3_cd = caster:GetTalentValue("modifier_zuus_arc_3", "cd")
 		self.talents.q3_chance = caster:GetTalentValue("modifier_zuus_arc_3", "chance")
-		caster:AddAttackEvent_out(self.tracker, true)
+		caster:AddProc(self.tracker, { group = "modifier_zuus_arc_3", extra = false, land = true })
 	end
 
 	if caster:HasTalent("modifier_zuus_arc_4") then
 		self.talents.has_q4 = 1
-		caster:AddDamageEvent_out(self.tracker, true)
+		caster:AddLifesteal(self.tracker, { name = "modifier_zuus_arc_4", type = 2, value = self.talents.q4_heal })
 	end
 
 	if caster:HasTalent("modifier_zuus_arc_7") then
 		self.talents.has_q7 = 1
-	end
-
-	if caster:HasTalent("modifier_zuus_wrath_2") then
-		self.talents.has_r2 = 1
-		self.talents.r2_heal = caster:GetTalentValue("modifier_zuus_wrath_2", "heal") / 100
-		caster:AddDamageEvent_out(self.tracker, true)
 	end
 end
 
@@ -311,14 +302,14 @@ function zuus_arc_lightning_custom:DoDamage(target, damage_ability)
 	target:EmitSound("Hero_Zuus.ArcLightning.Target")
 end
 
-function zuus_arc_lightning_custom:ProcAttack(target)
+function zuus_arc_lightning_custom:ProcAttack(target, is_proc)
 	if not IsServer() then
 		return
 	end
 	if self.talents.has_q3 == 0 then
 		return
 	end
-	if not RollPseudoRandomPercentage(self.talents.q3_chance, 8140, self.caster) then
+	if not is_proc and not RollPseudoRandomPercentage(self.talents.q3_chance, "modifier_zuus_arc_3", self.caster) then
 		return
 	end
 	self:OnSpellStart(target)
@@ -452,56 +443,12 @@ function modifier_zuus_arc_lightning_tracker:OnRefresh()
 	self.ability.jump_count = self.ability:GetSpecialValueFor("jump_count")
 end
 
-function modifier_zuus_arc_lightning_tracker:DamageEvent_out(params)
-	if not IsServer() then
-		return
-	end
-	local result = self.parent:CheckLifesteal(params)
-	if not result then
-		return
-	end
-
-	if params.inflictor then
-		if self.ability.talents.has_r2 == 1 then
-			self.parent:GenericHeal(
-				params.damage * result * self.ability.talents.r2_heal,
-				self.ability,
-				true,
-				"particles/items3_fx/octarine_core_lifesteal.vpcf",
-				"modifier_zuus_wrath_2"
-			)
-		end
-	else
-		if self.ability.talents.has_q4 == 1 then
-			self.parent:GenericHeal(
-				params.damage * result * self.ability.talents.q4_heal,
-				self.ability,
-				true,
-				"",
-				"modifier_zuus_arc_4"
-			)
-		end
-	end
+function modifier_zuus_arc_lightning_tracker:GetProcChance()
+	return self.ability.talents.q3_chance
 end
 
-function modifier_zuus_arc_lightning_tracker:AttackEvent_out(params)
-	if not IsServer() then
-		return
-	end
-	if self.ability.talents.has_q3 == 0 then
-		return
-	end
-	if not params.target:IsUnit() then
-		return
-	end
-	if self.parent ~= params.attacker then
-		return
-	end
-	if params.no_attack_cooldown then
-		return
-	end
-
-	self.ability:ProcAttack(params.target)
+function modifier_zuus_arc_lightning_tracker:AttackProc(params)
+	self.ability:ProcAttack(params.target, true)
 end
 
 function modifier_zuus_arc_lightning_tracker:DeclareFunctions()

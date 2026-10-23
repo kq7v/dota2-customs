@@ -180,6 +180,17 @@ function marci_guardian_custom:UpdateTalents(name)
 
 	if caster:HasTalent("modifier_marci_sidekick_7") then
 		self.talents.has_e7 = 1
+		caster:AddDamageEvent_out(self.tracker, true)
+		caster:AddLifesteal(self.tracker, {
+			name = "modifier_marci_sidekick_7",
+			type = 2,
+			value = function(params)
+				if params.attack_damage_flag ~= "marci_e7" then
+					return 0
+				end
+				return self.talents.e7_heal
+			end,
+		})
 		if not self.e7_init and IsServer() then
 			self.e7_init = true
 			caster:SwapAbilities("marci_summon_custom_wisp", "marci_dispose_hits", true, false)
@@ -362,8 +373,19 @@ function modifier_marci_guardian_custom_tracker:OnCreated()
 	self.ability.cleave_damage = self.ability:GetSpecialValueFor("cleave_damage") / 100
 	self.ability.buff_duration = self.ability:GetSpecialValueFor("buff_duration")
 
-	self.parent:AddAttackEvent_out(self, true)
-	self.parent:AddDamageEvent_out(self, true)
+	self.parent:AddProc(self, { land = true })
+	self.parent:AddLifesteal(self, {
+		proc = "LifestealShield",
+		value = function(params)
+			if params.inflictor == self.ability then
+				return 0
+			end
+			if params.inflictor then
+				return self.ability.lifesteal_pct + self.ability.talents.w3_heal
+			end
+			return self.ability.lifesteal_pct + self.ability.talents.e2_heal
+		end,
+	})
 end
 
 function modifier_marci_guardian_custom_tracker:OnRefresh(table)
@@ -438,69 +460,23 @@ function modifier_marci_guardian_custom_tracker:DamageEvent_out(params)
 		return
 	end
 
-	if self.ability.talents.has_e7 == 1 then
-		self.parent.marci_combat_timer = GameRules:GetDOTATime(false, false)
-	end
-
-	local result = self.parent:CheckLifesteal(params)
-
-	if not result then
-		return
-	end
-
-	if params.attack_damage_flag and params.attack_damage_flag == "marci_e7" and not params.inflictor then
-		local targets = { self.parent }
-		if IsValid(self.parent.marci_wisp) and self.parent.marci_wisp:IsAlive() then
-			table.insert(targets, self.parent.marci_wisp)
-		end
-		for _, target in pairs(targets) do
-			target:GenericHeal(
-				params.damage * self.ability.talents.e7_heal * result,
-				self.ability,
-				true,
-				"",
-				"modifier_marci_sidekick_7"
-			)
-		end
-	end
-
-	local heal = self.ability.lifesteal_pct
-	if params.inflictor then
-		heal = heal + self.ability.talents.w3_heal
-	end
-
-	if self.ability.talents.has_e2 == 1 and not params.inflictor then
-		heal = heal + self.ability.talents.e2_heal
-	end
-
-	local real_heal = heal * params.damage * result
-
-	for mod, _ in pairs(self.ability.shield_mods) do
-		if IsValid(mod) then
-			mod:AddShield(real_heal)
-		end
-	end
-
-	local effect = nil
-	if params.inflictor then
-		effect = "particles/items3_fx/octarine_core_lifesteal.vpcf"
-	end
-
-	self.parent:GenericHeal(real_heal, self.ability, true, effect)
+	self.parent.marci_combat_timer = GameRules:GetDOTATime(false, false)
 end
 
-function modifier_marci_guardian_custom_tracker:AttackEvent_out(params)
-	if not IsServer() then
-		return
+function modifier_marci_guardian_custom_tracker:LifestealShield(params, heal)
+	for mod, _ in pairs(self.ability.shield_mods) do
+		if IsValid(mod) then
+			mod:AddShield(heal)
+		end
 	end
-	if self.parent ~= params.attacker then
-		return
-	end
-	local target = params.target
+end
 
-	if not target:IsUnit() then
-		return
-	end
+function modifier_marci_guardian_custom_tracker:GetProcChance()
+	return 100
+end
+
+function modifier_marci_guardian_custom_tracker:AttackProc(params, name)
+	local target = params.target
 
 	if self.ability.talents.has_e7 == 0 then
 		if self.ability.talents.has_e2 == 1 then
@@ -676,7 +652,7 @@ function modifier_marci_guardian_custom_crit:OnCreated()
 	self.record = nil
 	self.crit = self.ability.talents.e3_crit
 
-	self.parent:AddAttackEvent_out(self)
+	self.parent:AddProc(self, { land = true, sync = true })
 	self:OnRefresh()
 end
 
@@ -709,21 +685,15 @@ function modifier_marci_guardian_custom_crit:GetModifierPreAttack_CriticalStrike
 	return self.crit
 end
 
-function modifier_marci_guardian_custom_crit:AttackEvent_out(params)
-	if not IsServer() then
-		return
-	end
-	if self.parent ~= params.attacker then
-		return
-	end
-	local target = params.target
+function modifier_marci_guardian_custom_crit:GetProcChance()
+	return 100
+end
 
-	if not target:IsUnit() then
-		return
-	end
+function modifier_marci_guardian_custom_crit:AttackProc(params)
 	if params.record ~= self.record then
 		return
 	end
+	local target = params.target
 
 	self.record = nil
 	target:EmitSound("DOTA_Item.Daedelus.Crit")
@@ -837,6 +807,7 @@ function marci_summon_custom_wisp:UpdateTalents(name)
 			e2_duration = caster:GetTalentValue("modifier_marci_sidekick_2", "duration", true),
 
 			e7_range = caster:GetTalentValue("modifier_marci_sidekick_7", "range", true),
+			e7_heal = caster:GetTalentValue("modifier_marci_sidekick_7", "heal", true) / 100,
 			e7_health = caster:GetTalentValue("modifier_marci_sidekick_7", "health", true) / 100,
 			e7_talent_cd = caster:GetTalentValue("modifier_marci_sidekick_7", "talent_cd", true),
 			e7_armor = caster:GetTalentValue("modifier_marci_sidekick_7", "armor", true),
@@ -971,6 +942,17 @@ function modifier_marci_guardian_custom_legendary_unit:OnCreated()
 
 	self.caster:AddDamageEvent_inc(self, true)
 	self.parent:AddDamageEvent_inc(self, true)
+	self.caster:AddLifesteal(self, {
+		name = "modifier_marci_sidekick_7",
+		type = 2,
+		heal_unit = self.parent,
+		value = function(params)
+			if params.attack_damage_flag ~= "marci_e7" then
+				return 0
+			end
+			return self.ability.talents.e7_heal
+		end,
+	})
 
 	self.interval = 0.1
 	self:StartIntervalThink(self.interval)

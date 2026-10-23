@@ -319,6 +319,7 @@
 "npc_dota_hero_puck"
 {
     "MovementSpeed"                 "310"
+    "AttributeIntelligenceGain"     "3.2"
     "Ability1"                      "custom_puck_illusory_orb"
     "Ability2"                      "custom_puck_waning_rift"
     "Ability3"                      "custom_puck_phase_shift"

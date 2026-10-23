@@ -66,7 +66,6 @@ function crystal_maiden_crystal_nova_custom:Precache(context)
 	end
 
 	PrecacheResource("particle", "particles/units/heroes/hero_crystalmaiden/maiden_crystal_nova.vpcf", context)
-	PrecacheResource("particle", "particles/zeus/zuus_heal.vpcf", context)
 	PrecacheResource("particle", "particles/crystal_maiden/maiden_ice_rink.vpcf", context)
 	PrecacheResource("particle", "particles/crystal_maiden/maiden_rink_glow.vpcf", context)
 	PrecacheResource("particle", "particles/econ/items/drow/drow_arcana/drow_arcana_rare_run_slide.vpcf", context)
@@ -90,6 +89,7 @@ function crystal_maiden_crystal_nova_custom:UpdateTalents()
 
 			has_q3 = 0,
 			q3_damage = 0,
+			q3_heal = 0,
 			q3_chance = caster:GetTalentValue("modifier_maiden_crystal_3", "chance", true),
 			q3_radius = caster:GetTalentValue("modifier_maiden_crystal_3", "radius", true),
 			q3_duration = caster:GetTalentValue("modifier_maiden_crystal_3", "duration", true),
@@ -118,7 +118,17 @@ function crystal_maiden_crystal_nova_custom:UpdateTalents()
 	if caster:HasTalent("modifier_maiden_crystal_3") then
 		self.talents.has_q3 = 1
 		self.talents.q3_damage = caster:GetTalentValue("modifier_maiden_crystal_3", "damage") / 100
-		caster:AddAttackEvent_out(self.tracker, true)
+		self.talents.q3_heal = caster:GetTalentValue("modifier_maiden_crystal_3", "heal") / 100
+		caster:AddProc(self.tracker, { land = true })
+		caster:AddLifesteal(self.tracker, {
+			name = "modifier_maiden_crystal_3",
+			value = function(params)
+				if params.inflictor and params.inflictor ~= self then
+					return 0
+				end
+				return self.talents.q3_heal
+			end,
+		})
 	end
 
 	if caster:HasTalent("modifier_maiden_crystal_4") then
@@ -280,23 +290,11 @@ function modifier_crystal_maiden_crystal_nova_tracker:OnRefresh()
 	self.ability.nova_damage = self.ability:GetSpecialValueFor("nova_damage")
 end
 
-function modifier_crystal_maiden_crystal_nova_tracker:AttackEvent_out(params)
-	if not IsServer() then
-		return
-	end
-	if self.parent ~= params.attacker then
-		return
-	end
-	if self.ability.talents.has_q3 == 0 then
-		return
-	end
-	if not params.target:IsUnit() then
-		return
-	end
-	if not RollPseudoRandomPercentage(self.ability.talents.q3_chance, 5438, self.parent) then
-		return
-	end
+function modifier_crystal_maiden_crystal_nova_tracker:GetProcChance()
+	return self.ability.talents.q3_chance
+end
 
+function modifier_crystal_maiden_crystal_nova_tracker:AttackProc(params)
 	self.ability:OnSpellStart(params.target, params.no_attack_cooldown)
 end
 

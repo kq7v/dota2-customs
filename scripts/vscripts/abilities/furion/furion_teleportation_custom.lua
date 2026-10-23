@@ -164,14 +164,15 @@ function furion_teleportation_custom:UpdateTalents(name)
 		self.talents.w1_base = caster:GetTalentValue("modifier_furion_teleport_1", "base")
 		self.talents.w1_damage = caster:GetTalentValue("modifier_furion_teleport_1", "damage") / 100
 		self.talents.w1_speed = caster:GetTalentValue("modifier_furion_teleport_1", "speed")
-		self.caster:AddAttackEvent_out(self.tracker, true)
+		self.caster:AddProc(self.tracker, { name = "hit", land = true, illusion = true })
+		self.caster:AddProc(self.tracker, { name = "w1", illusion = true, prd_owner = true, land = true })
 	end
 
 	if caster:HasTalent("modifier_furion_teleport_2") then
 		self.talents.has_w2 = 1
 		self.talents.w2_slow = caster:GetTalentValue("modifier_furion_teleport_2", "slow")
 		self.talents.w2_range = caster:GetTalentValue("modifier_furion_teleport_2", "range")
-		self.caster:AddAttackEvent_out(self.tracker, true)
+		self.caster:AddProc(self.tracker, { name = "hit", land = true, illusion = true })
 	end
 
 	if caster:HasTalent("modifier_furion_teleport_3") then
@@ -180,7 +181,7 @@ function furion_teleportation_custom:UpdateTalents(name)
 		self.talents.w3_stats = caster:GetTalentValue("modifier_furion_teleport_3", "stats") / 100
 		if IsServer() then
 			self.caster:AddSpellEvent(self.tracker, true)
-			self.caster:AddAttackStartEvent_out(self.tracker, true)
+			self.caster:AddProc(self.tracker, { extra = false })
 			self.parent:AddPercentStat(
 				{ agi = self.talents.w3_stats, int = self.talents.w3_stats, str = self.talents.w3_stats },
 				self.tracker
@@ -582,11 +583,8 @@ function modifier_furion_teleportation_custom_tracker:SpellEvent(params)
 	end
 end
 
-function modifier_furion_teleportation_custom_tracker:AttackEvent_out(params)
-	if not IsServer() then
-		return
-	end
-	if not params.target:IsUnit() then
+function modifier_furion_teleportation_custom_tracker:AttackProc(params, name)
+	if name ~= "hit" then
 		return
 	end
 
@@ -606,51 +604,91 @@ function modifier_furion_teleportation_custom_tracker:AttackEvent_out(params)
 		)
 	end
 
-	if self.ability.talents.has_w1 == 1 then
-		local chance = attacker.is_treant and self.ability.talents.w1_chance_ent or self.ability.talents.w1_chance
-		if RollPseudoRandomPercentage(chance, 8999, self.parent) then
-			target:EmitSound("Furion.Teleport_proc")
-			local particle = ParticleManager:CreateParticle(
-				"particles/nature_prophet/teleport_proc_aoe.vpcf",
-				PATTACH_WORLDORIGIN,
-				nil
-			)
-			ParticleManager:SetParticleControl(particle, 0, target:GetAbsOrigin())
-			ParticleManager:Delete(particle, 1)
-
-			local hit_effect =
-				ParticleManager:CreateParticle("particles/nature_prophet/sprout_hit.vpcf", PATTACH_CUSTOMORIGIN, target)
-			ParticleManager:SetParticleControlEnt(
-				hit_effect,
-				0,
-				target,
-				PATTACH_POINT,
-				"attach_hitloc",
-				target:GetAbsOrigin(),
-				false
-			)
-			ParticleManager:SetParticleControlEnt(
-				hit_effect,
-				1,
-				target,
-				PATTACH_POINT,
-				"attach_hitloc",
-				target:GetAbsOrigin(),
-				false
-			)
-			ParticleManager:ReleaseParticleIndex(hit_effect)
-
-			self.damageTable.damage = self.ability.talents.w1_base
-				+ self.ability.talents.w1_damage * self.parent:GetAllStats()
-
-			for _, aoe_target in pairs(self.parent:FindTargets(self.ability.talents.w1_radius, target:GetAbsOrigin())) do
-				self.damageTable.victim = aoe_target
-
-				local real_damage = DoDamage(self.damageTable, "modifier_furion_teleport_1")
-				aoe_target:SendNumber(4, real_damage)
-			end
-		end
+	if not params.procs or not params.procs[self] or not params.procs[self].w1 then
+		return
 	end
+
+	target:EmitSound("Furion.Teleport_proc")
+	local particle =
+		ParticleManager:CreateParticle("particles/nature_prophet/teleport_proc_aoe.vpcf", PATTACH_WORLDORIGIN, nil)
+	ParticleManager:SetParticleControl(particle, 0, target:GetAbsOrigin())
+	ParticleManager:Delete(particle, 1)
+
+	local hit_effect =
+		ParticleManager:CreateParticle("particles/nature_prophet/sprout_hit.vpcf", PATTACH_CUSTOMORIGIN, target)
+	ParticleManager:SetParticleControlEnt(
+		hit_effect,
+		0,
+		target,
+		PATTACH_POINT,
+		"attach_hitloc",
+		target:GetAbsOrigin(),
+		false
+	)
+	ParticleManager:SetParticleControlEnt(
+		hit_effect,
+		1,
+		target,
+		PATTACH_POINT,
+		"attach_hitloc",
+		target:GetAbsOrigin(),
+		false
+	)
+	ParticleManager:ReleaseParticleIndex(hit_effect)
+
+	self.damageTable.damage = self.ability.talents.w1_base + self.ability.talents.w1_damage * self.parent:GetAllStats()
+
+	for _, aoe_target in pairs(self.parent:FindTargets(self.ability.talents.w1_radius, target:GetAbsOrigin())) do
+		self.damageTable.victim = aoe_target
+
+		local real_damage = DoDamage(self.damageTable, "modifier_furion_teleport_1")
+		aoe_target:SendNumber(4, real_damage)
+	end
+end
+
+function modifier_furion_teleportation_custom_tracker:GetProcChance(params, name)
+	if name == "hit" then
+		return 100
+	end
+	if name == "w1" then
+		if params.attacker == self.parent then
+			return self.ability.talents.w1_chance
+		end
+		if params.attacker.is_treant then
+			return self.ability.talents.w1_chance_ent
+		end
+		return 0
+	end
+	if self.parent:HasModifier("modifier_furion_teleportation_custom_double") then
+		return 100
+	end
+	local legendary_mod = self.parent:FindModifierByName("modifier_furion_teleportation_custom_legendary")
+	if not legendary_mod then
+		return 0
+	end
+	if not legendary_mod.double_proc then
+		return 100
+	end
+	return self.ability.talents.w3_chance
+end
+
+function modifier_furion_teleportation_custom_tracker:AttackProcStart(params, name)
+	if name == "w1" then
+		return
+	end
+	local legendary_mod = self.parent:FindModifierByName("modifier_furion_teleportation_custom_legendary")
+	if self.parent:HasModifier("modifier_furion_teleportation_custom_double") then
+		self.parent:RemoveModifierByName("modifier_furion_teleportation_custom_double")
+	elseif legendary_mod then
+		legendary_mod.double_proc = true
+	end
+
+	self.parent:AddNewModifier(
+		self.parent,
+		self.ability,
+		"modifier_furion_teleportation_custom_double_attack",
+		{ target = params.target:entindex() }
+	)
 end
 
 function modifier_furion_teleportation_custom_tracker:AttackStartEvent_out(params)
@@ -667,33 +705,6 @@ function modifier_furion_teleportation_custom_tracker:AttackStartEvent_out(param
 	end
 
 	local legendary_mod = self.parent:FindModifierByName("modifier_furion_teleportation_custom_legendary")
-
-	if self.ability.talents.has_w3 == 1 and not params.no_attack_cooldown then
-		local allow = false
-
-		if self.parent:HasModifier("modifier_furion_teleportation_custom_double") then
-			allow = true
-			self.parent:RemoveModifierByName("modifier_furion_teleportation_custom_double")
-		elseif
-			legendary_mod
-			and (
-				not legendary_mod.double_proc
-				or RollPseudoRandomPercentage(self.ability.talents.w3_chance, 8998, self.parent)
-			)
-		then
-			legendary_mod.double_proc = true
-			allow = true
-		end
-
-		if allow then
-			self.parent:AddNewModifier(
-				self.parent,
-				self.ability,
-				"modifier_furion_teleportation_custom_double_attack",
-				{ target = target:entindex() }
-			)
-		end
-	end
 
 	if
 		self.ability.talents.has_w4 == 1

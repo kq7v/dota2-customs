@@ -135,10 +135,6 @@
 		},
 		{
 			_class = "C_INIT_InitialVelocityNoise"
-			m_TransformInput = 
-			{
-				m_nType = "PT_TYPE_INVALID"
-			}
 		},
 	]
 	m_Operators = 

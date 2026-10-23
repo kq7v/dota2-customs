@@ -480,12 +480,34 @@ function wearables_system:PrecacheHero(hero_name, context)
 	end
 end
 
+function wearables_system:HasItemAccess(PlayerID, hero_name, item_id)
+	if HasDonateItem(PlayerID, item_id) then
+		return true
+	end
+	if not wearables_system.ITEMS_DATA[hero_name] then
+		return false
+	end
+	local item_info = wearables_system.ITEMS_DATA[hero_name][item_id]
+	if not item_info or not item_info["OtherItemsBundle"] then
+		return false
+	end
+	for _, bundle_item in pairs(item_info["OtherItemsBundle"]) do
+		if HasDonateItem(PlayerID, bundle_item[1]) then
+			return true
+		end
+	end
+	return false
+end
+
 function wearables_system:PreSaveItemSelectionData(PlayerID, item_id, hero_name)
 	if not wearables_system.ITEMS_DATA[hero_name] then
 		return
 	end
 	local original_item_information = wearables_system.ITEMS_DATA[hero_name][item_id]
 	if original_item_information == nil then
+		return
+	end
+	if not wearables_system:HasItemAccess(PlayerID, hero_name, item_id) then
 		return
 	end
 	local item_slot_type = original_item_information["SlotType"]
@@ -1657,6 +1679,14 @@ function wearables_system:UpdateItemsRefit(entity)
 					or item_handle:GetModelName() == "models/items/drow/drow_arcana/drow_arcana_legs.vmdl"
 					or item_handle:GetModelName() == "models/items/drow/drow_arcana/drow_arcana_quiver.vmdl"
 					or item_handle:GetModelName() == "models/items/drow/drow_arcana/drow_arcana_shoulder.vmdl"
+					or item_handle:GetModelName() == "models/items/drow/drow_monster_arcana/drow_monster_arcana_back.vmdl"
+					or item_handle:GetModelName() == "models/items/drow/drow_monster_arcana/drow_monster_arcana_head.vmdl"
+					or item_handle:GetModelName() == "models/items/drow/drow_monster_arcana/drow_monster_arcana_arms.vmdl"
+					or item_handle:GetModelName() == "models/items/drow/drow_monster_arcana/drow_monster_arcana_legs.vmdl"
+					or item_handle:GetModelName() == "models/items/drow/drow_monster_arcana/drow_monster_arcana_quiver.vmdl"
+					or item_handle:GetModelName() == "models/items/drow/drow_monster_arcana/drow_monster_arcana_shoulder.vmdl"
+					or item_handle:GetModelName()
+						== "models/items/drow/drow_monster_arcana/drow_monster_arcana_weapon.vmdl"
 				)
 			then
 				if entity:HasUnequipItem(190901) then
@@ -1782,9 +1812,15 @@ function wearables_system:dota1x6_item_change(data)
 	local current_hero = data.current_hero
 	local remove = data.remove
 	local player_id = data.PlayerID
+	if not wearables_system.ITEMS_DATA[current_hero] then
+		return
+	end
 	if remove == 1 then
 		wearables_system:RemoveDonateItemToHero(current_hero, player_id, item_id)
 	else
+		if not wearables_system:HasItemAccess(player_id, current_hero, item_id) then
+			return
+		end
 		wearables_system:AddedDonateItemToHero(current_hero, player_id, item_id)
 		shop:UnmarkItemNew(player_id, item_id)
 	end

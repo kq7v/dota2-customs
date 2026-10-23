@@ -493,7 +493,6 @@
         "bonus_damage"              "50"
         "bonus_strength"            "50"
         "lifesteal"                 "30"
-        "creeps"                    "2"
         "duration"                  "6"
         "lifesteal_active"          "160"
         "active_damage"             "300"

@@ -33,13 +33,6 @@ function leshrac_innate_custom:UpdateTalents(name)
 			has_h3 = 0,
 			h3_health = 0,
 			h3_range = 0,
-
-			has_q3 = 0,
-			q3_heal = 0,
-			q3_bonus = caster:GetTalentValue("modifier_leshrac_earth_3", "bonus", true),
-
-			has_r2 = 0,
-			r2_heal = 0,
 		}
 	end
 
@@ -50,18 +43,6 @@ function leshrac_innate_custom:UpdateTalents(name)
 		if IsServer() then
 			caster:CalculateStatBonus(true)
 		end
-	end
-
-	if caster:HasTalent("modifier_leshrac_earth_3") then
-		self.talents.has_q3 = 1
-		self.talents.q3_heal = caster:GetTalentValue("modifier_leshrac_earth_3", "heal") / 100
-		caster:AddDamageEvent_out(self.tracker, true)
-	end
-
-	if caster:HasTalent("modifier_leshrac_nova_2") then
-		self.talents.has_r2 = 1
-		self.talents.r2_heal = caster:GetTalentValue("modifier_leshrac_nova_2", "heal") / 100
-		caster:AddDamageEvent_out(self.tracker, true)
 	end
 end
 
@@ -86,63 +67,6 @@ function modifier_leshrac_defilement_custom:OnCreated(table)
 	self.parent.leshrac_innate = self.ability
 
 	self.ability.radius = self.ability:GetSpecialValueFor("radius")
-end
-
-function modifier_leshrac_defilement_custom:DamageEvent_out(params)
-	if not IsServer() then
-		return
-	end
-	local result = self.parent:CheckLifesteal(params)
-	if not result then
-		return
-	end
-	local target = params.unit
-
-	if self.ability.talents.has_q3 == 1 and not params.inflictor then
-		local heal = self.ability.talents.q3_heal * result * params.damage
-		local hide = true
-
-		if target:HasModifier("modifier_leshrac_split_earth_custom_damage_inc") then
-			heal = heal * self.ability.talents.q3_bonus
-			hide = false
-			target:EmitSound("Leshrac.Earth_attack_hit")
-			local hit_effect = ParticleManager:CreateParticle(
-				"particles/units/heroes/hero_monkey_king/monkey_king_quad_tap_hit.vpcf",
-				PATTACH_CUSTOMORIGIN,
-				target
-			)
-			ParticleManager:SetParticleControlEnt(
-				hit_effect,
-				0,
-				target,
-				PATTACH_POINT_FOLLOW,
-				"attach_hitloc",
-				target:GetAbsOrigin(),
-				false
-			)
-			ParticleManager:SetParticleControlEnt(
-				hit_effect,
-				1,
-				target,
-				PATTACH_POINT_FOLLOW,
-				"attach_hitloc",
-				target:GetAbsOrigin(),
-				false
-			)
-			ParticleManager:ReleaseParticleIndex(hit_effect)
-		end
-		self.parent:GenericHeal(heal, self.ability, hide, false, "modifier_leshrac_earth_3")
-	end
-
-	if self.ability.talents.has_r2 == 1 and params.inflictor then
-		self.parent:GenericHeal(
-			self.ability.talents.r2_heal * params.damage * result,
-			self.ability,
-			true,
-			"particles/items3_fx/octarine_core_lifesteal.vpcf",
-			"modifier_leshrac_nova_2"
-		)
-	end
 end
 
 function modifier_leshrac_defilement_custom:DeclareFunctions()

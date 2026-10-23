@@ -35,6 +35,7 @@ function item_pipe_custom:Spawn()
 	self.aura_armor = self:GetSpecialValueFor("aura_armor")
 	self.magic_resistance_aura = self:GetSpecialValueFor("magic_resistance_aura")
 	self.barrier_block = self:GetSpecialValueFor("barrier_block")
+	self.barrier_health = self:GetSpecialValueFor("barrier_health") / 100
 end
 
 function item_pipe_custom:OnSpellStart()
@@ -90,10 +91,14 @@ end
 function modifier_item_pipe_custom:GetModifierAura()
 	return "modifier_item_pipe_custom_aura"
 end
+function modifier_item_pipe_custom:GetUniqueStat()
+	return self.ability.magic_resistance
+end
 function modifier_item_pipe_custom:OnCreated()
 	self.parent = self:GetParent()
 	self.caster = self:GetCaster()
 	self.ability = self:GetAbility()
+	self.parent:AddUniqueStat(self, "magic_resist")
 end
 
 function modifier_item_pipe_custom:DeclareFunctions()
@@ -108,16 +113,7 @@ function modifier_item_pipe_custom:GetModifierConstantHealthRegen()
 end
 
 function modifier_item_pipe_custom:GetModifierMagicalResistanceBonus()
-	if self.parent:HasModifier("modifier_item_consecrated_wraps_custom") then
-		return
-	end
-	if self.parent:HasModifier("modifier_item_spell_breaker") then
-		return
-	end
-	if self.parent:HasModifier("modifier_item_mage_slayer") then
-		return
-	end
-	return self.ability.magic_resistance
+	return self.parent:UniqueStat(self, "magic_resist")
 end
 
 function modifier_item_pipe_custom:GetAuraEntityReject(hEntity)
@@ -160,11 +156,11 @@ function modifier_item_pipe_custom_active:OnCreated(params)
 	self.parent = self:GetParent()
 	self.ability = self:GetAbility()
 
-	self.max_shield = self.ability.barrier_block
-
 	if not IsServer() then
 		return
 	end
+	self.caster = self:GetCaster()
+	self.max_shield = math.floor(self.ability.barrier_block + self.caster:GetMaxHealth() * self.ability.barrier_health)
 	self:SetStackCount(self.max_shield)
 
 	self.particle = ParticleManager:CreateParticle(
@@ -184,15 +180,28 @@ function modifier_item_pipe_custom_active:OnCreated(params)
 	)
 	ParticleManager:SetParticleControl(self.particle, 2, Vector(self.parent:GetModelRadius() * 1.1, 0, 0))
 	self:AddParticle(self.particle, false, false, -1, false, false)
+
+	self:SetHasCustomTransmitterData(true)
+	self:SendBuffRefreshToClients()
 end
 
 function modifier_item_pipe_custom_active:OnRefresh()
-	self.max_shield = self.ability.barrier_block
-
 	if not IsServer() then
 		return
 	end
+	self.max_shield = math.floor(self.ability.barrier_block + self.caster:GetMaxHealth() * self.ability.barrier_health)
 	self:SetStackCount(self.max_shield)
+	self:SendBuffRefreshToClients()
+end
+
+function modifier_item_pipe_custom_active:AddCustomTransmitterData()
+	return {
+		max_shield = self.max_shield,
+	}
+end
+
+function modifier_item_pipe_custom_active:HandleCustomTransmitterData(data)
+	self.max_shield = data.max_shield
 end
 
 function modifier_item_pipe_custom_active:DeclareFunctions()

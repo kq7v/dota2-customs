@@ -155,6 +155,12 @@
             "item_rapier_custom"    "17020"
             "item_recipe_armlet_custom" "17021"
             "item_armlet_custom"    "17022"
+            "item_recipe_mage_slayer_custom" "17023"
+            "item_mage_slayer_custom" "17024"
+            "item_cloak_custom"     "17025"
+            "item_shawl_custom"     "17026"
+            "item_recipe_yasha_custom" "17027"
+            "item_yasha_custom"     "17028"
         }
     }
 }

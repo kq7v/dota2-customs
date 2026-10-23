@@ -76,11 +76,11 @@
 		"4"   		"item_fluffy_hat"
         "5"         "item_wizard_hat"
 		"6"   		"item_wind_lace"
-		"7"   		"item_cloak"
+		"7"   		"item_cloak_custom"
 		"8"   		"item_boots"
-		"9"   		"item_lifesteal"
-		"10"  		"item_voodoo_mask"
-        "11"        "item_shawl"	
+		"9"   		"item_lifesteal_custom"
+		"10"  		"item_voodoo_mask_custom"
+        "11"        "item_shawl_custom"
 		"12"  		"item_ghost"
 		"13"  		"item_blink_custom"	
         "14"        "item_chasm_stone_custom"
@@ -165,7 +165,7 @@
 	// Level 3 - Purple Recipes	
 	"defense"
 	{
- 		"1"   		"item_mage_slayer"
+ 		"1"   		"item_mage_slayer_custom"
 		"2"   		"item_vanguard"
 		"3"   		"item_blade_mail_custom"
 		"4"   		"item_armlet_custom"
@@ -218,7 +218,7 @@
 	"artifacts"
 	{	
 		"1"   		"item_sange_custom"
- 		"2"   		"item_yasha"
+ 		"2"   		"item_yasha_custom"
  		"3"   		"item_kaya_custom"
  		"4"   		"item_dragon_lance"
 

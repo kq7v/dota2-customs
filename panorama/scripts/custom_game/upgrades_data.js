@@ -19,6 +19,7 @@ Game.local_chosen_build = -1
 Game.CustomTooltipOpened = false
 Game.Subscribed = false
 Game.player_stats = {}
+Game.basher_items = ["item_basher_custom", "item_abyssal_blade_custom"]
 var talent_increase_multipliers = {}
 
 CustomNetTables.SubscribeNetTableListener( "sub_data", update_hero_image );
@@ -37,7 +38,7 @@ function update_player_heroes(data)
 
 function update_player_stats(data)
 {
-	Game.player_stats[data.id] = {str: data.str, agi: data.agi, int: data.int}
+	Game.player_stats[data.id] = {str: data.str, agi: data.agi, int: data.int, cast_range: data.cast_range}
 }
 
 Game.GetPlayerHero = (player_id) =>
@@ -523,6 +524,23 @@ Game.HasTalent = (player_id, talent_name, return_level) =>
 		return return_level ? level : true
 
 	return false
+}
+
+Game.GetBasherTalents = (player_id) =>
+{
+	let talents = Game.GetUpgrades(player_id)
+	let result = []
+
+	for (let name in talents && talents.upgrades || {})
+	{
+		let hero = Game.talents_heroes[name]
+		let data = hero && Game.talents_values[hero][name]
+
+		if (data && data.is_basher == 1 && talents.upgrades[name] > 0)
+			result.push({name: name, hero: hero, icon: data.mini_icon, rarity: data.rarity})
+	}
+
+	return result
 }
 
 Game.FindModifier = (unit, name) =>

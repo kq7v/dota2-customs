@@ -74,7 +74,7 @@
         "stun_duration"             "0.8"
         "fireblast_damage"          "150"
         "multicast_delay"           "0.4"
-        "mana_damage"               "8"
+        "mana_damage"               "6"
         "cleave_damage"             "100"
         "cleave_radius"             "250"
         "attack_damage"             "80"

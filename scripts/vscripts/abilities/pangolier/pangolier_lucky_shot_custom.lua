@@ -61,20 +61,15 @@ function pangolier_lucky_shot_custom:Precache(context)
 		return
 	end
 
-	PrecacheResource("particle", "particles/units/heroes/hero_monkey_king/monkey_king_quad_tap_hit.vpcf", context)
 	PrecacheResource("particle", "particles/units/heroes/hero_pangolier/pangolier_luckyshot_disarm_cast.vpcf", context)
-	PrecacheResource("particle", "particles/units/heroes/hero_marci/marci_rebound_allymovespeed.vpcf", context)
 	PrecacheResource(
 		"particle",
 		"particles/units/heroes/hero_pangolier/pangolier_luckyshot_disarm_debuff.vpcf",
 		context
 	)
-	PrecacheResource("particle", "particles/items_fx/force_staff.vpcf", context)
 	PrecacheResource("particle", "particles/units/heroes/hero_pangolier/pangolier_swashbuckler_dash.vpcf", context)
 	PrecacheResource("particle", "particles/units/heroes/hero_pangolier/pangolier_swashbuckler.vpcf", context)
 	PrecacheResource("particle", "particles/units/heroes/hero_pangolier/pangolier_heartpiercer_delay.vpcf", context)
-	PrecacheResource("particle", "particles/status_fx/status_effect_life_stealer_open_wounds.vpcf", context)
-	PrecacheResource("particle", "particles/items2_fx/sange_maim.vpcf", context)
 	PrecacheResource("particle", "particles/pangolier/pangolier_heartpiercer_v_front_models.vpcf", context)
 	PrecacheResource("particle", "particles/pangolier/pangolier_heartpiercer_v_right_models.vpcf", context)
 	PrecacheResource("particle", "particles/pangolier/pangolier_heartpiercer_v_back_models.vpcf", context)
@@ -112,8 +107,9 @@ function pangolier_lucky_shot_custom:UpdateTalents(name)
 			e1_damage_type = caster:GetTalentValue("modifier_pangolier_lucky_1", "damage_type", true),
 			e1_radius = caster:GetTalentValue("modifier_pangolier_lucky_1", "radius", true),
 
-			has_e2 = 0,
 			e2_range = 0,
+			e2_heal = 0,
+			e2_bonus = caster:GetTalentValue("modifier_pangolier_lucky_2", "bonus", true),
 
 			has_e3 = 0,
 			e3_agi = 0,
@@ -154,8 +150,21 @@ function pangolier_lucky_shot_custom:UpdateTalents(name)
 	end
 
 	if caster:HasTalent("modifier_pangolier_lucky_2") then
-		self.talents.has_e2 = 1
 		self.talents.e2_range = caster:GetTalentValue("modifier_pangolier_lucky_2", "range")
+		self.talents.e2_heal = caster:GetTalentValue("modifier_pangolier_lucky_2", "heal") / 100
+		caster:AddLifesteal(self.tracker, {
+			name = "modifier_pangolier_lucky_2",
+			type = 2,
+			value = function(params)
+				if
+					(self.talents.has_e7 == 0 and params.attack_damage_flag == "pangolier_q")
+					or caster:GetUpgradeStack("modifier_pangolier_lucky_shot_custom_legendary_caster") == 1
+				then
+					return self.talents.e2_heal * self.talents.e2_bonus
+				end
+				return self.talents.e2_heal
+			end,
+		})
 	end
 
 	if caster:HasTalent("modifier_pangolier_lucky_3") then
@@ -296,7 +305,13 @@ function pangolier_lucky_shot_custom:ProcPassive(target, proc)
 	end
 
 	if not proc then
-		if not RollPseudoRandomPercentage(self:GetChance(), 842, self.caster) then
+		if
+			not RollPseudoRandomPercentage(
+				self:GetChance(),
+				"modifier_pangolier_lucky_shot_custom_tracker",
+				self.caster
+			)
+		then
 			return
 		end
 	end
@@ -443,12 +458,9 @@ function modifier_pangolier_lucky_shot_custom_tracker:OnCreated(table)
 	self.ability.damage = self.ability:GetSpecialValueFor("damage")
 	self.ability.chance_pct = self.ability:GetSpecialValueFor("chance_pct")
 
-	self.records = {}
-
+	self.proc = self.parent:AddProc(self, { current = true, extra = true })
+	self.parent:AddProc(self, { name = "hit", land = true })
 	self.parent:AddAttackRecordEvent_out(self)
-	self.parent:AddAttackStartEvent_out(self)
-	self.parent:AddAttackEvent_out(self, true)
-	self.parent:AddRecordDestroyEvent(self, true)
 end
 
 function modifier_pangolier_lucky_shot_custom_tracker:OnRefresh()
@@ -459,6 +471,13 @@ function modifier_pangolier_lucky_shot_custom_tracker:OnRefresh()
 	self.ability.damage = self.ability:GetSpecialValueFor("damage")
 end
 
+function modifier_pangolier_lucky_shot_custom_tracker:GetProcChance(params, name)
+	if name == "hit" then
+		return 100
+	end
+	return self.ability:GetChance()
+end
+
 function modifier_pangolier_lucky_shot_custom_tracker:AttackRecordEvent_out(params)
 	if not IsServer() then
 		return
@@ -466,57 +485,22 @@ function modifier_pangolier_lucky_shot_custom_tracker:AttackRecordEvent_out(para
 	if self.parent ~= params.attacker then
 		return
 	end
-	self.proc = false
-
-	local target = params.target
-	if not target:IsUnit() then
-		return
-	end
-	if params.no_attack_cooldown then
-		return
-	end
-
-	if not RollPseudoRandomPercentage(self.ability:GetChance(), 842, self.parent) then
-		return
-	end
-
-	self.proc = true
-	self.parent:StartGestureWithPlaybackRate(ACT_DOTA_ATTACK_EVENT, self.parent:GetAttackSpeed(true))
-end
-
-function modifier_pangolier_lucky_shot_custom_tracker:AttackStartEvent_out(params)
-	if not IsServer() then
-		return
-	end
-	if self.parent ~= params.attacker then
-		return
-	end
-
-	local target = params.target
-	if not target:IsUnit() then
-		return
-	end
 	if not self.proc then
 		return
 	end
-
-	self.records[params.record] = true
-	self.proc = false
-end
-
-function modifier_pangolier_lucky_shot_custom_tracker:AttackEvent_out(params)
-	if not IsServer() then
+	if not self.proc.armed then
 		return
 	end
-	if self.parent ~= params.attacker then
+
+	self.parent:StartGestureWithPlaybackRate(ACT_DOTA_ATTACK_EVENT, self.parent:GetAttackSpeed(true))
+end
+
+function modifier_pangolier_lucky_shot_custom_tracker:AttackProc(params, name)
+	if name ~= "hit" then
 		return
 	end
 
 	local target = params.target
-	if not target:IsUnit() then
-		return
-	end
-
 	local mod = target:FindModifierByName("modifier_pangolier_lucky_shot_custom_armor_effect")
 
 	if mod then
@@ -547,17 +531,10 @@ function modifier_pangolier_lucky_shot_custom_tracker:AttackEvent_out(params)
 		target:EmitSound("Pango.Lucky_legendary_proc_attack")
 	end
 
-	if not self.records[params.record] then
+	if not params.procs[self].default then
 		return
 	end
 	self.ability:ProcPassive(target, true)
-end
-
-function modifier_pangolier_lucky_shot_custom_tracker:RecordDestroyEvent(params)
-	if not IsServer() then
-		return
-	end
-	self.records[params.record] = nil
 end
 
 function modifier_pangolier_lucky_shot_custom_tracker:DeclareFunctions()
@@ -921,7 +898,7 @@ function pangolier_heartpiercer_custom:UpdateTalents(name)
 			e7_stun = caster:GetTalentValue("modifier_pangolier_lucky_7", "stun", true),
 			e7_effect_duration = caster:GetTalentValue("modifier_pangolier_lucky_7", "effect_duration", true),
 			e7_duration = caster:GetTalentValue("modifier_pangolier_lucky_7", "duration", true),
-			e7_status = caster:GetTalentValue("modifier_pangolier_lucky_7", "status", true),
+			e7_damage = caster:GetTalentValue("modifier_pangolier_lucky_7", "damage", true),
 			e7_talent_cd = caster:GetTalentValue("modifier_pangolier_lucky_7", "talent_cd", true),
 		}
 	end
@@ -1347,16 +1324,19 @@ end
 
 function modifier_pangolier_lucky_shot_custom_legendary_caster:DeclareFunctions()
 	return {
-		MODIFIER_PROPERTY_STATUS_RESISTANCE_STACKING,
+		MODIFIER_PROPERTY_BASEATTACK_BONUSDAMAGE,
 		MODIFIER_PROPERTY_MODEL_SCALE,
 	}
 end
 
-function modifier_pangolier_lucky_shot_custom_legendary_caster:GetModifierStatusResistanceStacking()
+function modifier_pangolier_lucky_shot_custom_legendary_caster:GetModifierBaseAttack_BonusDamage()
 	if self:GetStackCount() == 0 then
 		return
 	end
-	return self.ability.talents.e7_status
+	if not IsValid(self.parent) then
+		return
+	end
+	return self.parent:GetAgility() * self.ability.talents.e7_damage
 end
 
 function modifier_pangolier_lucky_shot_custom_legendary_caster:GetModifierModelScale()

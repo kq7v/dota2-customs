@@ -33,7 +33,7 @@ modifier_item_weighted_dice_custom = class(mod_hidden)
 function modifier_item_weighted_dice_custom:RemoveOnDeath()
 	return false
 end
-function modifier_item_weighted_dice_custom:OnCreated(table)
+function modifier_item_weighted_dice_custom:OnCreated()
 	self.parent = self:GetParent()
 	self.ability = self:GetAbility()
 
@@ -42,6 +42,11 @@ function modifier_item_weighted_dice_custom:OnCreated(table)
 	self.gold = self.ability.gold
 
 	self.parent:AddDeathEvent(self, true)
+
+	if not IsServer() then
+		return
+	end
+	self.parent:AddProc(self, { land = true, property = true })
 end
 
 function modifier_item_weighted_dice_custom:DeathEvent(params)
@@ -70,17 +75,16 @@ function modifier_item_weighted_dice_custom:DeclareFunctions()
 	}
 end
 
+function modifier_item_weighted_dice_custom:GetProcChance()
+	return self.chance
+end
+
 function modifier_item_weighted_dice_custom:GetModifierProcAttack_BonusDamage_Magical(params)
 	if not IsServer() then
 		return
 	end
-	if self.parent ~= params.attacker then
-		return
-	end
-	if not params.target:IsUnit() then
-		return
-	end
-	if not RollPseudoRandomPercentage(self.chance, 5233, self.parent) then
+	self.parent:LandProcs(params, true)
+	if not self.parent:IsProc(self, params.record) then
 		return
 	end
 

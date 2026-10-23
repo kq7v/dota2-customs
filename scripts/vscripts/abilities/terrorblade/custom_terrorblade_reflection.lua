@@ -345,7 +345,7 @@ function custom_terrorblade_reflection:LaunchIllusion(enemy, double)
 
 		for _, mod in pairs(copy_unit:FindAllModifiers()) do
 			if mod.StackOnIllusion ~= nil and mod.StackOnIllusion == true then
-				illusion:UpgradeIllusion(mod:GetName(), mod:GetStackCount())
+				illusion:UpgradeIllusion(mod:GetName(), mod:GetStackCount(), mod)
 			end
 		end
 
@@ -969,10 +969,6 @@ function modifier_custom_terrorblade_reflection_tracker:StealSpell(target)
 
 		if bit.band(self.current_spell:GetBehaviorInt(), DOTA_ABILITY_BEHAVIOR_AUTOCAST) ~= 0 then
 			self.current_spell:ToggleAutoCast()
-		end
-
-		if bit.band(self.current_spell:GetBehaviorInt(), DOTA_ABILITY_BEHAVIOR_VECTOR_TARGETING) ~= 0 then
-			self.current_spell:UpdateVectorValues()
 		end
 	end
 

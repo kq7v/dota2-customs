@@ -106,6 +106,7 @@ function zuus_thundergods_wrath_custom:UpdateTalents(name)
 			r1_spell = 0,
 
 			r2_cd = 0,
+			r2_heal = 0,
 
 			has_r3 = 0,
 			r3_magic = 0,
@@ -146,6 +147,8 @@ function zuus_thundergods_wrath_custom:UpdateTalents(name)
 
 	if caster:HasTalent("modifier_zuus_wrath_2") then
 		self.talents.r2_cd = caster:GetTalentValue("modifier_zuus_wrath_2", "cd")
+		self.talents.r2_heal = caster:GetTalentValue("modifier_zuus_wrath_2", "heal") / 100
+		caster:AddLifesteal(self.tracker, { name = "modifier_zuus_wrath_2", type = 1, value = self.talents.r2_heal })
 	end
 
 	if caster:HasTalent("modifier_zuus_wrath_3") then

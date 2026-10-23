@@ -143,8 +143,18 @@ function ember_spirit_searing_chains_custom:UpdateTalents()
 		self.talents.has_q3 = 1
 		self.talents.q3_heal = caster:GetTalentValue("modifier_ember_chain_3", "heal") / 100
 		self.talents.q3_crit = caster:GetTalentValue("modifier_ember_chain_3", "crit")
-		caster:AddDamageEvent_out(self.tracker, true)
 		caster:AddRecordDestroyEvent(self.tracker, true)
+		caster:AddLifesteal(self.tracker, {
+			name = "modifier_ember_chain_3",
+			text = true,
+			proc = "LifestealHit",
+			value = function(params)
+				if not self.tracker.records[params.record] then
+					return 0
+				end
+				return self.talents.q3_heal
+			end,
+		})
 	end
 
 	if caster:HasTalent("modifier_ember_chain_4") then
@@ -349,6 +359,21 @@ function modifier_searing_chains_custom_tracker:RecordDestroyEvent(params)
 	self.records[params.record] = nil
 end
 
+function modifier_searing_chains_custom_tracker:GetCritChance(target)
+	if self.ability.talents.has_q3 == 0 then
+		return 0
+	end
+	if target and target:HasModifier("modifier_searing_chains_custom_debuff") then
+		return self.ability.talents.q3_chance * self.ability.talents.q3_bonus, 1292
+	end
+
+	return self.ability.talents.q3_chance, 1291
+end
+
+function modifier_searing_chains_custom_tracker:GetCritDamage()
+	return self.ability.talents.q3_crit
+end
+
 function modifier_searing_chains_custom_tracker:GetModifierPreAttack_CriticalStrike(params)
 	if not IsServer() then
 		return
@@ -361,13 +386,7 @@ function modifier_searing_chains_custom_tracker:GetModifierPreAttack_CriticalStr
 	end
 
 	local target = params.target
-	local index = 1291
-	local chance = self.ability.talents.q3_chance
-
-	if target:HasModifier("modifier_searing_chains_custom_debuff") then
-		index = 1292
-		chance = chance * self.ability.talents.q3_bonus
-	end
+	local chance, index = self:GetCritChance(target)
 
 	if not RollPseudoRandomPercentage(chance, index, self.parent) then
 		return
@@ -393,30 +412,12 @@ function modifier_searing_chains_custom_tracker:GetModifierPreAttack_CriticalStr
 	end
 
 	target:EmitSound("Ember.Chains_Proc")
-	return self.ability.talents.q3_crit
+	return self:GetCritDamage()
 end
 
-function modifier_searing_chains_custom_tracker:DamageEvent_out(params)
-	if not IsServer() then
-		return
-	end
-	if self.parent ~= params.attacker then
-		return
-	end
-
+function modifier_searing_chains_custom_tracker:LifestealHit(params)
 	local target = params.unit
-	if not target:IsUnit() then
-		return
-	end
-	if not self.records[params.record] then
-		return
-	end
-
 	target:EmitSound("DOTA_Item.Daedelus.Crit")
-	local result = self.parent:CheckLifesteal(params)
-	if not result then
-		return
-	end
 
 	local hit_effect = ParticleManager:CreateParticle(
 		"particles/units/heroes/hero_monkey_king/monkey_king_quad_tap_hit.vpcf",
@@ -442,14 +443,6 @@ function modifier_searing_chains_custom_tracker:DamageEvent_out(params)
 		false
 	)
 	ParticleManager:ReleaseParticleIndex(hit_effect)
-
-	self.parent:GenericHeal(
-		params.damage * result * self.ability.talents.q3_heal,
-		self.ability,
-		false,
-		nil,
-		"modifier_ember_chain_3"
-	)
 end
 
 modifier_searing_chains_custom_debuff = class(mod_visible)

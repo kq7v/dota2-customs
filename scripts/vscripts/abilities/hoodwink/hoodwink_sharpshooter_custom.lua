@@ -75,6 +75,7 @@ function hoodwink_sharpshooter_custom:UpdateTalents()
 		self.talents = {
 			has_r1 = 0,
 			r1_damage = 0,
+			r1_heal = 0,
 			r1_max = caster:GetTalentValue("modifier_hoodwink_sharp_1", "max", true),
 
 			r2_cd = 0,
@@ -116,6 +117,11 @@ function hoodwink_sharpshooter_custom:UpdateTalents()
 	if caster:HasTalent("modifier_hoodwink_sharp_1") then
 		self.talents.has_r1 = 1
 		self.talents.r1_damage = caster:GetTalentValue("modifier_hoodwink_sharp_1", "damage")
+		self.talents.r1_heal = caster:GetTalentValue("modifier_hoodwink_sharp_1", "heal") / 100
+		caster:AddLifesteal(
+			self.tracker,
+			{ name = "modifier_hoodwink_sharp_1", type = 1, value = self.talents.r1_heal }
+		)
 	end
 
 	if caster:HasTalent("modifier_hoodwink_sharp_2") then
@@ -389,6 +395,22 @@ function modifier_hoodwink_sharpshooter_custom:OnCreated(kv)
 	self:AddParticle(effect_cast, false, false, -1, false, false)
 
 	EmitSoundOn("Hero_Hoodwink.Sharpshooter.Channel", self.parent)
+
+	local has_blue_style = self.parent:HasUnequipItem(23627) or self.parent:HasUnequipItem(236271)
+	local particle_range_finder = wearables_system:GetParticleReplacementAbility(
+		self.parent,
+		"particles/units/heroes/hero_hoodwink/hoodwink_sharpshooter_range_finder.vpcf",
+		self,
+		"hoodwink_sharpshooter_custom"
+	)
+	if particle_range_finder ~= "particles/units/heroes/hero_hoodwink/hoodwink_sharpshooter_range_finder.vpcf" then
+		has_blue_style = true
+	end
+	CustomGameEventManager:Send_ServerToPlayer(
+		PlayerResource:GetPlayer(self.parent:GetPlayerOwnerID()),
+		"ability_hoodwink_ulti",
+		{ state = 1, range = self.projectile_range, has_blue_style = has_blue_style }
+	)
 end
 
 function modifier_hoodwink_sharpshooter_custom:Shoot(is_auto)
@@ -441,6 +463,11 @@ function modifier_hoodwink_sharpshooter_custom:OnDestroy()
 	end
 
 	StopSoundOn("Hero_Hoodwink.Sharpshooter.Channel", self.parent)
+	CustomGameEventManager:Send_ServerToPlayer(
+		PlayerResource:GetPlayer(self.parent:GetPlayerOwnerID()),
+		"ability_hoodwink_ulti",
+		{ state = 2 }
+	)
 
 	local direction = self.current_dir
 	self:Shoot()
@@ -798,48 +825,11 @@ function modifier_hoodwink_sharpshooter_custom_tracker:OnCreated()
 	self.ability.slow_move_pct = self.ability:GetSpecialValueFor("slow_move_pct")
 	self.ability.turn_rate = self.ability:GetSpecialValueFor("turn_rate")
 	self.ability.base_power = self.ability:GetSpecialValueFor("base_power")
-
-	if not IsServer() then
-		return
-	end
-	local has_blue_style = self.parent:HasUnequipItem(23627) or self.parent:HasUnequipItem(236271)
-	local particle_range_finder = wearables_system:GetParticleReplacementAbility(
-		self.parent,
-		"particles/units/heroes/hero_hoodwink/hoodwink_sharpshooter_range_finder.vpcf",
-		self,
-		"hoodwink_sharpshooter_custom"
-	)
-	if particle_range_finder ~= "particles/units/heroes/hero_hoodwink/hoodwink_sharpshooter_range_finder.vpcf" then
-		has_blue_style = true
-	end
-	CustomGameEventManager:Send_ServerToPlayer(
-		PlayerResource:GetPlayer(self.parent:GetPlayerOwnerID()),
-		"ability_hoodwink_ulti",
-		{ has_blue_style = has_blue_style }
-	)
 end
 
 function modifier_hoodwink_sharpshooter_custom_tracker:OnRefresh()
 	self.ability.max_damage = self.ability:GetSpecialValueFor("max_damage")
 	self.ability.slow_move_pct = self.ability:GetSpecialValueFor("slow_move_pct")
-	if not IsServer() then
-		return
-	end
-	local has_blue_style = self.parent:HasUnequipItem(23627) or self.parent:HasUnequipItem(236271)
-	local particle_range_finder = wearables_system:GetParticleReplacementAbility(
-		self.parent,
-		"particles/units/heroes/hero_hoodwink/hoodwink_sharpshooter_range_finder.vpcf",
-		self,
-		"hoodwink_sharpshooter_custom"
-	)
-	if particle_range_finder ~= "particles/units/heroes/hero_hoodwink/hoodwink_sharpshooter_range_finder.vpcf" then
-		has_blue_style = true
-	end
-	CustomGameEventManager:Send_ServerToPlayer(
-		PlayerResource:GetPlayer(self.parent:GetPlayerOwnerID()),
-		"ability_hoodwink_ulti",
-		{ has_blue_style = has_blue_style }
-	)
 end
 
 function modifier_hoodwink_sharpshooter_custom_tracker:DeclareFunctions()

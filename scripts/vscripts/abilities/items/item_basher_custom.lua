@@ -25,7 +25,6 @@ function item_basher_custom:Precache(context)
 		"particles/econ/items/troll_warlord/troll_warlord_ti7_axe/troll_ti7_axe_bash_explosion.vpcf",
 		context
 	)
-	PrecacheResource("particle", "particles/generic_gameplay/generic_minibash.vpcf", context)
 end
 
 function item_basher_custom:Spawn()
@@ -41,7 +40,7 @@ modifier_item_basher_custom = class(mod_hidden)
 function modifier_item_basher_custom:GetAttributes()
 	return MODIFIER_ATTRIBUTE_MULTIPLE
 end
-function modifier_item_basher_custom:OnCreated(table)
+function modifier_item_basher_custom:OnCreated()
 	self.parent = self:GetParent()
 	self.ability = self:GetAbility()
 
@@ -51,6 +50,17 @@ function modifier_item_basher_custom:OnCreated(table)
 	self.chance_range = self.ability.bash_chance_ranged
 	self.bash_duration = self.ability.bash_duration
 	self.bash_damage = self.ability.bonus_chance_damage
+
+	if not IsServer() then
+		return
+	end
+	if not self.parent:IsRealHero() then
+		return
+	end
+	if self.parent:IsTempestDouble() then
+		return
+	end
+	self.parent:AddProc(self, { group = "skull_basher", cd = true, land = true, property = true })
 end
 
 function modifier_item_basher_custom:DeclareFunctions()
@@ -69,41 +79,22 @@ function modifier_item_basher_custom:GetModifierPreAttack_BonusDamage()
 	return self.damage
 end
 
+function modifier_item_basher_custom:GetProcChance(params)
+	if self.parent.has_basher_talent == 1 then
+		return 0
+	end
+	if params.ranged_attack then
+		return self.chance_range
+	end
+	return self.chance_melee
+end
+
 function modifier_item_basher_custom:GetModifierProcAttack_BonusDamage_Physical(params)
 	if not IsServer() then
 		return
 	end
-	if not self.ability:IsFullyCastable() then
-		return
-	end
-	if not self.parent:IsRealHero() or self.parent:IsTempestDouble() then
-		return
-	end
-	if self.parent:FindAllModifiersByName(self:GetName())[1] ~= self then
-		return
-	end
-	if self.parent:HasModifier("modifier_item_abyssal_blade_custom") then
-		return
-	end
-	if self.parent.has_basher_talent and self.parent.has_basher_talent == 1 then
-		return
-	end
-	if self.parent ~= params.attacker then
-		return
-	end
-	if not params.target:IsUnit() then
-		return
-	end
-	if params.target:GetTeamNumber() == self.parent:GetTeamNumber() then
-		return
-	end
-
-	local chance = self.chance_melee
-	if params.ranged_attack then
-		chance = self.chance_range
-	end
-
-	if not RollPseudoRandomPercentage(chance, 4516, self.parent) then
+	self.parent:LandProcs(params, true)
+	if not self.parent:IsProc(self, params.record) then
 		return
 	end
 
@@ -116,7 +107,6 @@ function modifier_item_basher_custom:GetModifierProcAttack_BonusDamage_Physical(
 		"modifier_bashed",
 		{ duration = (1 - target:GetStatusResistance()) * self.bash_duration }
 	)
-	self.ability:StartCd()
 	target:SendNumber(4, self.bash_damage)
 
 	local troll_bash = wearables_system:GetParticleReplacementAbility(

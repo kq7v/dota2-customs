@@ -66,7 +66,6 @@ function tinker_deploy_turrets_custom:Precache(context)
 	end
 	PrecacheResource("particle", "particles/units/heroes/hero_tinker/tinker_defense_matrix_pulse.vpcf", context)
 	PrecacheResource("particle", "particles/units/heroes/hero_tinker/tinker_defense_matrix_cast.vpcf", context)
-	PrecacheResource("particle", "particles/units/heroes/hero_tinker/tinker_defense_matrix.vpcf", context)
 	PrecacheResource("particle", "particles/zeus/bolt_disarm.vpcf", context)
 	PrecacheResource("particle", "particles/tinker/matrix_legendary_laser.vpcf", context)
 	PrecacheResource("particle", "particles/puck/rift_blink_starta0.vpcf", context)
@@ -118,6 +117,7 @@ function tinker_deploy_turrets_custom:UpdateTalents()
 			e4_talent_cd = caster:GetTalentValue("modifier_tinker_matrix_4", "talent_cd", true),
 
 			has_e7 = 0,
+			e7_heal = caster:GetTalentValue("modifier_tinker_matrix_7", "heal", true) / 100,
 			e7_radius = caster:GetTalentValue("modifier_tinker_matrix_7", "radius", true),
 			e7_duration = caster:GetTalentValue("modifier_tinker_matrix_7", "duration", true),
 			e7_effect_duration = caster:GetTalentValue("modifier_tinker_matrix_7", "effect_duration", true),
@@ -137,7 +137,7 @@ function tinker_deploy_turrets_custom:UpdateTalents()
 		self.talents.e1_damage = caster:GetTalentValue("modifier_tinker_matrix_1", "damage") / 100
 		self.talents.e1_attack = caster:GetTalentValue("modifier_tinker_matrix_1", "attack") / 100
 		self.talents.e1_base = caster:GetTalentValue("modifier_tinker_matrix_1", "base")
-		caster:AddAttackEvent_out(self.tracker, true)
+		caster:AddProc(self.tracker, { land = true })
 	end
 
 	if caster:HasTalent("modifier_tinker_matrix_2") then
@@ -150,7 +150,15 @@ function tinker_deploy_turrets_custom:UpdateTalents()
 
 	if caster:HasTalent("modifier_tinker_matrix_7") then
 		self.talents.has_e7 = 1
-		caster:AddAttackEvent_out(self.tracker, true)
+		caster:AddProc(self.tracker, { name = "hit", land = true })
+		caster:AddLifesteal(self.tracker, {
+			name = "modifier_tinker_matrix_7",
+			value = function()
+				return caster:HasModifier("modifier_tinker_deploy_turrets_custom_legendary_speed")
+						and self.talents.e7_heal
+					or 0
+			end,
+		})
 	end
 
 	if caster:HasTalent("modifier_tinker_march_2") then
@@ -249,7 +257,7 @@ function tinker_deploy_turrets_custom:OnProjectileHit_ExtraData(target, vLocatio
 	return true
 end
 
-function tinker_deploy_turrets_custom:ProcDamage(target, attacker)
+function tinker_deploy_turrets_custom:ProcDamage(target, attacker, is_proc)
 	if not IsServer() then
 		return
 	end
@@ -259,14 +267,7 @@ function tinker_deploy_turrets_custom:ProcDamage(target, attacker)
 	if self.talents.has_e1 == 0 then
 		return
 	end
-
-	local chance = self.talents.e1_chance
-	local index = 15030
-	if attacker:HasModifier("modifier_tinker_deploy_turrets_custom_unit") then
-		chance = self.talents.e1_chance_turret
-		index = 15031
-	end
-	if not RollPseudoRandomPercentage(chance, index, self.parent) then
+	if not is_proc and not RollPseudoRandomPercentage(self.talents.e1_chance_turret, 15031, self.parent) then
 		return
 	end
 
@@ -617,21 +618,20 @@ function modifier_tinker_deploy_turrets_custom_tracker:OnRefresh()
 	self.ability.health = self.ability:GetSpecialValueFor("health")
 end
 
-function modifier_tinker_deploy_turrets_custom_tracker:AttackEvent_out(params)
-	if not IsServer() then
-		return
+function modifier_tinker_deploy_turrets_custom_tracker:GetProcChance(params, name)
+	if name == "hit" then
+		return 100
 	end
-	if self.parent ~= params.attacker then
-		return
-	end
-	local target = params.target
+	return self.ability.talents.e1_chance
+end
 
-	if not target:IsUnit() then
+function modifier_tinker_deploy_turrets_custom_tracker:AttackProc(params, name)
+	if name == "hit" then
+		self.ability:LegendaryStack(params.target)
 		return
 	end
 
-	self.ability:ProcDamage(target, self.parent)
-	self.ability:LegendaryStack(target)
+	self.ability:ProcDamage(params.target, self.parent, true)
 end
 
 function modifier_tinker_deploy_turrets_custom_tracker:DeclareFunctions()

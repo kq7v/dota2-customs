@@ -377,7 +377,7 @@ function modifier_custom_terrorblade_metamorphosis:OnCreated(table)
 	self.parent.meta_records = self.records
 
 	if self.ability.talents.has_e1 == 1 then
-		self.crit_next = RollPseudoRandomPercentage(self.ability.talents.e1_chance, 1608, self.parent)
+		self.crit_next = RollPseudoRandomPercentage(self:GetCritChance(), 1608, self.parent)
 	end
 
 	if self.parent:IsRealHero() and self.ability.talents.has_e7 == 0 then
@@ -543,11 +543,22 @@ function modifier_custom_terrorblade_metamorphosis:GetModifierMoveSpeedBonus_Per
 	return self.ability.talents.e5_move
 end
 
+function modifier_custom_terrorblade_metamorphosis:GetCritChance()
+	if self.ability.talents.has_e1 == 0 then
+		return 0
+	end
+	return self.ability.talents.e1_chance
+end
+
 function modifier_custom_terrorblade_metamorphosis:GetCritDamage()
-	if not self.crit_next then
+	if self.ability.talents.has_e1 == 0 then
 		return
 	end
 	return self.crit_damage
+end
+
+function modifier_custom_terrorblade_metamorphosis:GetAccuracyChance()
+	return self:GetCritChance()
 end
 
 function modifier_custom_terrorblade_metamorphosis:GetModifierPreAttack_CriticalStrike(params)
@@ -562,13 +573,13 @@ function modifier_custom_terrorblade_metamorphosis:GetModifierPreAttack_Critical
 	end
 
 	local crit = self.crit_next
-	self.crit_next = RollPseudoRandomPercentage(self.ability.talents.e1_chance, 1608, self.parent)
+	self.crit_next = RollPseudoRandomPercentage(self:GetCritChance(), 1608, self.parent)
 	if not crit then
 		return
 	end
 
 	self.records[params.record] = true
-	return self.crit_damage
+	return self:GetCritDamage()
 end
 
 function modifier_custom_terrorblade_metamorphosis:GetModifierAttackRangeBonus()

@@ -19,6 +19,7 @@ _G.hub_functions = {
 	[MODIFIER_PROPERTY_PREATTACK_BONUS_DAMAGE] = "GetModifierPreAttack_BonusDamage",
 	[MODIFIER_PROPERTY_PHYSICAL_ARMOR_BONUS] = "GetModifierPhysicalArmorBonus",
 	[MODIFIER_PROPERTY_MOVESPEED_BONUS_CONSTANT] = "GetModifierMoveSpeedBonus_Constant",
+	[MODIFIER_PROPERTY_CAST_RANGE_BONUS_STACKING] = "GetModifierCastRangeBonusStacking",
 }
 _G.hub_units = {
 	[MODIFIER_PROPERTY_ATTACKSPEED_BONUS_CONSTANT] = true,
@@ -215,6 +216,8 @@ LinkLuaModifier("modifier_death", "modifiers/main_mods/modifier_death", LUA_MODI
 LinkLuaModifier("modifier_mob_thinker", "modifiers/main_mods/modifier_mob_thinker", LUA_MODIFIER_MOTION_NONE)
 LinkLuaModifier("modifier_event_thinker", "modifiers/main_mods/modifier_event_thinker", LUA_MODIFIER_MOTION_NONE)
 LinkLuaModifier("modifier_event_thinker_heal", "modifiers/main_mods/modifier_event_thinker", LUA_MODIFIER_MOTION_NONE)
+LinkLuaModifier("modifier_proc_accuracy", "modifiers/main_mods/modifier_event_thinker", LUA_MODIFIER_MOTION_NONE)
+LinkLuaModifier("modifier_proc_accuracy_swing", "modifiers/main_mods/modifier_event_thinker", LUA_MODIFIER_MOTION_NONE)
 LinkLuaModifier("modifier_quest_blink", "modifiers/main_mods/modifier_event_thinker", LUA_MODIFIER_MOTION_NONE)
 LinkLuaModifier("modifier_voice_module", "modifiers/main_mods/modifier_voice_module", LUA_MODIFIER_MOTION_NONE)
 LinkLuaModifier("modifier_donate_pet", "modifiers/main_mods/modifier_donate_pet", LUA_MODIFIER_MOTION_NONE)
@@ -401,6 +404,7 @@ _G.added_shop_heroes = {
 	["npc_dota_hero_furion"] = true,
 	["npc_dota_hero_pangolier"] = true,
 	["npc_dota_hero_primal_beast"] = true,
+	["npc_dota_hero_puck"] = true,
 }
 
 _G.NoCdItems = {
@@ -562,6 +566,7 @@ ListenToGameEvent("save_abilities", function(event)
 						for key, value in pairs(kv.AbilityValues) do
 							local mark = type(value) == "table"
 									and (value.levelkey or tostring(value.dynamic_value) == "true" and "dynamic")
+								or key:find("+", 1, true) and "sum"
 								or nil
 							if mark then
 								ability_keys[ability:GetAbilityName()] = ability_keys[ability:GetAbilityName()] or {}
@@ -643,6 +648,7 @@ _G.CUSTOM_FLAG_INVOKER_SNAP = 5
 _G.CUSTOM_FLAG_GOLD_KHANDA = 5
 
 _G.DOTA_ABILITY_BEHAVIOR_IGNORE_SILENCE_CUSTOM = 137438953472
+_G.DOTA_ABILITY_BEHAVIOR_ALT_CASTABLE_CUSTOM = 1099511627776
 
 _G.LIFESTEAL_CREEPS_CUSTOM = 1 / 3
 
@@ -817,6 +823,24 @@ function CEntityInstance:RemoveSelf()
 		return
 	end
 	RemoveSelf_old(self)
+end
+
+_G.prd_keys = prd_keys or {}
+_G.prd_next = prd_next or 20000
+
+if not RollPseudoRandomPercentage_old then
+	RollPseudoRandomPercentage_old = RollPseudoRandomPercentage
+end
+
+function RollPseudoRandomPercentage(chance, key, unit)
+	if type(key) == "string" then
+		if not prd_keys[key] then
+			prd_next = prd_next + 1
+			prd_keys[key] = prd_next
+		end
+		key = prd_keys[key]
+	end
+	return RollPseudoRandomPercentage_old(chance, key, unit)
 end
 
 function InvokerAbilityManager(caster)

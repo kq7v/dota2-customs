@@ -188,7 +188,7 @@ function hoodwink_bushwhack_custom:UpdateTalents()
 		self.talents.w3_damage = caster:GetTalentValue("modifier_hoodwink_bush_3", "damage") / 100
 		self.talents.w3_creeps = caster:GetTalentValue("modifier_hoodwink_bush_3", "creeps")
 		self.talents.w3_base = caster:GetTalentValue("modifier_hoodwink_bush_3", "base")
-		caster:AddAttackEvent_out(self.tracker, true)
+		caster:AddProc(self.tracker, { land = true })
 	end
 
 	if caster:HasTalent("modifier_hoodwink_hero_4") then
@@ -676,21 +676,15 @@ function modifier_hoodwink_bushwhack_custom_tracker:DeclareFunctions()
 	}
 end
 
-function modifier_hoodwink_bushwhack_custom_tracker:AttackEvent_out(params)
-	if not IsServer() then
-		return
-	end
+function modifier_hoodwink_bushwhack_custom_tracker:GetProcChance()
+	return 100
+end
+
+function modifier_hoodwink_bushwhack_custom_tracker:AttackProc(params, name)
 	if self.ability.talents.has_w3 == 0 then
 		return
 	end
-	if self.parent ~= params.attacker then
-		return
-	end
 	local target = params.target
-
-	if not target:IsUnit() then
-		return
-	end
 
 	local mod = target:FindModifierByName("modifier_hoodwink_bushwhack_custom_damage")
 	if mod then

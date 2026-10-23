@@ -32,18 +32,31 @@ function item_kaya_and_sange_custom:Spawn()
 end
 
 modifier_item_kaya_and_sange_custom = class(mod_hidden)
-function modifier_item_kaya_and_sange_custom:OnCreated(table)
+function modifier_item_kaya_and_sange_custom:GetUniqueStat(name)
+	return self[name]
+end
+function modifier_item_kaya_and_sange_custom:OnCreated()
 	self.parent = self:GetParent()
 	self.ability = self:GetAbility()
 
 	self.str = self.ability.bonus_str
 	self.int = self.ability.bonus_int
-	self.spell_damage = self.ability.spell_damage
-	self.health_bonus = self.ability.health_bonus / 100
-	self.regen_amp = self.ability.regen_amp
 	self.heal_amp = self.ability.heal_amp
 	self.status_bonus = self.ability.status_bonus
 	self.slow_resistance = self.ability.slow_resistance
+
+	self.spell_amp = self.ability.spell_damage
+	self.mana_regen = self.ability.regen_amp
+	self.mana_health = self.ability.health_bonus / 100
+	self.parent:AddUniqueStat(
+		self,
+		"spell_amp",
+		"mana_regen",
+		"mana_health",
+		"heal_amp",
+		"status_bonus",
+		"slow_resistance"
+	)
 end
 
 function modifier_item_kaya_and_sange_custom:DeclareFunctions()
@@ -68,50 +81,33 @@ function modifier_item_kaya_and_sange_custom:GetModifierBonusStats_Intellect()
 end
 
 function modifier_item_kaya_and_sange_custom:GetModifierSpellAmplify_Percentage()
-	if self.parent:HasModifier("modifier_item_yasha_and_kaya_custom") then
-		return
-	end
-	return self.spell_damage
+	return self.parent:UniqueStat(self, "spell_amp")
 end
 
 function modifier_item_kaya_and_sange_custom:GetModifierStatusResistanceStacking()
-	if self.parent:HasModifier("modifier_item_sange_and_yasha_custom") then
-		return
-	end
-	return self.status_bonus
+	return self.parent:UniqueStat(self, "status_bonus")
 end
 
 function modifier_item_kaya_and_sange_custom:GetModifierMPRegenAmplify_Percentage()
-	if self.parent:HasModifier("modifier_item_yasha_and_kaya_custom") then
-		return
-	end
-	return self.regen_amp
+	return self.parent:UniqueStat(self, "mana_regen")
 end
 
 function modifier_item_kaya_and_sange_custom:GetModifierHealthBonus()
-	if self.parent:HasModifier("modifier_item_yasha_and_kaya_custom") then
+	local bonus = self.parent:UniqueStat(self, "mana_health")
+	if not bonus then
 		return
 	end
-	return self.health_bonus * self.parent:GetMaxMana()
+	return bonus * self.parent:GetMaxMana()
 end
 
 function modifier_item_kaya_and_sange_custom:GetModifierHealChange()
-	if self.parent:HasModifier("modifier_item_abyssal_blade_custom") then
-		return
-	end
-	return self.heal_amp
+	return self.parent:UniqueStat(self, "heal_amp")
 end
 
 function modifier_item_kaya_and_sange_custom:GetModifierHPRegenAmplify_Percentage()
-	if self.parent:HasModifier("modifier_item_abyssal_blade_custom") then
-		return
-	end
-	return self.heal_amp
+	return self.parent:UniqueStat(self, "heal_amp")
 end
 
 function modifier_item_kaya_and_sange_custom:GetModifierSlowResistance_Stacking()
-	if self.parent:HasModifier("modifier_item_abyssal_blade_custom") then
-		return
-	end
-	return self.slow_resistance
+	return self.parent:UniqueStat(self, "slow_resistance")
 end

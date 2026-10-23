@@ -59,6 +59,8 @@ function item_silver_edge_custom_surge:OnCreated(table)
 		return
 	end
 	self.parent:GenericParticle("particles/items/silver_edge_sword.vpcf", self, true)
+	self.ability.surge = self
+	self.parent:AddProc(self, { once = true })
 end
 
 function item_silver_edge_custom_surge:DeclareFunctions()
@@ -68,11 +70,21 @@ function item_silver_edge_custom_surge:DeclareFunctions()
 end
 
 function item_silver_edge_custom_surge:CheckState()
-	local state = {
+	return {
 		[MODIFIER_STATE_NO_UNIT_COLLISION] = true,
 		[MODIFIER_STATE_CANNOT_MISS] = true,
 	}
-	return state
+end
+
+function item_silver_edge_custom_surge:GetProcChance(params)
+	if not params.target:IsRealHero() then
+		return 0
+	end
+	return 100
+end
+
+function item_silver_edge_custom_surge:AttackProcStart(params)
+	self:Destroy()
 end
 
 function item_silver_edge_custom_surge:GetModifierMoveSpeedBonus_Percentage()
@@ -92,17 +104,6 @@ function item_silver_edge_custom_passive:OnCreated()
 
 	self.break_duration = self.ability.backstab_duration
 	self.break_damage = self.ability.windwalk_bonus_damage
-
-	if not IsServer() then
-		return
-	end
-
-	self.records = {}
-
-	if self.parent:IsRealHero() then
-		self.parent:AddRecordDestroyEvent(self, true)
-		self.parent:AddAttackStartEvent_out(self)
-	end
 end
 
 function item_silver_edge_custom_passive:DeclareFunctions()
@@ -126,40 +127,11 @@ function item_silver_edge_custom_passive:GetModifierHealthBonus()
 	return self.bonus_health
 end
 
-function item_silver_edge_custom_passive:AttackStartEvent_out(params)
-	if not IsServer() then
-		return
-	end
-	if self.parent ~= params.attacker then
-		return
-	end
-	if not params.target:IsRealHero() then
-		return
-	end
-
-	local mod = self.parent:FindModifierByName("item_silver_edge_custom_surge")
-
-	if mod then
-		mod:Destroy()
-		self.records[params.record] = true
-	end
-end
-
-function item_silver_edge_custom_passive:RecordDestroyEvent(params)
-	if not IsServer() then
-		return
-	end
-
-	if self.records[params.record] then
-		self.records[params.record] = nil
-	end
-end
-
 function item_silver_edge_custom_passive:GetModifierProcAttack_BonusDamage_Physical(params)
-	if not params.record then
+	if not IsServer() then
 		return
 	end
-	if not self.records[params.record] then
+	if not self.parent:IsProc(self.ability.surge, params.record) then
 		return
 	end
 	local target = params.target

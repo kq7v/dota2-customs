@@ -204,7 +204,7 @@ function modifier_item_orb_of_corrosion_custom:OnCreated()
 	self.parent = self:GetParent()
 	self.ability = self:GetAbility()
 
-	self.parent:AddAttackEvent_out(self, true)
+	self.parent:AddProc(self, { land = true })
 	self.agility = self.ability.agi_bonus
 	self.duration = self.ability.duration_passive
 end
@@ -219,17 +219,12 @@ function modifier_item_orb_of_corrosion_custom:GetModifierBonusStats_Agility()
 	return self.agility
 end
 
-function modifier_item_orb_of_corrosion_custom:AttackEvent_out(params)
-	if not IsServer() then
-		return
-	end
+function modifier_item_orb_of_corrosion_custom:GetProcChance()
+	return 100
+end
+
+function modifier_item_orb_of_corrosion_custom:AttackProc(params, name)
 	if not IsValid(self.ability) then
-		return
-	end
-	if self.parent ~= params.attacker then
-		return
-	end
-	if not params.target:IsUnit() then
 		return
 	end
 	if self.parent:HasModifier("modifier_item_orb_of_venom") then

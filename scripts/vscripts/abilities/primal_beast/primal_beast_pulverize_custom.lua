@@ -1404,7 +1404,6 @@ function primal_beast_rock_throw_custom:Precache(context)
 		"particles/units/heroes/hero_primal_beast/primal_beast_rock_throw_impact.vpcf",
 		context
 	)
-	PrecacheResource("particle", "particles/slark/pounce_legendary_ui.vpcf", context)
 end
 
 function primal_beast_rock_throw_custom:UpdateTalents(name)

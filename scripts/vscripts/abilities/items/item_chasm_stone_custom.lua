@@ -28,40 +28,8 @@ function modifier_item_chasm_stone_custom:OnCreated()
 	self.parent = self:GetParent()
 	self.ability = self:GetAbility()
 
-	self.cdr_bonus = self.ability.cdr_bonus
-end
-
-function modifier_item_chasm_stone_custom:DeclareFunctions()
-	return {
-		MODIFIER_PROPERTY_COOLDOWN_PERCENTAGE,
-	}
-end
-
-function modifier_item_chasm_stone_custom:GetModifierPercentageCooldown(params)
-	if self.parent:HasModifier("modifier_item_wind_waker_custom") then
-		return
+	if not self.parent.cdr_items then
+		self.parent.cdr_items = {}
 	end
-	if self.parent:HasModifier("modifier_item_sheepstick_custom") then
-		return
-	end
-	if self.parent:HasModifier("modifier_item_octarine_core_custom") then
-		return
-	end
-	if self.parent:HasModifier("modifier_item_nullifier_custom") then
-		return
-	end
-	if self.parent:HasModifier("modifier_alchemist_gold_shiva_custom_stats") then
-		return
-	end
-	if self.parent:HasModifier("modifier_item_alchemist_gold_octarine") then
-		return
-	end
-	if
-		self.parent:HasModifier("modifier_tinker_rearm_custom_tracker")
-		and params.ability
-		and params.ability:IsItem()
-	then
-		return
-	end
-	return self.cdr_bonus
+	self.parent.cdr_items[self] = self.ability.cdr_bonus
 end

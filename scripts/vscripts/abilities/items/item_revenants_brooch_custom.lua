@@ -26,7 +26,6 @@ function item_revenants_brooch_custom:Precache(context)
 	end
 	PrecacheResource("particle", "particles/items_fx/revenant_brooch_projectile.vpcf", context)
 	PrecacheResource("particle", "particles/items_fx/revenant_brooch_projectile_explosion.vpcf", context)
-	PrecacheResource("particle", "particles/items3_fx/octarine_core_lifesteal.vpcf", context)
 end
 
 function item_revenants_brooch_custom:Spawn()
@@ -62,8 +61,11 @@ function modifier_item_revenants_brooch_custom:OnCreated()
 		return
 	end
 	self.damageTable = { attacker = self.parent, ability = self.ability, damage_type = DAMAGE_TYPE_MAGICAL }
-	self.parent:AddDamageEvent_out(self, true)
-	self.parent:AddAttackEvent_out(self, true)
+	self.parent:AddLifesteal(self, { type = 1, value = self.spell_lifesteal })
+	self.parent:AddProc(
+		self,
+		{ group = "brooch_hydra", target_cd = self.ability.cooldown, target_prd = true, land = true }
+	)
 end
 
 function modifier_item_revenants_brooch_custom:DeclareFunctions()
@@ -81,28 +83,12 @@ function modifier_item_revenants_brooch_custom:GetModifierHealthBonus()
 	return self.bonus_health
 end
 
-function modifier_item_revenants_brooch_custom:AttackEvent_out(params)
-	if not IsServer() then
-		return
-	end
-	if not IsValid(self.ability) then
-		return
-	end
-	if self.parent:HasModifier("modifier_item_hydras_breath_custom") then
-		return
-	end
-	if params.attacker ~= self.parent then
-		return
-	end
+function modifier_item_revenants_brooch_custom:GetProcChance()
+	return self.crit_chance
+end
+
+function modifier_item_revenants_brooch_custom:AttackProc(params)
 	local target = params.target
-
-	if not target:IsUnit() then
-		return
-	end
-	if not target:CheckCd("revenant_brooch", self.ability.cooldown, self.crit_chance, 9402) then
-		return
-	end
-
 	self.damageTable.victim = target
 	self.damageTable.damage = self.crit_base + self.parent:GetAverageTrueAttackDamage(nil) * self.crit_damage
 	local real_damage = DoDamage(self.damageTable)
@@ -125,20 +111,4 @@ function modifier_item_revenants_brooch_custom:AttackEvent_out(params)
 	ParticleManager:ReleaseParticleIndex(mainParticle)
 
 	target:EmitSound("Item.Brooch.Attack")
-end
-
-function modifier_item_revenants_brooch_custom:DamageEvent_out(params)
-	if not IsServer() then
-		return
-	end
-	if not IsValid(self.ability) then
-		return
-	end
-	local result = self.parent:CheckLifesteal(params, 1)
-	if not result then
-		return
-	end
-
-	local heal = params.damage * self.spell_lifesteal * result
-	self.parent:GenericHeal(heal, self.ability, true, "particles/items3_fx/octarine_core_lifesteal.vpcf")
 end

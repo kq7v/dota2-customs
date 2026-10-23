@@ -84,20 +84,6 @@
 		pitch_rand_max = -0.05
 		pitch = 1
 	}
-	Ogre.Bloodlust_hit = 
-	{
-		soundlevel = 81
-		type = "dota_src1_3d"
-		distance_max = 1600
-		vsnd_files = 
-		[
-			"sounds/weapons/hero/marci/unleash_pulse.vsnd",
-		]
-		volume = 1.1
-		pitch_rand_min = -0.03
-		pitch_rand_max = 0.03
-		pitch = 1
-	}
 	Ogre.Ignite_hit = 
 	{
 		soundlevel = 81
@@ -198,62 +184,6 @@
 		volume = 1.2
 		pitch_rand_min = 0.05
 		pitch_rand_max = 0.05
-		pitch = 1
-	}
-	Ogre.Spell_hit = 
-	{
-		soundlevel = 81
-		type = "dota_src1_3d"
-		distance_max = 1600
-		vsnd_files = 
-		[
-			"sounds/items/brooch_target.vsnd",
-		]
-		volume = 1
-		pitch_rand_min = -0.03
-		pitch_rand_max = 0.03
-		pitch = 1
-	}
-	Ogre.Multi_spell = 
-	{
-		soundlevel = 81
-		type = "dota_src1_3d"
-		distance_max = 1600
-		vsnd_files = 
-		[
-			"sounds/weapons/hero/ogre_magi/multicast01.vsnd",
-		]
-		volume = 1.9
-		pitch_rand_min = -0.01
-		pitch_rand_max = 0.01
-		pitch = 1
-	}
-	Ogre.Multi_spell_start = 
-	{
-		soundlevel = 81
-		type = "dota_src1_3d"
-		distance_max = 1600
-		vsnd_files = 
-		[
-			"sounds/weapons/hero/ogre_magi/taunt_ti10.vsnd",
-		]
-		volume = 2.9
-		pitch_rand_min = -0.01
-		pitch_rand_max = 0.01
-		pitch = 1
-	}
-	Ogre.Blast_knock = 
-	{
-		soundlevel = 81
-		type = "dota_src1_3d"
-		distance_max = 1600
-		vsnd_files = 
-		[
-			"sounds/weapons/hero/huskar/inner_fire.vsnd",
-		]
-		volume = 1.6
-		pitch_rand_min = -0.03
-		pitch_rand_max = 0.03
 		pitch = 1
 	}
 	DoubleRating.npc_dota_hero_ogre_magi = 
@@ -409,21 +339,6 @@
 		]
 		volume = 1
 		pitch_rand_min = 0
-		pitch_rand_max = 0
-		pitch = 1
-	}
-	Ogre.Blast_shield = 
-	{
-		soundlevel = 81
-		volume_fade_out = 1
-		type = "dota_src1_3d"
-		distance_max = 1600
-		vsnd_files = 
-		[
-			"sounds/weapons/hero/pangolier/shield.vsnd",
-		]
-		volume = 1.3
-		pitch_rand_min = -0.05
 		pitch_rand_max = 0
 		pitch = 1
 	}

@@ -563,8 +563,8 @@ _G.All_Quests = {
 				["icon"] = "Orb",
 				["reward_shards"] = 15,
 				["reward_exp"] = 80,
-				["goal"] = 25,
-				["number"] = 300,
+				["goal"] = 35,
+				["number"] = 800,
 			},
 			[6] = {
 				["name"] = "Puck.Quest_6",
@@ -578,14 +578,15 @@ _G.All_Quests = {
 				["icon"] = "Shift",
 				["reward_shards"] = 15,
 				["reward_exp"] = 80,
-				["goal"] = 15000,
+				["goal"] = 20000,
+				["number"] = 4,
 			},
 			[8] = {
 				["name"] = "Puck.Quest_8",
 				["icon"] = "Coil",
 				["reward_shards"] = 15,
 				["reward_exp"] = 80,
-				["goal"] = 20,
+				["goal"] = 80,
 			},
 		},
 

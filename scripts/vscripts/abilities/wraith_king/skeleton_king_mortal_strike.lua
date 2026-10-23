@@ -333,13 +333,7 @@ function modifier_skeleton_king_mortal_strike_custom:AttackRecordEvent_out(param
 			return
 		end
 		if self.ability.talents.has_e7 == 1 then
-			if
-				not RollPseudoRandomPercentage(
-					self.ability.talents.e7_chance + self.ability.talents.e3_chance,
-					1298,
-					self.parent
-				)
-			then
+			if not RollPseudoRandomPercentage(self:GetCritChance(), 1298, self.parent) then
 				return
 			end
 		else
@@ -350,6 +344,30 @@ function modifier_skeleton_king_mortal_strike_custom:AttackRecordEvent_out(param
 	end
 
 	self.parent:AddNewModifier(self.parent, self.ability, "modifier_skeleton_king_mortal_strike_proc", {})
+end
+
+function modifier_skeleton_king_mortal_strike_custom:GetCritChance()
+	if self.ability.talents.has_e7 == 0 then
+		return 0
+	end
+	if self.parent:HasModifier("modifier_skeleton_king_mortal_strike_legendary") then
+		return 100
+	end
+	if self.parent:PassivesDisabled() and self.ability.talents.has_e4 == 0 then
+		return 0
+	end
+	return self.ability.talents.e7_chance + self.ability.talents.e3_chance
+end
+
+function modifier_skeleton_king_mortal_strike_custom:GetCritDamage()
+	return self.ability.crit_mult * (self.ability.talents.has_e7 == 1 and (1 + self.ability.talents.e7_damage) or 1)
+end
+
+function modifier_skeleton_king_mortal_strike_custom:GetAccuracyChance()
+	if self.ability.talents.has_e4 == 0 then
+		return 0
+	end
+	return self:GetCritChance()
 end
 
 function modifier_skeleton_king_mortal_strike_custom:GetModifierPreAttack_CriticalStrike(params)
@@ -368,8 +386,7 @@ function modifier_skeleton_king_mortal_strike_custom:GetModifierPreAttack_Critic
 	self.parent:RemoveGesture(ACT_DOTA_ATTACK_EVENT)
 	self.parent:StartGestureWithPlaybackRate(ACT_DOTA_ATTACK_EVENT, self.parent:GetAttackSpeed(true))
 
-	local damage = self.ability.crit_mult
-		* (self.ability.talents.has_e7 == 1 and (1 + self.ability.talents.e7_damage) or 1)
+	local damage = self:GetCritDamage()
 	if type == 2 and params.target:HasModifier("modifier_skeleton_king_mortal_strike_legendary_stack") then
 		local mod = params.target:FindModifierByName("modifier_skeleton_king_mortal_strike_legendary_stack")
 		damage = mod:GetStackCount() * self.ability.talents.e7_crit

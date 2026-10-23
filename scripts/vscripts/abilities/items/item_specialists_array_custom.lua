@@ -65,7 +65,7 @@ function modifier_item_specialists_array_custom:OnCreated(table)
 	if not self.parent:IsRealHero() then
 		return
 	end
-	self.parent:AddAttackStartEvent_out(self, true)
+	self.parent:AddProc(self, { extra = false })
 end
 
 function modifier_item_specialists_array_custom:DeclareFunctions()
@@ -94,29 +94,14 @@ function modifier_item_specialists_array_custom:GetModifierTotalDamageOutgoing_P
 	return self.ability.proc_damage - 100
 end
 
-function modifier_item_specialists_array_custom:AttackStartEvent_out(params)
-	if not IsServer() then
-		return
-	end
-	if not IsValid(self.ability) then
-		return
-	end
+function modifier_item_specialists_array_custom:GetProcChance()
 	if self.parent:HasModifier("modifier_item_hydras_breath_custom") then
-		return
+		return 0
 	end
-	if self.parent ~= params.attacker then
-		return
-	end
-	if not params.target:IsUnit() then
-		return
-	end
-	if params.no_attack_cooldown then
-		return
-	end
-	if not RollPseudoRandomPercentage(self.ability.proc_chance, 9403, self.parent) then
-		return
-	end
+	return self.ability.proc_chance
+end
 
+function modifier_item_specialists_array_custom:AttackProcStart(params)
 	local count = 0
 	local target = params.target
 	local speed = 900

@@ -91,6 +91,12 @@ function broodmother_spawn_spiderlings_custom:UpdateTalents()
 			h3_str = 0,
 			h3_health = 0,
 
+			has_h5 = 0,
+			h5_heal = caster:GetTalentValue("modifier_broodmother_hero_5", "heal", true) / 100,
+
+			has_w2 = 0,
+			w2_heal = 0,
+
 			has_e7 = 0,
 
 			has_s1 = 0,
@@ -153,6 +159,15 @@ function broodmother_spawn_spiderlings_custom:UpdateTalents()
 		if IsServer() then
 			caster:AddPercentStat({ str = self.talents.h3_str / 100 }, self.tracker)
 		end
+	end
+
+	if caster:HasTalent("modifier_broodmother_hero_5") then
+		self.talents.has_h5 = 1
+	end
+
+	if caster:HasTalent("modifier_broodmother_web_2") then
+		self.talents.has_w2 = 1
+		self.talents.w2_heal = caster:GetTalentValue("modifier_broodmother_web_2", "heal") / 100
 	end
 
 	if caster:HasTalent("modifier_broodmother_bite_7") then
@@ -655,6 +670,25 @@ function modifier_broodmother_spawn_spiderlings_custom_spider:OnCreated(table)
 
 	self.parent:SetBaseDamageMin(damage)
 	self.parent:SetBaseDamageMax(damage)
+
+	if self.ability.talents.has_w2 == 1 then
+		self.parent:AddLifesteal(
+			self,
+			{
+				name = "modifier_broodmother_web_2",
+				type = 1,
+				heal_unit = self.caster,
+				value = self.ability.talents.w2_heal,
+			}
+		)
+	end
+
+	if self.ability.talents.has_h5 == 1 then
+		self.parent:AddLifesteal(
+			self,
+			{ name = "modifier_broodmother_hero_5", heal_unit = self.caster, value = self.ability.talents.h5_heal }
+		)
+	end
 end
 
 function modifier_broodmother_spawn_spiderlings_custom_spider:OnDestroy()

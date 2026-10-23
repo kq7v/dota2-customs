@@ -121,8 +121,9 @@ function furion_sprout_custom:UpdateTalents(name)
 			q1_base = 0,
 			q1_damage = 0,
 
-			has_q2 = 0,
 			q2_regen = 0,
+			q2_heal = 0,
+			q2_bonus = caster:GetTalentValue("modifier_furion_sprout_2", "bonus", true),
 
 			has_q3 = 0,
 			q3_magic = 0,
@@ -154,8 +155,16 @@ function furion_sprout_custom:UpdateTalents(name)
 	end
 
 	if caster:HasTalent("modifier_furion_sprout_2") then
-		self.talents.has_q2 = 1
 		self.talents.q2_regen = caster:GetTalentValue("modifier_furion_sprout_2", "regen")
+		self.talents.q2_heal = caster:GetTalentValue("modifier_furion_sprout_2", "heal") / 100
+		caster:AddLifesteal(self.tracker, {
+			name = "modifier_furion_sprout_2",
+			type = 1,
+			value = function()
+				return self.talents.q2_heal
+					* (caster:HasModifier("modifier_furion_sprout_custom_caster") and self.talents.q2_bonus or 1)
+			end,
+		})
 	end
 
 	if caster:HasTalent("modifier_furion_sprout_3") then

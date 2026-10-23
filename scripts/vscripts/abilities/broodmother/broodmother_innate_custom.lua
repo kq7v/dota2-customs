@@ -154,6 +154,7 @@ function broodmother_innate_custom:UpdateTalents()
 
 	if caster:HasTalent("modifier_broodmother_bite_4") then
 		self.talents.has_e4 = 1
+		caster:AddProc(self.tracker, { name = "bash", illusion = true, land = true, prd_owner = true })
 	end
 
 	if caster:HasTalent("modifier_broodmother_bite_7") then
@@ -311,18 +312,55 @@ function modifier_broodmother_innate_custom:OnCreated(table)
 		iSourceAttachment = DOTA_PROJECTILE_ATTACHMENT_ATTACK_1,
 	}
 
-	self.parent:AddAttackEvent_out(self, true)
+	self.parent:AddProc(self, { name = "hit", illusion = true, land = true })
+	self.parent:AddProc(self, { illusion = true, land = true, prd_owner = true })
+	self.parent:AddProc(self, { name = "spiderite", illusion = true, land = true, prd_owner = true })
 end
 
 function modifier_broodmother_innate_custom:OnRefresh()
 	self.ability.damage = self.ability:GetSpecialValueFor("damage")
 end
 
-function modifier_broodmother_innate_custom:AttackEvent_out(params)
-	if not IsServer() then
-		return
+function modifier_broodmother_innate_custom:GetProcChance(params, name)
+	if name == "hit" then
+		return 100
 	end
-	if not params.target:IsUnit() then
+	local attacker = params.attacker
+	if name == "bash" then
+		if not IsValid(self.parent.bite_ability) then
+			return 0
+		end
+		if
+			attacker ~= self.parent and not attacker:HasModifier("modifier_broodmother_spawn_spiderlings_custom_spider")
+		then
+			return 0
+		end
+		if params.target:HasModifier("modifier_broodmother_incapacitating_bite_custom_bash_cd") then
+			return 0
+		end
+		return attacker == self.parent and self.ability.talents.e4_chance_hero or self.ability.talents.e4_chance
+	end
+	if name == "spiderite" then
+		local ability = self.parent.spawn_ability
+		if not IsValid(ability) or not ability.tracker then
+			return 0
+		end
+		if not attacker:HasAbility("broodmother_spawn_spiderite_custom") then
+			return 0
+		end
+		if ability.tracker:GetStackCount() >= ability:GetMax() then
+			return 0
+		end
+		return ability.spiderite_chance + (self.parent:HasScepter() and self.ability.talents.s6_chance or 0)
+	end
+	if params.target:HasModifier("modifier_broodmother_innate_custom_effect_cd") then
+		return 0
+	end
+	return self.ability.chance
+end
+
+function modifier_broodmother_innate_custom:AttackProc(params, name)
+	if name ~= "hit" then
 		return
 	end
 
@@ -389,47 +427,40 @@ function modifier_broodmother_innate_custom:AttackEvent_out(params)
 		end
 
 		if
-			self.ability.talents.has_e4 == 1
-			and (real_attacker == self.parent or real_attacker:HasModifier(
-				"modifier_broodmother_spawn_spiderlings_custom_spider"
-			))
+			params.procs
+			and params.procs[self]
+			and params.procs[self].bash
 			and not target:HasModifier("modifier_broodmother_incapacitating_bite_custom_bash_cd")
 		then
-			local chance = (real_attacker == self.parent) and self.ability.talents.e4_chance_hero
-				or self.ability.talents.e4_chance
-			local index = (real_attacker == self.parent) and 5122 or 5123
+			target:EmitSound("Brood.Bite_bash")
+			local cast_effect = ParticleManager:CreateParticle(
+				"particles/units/heroes/hero_dragon_knight/dragon_knight_elder_dragon_corrosive_explosion.vpcf",
+				PATTACH_POINT_FOLLOW,
+				target
+			)
+			ParticleManager:SetParticleControlEnt(
+				cast_effect,
+				3,
+				target,
+				PATTACH_POINT_FOLLOW,
+				"attach_hitloc",
+				target:GetAbsOrigin(),
+				true
+			)
+			ParticleManager:ReleaseParticleIndex(cast_effect)
 
-			if RollPseudoRandomPercentage(chance, index, self.parent) then
-				target:EmitSound("Brood.Bite_bash")
-				local cast_effect = ParticleManager:CreateParticle(
-					"particles/units/heroes/hero_dragon_knight/dragon_knight_elder_dragon_corrosive_explosion.vpcf",
-					PATTACH_POINT_FOLLOW,
-					target
-				)
-				ParticleManager:SetParticleControlEnt(
-					cast_effect,
-					3,
-					target,
-					PATTACH_POINT_FOLLOW,
-					"attach_hitloc",
-					target:GetAbsOrigin(),
-					true
-				)
-				ParticleManager:ReleaseParticleIndex(cast_effect)
-
-				target:AddNewModifier(
-					self.parent,
-					self.parent:BkbAbility(ability, true),
-					"modifier_bashed",
-					{ duration = (1 - target:GetStatusResistance()) * self.ability.talents.e4_stun }
-				)
-				target:AddNewModifier(
-					self.parent,
-					ability,
-					"modifier_broodmother_incapacitating_bite_custom_bash_cd",
-					{ duration = self.ability.talents.e4_talent_cd }
-				)
-			end
+			target:AddNewModifier(
+				self.parent,
+				self.parent:BkbAbility(ability, true),
+				"modifier_bashed",
+				{ duration = (1 - target:GetStatusResistance()) * self.ability.talents.e4_stun }
+			)
+			target:AddNewModifier(
+				self.parent,
+				ability,
+				"modifier_broodmother_incapacitating_bite_custom_bash_cd",
+				{ duration = self.ability.talents.e4_talent_cd }
+			)
 		end
 
 		if target:HasModifier("modifier_broodmother_incapacitating_bite_custom_legendary_active") then
@@ -463,29 +494,20 @@ function modifier_broodmother_innate_custom:AttackEvent_out(params)
 		end
 	end
 
-	if IsValid(self.parent.spawn_ability) then
-		local ability = self.parent.spawn_ability
-		if
-			ability.tracker
-			and real_attacker:HasAbility("broodmother_spawn_spiderite_custom")
-			and ability.tracker:GetStackCount() < ability:GetMax()
-		then
-			local chance = ability.spiderite_chance
-			if self.parent:HasScepter() then
-				chance = chance + self.ability.talents.s6_chance
-			end
-			if RollPseudoRandomPercentage(chance, 8742, self.parent) then
-				target:EmitSound("Brood.Spawn_passive")
-				ability:CreateSpider(target:GetAbsOrigin())
-			end
-		end
+	if
+		params.procs
+		and params.procs[self]
+		and params.procs[self].spiderite
+		and self:GetProcChance(params, "spiderite") > 0
+	then
+		target:EmitSound("Brood.Spawn_passive")
+		self.parent.spawn_ability:CreateSpider(target:GetAbsOrigin())
 	end
 
-	if target:HasModifier("modifier_broodmother_innate_custom_effect_cd") then
+	if not params.procs or not params.procs[self] or not params.procs[self].default then
 		return
 	end
-
-	if not RollPseudoRandomPercentage(self.ability.chance, 9613, self.parent) then
+	if target:HasModifier("modifier_broodmother_innate_custom_effect_cd") then
 		return
 	end
 

@@ -120,6 +120,9 @@ function morphling_replicate_custom:UpdateTalents()
 			r1_duration = caster:GetTalentValue("modifier_morphling_morph_1", "duration", true),
 			r1_max_legendary = caster:GetTalentValue("modifier_morphling_morph_1", "max_legendary", true),
 
+			r2_heal = 0,
+			r2_bonus = caster:GetTalentValue("modifier_morphling_morph_2", "bonus", true),
+
 			has_r3 = 0,
 			r3_crit = 0,
 			r3_damage = 0,
@@ -170,7 +173,19 @@ function morphling_replicate_custom:UpdateTalents()
 		self.talents.has_r1 = 1
 		self.talents.r1_armor = caster:GetTalentValue("modifier_morphling_morph_1", "armor")
 		self.talents.r1_armor_reduce = caster:GetTalentValue("modifier_morphling_morph_1", "armor_reduce")
-		caster:AddAttackEvent_out(self.tracker, true)
+		caster:AddProc(self.tracker, { land = true })
+	end
+
+	if caster:HasTalent("modifier_morphling_morph_2") then
+		self.talents.r2_heal = caster:GetTalentValue("modifier_morphling_morph_2", "heal") / 100
+		caster:AddLifesteal(self.tracker, {
+			name = "modifier_morphling_morph_2",
+			type = 2,
+			value = function()
+				return self.talents.r2_heal
+					* (caster:HasModifier("modifier_morphling_replicate_custom") and self.talents.r2_bonus or 1)
+			end,
+		})
 	end
 
 	if caster:HasTalent("modifier_morphling_morph_3") then
@@ -178,13 +193,13 @@ function morphling_replicate_custom:UpdateTalents()
 		self.talents.r3_crit = caster:GetTalentValue("modifier_morphling_morph_3", "crit")
 		self.talents.r3_damage = caster:GetTalentValue("modifier_morphling_morph_3", "damage")
 		caster:AddSpellEvent(self.tracker, true)
-		caster:AddAttackEvent_out(self.tracker, true)
+		caster:AddProc(self.tracker, { land = true })
 		caster:AddRecordDestroyEvent(self.tracker, true)
 	end
 
 	if caster:HasTalent("modifier_morphling_morph_4") then
 		self.talents.has_r4 = 1
-		caster:AddAttackEvent_out(self.tracker, true)
+		caster:AddProc(self.tracker, { land = true })
 		caster:AddSpellEvent(self.tracker, true)
 	end
 
@@ -215,7 +230,7 @@ function morphling_replicate_custom:UpdateTalents()
 
 	if caster:HasTalent("modifier_morphling_attribute_4") then
 		self.talents.has_e4 = 1
-		caster:AddAttackEvent_out(self.tracker, true)
+		caster:AddProc(self.tracker, { land = true })
 	end
 
 	if caster:HasTalent("modifier_morphling_attribute_7") then
@@ -1207,6 +1222,13 @@ function modifier_morphling_replicate_custom_tracker:GetModifierPhysicalArmorBon
 	return self.ability.talents.r1_armor
 end
 
+function modifier_morphling_replicate_custom_tracker:GetCritChance()
+	if self.ability.talents.has_r3 == 0 then
+		return 0
+	end
+	return self.ability.talents.r3_chance
+end
+
 function modifier_morphling_replicate_custom_tracker:GetCritDamage()
 	return self.ability.talents.r3_crit
 end
@@ -1218,11 +1240,11 @@ function modifier_morphling_replicate_custom_tracker:GetModifierPreAttack_Critic
 	if self.ability.talents.has_r3 == 0 then
 		return
 	end
-	if not RollPseudoRandomPercentage(self.ability.talents.r3_chance, 9648, self.parent) then
+	if not RollPseudoRandomPercentage(self:GetCritChance(), 9648, self.parent) then
 		return
 	end
 	self.records[params.record] = true
-	return self.ability.talents.r3_crit
+	return self:GetCritDamage()
 end
 
 function modifier_morphling_replicate_custom_tracker:RecordDestroyEvent(params)
@@ -1232,17 +1254,11 @@ function modifier_morphling_replicate_custom_tracker:RecordDestroyEvent(params)
 	self.records[params.record] = nil
 end
 
-function modifier_morphling_replicate_custom_tracker:AttackEvent_out(params)
-	if not IsServer() then
-		return
-	end
-	if self.parent ~= params.attacker then
-		return
-	end
-	if not params.target:IsUnit() then
-		return
-	end
+function modifier_morphling_replicate_custom_tracker:GetProcChance()
+	return 100
+end
 
+function modifier_morphling_replicate_custom_tracker:AttackProc(params, name)
 	if self.records[params.record] then
 		params.target:EmitSound("DOTA_Item.Daedelus.Crit")
 	end

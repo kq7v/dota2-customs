@@ -209,10 +209,12 @@ function invoker_exort_custom:UpdateTalents()
 		self.talents.e3_chance = caster:GetTalentValue("modifier_invoker_exort_3", "chance")
 		self.talents.e3_count = caster:GetTalentValue("modifier_invoker_exort_3", "count")
 		caster:AddSpellEvent(self.tracker, true)
+		caster:AddProc(self.tracker, { name = "e3", illusion = true, prd_owner = true, land = true })
 	end
 
 	if caster:HasTalent("modifier_invoker_exort_4") then
 		self.talents.has_e4 = 1
+		caster:AddProc(self.tracker, { name = "e4", illusion = true, land = true, prd_owner = true })
 	end
 
 	if caster:HasTalent("modifier_invoker_exort_7") then
@@ -313,7 +315,7 @@ function modifier_invoker_exort_custom_passive:OnCreated()
 	self.ability.damage = self.ability:GetSpecialValueFor("damage")
 	self.ability.forge_bonus = self.ability:GetSpecialValueFor("forge_bonus") / 100
 
-	self.parent:AddAttackEvent_out(self, true)
+	self.parent:AddProc(self, { name = "hit", land = true, illusion = true })
 	InvokerAbilityManager(self.parent)
 end
 
@@ -351,11 +353,26 @@ function modifier_invoker_exort_custom_passive:SpellEvent(params)
 	end
 end
 
-function modifier_invoker_exort_custom_passive:AttackEvent_out(params)
-	if not IsServer() then
-		return
+function modifier_invoker_exort_custom_passive:GetProcChance(params, name)
+	if name == "hit" then
+		return 100
 	end
-	if not params.target:IsUnit() then
+	local is_forge = params.attacker ~= self.parent
+		and params.attacker:FindAbilityByName("forged_spirit_melting_strike_custom")
+	if params.attacker ~= self.parent and not is_forge then
+		return 0
+	end
+	if name == "e3" then
+		return is_forge and self.ability.talents.e3_chance or 0
+	end
+	if params.target:HasModifier("modifier_invoker_exort_custom_bash_cd") then
+		return 0
+	end
+	return is_forge and self.ability.talents.e4_chance_forge or self.ability.talents.e4_chance
+end
+
+function modifier_invoker_exort_custom_passive:AttackProc(params, name)
+	if name ~= "hit" then
 		return
 	end
 
@@ -369,6 +386,7 @@ function modifier_invoker_exort_custom_passive:AttackEvent_out(params)
 		return
 	end
 
+	local procs = params.procs and params.procs[self]
 	local force_stack = false
 
 	if is_forge then
@@ -381,10 +399,7 @@ function modifier_invoker_exort_custom_passive:AttackEvent_out(params)
 			)
 		end
 
-		if
-			self.ability.talents.has_e3 == 1
-			and RollPseudoRandomPercentage(self.ability.talents.e3_chance, 1335, self.parent)
-		then
+		if procs and procs.e3 then
 			target:EmitSound("Invoker.Forge_attack")
 			target:GenericParticle("particles/invoker/forge_attack.vpcf")
 			self.parent:AddNewModifier(self.parent, self.ability, "modifier_invoker_exort_custom_attack", {})
@@ -434,26 +449,17 @@ function modifier_invoker_exort_custom_passive:AttackEvent_out(params)
 		self.parent:GenericHeal(heal, self.ability, true, nil, "modifier_invoker_exort_2")
 	end
 
-	if self.ability.talents.has_e4 == 1 then
-		if not is_forge then
-			target:AddNewModifier(
-				self.parent,
-				self.ability,
-				"modifier_invoker_exort_custom_bash_count",
-				{ duration = self.ability.talents.e4_duration }
-			)
-		end
-		if not target:HasModifier("modifier_invoker_exort_custom_bash_cd") then
-			local chance = self.ability.talents.e4_chance
-			local index = 1336
-			if is_forge then
-				chance = self.ability.talents.e4_chance_forge
-				index = 1338
-			end
-			if RollPseudoRandomPercentage(chance, index, self.parent) then
-				self.ability:ProcBash(target)
-			end
-		end
+	if self.ability.talents.has_e4 == 1 and not is_forge then
+		target:AddNewModifier(
+			self.parent,
+			self.ability,
+			"modifier_invoker_exort_custom_bash_count",
+			{ duration = self.ability.talents.e4_duration }
+		)
+	end
+
+	if procs and procs.e4 and not target:HasModifier("modifier_invoker_exort_custom_bash_cd") then
+		self.ability:ProcBash(target)
 	end
 end
 

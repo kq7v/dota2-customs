@@ -129,6 +129,7 @@ function kunkka_ghostship_custom:UpdateTalents(name)
 
 			has_r3 = 0,
 			r3_damage = 0,
+			r3_lifesteal = 0,
 			r3_duration = caster:GetTalentValue("modifier_kunkka_ship_3", "duration", true),
 			r3_damage_max = caster:GetTalentValue("modifier_kunkka_ship_3", "damage_max", true) / 100,
 			r3_damage_type = caster:GetTalentValue("modifier_kunkka_ship_3", "damage_type", true),
@@ -190,6 +191,12 @@ function kunkka_ghostship_custom:UpdateTalents(name)
 	if caster:HasTalent("modifier_kunkka_ship_3") then
 		self.talents.has_r3 = 1
 		self.talents.r3_damage = caster:GetTalentValue("modifier_kunkka_ship_3", "damage") / 100
+		self.talents.r3_lifesteal = caster:GetTalentValue("modifier_kunkka_ship_3", "lifesteal") / 100
+		caster:AddDamageEvent_out(self.tracker, true)
+		caster:AddLifesteal(
+			self.tracker,
+			{ name = "modifier_kunkka_ship_3", type = 1, value = self.talents.r3_lifesteal }
+		)
 
 		if IsServer() then
 			self.tracker:UpdateUI()
@@ -740,12 +747,6 @@ function modifier_kunkka_ghostship_custom_scepter:OnCreated()
 	self.ability = self:GetAbility()
 
 	self.RemoveForDuel = true
-
-	CustomGameEventManager:Send_ServerToPlayer(
-		PlayerResource:GetPlayer(self.parent:GetPlayerOwnerID()),
-		"ability_kunkka_ghostship_scepter",
-		{}
-	)
 
 	self.ability:EndCd(self.ability.scepter_cd)
 end
@@ -1391,6 +1392,9 @@ function modifier_kunkka_ghostship_custom_ship_mod:Crash()
 	if self.ended then
 		return
 	end
+	if self.timer < self.pickup then
+		return
+	end
 	if not self.parent:CheckCd("kunkka_ship_crash", 1) then
 		return
 	end
@@ -1551,6 +1555,13 @@ end
 function modifier_kunkka_ghostship_custom_tracker:OnRefresh()
 	self.ability.damage = self.ability:GetSpecialValueFor("damage")
 	self.ability.stun_duration = self.ability:GetSpecialValueFor("stun_duration")
+end
+
+function modifier_kunkka_ghostship_custom_tracker:DamageEvent_out(params)
+	if not IsServer() then
+		return
+	end
+	self.ability:Bank(params)
 end
 
 function modifier_kunkka_ghostship_custom_tracker:UpdateUI()

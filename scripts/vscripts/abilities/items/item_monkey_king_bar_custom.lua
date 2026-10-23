@@ -16,12 +16,6 @@ LinkLuaModifier(
 
 item_monkey_king_bar_custom = class({})
 
-function item_monkey_king_bar_custom:Precache(context)
-	if self:GetCaster() and self:GetCaster():IsIllusion() then
-		return
-	end
-end
-
 function item_monkey_king_bar_custom:GetIntrinsicModifierName()
 	return "modifier_item_monkey_king_bar_custom"
 end
@@ -38,9 +32,17 @@ function item_monkey_king_bar_custom:Spawn()
 end
 
 modifier_item_monkey_king_bar_custom = class(mod_hidden)
-function modifier_item_monkey_king_bar_custom:OnCreated(table)
+function modifier_item_monkey_king_bar_custom:OnCreated()
 	self.parent = self:GetParent()
 	self.ability = self:GetAbility()
+
+	if not IsServer() then
+		return
+	end
+	if not self.parent:IsRealHero() then
+		return
+	end
+	self.parent:AddProc(self, { land = true, property = true })
 end
 
 function modifier_item_monkey_king_bar_custom:DeclareFunctions()
@@ -78,23 +80,16 @@ function modifier_item_monkey_king_bar_custom:CheckState()
 	}
 end
 
+function modifier_item_monkey_king_bar_custom:GetProcChance()
+	return self.ability.bonus_chance
+end
+
 function modifier_item_monkey_king_bar_custom:GetModifierProcAttack_BonusDamage_Magical(params)
 	if not IsServer() then
 		return
 	end
-	if not params.target:IsUnit() then
-		return
-	end
-	if self.parent ~= params.attacker then
-		return
-	end
-	if not self.parent:IsRealHero() then
-		return
-	end
-	if params.target:GetTeamNumber() == self.parent:GetTeamNumber() then
-		return
-	end
-	if not RollPseudoRandomPercentage(self.ability.bonus_chance, 4259, self.parent) then
+	self.parent:LandProcs(params, true)
+	if not self.parent:IsProc(self, params.record) then
 		return
 	end
 

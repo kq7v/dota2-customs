@@ -70,17 +70,11 @@ function lina_light_strike_array_custom:Precache(context)
 		context
 	)
 	PrecacheResource("particle", "particles/units/heroes/hero_terrorblade/ember_slow.vpcf", context)
-	PrecacheResource("particle", "particles/generic/generic_armor_reduction.vpcf", context)
 	PrecacheResource("particle", "particles/units/heroes/hero_phoenix/phoenix_icarus_dive_burn_debuff.vpcf", context)
-	PrecacheResource("particle", "particles/status_fx/status_effect_burn.vpcf", context)
-	PrecacheResource("particle", "particles/status_fx/status_effect_qop_tgt_arcana.vpcf", context)
 	PrecacheResource("particle", "particles/lina/stun_clone.vpcf", context)
-	PrecacheResource("particle", "particles/econ/events/fall_2022/radiance/radiance_owner_fall2022.vpcf", context)
-	PrecacheResource("particle", "particles/lina/lina_timer.vpcf", context)
 	PrecacheResource("particle", "particles/items3_fx/blink_overwhelming_start.vpcf", context)
 	PrecacheResource("particle", "particles/items3_fx/blink_overwhelming_end.vpcf", context)
 	PrecacheResource("particle", "particles/lina/array_shield.vpcf", context)
-	PrecacheResource("particle", "particles/status_fx/status_effect_armadillo_shield.vpcf", context)
 	PrecacheResource("particle", "particles/lina/stun_stack.vpcf", context)
 	PrecacheResource("particle", "particles/lina/array_attac_proc.vpcf", context)
 	PrecacheResource(
@@ -90,7 +84,6 @@ function lina_light_strike_array_custom:Precache(context)
 	)
 	PrecacheResource("particle", "particles/primal_beast/beast_root.vpcf", context)
 	PrecacheResource("particle", "particles/lina/array_legendary_caster.vpcf", context)
-	PrecacheResource("particle", "particles/legion_commander/lc_odd_proc_.vpcf", context)
 	PrecacheResource("particle", "particles/lina/soul_attack.vpcf", context)
 	PrecacheResource(
 		"particle",
@@ -151,7 +144,8 @@ function lina_light_strike_array_custom:UpdateTalents(name)
 		self.talents.w1_damage = caster:GetTalentValue("modifier_lina_array_1", "damage") / 100
 		if IsServer() then
 			caster:AddPercentStat({ int = self.talents.w1_int }, self.tracker)
-			caster:AddAttackEvent_out(self.tracker, true)
+			caster:AddProc(self.tracker, { name = "hit", land = true })
+			caster:AddProc(self.tracker, { land = true })
 		end
 	end
 
@@ -159,7 +153,7 @@ function lina_light_strike_array_custom:UpdateTalents(name)
 		self.talents.has_w2 = 1
 		self.talents.w2_range = caster:GetTalentValue("modifier_lina_array_2", "range")
 		self.talents.w2_heal = caster:GetTalentValue("modifier_lina_array_2", "heal") / 100
-		caster:AddAttackEvent_out(self.tracker, true)
+		caster:AddProc(self.tracker, { name = "hit", land = true })
 	end
 
 	if caster:HasTalent("modifier_lina_array_3") then
@@ -170,7 +164,7 @@ function lina_light_strike_array_custom:UpdateTalents(name)
 
 	if caster:HasTalent("modifier_lina_array_4") then
 		self.talents.has_w4 = 1
-		caster:AddAttackEvent_out(self.tracker, true)
+		caster:AddProc(self.tracker, { name = "hit", land = true })
 	end
 
 	if caster:HasTalent("modifier_lina_array_7") then
@@ -440,17 +434,18 @@ function modifier_lina_light_strike_array_custom_tracker:AttackStartEvent_out(pa
 	end
 end
 
-function modifier_lina_light_strike_array_custom_tracker:AttackEvent_out(params)
-	if not IsServer() then
-		return
+function modifier_lina_light_strike_array_custom_tracker:GetProcChance(params, name)
+	if name == "hit" then
+		return 100
 	end
-	if self.parent ~= params.attacker then
+	return self.ability.talents.w1_chance
+end
+
+function modifier_lina_light_strike_array_custom_tracker:AttackProc(params, name)
+	if name ~= "hit" then
 		return
 	end
 	local target = params.target
-	if not params.target:IsUnit() then
-		return
-	end
 
 	if self.ability.talents.has_w2 == 1 then
 		local result = self.parent:CanLifesteal(target)
@@ -486,10 +481,7 @@ function modifier_lina_light_strike_array_custom_tracker:AttackEvent_out(params)
 		)
 	end
 
-	if self.ability.talents.has_w1 == 0 then
-		return
-	end
-	if not RollPseudoRandomPercentage(self.ability.talents.w1_chance, 9401, self.parent) then
+	if not params.procs[self].default then
 		return
 	end
 

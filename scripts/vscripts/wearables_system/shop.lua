@@ -155,6 +155,18 @@ function shop:UnmarkNewBySelect(player_id, list, select_id)
 	end
 end
 
+function shop:HasSelectItem(player_id, list, select_id)
+	if not list or select_id == nil then
+		return false
+	end
+	for _, v in pairs(list) do
+		if tostring(v[2]) == tostring(select_id) then
+			return HasDonateItem(player_id, v[1])
+		end
+	end
+	return false
+end
+
 function shop:shop_buy_item_player(data)
 	if data.PlayerID == nil then
 		return
@@ -204,6 +216,9 @@ function shop:shop_buy_item_player(data)
 			for __, effect_item in pairs(effects_data) do
 				if effect_item[1] == item_id then
 					cost = effect_item[4]
+					if effect_item[7] or effect_item[9] then
+						return
+					end
 				end
 			end
 		end
@@ -220,6 +235,9 @@ function shop:shop_buy_item_player(data)
 			if wearables_system.ITEMS_DATA[tostring(data.hero)] then
 				for _, item_info in pairs(wearables_system.ITEMS_DATA[tostring(data.hero)]) do
 					if item_info["item_id"] == item_id then
+						if item_info["hide"] == 1 then
+							return
+						end
 						cost = item_info["price"]
 
 						if item_info["sale_price"] and item_info["sale_price"] > 0 then
@@ -236,7 +254,11 @@ function shop:shop_buy_item_player(data)
 		end
 	end
 	if cost == 0 and item_id == -1 then
-		cost = CustomNetTables:GetTableValue("shop_items", "votes_cost").cost * data.votes
+		local votes = tonumber(data.votes)
+		if not votes or votes < 1 or votes ~= math.floor(votes) then
+			return
+		end
+		cost = CustomNetTables:GetTableValue("shop_items", "votes_cost").cost * votes
 	end
 	if cost == 0 then
 		return
@@ -466,29 +488,35 @@ function shop:heroes_vote_change(kv)
 	if not player then
 		return
 	end
-	if not kv.count then
+	local vote_count = tonumber(kv.count)
+	if not vote_count then
+		return
+	end
+	if vote_count < 1 or vote_count ~= math.floor(vote_count) then
 		return
 	end
 	if not kv.name then
+		return
+	end
+	local sub_data = CustomNetTables:GetTableValue("sub_data", tostring(kv.PlayerID))
+	if not sub_data then
+		return
+	end
+	if vote_count > sub_data.votes_count then
 		return
 	end
 	local heroes_vote = CustomNetTables:GetTableValue("sub_data", "heroes_vote")
 	for i = 1, 3 do
 		if heroes_vote.vote_table[tostring(i)] then
 			if heroes_vote.vote_table[tostring(i)]["1"] == kv.name then
-				heroes_vote.vote_table[tostring(i)]["2"] = heroes_vote.vote_table[tostring(i)]["2"] + kv.count
-				heroes_vote.vote_table[tostring(i)]["3"] = heroes_vote.vote_table[tostring(i)]["3"] + kv.count
+				heroes_vote.vote_table[tostring(i)]["2"] = heroes_vote.vote_table[tostring(i)]["2"] + vote_count
+				heroes_vote.vote_table[tostring(i)]["3"] = heroes_vote.vote_table[tostring(i)]["3"] + vote_count
 			end
 		end
 	end
 	CustomNetTables:SetTableValue("sub_data", "heroes_vote", heroes_vote)
-	local sub_data = CustomNetTables:GetTableValue("sub_data", tostring(kv.PlayerID))
-	if not sub_data then
-		return
-	end
-	local count = sub_data.votes_count
-	sub_data.votes_count = math.max(0, sub_data.votes_count - kv.count)
-	HTTP.Vote(kv.PlayerID, kv.name, kv.count)
+	sub_data.votes_count = sub_data.votes_count - vote_count
+	HTTP.Vote(kv.PlayerID, kv.name, vote_count)
 	CustomNetTables:SetTableValue("sub_data", tostring(kv.PlayerID), sub_data)
 end
 
@@ -498,6 +526,12 @@ function shop:heroes_vote_free(kv)
 		return
 	end
 	local sub_data = CustomNetTables:GetTableValue("sub_data", tostring(kv.PlayerID))
+	if not sub_data or sub_data.subscribed == 0 then
+		return
+	end
+	if sub_data.free_vote_cd > 0 then
+		return
+	end
 	sub_data.votes_count = sub_data.votes_count + 1
 	sub_data.free_vote_cd = shop_free_vote_cd
 	HTTP.BonusVotes(kv.PlayerID, 1, sub_data.free_vote_cd * 1000)
@@ -572,6 +606,9 @@ function shop:update_tip_list(data)
 	local id = data.PlayerID
 	local tip_id = tonumber(data.tip_id)
 	local delete = data.delete
+	if delete ~= 1 and not shop:HasSelectItem(id, tips_item_list, tip_id) then
+		return
+	end
 	local player = PlayerResource:GetPlayer(id)
 	local player_table = CustomNetTables:GetTableValue("sub_data", tostring(id))
 	if not player_table or not player_table.player_tips or not player_table.selected_tip then
@@ -666,7 +703,10 @@ function shop:select_current_high_five(data)
 		return
 	end
 	local id = data.PlayerID
-	local high_five_id = data.high_five_id
+	local high_five_id = tonumber(data.high_five_id) or 0
+	if high_five_id ~= 0 and not shop:HasSelectItem(id, high_five_item_list, high_five_id) then
+		return
+	end
 	local player = PlayerResource:GetPlayer(id)
 	local sub_data = CustomNetTables:GetTableValue("sub_data", tostring(id))
 	if sub_data then
@@ -682,7 +722,10 @@ function shop:select_current_emblem(data)
 		return
 	end
 	local id = data.PlayerID
-	local emblem_id = data.emblem_id
+	local emblem_id = tonumber(data.emblem_id) or 0
+	if emblem_id ~= 0 and not shop:IsCustomEffectItem("emblems", emblem_id, id) then
+		return
+	end
 	local player = PlayerResource:GetPlayer(id)
 	local sub_data = CustomNetTables:GetTableValue("sub_data", tostring(id))
 	if sub_data then
@@ -783,7 +826,7 @@ function shop:UpdateEmblemForHero(hero, player_id, emblem_id)
 				end
 			end
 		end
-		if emblem_id and _G.EmblemsListPFX[emblem_id] then
+		if emblem_id and _G.EmblemsListPFX[emblem_id] and shop:IsCustomEffectItem("emblems", emblem_id, player_id) then
 			hero.current_emblem = emblem_id
 			hero.emblem_pfx =
 				ParticleManager:CreateParticle(_G.EmblemsListPFX[emblem_id], PATTACH_ABSORIGIN_FOLLOW, hero)
@@ -1011,10 +1054,30 @@ function shop:shop_dota1x6_open_chest_get_reward(data)
 		return
 	end
 	local id = data.PlayerID
-	local chest_id = data.chest_id
+	local chest_id = tonumber(data.chest_id)
 	local is_rerolled = data.rerolled
 	local drop_id = nil
 	if DOTA1X6_CHESTS_INFO[chest_id] == nil then
+		return
+	end
+	local saved_chest = shop.saved_players_chest_items[id]
+	if is_rerolled and not saved_chest then
+		return
+	end
+	if is_rerolled and saved_chest.chest_id ~= chest_id then
+		return
+	end
+	if not is_rerolled and saved_chest then
+		return
+	end
+	if
+		not is_rerolled
+		and DOTA1X6_CHESTS_INFO[chest_id].is_no_buy
+		and not HasDonateItem(id, DOTA1X6_CHESTS_INFO[chest_id].chest_item_id)
+	then
+		return
+	end
+	if not is_rerolled and DOTA1X6_CHESTS_INFO[chest_id].is_only_one_open and shop:IsChestOpened(id, chest_id) then
 		return
 	end
 	local items_in_chest = DOTA1X6_CHESTS_INFO[chest_id].chest_items
@@ -1144,13 +1207,6 @@ function shop:GetRandomRewardFromChest(id, items_in_chest, remove_item_id)
 				end
 			end
 		end
-		if #items_in_chest > 1 then
-			for i = #items_in_chest, 1, -1 do
-				if items_in_chest[i] and tonumber(items_in_chest[i].item_id) == tonumber(remove_item_id) then
-					table.remove(items_in_chest, i)
-				end
-			end
-		end
 		print("Из сундука больше не выпадет", remove_item_id)
 	end
 
@@ -1172,10 +1228,10 @@ function shop:GetRandomRewardFromChest(id, items_in_chest, remove_item_id)
 			end
 		end
 	else
-		repeat
-			local random = RandomInt(1, #items_in_chest)
-			get_drop = items_in_chest[random]
-		until not HasDonateItem(id, get_drop.item_id)
+		if #no_items_list <= 0 then
+			return
+		end
+		get_drop = no_items_list[RandomInt(1, #no_items_list)]
 	end
 	return get_drop
 end

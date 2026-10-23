@@ -65,7 +65,6 @@ function hoodwink_scurry_custom:Precache(context)
 	PrecacheResource("particle", "particles/hoodwink/hoodwink_head.vpcf", context)
 	PrecacheResource("particle", "particles/hoodwink/scurry_proj.vpcf", context)
 	PrecacheResource("particle", "particles/hoodwink/hoodwink_ground.vpcf", context)
-	PrecacheResource("particle", "particles/units/heroes/hero_sniper/sniper_headshot_slow.vpcf", context)
 	PrecacheResource("particle", "particles/units/heroes/hero_hoodwink/hoodwink_acorn_shot_slow.vpcf", context)
 	PrecacheResource("particle", "particles/hoodwink/scurry_shield.vpcf", context)
 	PrecacheResource("particle", "particles/hoodwink/acorn_refresh.vpcf", context)
@@ -126,7 +125,7 @@ function hoodwink_scurry_custom:UpdateTalents()
 
 	if caster:HasTalent("modifier_hoodwink_scurry_4") then
 		self.talents.has_e4 = 1
-		caster:AddAttackEvent_out(self.tracker, true)
+		caster:AddProc(self.tracker, { cd = self.talents.e4_talent_cd, land = true })
 	end
 
 	if caster:HasTalent("modifier_hoodwink_scurry_7") then
@@ -234,33 +233,14 @@ function modifier_hoodwink_scurry_custom:OnRefresh()
 	self.ability.attack_range = self.ability:GetSpecialValueFor("attack_range")
 end
 
-function modifier_hoodwink_scurry_custom:AttackEvent_out(params)
-	if not IsServer() then
-		return
-	end
-	if self.ability.talents.has_e4 == 0 then
-		return
-	end
-	if self.parent ~= params.attacker then
-		return
-	end
-	if not params.target:IsUnit() then
-		return
-	end
+function modifier_hoodwink_scurry_custom:GetProcChance()
 	if self.ability:GetCurrentAbilityCharges() >= self.ability:GetMaxAbilityCharges(self.ability:GetLevel()) then
-		return
+		return 0
 	end
-	if
-		not self.parent:CheckCd(
-			"hoodwink_scurry_4",
-			self.ability.talents.e4_talent_cd,
-			self.ability.talents.e4_chance,
-			3290
-		)
-	then
-		return
-	end
+	return self.ability.talents.e4_chance
+end
 
+function modifier_hoodwink_scurry_custom:AttackProc(params)
 	self.ability:AddCharge(1, "particles/hoodwink/acorn_refresh.vpcf", "Hoodwink.Scurry_refresh")
 end
 
@@ -443,7 +423,7 @@ function modifier_hoodwink_scurry_custom_legendary:OnCreated(table)
 		damage_type = self.ability.talents.e7_damage_type,
 		ability = self.ability,
 	}
-	self.parent:AddAttackEvent_out(self, true)
+	self.parent:AddProc(self, { land = true })
 	self.parent:AddAttackStartEvent_out(self, true)
 
 	self.parent:EmitSound("Hoodwink.Scurry_legendary")
@@ -544,17 +524,11 @@ function modifier_hoodwink_scurry_custom_legendary:AttackStartEvent_out(params)
 	)
 end
 
-function modifier_hoodwink_scurry_custom_legendary:AttackEvent_out(params)
-	if not IsServer() then
-		return
-	end
-	if self.parent ~= params.attacker then
-		return
-	end
-	if not params.target:IsUnit() then
-		return
-	end
+function modifier_hoodwink_scurry_custom_legendary:GetProcChance()
+	return 100
+end
 
+function modifier_hoodwink_scurry_custom_legendary:AttackProc(params, name)
 	self.damageTable.victim = params.target
 	DoDamage(self.damageTable, "modifier_hoodwink_scurry_7")
 end

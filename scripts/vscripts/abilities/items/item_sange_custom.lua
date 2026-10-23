@@ -26,13 +26,17 @@ modifier_item_sange_custom = class(mod_hidden)
 function modifier_item_sange_custom:GetAttributes()
 	return MODIFIER_ATTRIBUTE_MULTIPLE
 end
-function modifier_item_sange_custom:OnCreated(table)
+function modifier_item_sange_custom:GetUniqueStat(name)
+	return self[name]
+end
+function modifier_item_sange_custom:OnCreated()
 	self.parent = self:GetParent()
 	self.ability = self:GetAbility()
 
 	self.str = self.ability.bonus_str
 	self.heal_amp = self.ability.heal_amp
 	self.slow_resistance = self.ability.slow_resistance
+	self.parent:AddUniqueStat(self, "heal_amp", "slow_resistance")
 end
 
 function modifier_item_sange_custom:DeclareFunctions()
@@ -48,40 +52,13 @@ function modifier_item_sange_custom:GetModifierBonusStats_Strength()
 end
 
 function modifier_item_sange_custom:GetModifierHealChange()
-	if self.parent:HasModifier("modifier_item_abyssal_blade_custom") then
-		return
-	end
-	if self.parent:HasModifier("modifier_item_sange_and_yasha_custom") then
-		return
-	end
-	if self.parent:HasModifier("modifier_item_kaya_and_sange_custom") then
-		return
-	end
-	return self.heal_amp
+	return self.parent:UniqueStat(self, "heal_amp")
 end
 
 function modifier_item_sange_custom:GetModifierHPRegenAmplify_Percentage()
-	if self.parent:HasModifier("modifier_item_abyssal_blade_custom") then
-		return
-	end
-	if self.parent:HasModifier("modifier_item_sange_and_yasha_custom") then
-		return
-	end
-	if self.parent:HasModifier("modifier_item_kaya_and_sange_custom") then
-		return
-	end
-	return self.heal_amp
+	return self.parent:UniqueStat(self, "heal_amp")
 end
 
 function modifier_item_sange_custom:GetModifierSlowResistance_Stacking()
-	if self.parent:HasModifier("modifier_item_abyssal_blade_custom") then
-		return
-	end
-	if self.parent:HasModifier("modifier_item_sange_and_yasha_custom") then
-		return
-	end
-	if self.parent:HasModifier("modifier_item_kaya_and_sange_custom") then
-		return
-	end
-	return self.slow_resistance
+	return self.parent:UniqueStat(self, "slow_resistance")
 end

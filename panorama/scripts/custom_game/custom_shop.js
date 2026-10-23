@@ -33,11 +33,16 @@ var CUSTOM_SHOP_GRIDS = [
     { id: 'GridUpgradeItemsV2', rows: CUSTOM_SHOP_UPGRADE_ROWS }
 ];
 
+var CUSTOM_SHOP_INVENTORY = ['inventory_list', 'inventory_list2', 'inventory_backpack_list'];
+var CUSTOM_SHOP_ITEM_LISTS = ['Categories', 'ItemCombines', 'PinnedItems'];
+
 var CUSTOM_SHOP_STATE = {};
 var CUSTOM_SHOP_HUD = null;
 var CUSTOM_SHOP_ROOT = null;
+var CUSTOM_SHOP_COMBINES = null;
 var CUSTOM_SHOP_IDLE = 0;
 var CUSTOM_SHOP_GENERATION = 0;
+var CUSTOM_SHOP_BASHER = false;
 
 function CustomShopGetHud() {
     if (CUSTOM_SHOP_HUD) {
@@ -121,6 +126,7 @@ function CustomShopFillRow(grid, container, key) {
                 itemname: itemName,
                 style: 'width: ' + metrics.width + '; height: width-percentage( 72.7% ); ui-scale: ' + metrics.scale + '; margin-top: 1px; margin-bottom: 1px; margin-right: 3px; margin-left: 2px;'
             });
+            $.RegisterEventHandler('DOTAShowAbilityShopItemTooltip', panel, CustomShopTooltip);
             created = true;
         } else if (restyle) {
             panel.style.width = metrics.width;
@@ -196,6 +202,14 @@ function CustomShopUpdateGrid(root, grid, pass) {
     }
 }
 
+function CustomShopTooltip(shopPanel, shopItem) {
+    if (shopItem.indexOf('item_recipe') === 0) {
+        return;
+    }
+
+    $.DispatchEvent('DOTAShowAbilityTooltip', shopPanel, shopItem);
+}
+
 function CustomShopUpdate() {
     var pass = { rows: 0, changed: false };
     var root = CustomShopGetRoot();
@@ -203,6 +217,14 @@ function CustomShopUpdate() {
     if (root) {
         for (var i = 0; i < CUSTOM_SHOP_GRIDS.length; i++) {
             CustomShopUpdateGrid(root, CUSTOM_SHOP_GRIDS[i], pass);
+        }
+    }
+
+    if (root && !CUSTOM_SHOP_COMBINES) {
+        CUSTOM_SHOP_COMBINES = root.FindChildTraverse('ItemCombines');
+
+        if (CUSTOM_SHOP_COMBINES) {
+            $.RegisterEventHandler('DOTAShowAbilityShopItemTooltip', CUSTOM_SHOP_COMBINES, CustomShopTooltip);
         }
     }
 
@@ -226,6 +248,7 @@ function CustomShopTick() {
 
     if (pass.changed) {
         CUSTOM_SHOP_IDLE = 0;
+        CustomShopBasher();
     } else {
         CUSTOM_SHOP_IDLE++;
     }
@@ -241,10 +264,101 @@ function CustomShopWake() {
     CustomShopSchedule(0);
 }
 
+function CustomShopBasherBadge(parent, show) {
+    var badge = parent.FindChild('CustomBasherBadge');
+
+    if (!badge && !show) {
+        return;
+    }
+
+    if (!badge) {
+        badge = $.CreatePanel('Panel', parent, 'CustomBasherBadge', { hittest: 'false' });
+        badge.BLoadLayout('file://{resources}/layout/custom_game/custom_shop_badge.xml', false, false);
+    }
+
+    badge.visible = show;
+}
+
+function CustomShopBasherShopItem(panel) {
+    var image = panel.FindChildTraverse('ItemImage');
+
+    if (image) {
+        CustomShopBasherBadge(panel, CUSTOM_SHOP_BASHER && Game.basher_items.indexOf(image.itemname) !== -1);
+    }
+}
+
+function CustomShopBasherScan(panel) {
+    if (panel.paneltype === 'DOTAShopItem') {
+        CustomShopBasherShopItem(panel);
+        return;
+    }
+
+    var children = panel.Children();
+
+    for (var i = 0; i < children.length; i++) {
+        CustomShopBasherScan(children[i]);
+    }
+}
+
+function CustomShopBasher() {
+    var hud = CustomShopGetHud();
+    var owner = Game.GetBasherTalents(Entities.GetPlayerOwnerID(Players.GetLocalPlayerPortraitUnit())).length > 0;
+
+    CUSTOM_SHOP_BASHER = Game.GetBasherTalents(Players.GetLocalPlayer()).length > 0;
+
+    for (var i = 0; i < CUSTOM_SHOP_GRIDS.length; i++) {
+        for (var j = 0; j < Game.basher_items.length; j++) {
+            var shopItem = CUSTOM_SHOP_GRIDS[i].panel ? CUSTOM_SHOP_GRIDS[i].panel.FindChildTraverse(Game.basher_items[j] + '_new') : null;
+
+            if (shopItem) {
+                CustomShopBasherBadge(shopItem, CUSTOM_SHOP_BASHER);
+            }
+        }
+    }
+
+    for (var k = 0; k < CUSTOM_SHOP_INVENTORY.length; k++) {
+        var list = hud ? hud.FindChildTraverse(CUSTOM_SHOP_INVENTORY[k]) : null;
+        var slots = list ? list.Children() : [];
+
+        for (var s = 0; s < slots.length; s++) {
+            var image = slots[s].FindChildTraverse('ItemImage');
+            var button = slots[s].FindChildTraverse('AbilityButton');
+
+            if (image && button) {
+                CustomShopBasherBadge(button, owner && Game.basher_items.indexOf(image.itemname) !== -1);
+            }
+        }
+    }
+
+    for (var l = 0; l < CUSTOM_SHOP_ITEM_LISTS.length; l++) {
+        var itemList = hud ? hud.FindChildTraverse(CUSTOM_SHOP_ITEM_LISTS[l]) : null;
+
+        if (itemList) {
+            CustomShopBasherScan(itemList);
+        }
+    }
+}
+
+Game.UpdateBasherBadges = CustomShopBasher;
+
 $.RegisterForUnhandledEvent('StyleClassesChanged', function (panel) {
     if (panel && (panel.id === 'shop' || panel.paneltype === 'DOTAHUDShop')) {
         CustomShopWake();
     }
+
+    if (panel && panel.paneltype === 'DOTAShopItem') {
+        CustomShopBasherShopItem(panel);
+    }
+});
+
+CustomNetTables.SubscribeNetTableListener('upgrades_player', function () {
+    $.Schedule(0, CustomShopBasher);
+});
+
+['dota_inventory_changed', 'dota_inventory_changed_query_unit', 'dota_player_update_query_unit', 'dota_player_update_selected_unit'].forEach(function (name) {
+    GameEvents.Subscribe(name, function () {
+        $.Schedule(0, CustomShopBasher);
+    });
 });
 
 CustomShopWake();

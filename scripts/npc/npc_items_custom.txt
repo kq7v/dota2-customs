@@ -140,6 +140,14 @@
 "item_bottle"                       "REMOVE"
 "item_armlet"                       "REMOVE"
 "item_recipe_armlet"                "REMOVE"
+"item_lifesteal"                    "REMOVE"
+"item_voodoo_mask"                  "REMOVE"
+"item_recipe_mage_slayer"           "REMOVE"
+"item_mage_slayer"                  "REMOVE"
+"item_cloak"                        "REMOVE"
+"item_shawl"                        "REMOVE"
+"item_recipe_yasha"                 "REMOVE"
+"item_yasha"                        "REMOVE"
 
 "item_gray_upgrade"
 {
@@ -615,7 +623,7 @@
     "ItemResult"                    "item_vladmir_custom"
     "ItemRequirements"
     {
-        "01"                        "item_buckler;item_ring_of_basilius;item_lifesteal;item_blades_of_attack"
+        "01"                        "item_buckler;item_ring_of_basilius;item_lifesteal_custom;item_blades_of_attack"
     }
 }
 
@@ -682,7 +690,7 @@
     "ItemResult"                    "item_veil_of_discord_custom"
     "ItemRequirements"
     {
-        "01"                        "item_voodoo_mask;item_robe;item_fluffy_hat"
+        "01"                        "item_voodoo_mask_custom;item_robe;item_fluffy_hat"
     }
 }
 

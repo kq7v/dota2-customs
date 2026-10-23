@@ -140,14 +140,15 @@ function witch_doctor_paralyzing_cask_custom:UpdateTalents()
 		self.talents.has_q2 = 1
 		self.talents.q2_range = caster:GetTalentValue("modifier_witch_doctor_cask_2", "range")
 		self.talents.q2_slow = caster:GetTalentValue("modifier_witch_doctor_cask_2", "slow")
-		caster:AddAttackEvent_out(self.tracker, true)
+		caster:AddProc(self.tracker, { name = "hit", land = true })
 	end
 
 	if caster:HasTalent("modifier_witch_doctor_cask_3") then
 		self.talents.has_q3 = 1
 		self.talents.q3_base = caster:GetTalentValue("modifier_witch_doctor_cask_3", "base")
 		self.talents.q3_damage = caster:GetTalentValue("modifier_witch_doctor_cask_3", "damage") / 100
-		caster:AddAttackEvent_out(self.tracker, true)
+		caster:AddProc(self.tracker, { name = "hit", land = true })
+		caster:AddProc(self.tracker, { name = "poison", illusion = true, prd_owner = true, land = true })
 	end
 
 	if caster:HasTalent("modifier_witch_doctor_cask_4") then
@@ -157,7 +158,7 @@ function witch_doctor_paralyzing_cask_custom:UpdateTalents()
 
 	if caster:HasTalent("modifier_witch_doctor_cask_7") then
 		self.talents.has_q7 = 1
-		caster:AddAttackStartEvent_out(self.tracker, true)
+		caster:AddProc(self.tracker, { group = "modifier_witch_doctor_cask_7", extra = false })
 		self.tracker:UpdateUI()
 	end
 
@@ -168,7 +169,17 @@ function witch_doctor_paralyzing_cask_custom:UpdateTalents()
 
 	if caster:HasTalent("modifier_witch_doctor_deathward_4") then
 		self.talents.has_r4 = 1
-		caster:AddAttackEvent_out(self.tracker, true)
+		caster:AddProc(self.tracker, { name = "hit", land = true })
+		caster:AddProc(
+			self.tracker,
+			{
+				name = "root",
+				group = "modifier_witch_doctor_deathward_4",
+				illusion = true,
+				land = true,
+				prd_owner = true,
+			}
+		)
 	end
 
 	if caster:HasTalent("modifier_witch_doctor_deathward_7") then
@@ -294,13 +305,15 @@ function witch_doctor_paralyzing_cask_custom:SearchTarget(current_target, point)
 	return targets
 end
 
-function witch_doctor_paralyzing_cask_custom:ProcAttack(target, is_ward)
+function witch_doctor_paralyzing_cask_custom:ProcAttack(target, procs)
 	if not IsServer() then
 		return
 	end
 	if not self:IsTrained() then
 		return
 	end
+
+	local proc = procs and procs[self.tracker]
 
 	if self.talents.has_q2 == 1 then
 		target:AddNewModifier(
@@ -311,46 +324,78 @@ function witch_doctor_paralyzing_cask_custom:ProcAttack(target, is_ward)
 		)
 	end
 
-	if self.talents.has_q3 == 1 then
-		local chance = self.talents.q3_chance
-		local index = 9988
-		if is_ward then
-			chance = self.talents.q3_chance_ward
-			index = 9989
-		end
-		if RollPseudoRandomPercentage(chance, index, self.caster) then
-			target:AddNewModifier(
-				self.caster,
-				self,
-				"modifier_witch_doctor_paralyzing_cask_custom_poison",
-				{ duration = self.talents.q3_duration + 0.2 }
-			)
-		end
+	if proc and proc.poison then
+		target:AddNewModifier(
+			self.caster,
+			self,
+			"modifier_witch_doctor_paralyzing_cask_custom_poison",
+			{ duration = self.talents.q3_duration + 0.2 }
+		)
 	end
 
 	if self.talents.has_r4 == 1 then
 		if target:IsRealHero() then
 			target:AddNewModifier(self.caster, self, "modifier_generic_vision", { duration = self.talents.r4_vision })
 		end
-		if
-			not target:HasModifier("modifier_witch_doctor_paralyzing_cask_custom_root_cd")
-			and not target:IsDebuffImmune()
-			and RollPseudoRandomPercentage(self.talents.r4_chance, 1502, self.caster)
-		then
-			target:AddNewModifier(
-				self.caster,
-				self,
-				"modifier_witch_doctor_paralyzing_cask_custom_root",
-				{ duration = (1 - target:GetStatusResistance()) * self.talents.r4_root }
-			)
+		if proc and proc.root and self:CanRoot(target) then
 			target:AddNewModifier(
 				self.caster,
 				self,
 				"modifier_witch_doctor_paralyzing_cask_custom_root_cd",
 				{ duration = self.talents.r4_talent_cd }
 			)
+			target:AddNewModifier(
+				self.caster,
+				self,
+				"modifier_witch_doctor_paralyzing_cask_custom_root",
+				{ duration = (1 - target:GetStatusResistance()) * self.talents.r4_root }
+			)
 		end
 	end
+end
+
+function witch_doctor_paralyzing_cask_custom:CanRoot(target)
+	if target:HasModifier("modifier_witch_doctor_paralyzing_cask_custom_root_cd") then
+		return false
+	end
+	return not target:IsDebuffImmune()
+end
+
+function witch_doctor_paralyzing_cask_custom:GetLegendaryChance()
+	if not self.caster:IsAlive() then
+		return 0
+	end
+	if self.caster:HasModifier("modifier_witch_doctor_paralyzing_cask_custom_legendary_cd") then
+		return 0
+	end
+	return self.talents.q7_chance
+end
+
+function witch_doctor_paralyzing_cask_custom:ProcLegendary(target, ward_unit, is_proc)
+	if not IsServer() then
+		return
+	end
+	if not self:IsTrained() then
+		return
+	end
+	if self.talents.has_q7 == 0 then
+		return
+	end
+	local chance = self:GetLegendaryChance()
+	if chance <= 0 then
+		return
+	end
+	if not is_proc and not RollPseudoRandomPercentage(chance, "modifier_witch_doctor_cask_7", self.caster) then
+		return
+	end
+
+	self.caster:AddNewModifier(
+		self.caster,
+		self,
+		"modifier_witch_doctor_paralyzing_cask_custom_legendary_cd",
+		{ duration = self.talents.q7_talent_cd }
+	)
+	self:OnSpellStart(target, "legendary", ward_unit)
 end
 
 modifier_witch_doctor_paralyzing_cask_custom = class(mod_hidden)
@@ -528,21 +573,15 @@ function modifier_witch_doctor_paralyzing_cask_custom_tracker:OnRefresh()
 	self.ability.attack_damage = self.ability:GetSpecialValueFor("attack_damage") / 100
 end
 
-function modifier_witch_doctor_paralyzing_cask_custom_tracker:AttackEvent_out(params)
-	if not IsServer() then
-		return
-	end
-	if self.parent ~= params.attacker then
-		return
-	end
-	if not params.target:IsUnit() then
+function modifier_witch_doctor_paralyzing_cask_custom_tracker:AttackProc(params, name)
+	if name ~= "hit" then
 		return
 	end
 	if params.attack_flag == "wd_ward" then
 		return
 	end
 
-	self.ability:ProcAttack(params.target, false)
+	self.ability:ProcAttack(params.target, params.procs)
 end
 
 function modifier_witch_doctor_paralyzing_cask_custom_tracker:DeclareFunctions()
@@ -606,39 +645,31 @@ function modifier_witch_doctor_paralyzing_cask_custom_tracker:SpellEvent(params)
 	self.ability:OnSpellStart(unit, "auto")
 end
 
-function modifier_witch_doctor_paralyzing_cask_custom_tracker:AttackStartEvent_out(params)
-	if not IsServer() then
-		return
+function modifier_witch_doctor_paralyzing_cask_custom_tracker:GetProcChance(params, name)
+	if name == "hit" then
+		return 100
 	end
-	if self.ability.talents.has_q7 == 0 then
-		return
+	if name == "default" then
+		return self.ability:GetLegendaryChance()
 	end
-	if self.parent ~= params.attacker then
-		return
+	local is_ward = params.attacker.attack_flag == "wd_ward"
+	if params.attacker ~= self.parent and not is_ward then
+		return 0
 	end
-	if not params.target:IsUnit() then
-		return
+	if name == "poison" then
+		return is_ward and self.ability.talents.q3_chance_ward or self.ability.talents.q3_chance
 	end
-	if params.no_attack_cooldown then
-		return
+	if not self.ability:CanRoot(params.target) then
+		return 0
 	end
-	if not self.parent:IsAlive() then
-		return
-	end
-	if self.parent:HasModifier("modifier_witch_doctor_paralyzing_cask_custom_legendary_cd") then
-		return
-	end
-	if not RollPseudoRandomPercentage(self.ability.talents.q7_chance, 1360, self.parent) then
-		return
-	end
+	return self.ability.talents.r4_chance
+end
 
-	self.parent:AddNewModifier(
-		self.parent,
-		self.ability,
-		"modifier_witch_doctor_paralyzing_cask_custom_legendary_cd",
-		{ duration = self.ability.talents.q7_talent_cd }
-	)
-	self.ability:OnSpellStart(params.target, "legendary", params.ward_unit)
+function modifier_witch_doctor_paralyzing_cask_custom_tracker:AttackProcStart(params, name)
+	if name ~= "default" then
+		return
+	end
+	self.ability:ProcLegendary(params.target, nil, true)
 end
 
 function modifier_witch_doctor_paralyzing_cask_custom_tracker:UpdateUI()

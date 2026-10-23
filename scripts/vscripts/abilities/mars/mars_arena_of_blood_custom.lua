@@ -104,6 +104,7 @@ function mars_arena_of_blood_custom:Precache(context)
 	PrecacheResource("particle", "particles/status_fx/status_effect_brewmaster_thunder_clap.vpcf", context)
 	PrecacheResource("particle", "particles/units/heroes/hero_mars/mars_arena_of_blood_spear.vpcf", context)
 	PrecacheResource("particle", "particles/mars/shard_wall.vpcf", context)
+	PrecacheResource("particle", "particles/wraith_king/reinc_shield.vpcf", context)
 	PrecacheResource("model", "models/heroes/mars/mars_soldier.vmdl", context)
 end
 
@@ -130,6 +131,9 @@ function mars_arena_of_blood_custom:UpdateTalents(name)
 
 			has_r4 = 0,
 			r4_damage_reduce = caster:GetTalentValue("modifier_mars_arena_4", "damage_reduce", true),
+			r4_heal = caster:GetTalentValue("modifier_mars_arena_4", "heal", true) / 100,
+			r4_duration = caster:GetTalentValue("modifier_mars_arena_4", "duration", true),
+			r4_shield = caster:GetTalentValue("modifier_mars_arena_4", "shield", true) / 100,
 
 			has_r7 = 0,
 			r7_damage_inc = caster:GetTalentValue("modifier_mars_arena_7", "damage_inc", true) / 100,
@@ -157,11 +161,15 @@ function mars_arena_of_blood_custom:UpdateTalents(name)
 		self.talents.has_r3 = 1
 		self.talents.r3_damage = caster:GetTalentValue("modifier_mars_arena_3", "damage") / 100
 		self.talents.r3_magic = caster:GetTalentValue("modifier_mars_arena_3", "magic")
-		caster:AddAttackEvent_out(self.tracker, true)
+		caster:AddProc(self.tracker, { illusion = true, land = true })
 	end
 
 	if caster:HasTalent("modifier_mars_arena_4") then
 		self.talents.has_r4 = 1
+		caster:AddLifesteal(
+			self.tracker,
+			{ name = "modifier_mars_arena_4", type = 1, value = self.talents.r4_heal, proc = "LifestealShield" }
+		)
 	end
 
 	if caster:HasTalent("modifier_mars_arena_7") then
@@ -562,6 +570,52 @@ function modifier_mars_arena_of_blood_custom_tracker:OnRefresh()
 	self.ability.damage = self.ability:GetSpecialValueFor("damage")
 end
 
+function modifier_mars_arena_of_blood_custom_tracker:LifestealShield(params, heal)
+	if not self.parent:HasModifier("modifier_mars_arena_of_blood_custom_projectile_aura") then
+		return
+	end
+	local max_shield = self.parent:GetMaxHealth() * self.ability.talents.r4_shield
+
+	if not IsValid(self.shield_mod) then
+		self.shield_mod = self.parent:AddNewModifier(self.parent, self.ability, "modifier_generic_shield_multiple", {
+			duration = self.ability.talents.r4_duration,
+			shield_talent = "modifier_mars_arena_4",
+			max_shield = max_shield,
+		})
+		if self.shield_mod then
+			local particle = ParticleManager:CreateParticle(
+				"particles/wraith_king/reinc_shield.vpcf",
+				PATTACH_CUSTOMORIGIN_FOLLOW,
+				self.parent
+			)
+			ParticleManager:SetParticleControlEnt(
+				particle,
+				0,
+				self.parent,
+				PATTACH_POINT_FOLLOW,
+				"attach_hitloc",
+				self.parent:GetAbsOrigin(),
+				true
+			)
+			self.shield_mod:AddParticle(particle, false, false, -1, false, false)
+
+			self.shield_mod:SetReduceDamage(function(params)
+				local caster = params.caster
+				local result = 1
+				if IsValid(caster.bulwark_ability) then
+					result = caster.bulwark_ability:GetReduction(params)
+				end
+				return 1 + result / 100
+			end)
+		end
+	end
+
+	if IsValid(self.shield_mod) then
+		self.shield_mod:AddShield(heal, max_shield)
+		self.shield_mod:SetDuration(self.ability.talents.r4_duration, true)
+	end
+end
+
 function modifier_mars_arena_of_blood_custom_tracker:PlayEffect(abs, dir)
 	if not IsServer() then
 		return
@@ -577,19 +631,17 @@ function modifier_mars_arena_of_blood_custom_tracker:PlayEffect(abs, dir)
 	ParticleManager:ReleaseParticleIndex(particle)
 end
 
-function modifier_mars_arena_of_blood_custom_tracker:AttackEvent_out(params)
-	if not IsServer() then
-		return
-	end
+function modifier_mars_arena_of_blood_custom_tracker:GetProcChance()
+	return 100
+end
+
+function modifier_mars_arena_of_blood_custom_tracker:AttackProc(params, name)
 	if self.ability.talents.has_r3 == 0 then
 		return
 	end
 
 	local attacker = params.attacker
 	local target = params.target
-	if not target:IsUnit() then
-		return
-	end
 	if
 		not attacker.owner
 		or attacker.owner ~= self.parent

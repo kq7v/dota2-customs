@@ -176,8 +176,19 @@ function primal_beast_onslaught_custom:UpdateTalents(name)
 		self.talents.q3_base = caster:GetTalentValue("modifier_primal_beast_onslaught_3", "base")
 		self.talents.q3_armor = caster:GetTalentValue("modifier_primal_beast_onslaught_3", "armor") / 100
 		self.talents.q3_crit = caster:GetTalentValue("modifier_primal_beast_onslaught_3", "crit")
-		caster:AddDamageEvent_out(self.tracker, true)
+		caster:AddProc(self.tracker, { damage = true })
 		caster:AddRecordDestroyEvent(self.tracker, true)
+		caster:AddLifesteal(self.tracker, {
+			name = "modifier_primal_beast_onslaught_3",
+			type = 2,
+			text = true,
+			value = function(params)
+				if not self.tracker.records[params.record] then
+					return 0
+				end
+				return self.talents.q3_heal
+			end,
+		})
 	end
 
 	if caster:HasTalent("modifier_primal_beast_onslaught_4") then
@@ -555,6 +566,23 @@ function modifier_primal_beast_onslaught_custom_tracker:GetModifierTotalDamageOu
 		- 100
 end
 
+function modifier_primal_beast_onslaught_custom_tracker:GetCritChance()
+	if self.ability.talents.has_q3 == 0 then
+		return 0
+	end
+	if self.ability.talents.has_q7 == 1 then
+		return 0
+	end
+	return 100 / self.ability.talents.q3_count
+end
+
+function modifier_primal_beast_onslaught_custom_tracker:GetCritDamage()
+	if self.ability.talents.has_q3 == 0 then
+		return
+	end
+	return self.ability.talents.q3_crit
+end
+
 function modifier_primal_beast_onslaught_custom_tracker:GetModifierPreAttack_CriticalStrike(params)
 	if not IsServer() then
 		return
@@ -580,7 +608,7 @@ function modifier_primal_beast_onslaught_custom_tracker:GetModifierPreAttack_Cri
 	end
 
 	self.records[params.record] = true
-	return self.ability.talents.q3_crit
+	return self:GetCritDamage()
 end
 
 function modifier_primal_beast_onslaught_custom_tracker:RecordDestroyEvent(params)
@@ -593,26 +621,14 @@ function modifier_primal_beast_onslaught_custom_tracker:RecordDestroyEvent(param
 	self.records[params.record] = nil
 end
 
-function modifier_primal_beast_onslaught_custom_tracker:DamageEvent_out(params)
-	if not IsServer() then
-		return
-	end
-	if self.parent ~= params.attacker then
-		return
-	end
-	if params.inflictor then
-		return
-	end
-	if not params.unit:IsUnit() then
-		return
-	end
-	if self.ability.talents.has_q3 == 0 then
-		return
-	end
+function modifier_primal_beast_onslaught_custom_tracker:GetProcChance()
+	return 100
+end
 
-	local target = params.unit
+function modifier_primal_beast_onslaught_custom_tracker:DamageProc(params, name)
+	local target = params.target
 
-	if not params.record or not self.records[params.record] then
+	if not self.records[params.record] then
 		if self.ability.talents.has_q7 == 1 then
 			return
 		end
@@ -636,18 +652,6 @@ function modifier_primal_beast_onslaught_custom_tracker:DamageEvent_out(params)
 			true
 		)
 	end
-
-	local result = self.parent:CanLifesteal(target)
-	if not result then
-		return
-	end
-	self.parent:GenericHeal(
-		params.damage * self.ability.talents.q3_heal * result,
-		self.ability,
-		false,
-		false,
-		"modifier_primal_beast_onslaught_3"
-	)
 end
 
 modifier_primal_beast_onslaught_custom_cast = class(mod_visible)

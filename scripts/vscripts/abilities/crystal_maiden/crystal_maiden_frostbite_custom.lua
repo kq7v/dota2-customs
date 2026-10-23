@@ -114,6 +114,9 @@ function crystal_maiden_frostbite_custom:UpdateTalents()
 			w1_resist = 0,
 			w1_duration = caster:GetTalentValue("modifier_maiden_frostbite_1", "duration", true),
 
+			w2_heal = 0,
+			w2_bonus = caster:GetTalentValue("modifier_maiden_frostbite_2", "bonus", true),
+
 			has_h2 = 0,
 			h2_health = 0,
 			h2_armor = 0,
@@ -162,6 +165,20 @@ function crystal_maiden_frostbite_custom:UpdateTalents()
 		self.talents.has_w1 = 1
 		self.talents.w1_damage = caster:GetTalentValue("modifier_maiden_frostbite_1", "damage")
 		self.talents.w1_resist = caster:GetTalentValue("modifier_maiden_frostbite_1", "resist")
+	end
+
+	if caster:HasTalent("modifier_maiden_frostbite_2") then
+		self.talents.w2_heal = caster:GetTalentValue("modifier_maiden_frostbite_2", "heal") / 100
+		caster:AddLifesteal(self.tracker, {
+			name = "modifier_maiden_frostbite_2",
+			type = 1,
+			value = function(params)
+				if params.inflictor == caster.freezing_field_ability then
+					return self.talents.w2_heal * self.talents.w2_bonus
+				end
+				return self.talents.w2_heal
+			end,
+		})
 	end
 
 	if caster:HasTalent("modifier_maiden_frostbite_3") then

@@ -10,76 +10,6 @@
 
 <!-- kv3 encoding:text:version{e21c7f3c-8a33-41c5-9977-a76d3a32aa0d} format:generic:version{7412167c-06e9-4698-aff2-e63eb59037e7} -->
 {
-	Alch.Rune_haste = 
-	{
-		pitch = 1
-		soundlevel = 81
-		pitch_rand_max = 0.03
-		type = "dota_src1_3d"
-		distance_max = 1600
-		volume = 0.7
-		pitch_rand_min = -0.03
-		vsnd_files = 
-		[
-			"sounds/items/rune_haste.vsnd",
-		]
-	}
-	Alch.Rune_dd = 
-	{
-		pitch = 1
-		soundlevel = 81
-		pitch_rand_max = 0.03
-		type = "dota_src1_3d"
-		distance_max = 1600
-		volume = 1
-		pitch_rand_min = -0.03
-		vsnd_files = 
-		[
-			"sounds/items/rune_dd.vsnd",
-		]
-	}
-	Alch.Rune_arcane = 
-	{
-		pitch = 1
-		soundlevel = 81
-		pitch_rand_max = 0.03
-		type = "dota_src1_3d"
-		distance_max = 1600
-		volume = 1
-		pitch_rand_min = -0.03
-		vsnd_files = 
-		[
-			"sounds/items/rune_arcane.vsnd",
-		]
-	}
-	Alch.Rune_regen = 
-	{
-		pitch = 1
-		soundlevel = 81
-		pitch_rand_max = 0.03
-		type = "dota_src1_3d"
-		distance_max = 1600
-		volume = 1
-		pitch_rand_min = -0.03
-		vsnd_files = 
-		[
-			"sounds/items/rune_regen.vsnd",
-		]
-	}
-	Alch.Silence = 
-	{
-		pitch = 1
-		soundlevel = 81
-		pitch_rand_max = 0.03
-		type = "dota_src1_3d"
-		distance_max = 1600
-		volume = 1.4
-		pitch_rand_min = -0.03
-		vsnd_files = 
-		[
-			"sounds/weapons/hero/dazzle/bad_juju_target.vsnd",
-		]
-	}
 	Alch.Triple = 
 	{
 		pitch = 1
@@ -438,20 +368,6 @@
 		]
 		type = "dota_src1_3d"
 	}
-	Alch.Statue_caster = 
-	{
-		pitch = 1
-		soundlevel = 81
-		pitch_rand_max = -0.05
-		type = "dota_src1_3d"
-		distance_max = 1600
-		volume = 1.3
-		pitch_rand_min = -0.05
-		vsnd_files = 
-		[
-			"sounds/weapons/hero/oracle/fortune_target.vsnd",
-		]
-	}
 	Voice.Alch.2_1 = 
 	{
 		volume = 1.6
@@ -460,20 +376,6 @@
 			"sounds/vo/alchemist/alch_haste_02.vsnd",
 		]
 		type = "dota_src1_3d"
-	}
-	Alch.Statue_target = 
-	{
-		pitch = 1
-		soundlevel = 81
-		pitch_rand_max = 0
-		type = "dota_src1_3d"
-		distance_max = 1600
-		volume = 1.6
-		pitch_rand_min = 0
-		vsnd_files = 
-		[
-			"sounds/weapons/hero/medusa/stonegaze_stun.vsnd",
-		]
 	}
 	Alchemist.Weapon_legerndary_loop = 
 	{
@@ -488,20 +390,6 @@
 		vsnd_files = 
 		[
 			"sounds/weapons/hero/alchemist/acid_spray.vsnd",
-		]
-	}
-	Alch.Statue_target2 = 
-	{
-		pitch = 1
-		soundlevel = 81
-		pitch_rand_max = 0
-		type = "dota_src1_3d"
-		distance_max = 1600
-		volume = 0.4
-		pitch_rand_min = 0
-		vsnd_files = 
-		[
-			"sounds/items/item_handofmidas.vsnd",
 		]
 	}
 	Alch.gold_attack = 

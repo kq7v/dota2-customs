@@ -48,7 +48,6 @@ modifier_tower_incoming = class(mod_hidden)
 modifier_tower_incoming.skills = {
 	"ember_spirit_activate_fire_remnant_custom",
 	"alchemist_acid_spray_mixing",
-	"custom_puck_ethereal_jaunt",
 }
 modifier_tower_incoming.no_push_mods = {
 	"modifier_mars_scepter_damage",
@@ -628,6 +627,10 @@ function modifier_tower_incoming:AttackEvent_inc(params)
 
 	local xmark = attacker:FindModifierByName("modifier_kunkka_xmark_custom_target")
 	if xmark and not xmark.is_enemy then
+		return
+	end
+
+	if attacker.orb_ability and IsValid(attacker.orb_ability.orb_mod) then
 		return
 	end
 

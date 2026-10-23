@@ -35,7 +35,6 @@ function item_alchemist_gold_octarine:Precache(context)
 		return
 	end
 	PrecacheResource("particle", "particles/items_fx/bloodstone_heal.vpcf", context)
-	PrecacheResource("particle", "particles/items3_fx/octarine_core_lifesteal.vpcf", context)
 	PrecacheResource("particle", "particles/generic_gameplay/rune_arcane_owner.vpcf", context)
 	PrecacheResource("particle", "particles/items2_fx/veil_of_discord_debuff.vpcf", context)
 end
@@ -99,41 +98,25 @@ function modifier_item_alchemist_gold_octarine:OnCreated()
 	self.lifesteal = self.ability.spell_lifesteal / 100
 	self.lifesteal_active = self.ability.lifesteal_active / 100
 
-	if self.parent:IsRealHero() then
-		self.parent:AddDamageEvent_out(self, true)
-	end
-end
-
-function modifier_item_alchemist_gold_octarine:DamageEvent_out(params)
 	if not IsServer() then
 		return
 	end
-	if not IsValid(self.ability) then
+	if not self.parent:IsRealHero() then
 		return
 	end
-	if (params.unit:GetAbsOrigin() - self.parent:GetAbsOrigin()):Length2D() > 2000 then
-		return
-	end
-
-	local result = self.parent:CheckLifesteal(params, 1)
-	if not result then
-		return
-	end
-
-	local lifesteal = self.lifesteal
-	local hide_number = false
-
-	if self.parent:HasModifier("modifier_item_alchemist_gold_octarine_active") then
-		hide_number = false
-		lifesteal = self.lifesteal_active
-	end
-
-	self.parent:GenericHeal(
-		params.damage * lifesteal * result,
-		self.ability,
-		hide_number,
-		"particles/items3_fx/octarine_core_lifesteal.vpcf"
-	)
+	self.parent:AddLifesteal(self, {
+		type = 1,
+		text = true,
+		value = function(params)
+			if params.unit and (params.unit:GetAbsOrigin() - self.parent:GetAbsOrigin()):Length2D() > 2000 then
+				return 0
+			end
+			if self.parent:HasModifier("modifier_item_alchemist_gold_octarine_active") then
+				return self.lifesteal_active
+			end
+			return self.lifesteal
+		end,
+	})
 end
 
 function modifier_item_alchemist_gold_octarine:DeclareFunctions()

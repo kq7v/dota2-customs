@@ -8,39 +8,43 @@
 ]]
 
 
-LinkLuaModifier("item_talisman_of_evasion_custom", "abilities/items/item_claymore_custom", LUA_MODIFIER_MOTION_NONE)
+LinkLuaModifier(
+	"modifier_item_talisman_of_evasion_custom_passive",
+	"abilities/items/item_talisman_of_evasion_custom",
+	LUA_MODIFIER_MOTION_NONE
+)
 
-item_claymore_custom = class({})
+item_talisman_of_evasion_custom = class({})
 
-function item_claymore_custom:GetIntrinsicModifierName()
-	return "item_talisman_of_evasion_custom"
+function item_talisman_of_evasion_custom:GetIntrinsicModifierName()
+	return "modifier_item_talisman_of_evasion_custom_passive"
 end
 
-function item_claymore_custom:Spawn()
-	self.health_bonus = self:GetSpecialValueFor("health_bonus")
+function item_talisman_of_evasion_custom:Spawn()
+	self.bonus_health = self:GetSpecialValueFor("bonus_health")
 	self.bonus_evasion = self:GetSpecialValueFor("bonus_evasion")
 end
 
-item_talisman_of_evasion_custom = class(mod_hidden)
-function item_talisman_of_evasion_custom:GetAttributes()
+modifier_item_talisman_of_evasion_custom_passive = class(mod_hidden)
+function modifier_item_talisman_of_evasion_custom_passive:GetAttributes()
 	return MODIFIER_ATTRIBUTE_MULTIPLE
 end
-function item_talisman_of_evasion_custom:OnCreated()
+function modifier_item_talisman_of_evasion_custom_passive:OnCreated()
 	self.parent = self:GetParent()
 	self.ability = self:GetAbility()
 end
 
-function item_talisman_of_evasion_custom:DeclareFunctions()
+function modifier_item_talisman_of_evasion_custom_passive:DeclareFunctions()
 	return {
 		MODIFIER_PROPERTY_EVASION_CONSTANT,
 		MODIFIER_PROPERTY_HEALTH_BONUS,
 	}
 end
 
-function item_talisman_of_evasion_custom:GetModifierEvasion_Constant()
+function modifier_item_talisman_of_evasion_custom_passive:GetModifierEvasion_Constant()
 	return self.ability.bonus_evasion
 end
 
-function item_talisman_of_evasion_custom:GetModifierHealthBonus()
-	return self.ability.health_bonus
+function modifier_item_talisman_of_evasion_custom_passive:GetModifierHealthBonus()
+	return self.ability.bonus_health
 end

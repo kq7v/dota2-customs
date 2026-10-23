@@ -85,6 +85,7 @@ function pangolier_shield_crash_custom:UpdateTalents(name)
 
 			has_w3 = 0,
 			w3_magic = 0,
+			w3_heal = 0,
 			w3_max = caster:GetTalentValue("modifier_pangolier_shield_3", "max", true),
 			w3_duration = caster:GetTalentValue("modifier_pangolier_shield_3", "duration", true),
 
@@ -124,6 +125,11 @@ function pangolier_shield_crash_custom:UpdateTalents(name)
 	if caster:HasTalent("modifier_pangolier_shield_3") then
 		self.talents.has_w3 = 1
 		self.talents.w3_magic = caster:GetTalentValue("modifier_pangolier_shield_3", "magic")
+		self.talents.w3_heal = caster:GetTalentValue("modifier_pangolier_shield_3", "heal") / 100
+		caster:AddLifesteal(
+			self.tracker,
+			{ name = "modifier_pangolier_shield_3", type = 1, value = self.talents.w3_heal }
+		)
 	end
 
 	if caster:HasTalent("modifier_pangolier_shield_4") then

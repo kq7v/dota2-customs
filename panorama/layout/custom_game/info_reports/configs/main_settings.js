@@ -11,16 +11,9 @@
 var max_games = 5
 var new_items =
 {
+    "npc_dota_hero_puck": true,
     "npc_dota_hero_kunkka": true,
     "npc_dota_hero_primal_beast": true,
-    "npc_dota_hero_antimage": true,
-    "npc_dota_hero_legion_commander": true,
-    "npc_dota_hero_pudge": true,
-    "npc_dota_hero_drow_ranger": true,
-    "npc_dota_hero_terrorblade": true,
-    "npc_dota_hero_nyx_assassin": true,
-    "npc_dota_hero_broodmother": true,
-    "npc_dota_hero_marci": true,
 }
 var new_shop_items =
 {

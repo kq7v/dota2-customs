@@ -258,7 +258,7 @@ function modifier_life_stealer_centaur_bash:OnIntervalThink()
 		return
 	end
 
-	self.parent.owner:AddAttackEvent_out(self, true)
+	self.parent:AddProc(self, { current = true, accuracy = true, cd = true, strike = true })
 	self:StartIntervalThink(-1)
 end
 
@@ -287,23 +287,14 @@ function modifier_life_stealer_centaur_bash:GetModifierAttackRangeBonus()
 	return self.range
 end
 
-function modifier_life_stealer_centaur_bash:AttackEvent_out(params)
-	if not IsServer() then
-		return
-	end
-	if self.parent ~= params.attacker then
-		return
-	end
-	if not params.target:IsUnit() then
-		return
-	end
+function modifier_life_stealer_centaur_bash:GetProcChance()
 	if self.parent:PassivesDisabled() then
-		return
+		return 0
 	end
-	if not self.ability:IsFullyCastable() then
-		return
-	end
+	return 100
+end
 
+function modifier_life_stealer_centaur_bash:AttackProc(params, name)
 	local real_damage = DoDamage({
 		victim = params.target,
 		attacker = self.parent,
@@ -320,5 +311,4 @@ function modifier_life_stealer_centaur_bash:AttackEvent_out(params)
 		{ duration = (1 - params.target:GetStatusResistance()) * self.stun }
 	)
 	params.target:EmitSound("Lifestealer.Frenzy_bash")
-	self.ability:StartCd()
 end

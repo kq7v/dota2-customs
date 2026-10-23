@@ -156,7 +156,7 @@ function skeleton_king_vampiric_aura_custom:UpdateTalents(name)
 	if caster:HasTalent("modifier_skeleton_vampiric_3") then
 		self.talents.has_w3 = 1
 		self.talents.w3_armor = caster:GetTalentValue("modifier_skeleton_vampiric_3", "armor")
-		caster:AddAttackEvent_out(self.tracker, true)
+		caster:AddProc(self.tracker, { land = true, illusion = true })
 	end
 
 	if caster:HasTalent("modifier_skeleton_vampiric_4") then
@@ -165,7 +165,7 @@ function skeleton_king_vampiric_aura_custom:UpdateTalents(name)
 
 	if caster:HasTalent("modifier_skeleton_vampiric_7") then
 		self.talents.has_w7 = 1
-		caster:AddAttackEvent_out(self.tracker, true)
+		caster:AddProc(self.tracker, { land = true, illusion = true })
 		if IsServer() and name == "modifier_skeleton_vampiric_7" and dota1x6.current_wave >= upgrade_orange then
 			local mod = caster:AddNewModifier(caster, self, "modifier_skeleton_king_vampiric_aura_custom_legendary", {})
 			if mod then
@@ -178,7 +178,7 @@ function skeleton_king_vampiric_aura_custom:UpdateTalents(name)
 		self.talents.has_e2 = 1
 		self.talents.e2_range_skelet = caster:GetTalentValue("modifier_skeleton_strike_2", "range_skelet")
 		self.talents.e2_slow = caster:GetTalentValue("modifier_skeleton_strike_2", "slow")
-		caster:AddAttackEvent_out(self.tracker, true)
+		caster:AddProc(self.tracker, { land = true, illusion = true })
 	end
 end
 
@@ -306,6 +306,21 @@ function skeleton_king_vampiric_aura_custom:CreateSkeleton(
 	local modifier_kill_skelet = skelet:AddNewModifier(self.caster, self, "modifier_kill", { duration = duration })
 	skelet:AddNewModifier(self.caster, self, "modifier_skeleton_king_vampiric_aura_custom_skeleton_ai", {})
 
+	local innate = self.caster.wk_innate
+	if IsValid(innate) and IsValid(innate.tracker) then
+		local value = function()
+			if not self.caster:IsAlive() then
+				return 0
+			end
+			return innate:GetLifesteal()
+		end
+		skelet:AddLifesteal(innate.tracker, { effect = false, proc = "LifestealParticle", value = value })
+		skelet:AddLifesteal(
+			innate.tracker,
+			{ heal_unit = self.caster, effect = false, proc = "LifestealParticle", value = value }
+		)
+	end
+
 	if new_model == "models/items/wraith_king/arcana/wk_arcana_skeleton.vmdl" and self.caster:HasUnequipItem(12424) then
 		skelet:GenericParticle(
 			"particles/econ/items/wraith_king/wraith_king_ti8/wk_ti8_creep_ambient.vpcf",
@@ -424,15 +439,12 @@ function modifier_skeleton_king_vampiric_aura_custom:GetModifierSlowResistance_S
 	return self.ability.talents.w4_slow_resist
 end
 
-function modifier_skeleton_king_vampiric_aura_custom:AttackEvent_out(params)
-	if not IsServer() then
-		return
-	end
-	local target = params.target
-	if not target:IsUnit() then
-		return
-	end
+function modifier_skeleton_king_vampiric_aura_custom:GetProcChance()
+	return 100
+end
 
+function modifier_skeleton_king_vampiric_aura_custom:AttackProc(params, name)
+	local target = params.target
 	local attacker = params.attacker
 	if attacker.owner and attacker.is_wk_skelet then
 		attacker = attacker.owner

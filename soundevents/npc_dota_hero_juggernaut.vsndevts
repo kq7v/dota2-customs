@@ -27,20 +27,6 @@
 		]
 		vsnd_duration = 1.097234
 	}
-	Juggernaut.WardDamage = 
-	{
-		soundlevel = 100
-		distance_max = 1600
-		type = "dota_src1_3d"
-		vsnd_files = 
-		[
-			"sounds/physics/deaths/specials/spectre_death.vsnd",
-		]
-		volume = 0.5
-		pitch_rand_min = -0.05
-		pitch_rand_max = 0.05
-		pitch = 1
-	}
 	Juggernaut.ShockWave = 
 	{
 		soundlevel = 100
@@ -53,20 +39,6 @@
 		volume = 2.3
 		pitch_rand_min = -0.05
 		pitch_rand_max = 0.05
-		pitch = 1
-	}
-	Jugg.Disarm_ward = 
-	{
-		soundlevel = 100
-		distance_max = 1600
-		type = "dota_src1_3d"
-		vsnd_files = 
-		[
-			"sounds/weapons/hero/pangolier/heart_piercer_creep.vsnd",
-		]
-		volume = 1.1
-		pitch_rand_min = 0.05
-		pitch_rand_max = -0.05
 		pitch = 1
 	}
 	Voice.Jugg.1_2 = 
@@ -151,20 +123,6 @@
 		]
 		type = "dota_src1_3d"
 	}
-	Juggernaut.Fury_loop = 
-	{
-		soundlevel = 100
-		distance_max = 1600
-		type = "dota_src1_3d"
-		vsnd_files = 
-		[
-			"sounds/weapons/hero/juggernaut/bladefury_start_loop.vsnd",
-		]
-		volume = 2
-		pitch_rand_min = 0.1
-		pitch_rand_max = 0.1
-		pitch = 1
-	}
 	Juggernaut.Fury_silence = 
 	{
 		soundlevel = 100
@@ -205,20 +163,6 @@
 		volume = 1.8
 		pitch_rand_min = 0.011
 		pitch_rand_max = 0.15
-		pitch = 1
-	}
-	Juggernaut.Double = 
-	{
-		soundlevel = 100
-		distance_max = 1600
-		type = "dota_src1_3d"
-		vsnd_files = 
-		[
-			"sounds/weapons/hero/juggernaut/blade_dance_layer.vsnd",
-		]
-		volume = 1.4
-		pitch_rand_min = -0.05
-		pitch_rand_max = 0.05
 		pitch = 1
 	}
 	Juggernaut.Ward_damage = 
@@ -362,20 +306,6 @@
 		]
 		type = "dota_src1_3d"
 	}
-	Juggernaut.Mortal = 
-	{
-		soundlevel = 100
-		distance_max = 1600
-		type = "dota_src1_3d"
-		vsnd_files = 
-		[
-			"sounds/weapons/hero/skeleton_king/mortal_strike_target.vsnd",
-		]
-		volume = 2
-		pitch_rand_min = -0.05
-		pitch_rand_max = 0.05
-		pitch = 1
-	}
 	Voice.Jugg.3_1 = 
 	{
 		volume = 1.6
@@ -408,20 +338,6 @@
 		]
 		type = "dota_src1_3d"
 	}
-	Juggernaut.Stun = 
-	{
-		soundlevel = 100
-		distance_max = 1600
-		type = "dota_src1_3d"
-		vsnd_files = 
-		[
-			"sounds/weapons/hero/void_spirit/dissimilate_stun.vsnd",
-		]
-		volume = 2
-		pitch_rand_min = -0.05
-		pitch_rand_max = 0.05
-		pitch = 1
-	}
 	Voice.Jugg.1_1 = 
 	{
 		volume = 1.6
@@ -430,20 +346,6 @@
 			"sounds/vo/juggernaut/jug_laugh_08.vsnd",
 		]
 		type = "dota_src1_3d"
-	}
-	Juggernaut.Clone = 
-	{
-		soundlevel = 100
-		distance_max = 1600
-		type = "dota_src1_3d"
-		vsnd_files = 
-		[
-			"sounds/weapons/hero/phantom_lancer/doppelwalk.vsnd",
-		]
-		volume = 2
-		pitch_rand_min = -0.05
-		pitch_rand_max = 0.05
-		pitch = 1
 	}
 	Voice.Jugg.2_2 = 
 	{

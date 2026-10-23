@@ -340,13 +340,24 @@ function modifier_abaddon_aphotic_shield_custom:OnCreated(kv)
 	end
 	self.damage_count = 0
 
-	if self.ability.talents.has_w7 == 1 or self.ability.talents.has_w4 == 1 then
+	if self.ability.talents.has_w4 == 1 then
 		self.parent:AddDamageEvent_out(self, true)
 	end
 
 	if self.ability.talents.has_w7 == 0 then
 		return
 	end
+	self.parent:AddLifesteal(self, {
+		name = "modifier_abaddon_aphotic_7",
+		heal = false,
+		proc = "LifestealShield",
+		value = function()
+			if not self.parent:HasModifier("modifier_abaddon_aphotic_shield_custom_immune") then
+				return 0
+			end
+			return self.ability.talents.w7_heal
+		end,
+	})
 
 	self.legendary_radius = self.ability.talents.w7_radius
 	self.legendary_damage = self.ability.talents.w7_damage
@@ -379,36 +390,32 @@ function modifier_abaddon_aphotic_shield_custom:DamageEvent_out(params)
 	if not IsServer() then
 		return
 	end
+	if not params.unit:IsRealHero() then
+		return
+	end
+	if params.damage <= 0 then
+		return
+	end
 
-	if self.ability.talents.has_w4 == 1 and params.unit:IsRealHero() and params.damage > 0 then
-		local final = self.damage_count + params.damage
-		if final >= self.ability.talents.w4_damage then
-			local delta = math.floor(final / self.ability.talents.w4_damage)
-			for i = 1, delta do
-				self.parent:AddNewModifier(
-					self.parent,
-					self.ability,
-					"modifier_abaddon_aphotic_shield_custom_str_stack",
-					{ duration = self.ability.talents.w4_duration }
-				)
-			end
-			self.damage_count = final - delta * self.ability.talents.w4_damage
-		else
-			self.damage_count = final
+	local final = self.damage_count + params.damage
+	if final >= self.ability.talents.w4_damage then
+		local delta = math.floor(final / self.ability.talents.w4_damage)
+		for i = 1, delta do
+			self.parent:AddNewModifier(
+				self.parent,
+				self.ability,
+				"modifier_abaddon_aphotic_shield_custom_str_stack",
+				{ duration = self.ability.talents.w4_duration }
+			)
 		end
+		self.damage_count = final - delta * self.ability.talents.w4_damage
+	else
+		self.damage_count = final
 	end
+end
 
-	if not self.parent:HasModifier("modifier_abaddon_aphotic_shield_custom_immune") then
-		return
-	end
-
-	local result = self.parent:CheckLifesteal(params)
-	if not result then
-		return
-	end
-
-	local heal = result * params.damage * self.ability.talents.w7_heal
-	self.shield = math.min(self.max_shield, self.shield + heal)
+function modifier_abaddon_aphotic_shield_custom:LifestealShield(params, shield)
+	self.shield = math.min(self.max_shield, self.shield + shield)
 	self:SendBuffRefreshToClients()
 end
 

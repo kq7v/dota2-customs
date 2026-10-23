@@ -148,7 +148,7 @@ function custom_juggernaut_omnislash:UpdateTalents()
 		if IsServer() and not self.cd_init then
 			self.cd_init = true
 			self.tracker:UpdateUI()
-			caster:AddDamageEvent_out(self.tracker)
+			caster:AddProc(self.tracker, { damage = true, sync = true })
 			self.tracker:StartIntervalThink(self.tracker.interval)
 		end
 	end
@@ -640,30 +640,18 @@ function modifier_custom_juggernaut_omnislash_tracker:UpdateUI()
 	self.parent:UpdateUIlong({ max = 1, stack = show, override_stack = stack, style = "JuggernautOmni" })
 end
 
-function modifier_custom_juggernaut_omnislash_tracker:DamageEvent_out(params)
-	if not IsServer() then
-		return
-	end
-	if self.ability.talents.has_r7 == 0 then
-		return
-	end
-	if self.parent ~= params.attacker then
-		return
-	end
-	if params.inflictor then
-		return
-	end
+function modifier_custom_juggernaut_omnislash_tracker:GetProcChance(params)
 	if params.damage <= 0 then
-		return
+		return 0
 	end
+	if not params.target:IsRealHero() then
+		return 0
+	end
+	return 100
+end
 
-	local unit = params.unit
-	if not unit:IsUnit() then
-		return
-	end
-	if not unit:IsRealHero() then
-		return
-	end
+function modifier_custom_juggernaut_omnislash_tracker:DamageProc(params, name)
+	local unit = params.target
 
 	if self.parent:HasModifier("modifier_custom_juggernaut_omnislash_attack") then
 		unit:AddNewModifier(

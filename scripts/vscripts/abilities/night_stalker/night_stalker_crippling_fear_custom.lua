@@ -112,6 +112,7 @@ function night_stalker_crippling_fear_custom:UpdateTalents(name)
 
 			has_w3 = 0,
 			w3_health = 0,
+			w3_heal = 0,
 			w3_duration = caster:GetTalentValue("modifier_stalker_fear_3", "duration", true),
 			w3_max = caster:GetTalentValue("modifier_stalker_fear_3", "max", true),
 
@@ -166,6 +167,8 @@ function night_stalker_crippling_fear_custom:UpdateTalents(name)
 	if caster:HasTalent("modifier_stalker_fear_3") then
 		self.talents.has_w3 = 1
 		self.talents.w3_health = caster:GetTalentValue("modifier_stalker_fear_3", "health")
+		self.talents.w3_heal = caster:GetTalentValue("modifier_stalker_fear_3", "heal") / 100
+		caster:AddLifesteal(self.tracker, { name = "modifier_stalker_fear_3", type = 1, value = self.talents.w3_heal })
 	end
 
 	if caster:HasTalent("modifier_stalker_fear_4") then

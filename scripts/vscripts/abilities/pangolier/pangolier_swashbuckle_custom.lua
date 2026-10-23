@@ -137,7 +137,7 @@ function pangolier_swashbuckle_custom:UpdateTalents(name)
 		self.talents.has_q2 = 1
 		self.talents.q2_cd = caster:GetTalentValue("modifier_pangolier_buckle_2", "cd")
 		self.talents.q2_slow = caster:GetTalentValue("modifier_pangolier_buckle_2", "slow")
-		caster:AddAttackEvent_out(self.tracker, true)
+		caster:AddProc(self.tracker, { land = true })
 	end
 
 	if caster:HasTalent("modifier_pangolier_buckle_3") then
@@ -145,12 +145,12 @@ function pangolier_swashbuckle_custom:UpdateTalents(name)
 		self.talents.q3_crit = caster:GetTalentValue("modifier_pangolier_buckle_3", "crit")
 		self.talents.q3_damage = caster:GetTalentValue("modifier_pangolier_buckle_3", "damage") / 100
 		self.talents.q3_base = caster:GetTalentValue("modifier_pangolier_buckle_3", "base")
-		caster:AddAttackEvent_out(self.tracker, true)
+		caster:AddProc(self.tracker, { land = true })
 	end
 
 	if caster:HasTalent("modifier_pangolier_buckle_4") then
 		self.talents.has_q4 = 1
-		caster:AddAttackEvent_out(self.tracker, true)
+		caster:AddProc(self.tracker, { land = true })
 	end
 
 	if caster:HasTalent("modifier_pangolier_buckle_7") then
@@ -672,18 +672,12 @@ function modifier_pangolier_swashbuckle_custom_tracker:UpdateUI()
 	self.parent:UpdateUIlong({ stack = stack, max = self.ability.talents.q7_max, style = "PangolierSwash" })
 end
 
-function modifier_pangolier_swashbuckle_custom_tracker:AttackEvent_out(params)
-	if not IsServer() then
-		return
-	end
-	if self.parent ~= params.attacker then
-		return
-	end
+function modifier_pangolier_swashbuckle_custom_tracker:GetProcChance()
+	return 100
+end
 
+function modifier_pangolier_swashbuckle_custom_tracker:AttackProc(params, name)
 	local target = params.target
-	if not target:IsUnit() then
-		return
-	end
 
 	if self.ability.talents.has_q2 == 1 then
 		target:AddNewModifier(

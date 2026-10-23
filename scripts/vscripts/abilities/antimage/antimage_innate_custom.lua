@@ -75,13 +75,14 @@ function modifier_antimage_innate_custom:OnCreated(table)
 	self.ability.slow_max = self.ability:GetSpecialValueFor("slow_max")
 	self.ability.duration = self.ability:GetSpecialValueFor("duration")
 
-	self.parent:AddAttackEvent_out(self, true)
+	self.parent:AddProc(self, { land = true, illusion = true })
 end
 
-function modifier_antimage_innate_custom:AttackEvent_out(params)
-	if not IsServer() then
-		return
-	end
+function modifier_antimage_innate_custom:GetProcChance()
+	return 100
+end
+
+function modifier_antimage_innate_custom:AttackProc(params, name)
 	if self.parent:PassivesDisabled() then
 		return
 	end
@@ -98,9 +99,6 @@ function modifier_antimage_innate_custom:AttackEvent_out(params)
 		return
 	end
 	if not attacker:HasAbility(self.ability:GetName()) then
-		return
-	end
-	if not params.target:IsUnit() then
 		return
 	end
 

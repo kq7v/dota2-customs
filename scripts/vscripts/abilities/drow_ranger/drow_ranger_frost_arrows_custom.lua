@@ -114,7 +114,6 @@ function drow_ranger_frost_arrows_custom:Precache(context)
 	PrecacheResource("particle", "particles/crystal_maiden/maiden_frostbite_slow.vpcf", context)
 	PrecacheResource("particle", "particles/drow_ranger/frost_cleave.vpcf", context)
 	PrecacheResource("particle", "particles/drow_ranger/frost_heal.vpcf", context)
-	PrecacheResource("particle", "particles/units/heroes/hero_crystalmaiden/maiden_frostbite_buff.vpcf", context)
 	PrecacheResource("particle", "particles/drow_ranger/frost_crystal.vpcf", context)
 	PrecacheResource("particle", "particles/drow_ranger/frost_crystal_2.vpcf", context)
 	PrecacheResource("particle", "particles/drow_ranger/frost_shield.vpcf", context)
@@ -154,6 +153,7 @@ function drow_ranger_frost_arrows_custom:UpdateTalents()
 
 			has_q3 = 0,
 			q3_damage = 0,
+			q3_heal = 0,
 			q3_cd = caster:GetTalentValue("modifier_drow_frost_3", "cd", true),
 			q3_radius = caster:GetTalentValue("modifier_drow_frost_3", "radius", true),
 			q3_targets = caster:GetTalentValue("modifier_drow_frost_3", "targets", true),
@@ -164,6 +164,7 @@ function drow_ranger_frost_arrows_custom:UpdateTalents()
 			q4_talent_cd = caster:GetTalentValue("modifier_drow_frost_4", "talent_cd", true),
 
 			has_q7 = 0,
+			q7_heal = caster:GetTalentValue("modifier_drow_frost_7", "heal", true) / 100,
 			q7_range = caster:GetTalentValue("modifier_drow_frost_7", "range", true),
 			q7_talent_cd = caster:GetTalentValue("modifier_drow_frost_7", "talent_cd", true),
 			q7_max = caster:GetTalentValue("modifier_drow_frost_7", "max", true),
@@ -214,7 +215,9 @@ function drow_ranger_frost_arrows_custom:UpdateTalents()
 	if caster:HasTalent("modifier_drow_frost_3") then
 		self.talents.has_q3 = 1
 		self.talents.q3_damage = caster:GetTalentValue("modifier_drow_frost_3", "damage")
+		self.talents.q3_heal = caster:GetTalentValue("modifier_drow_frost_3", "heal") / 100
 		caster:AddSpellEvent(self.tracker, true)
+		caster:AddLifesteal(self.tracker, { name = "modifier_drow_frost_3", type = 2, value = self.talents.q3_heal })
 	end
 
 	if caster:HasTalent("modifier_drow_frost_4") then
@@ -223,6 +226,13 @@ function drow_ranger_frost_arrows_custom:UpdateTalents()
 
 	if caster:HasTalent("modifier_drow_frost_7") then
 		self.talents.has_q7 = 1
+		caster:AddLifesteal(self.tracker, {
+			name = "modifier_drow_frost_7",
+			type = 2,
+			value = function(params)
+				return params.attack_damage_flag == "drow_q7" and self.talents.q7_heal or 0
+			end,
+		})
 	end
 
 	if caster:HasTalent("modifier_drow_hero_1") then
@@ -749,7 +759,7 @@ function modifier_drow_ranger_frost_arrows_custom_tracker:SpellEvent(params)
 end
 
 function modifier_drow_ranger_frost_arrows_custom_tracker:GetPriority()
-	if self.parent:HasModifier("modifier_drow_ranger_marksmanship_custom_proc") then
+	if IsValid(self.parent.marksmanship_ability) and self.parent.marksmanship_ability:HasProc() then
 		return MODIFIER_PRIORITY_SUPER_ULTRA
 	end
 	if self.parent:HasModifier("modifier_drow_ranger_frost_arrows_custom_proc") then
@@ -759,7 +769,7 @@ function modifier_drow_ranger_frost_arrows_custom_tracker:GetPriority()
 end
 
 function modifier_drow_ranger_frost_arrows_custom_tracker:GetModifierProjectileName()
-	local has_ulti = self.parent:HasModifier("modifier_drow_ranger_marksmanship_custom_proc")
+	local has_ulti = IsValid(self.parent.marksmanship_ability) and self.parent.marksmanship_ability:HasProc()
 	local has_frost = self.parent:HasModifier("modifier_drow_ranger_frost_arrows_custom_proc")
 
 	if has_frost and has_ulti then

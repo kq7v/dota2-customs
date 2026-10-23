@@ -109,6 +109,7 @@ function enigma_black_hole_custom:Precache(context)
 	PrecacheResource("particle", "particles/enigma/eidolon_legendary_effect.vpcf", context)
 	PrecacheResource("particle", "particles/enigma/midnight_status.vpcf", context)
 	PrecacheResource("particle", "particles/enigma/summon_spell_damage.vpcf", context)
+	PrecacheResource("particle", "particles/enigma/summon_heal.vpcf", context)
 end
 
 function enigma_black_hole_custom:UpdateTalents()
@@ -129,6 +130,7 @@ function enigma_black_hole_custom:UpdateTalents()
 			r3_radius = caster:GetTalentValue("modifier_enigma_blackhole_3", "radius", true),
 
 			has_r4 = 0,
+			r4_heal = caster:GetTalentValue("modifier_enigma_blackhole_4", "heal", true) / 100,
 			r4_range = caster:GetTalentValue("modifier_enigma_blackhole_4", "range", true),
 			r4_cd_items = caster:GetTalentValue("modifier_enigma_blackhole_4", "cd_items", true),
 			r4_cd_items_legendary = caster:GetTalentValue("modifier_enigma_blackhole_4", "cd_items_legendary", true),
@@ -166,6 +168,17 @@ function enigma_black_hole_custom:UpdateTalents()
 
 	if caster:HasTalent("modifier_enigma_blackhole_4") then
 		self.talents.has_r4 = 1
+		caster:AddLifesteal(self.tracker, {
+			name = "modifier_enigma_blackhole_4",
+			type = 1,
+			effect = "particles/enigma/summon_heal.vpcf",
+			value = function(params)
+				if not params.unit then
+					return 0
+				end
+				return params.unit:HasModifier("modifier_enigma_black_hole_custom_debuff") and self.talents.r4_heal or 0
+			end,
+		})
 	end
 
 	if caster:HasTalent("modifier_enigma_blackhole_7") then

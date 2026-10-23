@@ -135,6 +135,8 @@ function enigma_demonic_conversion_custom:UpdateTalents()
 			w4_duration = caster:GetTalentValue("modifier_enigma_conversion_4", "duration", true),
 			w4_move = caster:GetTalentValue("modifier_enigma_conversion_4", "move", true),
 
+			h1_heal = 0,
+
 			h2_armor = 0,
 			h2_move = 0,
 
@@ -153,6 +155,9 @@ function enigma_demonic_conversion_custom:UpdateTalents()
 			w7_duration = caster:GetTalentValue("modifier_enigma_conversion_7", "duration", true),
 
 			has_r3 = 0,
+
+			has_r4 = 0,
+			r4_heal = caster:GetTalentValue("modifier_enigma_blackhole_4", "heal", true) / 100,
 
 			has_h6 = 0,
 			h6_range = caster:GetTalentValue("modifier_enigma_hero_6", "range", true),
@@ -176,6 +181,7 @@ function enigma_demonic_conversion_custom:UpdateTalents()
 		self.talents.has_w3 = 1
 		self.talents.w3_speed = caster:GetTalentValue("modifier_enigma_conversion_3", "speed")
 		self.talents.w3_count = caster:GetTalentValue("modifier_enigma_conversion_3", "count")
+		caster:AddProc(self.tracker, {})
 	end
 
 	if caster:HasTalent("modifier_enigma_conversion_4") then
@@ -193,7 +199,7 @@ function enigma_demonic_conversion_custom:UpdateTalents()
 		self.talents.has_q2 = 1
 		self.talents.q2_attack_range = caster:GetTalentValue("modifier_enigma_malefice_2", "attack_range")
 		self.talents.q2_slow = caster:GetTalentValue("modifier_enigma_malefice_2", "slow")
-		caster:AddAttackEvent_out(self.tracker, true)
+		caster:AddProc(self.tracker, { name = "hit", land = true, illusion = true })
 	end
 
 	if caster:HasTalent("modifier_enigma_malefice_3") then
@@ -202,7 +208,15 @@ function enigma_demonic_conversion_custom:UpdateTalents()
 
 	if caster:HasTalent("modifier_enigma_malefice_4") then
 		self.talents.has_q4 = 1
-		caster:AddAttackEvent_out(self.tracker, true)
+		caster:AddProc(self.tracker, { name = "hit", land = true, illusion = true })
+		caster:AddProc(
+			self.tracker,
+			{ name = "malefice", group = "modifier_enigma_malefice_4", target_prd = true, illusion = true, land = true }
+		)
+	end
+
+	if caster:HasTalent("modifier_enigma_hero_1") then
+		self.talents.h1_heal = caster:GetTalentValue("modifier_enigma_hero_1", "heal") / 100
 	end
 
 	if caster:HasTalent("modifier_enigma_hero_2") then
@@ -212,6 +226,10 @@ function enigma_demonic_conversion_custom:UpdateTalents()
 
 	if caster:HasTalent("modifier_enigma_blackhole_3") then
 		self.talents.has_r3 = 1
+	end
+
+	if caster:HasTalent("modifier_enigma_blackhole_4") then
+		self.talents.has_r4 = 1
 	end
 
 	if caster:HasTalent("modifier_enigma_hero_6") then
@@ -564,11 +582,8 @@ function modifier_enigma_demonic_conversion_custom_tracker:GetModifierAttackSpee
 		* (self:GetStackCount() >= self.ability.talents.w3_max and self.ability.talents.w3_bonus or 1)
 end
 
-function modifier_enigma_demonic_conversion_custom_tracker:AttackEvent_out(params)
-	if not IsServer() then
-		return
-	end
-	if not params.target:IsUnit() then
+function modifier_enigma_demonic_conversion_custom_tracker:AttackProc(params, name)
+	if name ~= "hit" then
 		return
 	end
 
@@ -595,16 +610,13 @@ function modifier_enigma_demonic_conversion_custom_tracker:AttackEvent_out(param
 		)
 	end
 
-	if self.ability.talents.has_q4 == 0 then
+	if not params.procs or not params.procs[self] or not params.procs[self].malefice then
 		return
 	end
 	if not IsValid(self.parent.malefice_ability) then
 		return
 	end
 	if target:HasModifier("modifier_enigma_demonic_conversion_custom_stun_cd") then
-		return
-	end
-	if not RollPseudoRandomPercentage(self.ability.talents.q4_chance, 1654, target) then
 		return
 	end
 
@@ -615,6 +627,68 @@ function modifier_enigma_demonic_conversion_custom_tracker:AttackEvent_out(param
 		{ duration = self.ability.talents.q4_talent_cd }
 	)
 	self.parent.malefice_ability:ProcStun(target, true, "modifier_enigma_malefice_4")
+end
+
+function modifier_enigma_demonic_conversion_custom_tracker:GetProcChance(params, name)
+	if name == "hit" then
+		return 100
+	end
+	if name == "malefice" then
+		if
+			params.attacker ~= self.parent
+			and not params.attacker:HasModifier("modifier_enigma_demonic_conversion_custom")
+		then
+			return 0
+		end
+		if not IsValid(self.parent.malefice_ability) then
+			return 0
+		end
+		if params.target:HasModifier("modifier_enigma_demonic_conversion_custom_stun_cd") then
+			return 0
+		end
+		return self.ability.talents.q4_chance
+	end
+	if self.auto_count >= self.ability.talents.w3_count then
+		return 0
+	end
+	return self.ability.talents.w3_chance
+end
+
+function modifier_enigma_demonic_conversion_custom_tracker:AttackProcStart(params, name)
+	if name ~= "default" then
+		return
+	end
+	if self.auto_count >= self.ability.talents.w3_count then
+		return
+	end
+
+	local point = self.parent:GetAbsOrigin() + RandomVector(200)
+	local unit = self.ability:SummonUnit(point, 0, "modifier_enigma_conversion_3")
+	if not unit then
+		return
+	end
+
+	local particle_2 =
+		ParticleManager:CreateParticle("particles/enigma/empyreal_lens.vpcf", PATTACH_ABSORIGIN_FOLLOW, self.parent)
+	ParticleManager:SetParticleControlEnt(
+		particle_2,
+		0,
+		self.parent,
+		PATTACH_POINT_FOLLOW,
+		"attach_hitloc",
+		self.parent:GetAbsOrigin(),
+		true
+	)
+	ParticleManager:SetParticleControlEnt(
+		particle_2,
+		1,
+		unit,
+		PATTACH_POINT_FOLLOW,
+		"attach_hitloc",
+		unit:GetAbsOrigin(),
+		true
+	)
+	ParticleManager:ReleaseParticleIndex(particle_2)
 end
 
 function modifier_enigma_demonic_conversion_custom_tracker:AttackStartEvent_out(params)
@@ -629,43 +703,6 @@ function modifier_enigma_demonic_conversion_custom_tracker:AttackStartEvent_out(
 	local target = params.target
 	if attacker:GetTeamNumber() ~= self.parent:GetTeamNumber() then
 		return
-	end
-
-	if
-		attacker == self.parent
-		and self.ability.talents.has_w3 == 1
-		and self.auto_count < self.ability.talents.w3_count
-		and RollPseudoRandomPercentage(self.ability.talents.w3_chance, 1655, self.parent)
-	then
-		local point = self.parent:GetAbsOrigin() + RandomVector(200)
-		local unit = self.ability:SummonUnit(point, 0, "modifier_enigma_conversion_3")
-
-		if unit then
-			local particle_2 = ParticleManager:CreateParticle(
-				"particles/enigma/empyreal_lens.vpcf",
-				PATTACH_ABSORIGIN_FOLLOW,
-				attacker
-			)
-			ParticleManager:SetParticleControlEnt(
-				particle_2,
-				0,
-				attacker,
-				PATTACH_POINT_FOLLOW,
-				"attach_hitloc",
-				attacker:GetAbsOrigin(),
-				true
-			)
-			ParticleManager:SetParticleControlEnt(
-				particle_2,
-				1,
-				unit,
-				PATTACH_POINT_FOLLOW,
-				"attach_hitloc",
-				unit:GetAbsOrigin(),
-				true
-			)
-			ParticleManager:ReleaseParticleIndex(particle_2)
-		end
 	end
 
 	local mod = attacker:FindModifierByName("modifier_enigma_demonic_conversion_custom")
@@ -797,6 +834,32 @@ function modifier_enigma_demonic_conversion_custom:OnCreated(table)
 		self
 	)
 	self:SetStackCount(table.can_double)
+
+	self.parent:AddLifesteal(self, {
+		name = "modifier_enigma_hero_1",
+		heal_unit = self.caster,
+		value = function()
+			return self.ability.talents.h1_heal
+		end,
+	})
+	self.parent:AddLifesteal(self, {
+		name = "modifier_enigma_blackhole_4",
+		type = 1,
+		heal_unit = self.caster,
+		effect = "particles/enigma/summon_heal.vpcf",
+		value = function(params)
+			if self.ability.talents.has_r4 == 0 then
+				return 0
+			end
+			if not params.unit then
+				return 0
+			end
+			if not params.unit:HasModifier("modifier_enigma_black_hole_custom_debuff") then
+				return 0
+			end
+			return self.ability.talents.r4_heal
+		end,
+	})
 end
 
 function modifier_enigma_demonic_conversion_custom:ProcDouble()

@@ -116,10 +116,6 @@ function ogre_magi_bloodlust_custom:Precache(context)
 	PrecacheResource("particle", "particles/units/heroes/hero_ogre_magi/ogre_magi_bloodlust_buff.vpcf", context)
 	PrecacheResource("particle", "particles/generic_gameplay/rune_arcane_owner.vpcf", context)
 	PrecacheResource("particle", "particles/ogre_magi/ogre_dd.vpcf", context)
-	PrecacheResource("particle", "particles/units/heroes/hero_sniper/sniper_headshot_slow.vpcf", context)
-	PrecacheResource("particle", "particles/units/heroes/hero_pangolier/pangolier_tailthump_buff.vpcf", context)
-	PrecacheResource("particle", "particles/units/heroes/hero_pangolier/pangolier_tailthump_buff_egg.vpcf", context)
-	PrecacheResource("particle", "particles/units/heroes/hero_pangolier/pangolier_tailthump_buff_streaks.vpcf", context)
 	PrecacheResource("particle", "particles/units/heroes/hero_primal_beast/primal_beast_onslaught_impact.vpcf", context)
 	PrecacheResource("particle", "particles/ogre_magi/blood_charge.vpcf", context)
 	PrecacheResource("particle", "particles/econ/items/invoker/invoker_ti7/status_effect_alacrity_ti7.vpcf", context)
@@ -131,9 +127,6 @@ function ogre_magi_bloodlust_custom:Precache(context)
 		context
 	)
 	PrecacheResource("particle", "particles/units/heroes/hero_furion/furion_arboreal_might_buff.vpcf", context)
-	PrecacheResource("particle", "particles/generic/patrol_refresh.vpcf", context)
-	PrecacheResource("particle", "particles/patrol/rare_orb_patrol.vpcf", context)
-	PrecacheResource("particle", "particles/legion_commander/lc_odd_proc_.vpcf", context)
 	PrecacheResource("particle", "particles/ogre_magi/blood_resist.vpcf", context)
 	PrecacheResource("particle", "particles/bristleback/brist_lowhp_.vpcf", context)
 	PrecacheResource("particle", "particles/units/heroes/hero_zuus/zuus_shard_slow.vpcf", context)
@@ -166,6 +159,7 @@ function ogre_magi_bloodlust_custom:UpdateTalents(name)
 			e4_slow_resist = caster:GetTalentValue("modifier_ogremagi_bloodlust_4", "slow_resist", true),
 
 			has_e7 = 0,
+			e7_heal_max = caster:GetTalentValue("modifier_ogremagi_bloodlust_7", "heal_max", true) / 100,
 			e7_bash_duration = caster:GetTalentValue("modifier_ogremagi_bloodlust_7", "bash_duration", true),
 			e7_bash_slow = caster:GetTalentValue("modifier_ogremagi_bloodlust_7", "bash_slow", true),
 			e7_heal_health = caster:GetTalentValue("modifier_ogremagi_bloodlust_7", "heal_health", true),
@@ -226,6 +220,16 @@ function ogre_magi_bloodlust_custom:UpdateTalents(name)
 	if caster:HasTalent("modifier_ogremagi_bloodlust_7") then
 		self.talents.has_e7 = 1
 		self.tracker:UpdateUI()
+		caster:AddLifesteal(self.tracker, {
+			name = "modifier_ogremagi_bloodlust_7",
+			type = 2,
+			value = function()
+				if not caster:HasModifier("modifier_ogre_magi_bloodlust_custom_legendary_3") then
+					return 0
+				end
+				return (1 - caster:GetHealthPercent() / 100) * self.talents.e7_heal_max
+			end,
+		})
 	end
 
 	if caster:HasTalent("modifier_ogremagi_hero_2") then
@@ -518,7 +522,7 @@ function modifier_ogre_magi_bloodlust_custom_tracker:OnCreated()
 	self.ability.multicast_delay = self.ability:GetSpecialValueFor("multicast_delay")
 	self.ability.stack_bonus = self.ability:GetSpecialValueFor("stack_bonus") / 100
 
-	self.parent:AddAttackEvent_out(self, true)
+	self.parent:AddProc(self, { land = true })
 end
 
 function modifier_ogre_magi_bloodlust_custom_tracker:OnRefresh()
@@ -559,19 +563,12 @@ function modifier_ogre_magi_bloodlust_custom_tracker:UpdateUI()
 	self.parent:UpdateUIlong({ special_data = data, special_event = "ogremagi_bloodlust" })
 end
 
-function modifier_ogre_magi_bloodlust_custom_tracker:AttackEvent_out(params)
-	if not IsServer() then
-		return
-	end
-	if self.parent ~= params.attacker then
-		return
-	end
+function modifier_ogre_magi_bloodlust_custom_tracker:GetProcChance()
+	return 100
+end
 
+function modifier_ogre_magi_bloodlust_custom_tracker:AttackProc(params, name)
 	local target = params.target
-	if not target:IsUnit() then
-		return
-	end
-
 	local mod = self.parent:FindModifierByName("modifier_ogre_magi_bloodlust_custom_buff")
 	if mod then
 		if not params.ranged_attack then
@@ -753,18 +750,15 @@ function modifier_ogre_magi_bloodlust_custom_legendary_buff:OnDestroy()
 	self.parent:CalculateStatBonus(true)
 end
 
-function modifier_ogre_magi_bloodlust_custom_legendary_buff:AttackEvent_out(params)
-	if not IsServer() then
-		return
-	end
-	if self.parent ~= params.attacker then
-		return
-	end
+function modifier_ogre_magi_bloodlust_custom_legendary_buff:GetProcChance()
+	return 100
+end
 
-	local target = params.target
-	if not target:IsUnit() then
+function modifier_ogre_magi_bloodlust_custom_legendary_buff:AttackProc(params, name)
+	if name ~= "hit" then
 		return
 	end
+	local target = params.target
 
 	if self.records and self.records[params.record] then
 		target:EmitSound("DOTA_Item.Daedelus.Crit")
@@ -822,7 +816,7 @@ function modifier_ogre_magi_bloodlust_custom_legendary_buff:AttackEvent_out(para
 			{ duration = self.ability.talents.e7_bash_slow_duration }
 		)
 
-		if self.parent:CheckCd("ogre_e7", self.ability.talents.e7_bash_cd, self.bash_chance, 8124) then
+		if params.procs[self].default then
 			target:EmitSound("Ogre.Blood_bash")
 			target:EmitSound("Ogre.Blood_bash2")
 			target:GenericParticle("particles/econ/items/zeus/zeus_immortal_2021/zeus_immortal_2021_static_field.vpcf")
@@ -884,6 +878,13 @@ function modifier_ogre_magi_bloodlust_custom_legendary_buff:DeclareFunctions()
 	}
 end
 
+function modifier_ogre_magi_bloodlust_custom_legendary_buff:GetCritChance()
+	if not self.crit_damage then
+		return 0
+	end
+	return self.ability.talents.e7_crit_chance
+end
+
 function modifier_ogre_magi_bloodlust_custom_legendary_buff:GetCritDamage()
 	if not self.crit_damage then
 		return
@@ -906,12 +907,12 @@ function modifier_ogre_magi_bloodlust_custom_legendary_buff:GetModifierPreAttack
 	if not target:IsUnit() then
 		return
 	end
-	if not RollPseudoRandomPercentage(self.ability.talents.e7_crit_chance, 8123, self.parent) then
+	if not RollPseudoRandomPercentage(self:GetCritChance(), 8123, self.parent) then
 		return
 	end
 
 	self.records[params.record] = true
-	return self.crit_damage
+	return self:GetCritDamage()
 end
 
 function modifier_ogre_magi_bloodlust_custom_legendary_buff:GetModifierBonusStats_Strength()
@@ -965,7 +966,15 @@ function modifier_ogre_magi_bloodlust_custom_legendary_1:OnCreated(table)
 		return
 	end
 	self.parent:GenericParticle("particles/ogre_magi/ogre_magichit.vpcf", self)
-	self.parent:AddAttackEvent_out(self, true)
+	self.parent:AddProc(self, { name = "hit", land = true })
+	self.parent:AddRecordDestroyEvent(self, true)
+end
+
+function modifier_ogre_magi_bloodlust_custom_legendary_1:RecordDestroyEvent(params)
+	if not IsServer() then
+		return
+	end
+	self.records[params.record] = nil
 end
 
 modifier_ogre_magi_bloodlust_custom_legendary_2 = class(modifier_ogre_magi_bloodlust_custom_legendary_buff)
@@ -980,7 +989,15 @@ function modifier_ogre_magi_bloodlust_custom_legendary_2:OnCreated(table)
 	if not IsServer() then
 		return
 	end
-	self.parent:AddAttackEvent_out(self, true)
+	self.parent:AddProc(self, { name = "hit", land = true })
+	self.parent:AddProc(self, { cd = self.ability.talents.e7_bash_cd, land = true })
+end
+
+function modifier_ogre_magi_bloodlust_custom_legendary_2:GetProcChance(params, name)
+	if name == "hit" then
+		return 100
+	end
+	return self.bash_chance
 end
 
 modifier_ogre_magi_bloodlust_custom_legendary_3 = class(modifier_ogre_magi_bloodlust_custom_legendary_buff)
@@ -1007,7 +1024,7 @@ function modifier_ogre_magi_bloodlust_custom_legendary_4:OnCreated(table)
 	if not IsServer() then
 		return
 	end
-	self.parent:AddAttackEvent_out(self, true)
+	self.parent:AddProc(self, { name = "hit", land = true })
 end
 
 modifier_ogre_magi_bloodlust_custom_legendary_slow = class(mod_hidden)

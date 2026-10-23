@@ -20,11 +20,6 @@ LinkLuaModifier(
 	"modifier_drow_marksman_3"
 )
 LinkLuaModifier(
-	"modifier_drow_ranger_marksmanship_custom_proc",
-	"abilities/drow_ranger/drow_ranger_marksmanship_custom",
-	LUA_MODIFIER_MOTION_NONE
-)
-LinkLuaModifier(
 	"modifier_drow_ranger_marksmanship_custom_proc_armor",
 	"abilities/drow_ranger/drow_ranger_marksmanship_custom",
 	LUA_MODIFIER_MOTION_NONE
@@ -261,6 +256,16 @@ function drow_ranger_marksmanship_custom:LegendaryStack()
 	)
 end
 
+function drow_ranger_marksmanship_custom:HasProc()
+	if not self:IsTrained() then
+		return false
+	end
+	if not IsValid(self.tracker) then
+		return false
+	end
+	return self.tracker.proc ~= nil and self.tracker.proc.armed == true
+end
+
 modifier_drow_ranger_marksmanship_custom_tracker = class(mod_hidden)
 function modifier_drow_ranger_marksmanship_custom_tracker:OnCreated()
 	self.parent = self:GetParent()
@@ -277,7 +282,6 @@ function modifier_drow_ranger_marksmanship_custom_tracker:OnCreated()
 	self.ability.cleave_radius = self.ability:GetSpecialValueFor("cleave_radius")
 	self.ability.chance = self.ability:GetSpecialValueFor("chance")
 
-	self.records = {}
 	self.damageTable = {
 		attacker = self.parent,
 		ability = self.ability,
@@ -287,23 +291,14 @@ function modifier_drow_ranger_marksmanship_custom_tracker:OnCreated()
 	self.GustTable =
 		{ attacker = self.parent, ability = self.ability, damage_type = self.ability.talents.w7_damage_type }
 
-	self.parent:AddRecordDestroyEvent(self, true)
-	self.parent:AddAttackRecordEvent_out(self)
+	self.proc = self.parent:AddProc(self, { current = true, accuracy = true })
+	self.parent:AddProc(self, { name = "extra" })
 	self.parent:AddAttackStartEvent_out(self)
 end
 
 function modifier_drow_ranger_marksmanship_custom_tracker:OnRefresh()
 	self.ability.damage = self.ability:GetSpecialValueFor("bonus_damage")
 	self.ability.chance = self.ability:GetSpecialValueFor("chance")
-end
-
-function modifier_drow_ranger_marksmanship_custom_tracker:CheckState()
-	if not self.parent:HasModifier("modifier_drow_ranger_marksmanship_custom_proc") then
-		return
-	end
-	return {
-		[MODIFIER_STATE_CANNOT_MISS] = true,
-	}
 end
 
 function modifier_drow_ranger_marksmanship_custom_tracker:UpdateUI()
@@ -389,37 +384,16 @@ function modifier_drow_ranger_marksmanship_custom_tracker:GetModifierAttackRange
 	return self.ability.talents.r2_range
 end
 
-function modifier_drow_ranger_marksmanship_custom_tracker:RollRandom()
-	if not IsServer() then
-		return
+function modifier_drow_ranger_marksmanship_custom_tracker:GetProcChance(params, name)
+	if not self.parent:HasModifier("modifier_drow_ranger_innate_custom_active") then
+		return 0
 	end
-	local chance = self.parent:HasModifier("modifier_drow_ranger_marksmanship_custom_legendary_active")
+	if name == "extra" and not params.no_attack_cooldown then
+		return 0
+	end
+	return self.parent:HasModifier("modifier_drow_ranger_marksmanship_custom_legendary_active")
 			and self.ability.talents.r7_chance
 		or self.ability.chance
-	return RollPseudoRandomPercentage(chance, 4059, self.parent)
-end
-
-function modifier_drow_ranger_marksmanship_custom_tracker:AttackRecordEvent_out(params)
-	if not IsServer() then
-		return
-	end
-	if not params.target:IsUnit() then
-		return
-	end
-	if self.parent ~= params.attacker then
-		return
-	end
-
-	self.parent:RemoveModifierByName("modifier_drow_ranger_marksmanship_custom_proc")
-
-	if not self.parent:HasModifier("modifier_drow_ranger_innate_custom_active") then
-		return
-	end
-	if not self:RollRandom() then
-		return
-	end
-
-	self.parent:AddNewModifier(self.parent, self.ability, "modifier_drow_ranger_marksmanship_custom_proc", {})
 end
 
 function modifier_drow_ranger_marksmanship_custom_tracker:AttackStartEvent_out(params)
@@ -435,9 +409,7 @@ function modifier_drow_ranger_marksmanship_custom_tracker:AttackStartEvent_out(p
 
 	local target = params.target
 
-	if self.parent:HasModifier("modifier_drow_ranger_marksmanship_custom_proc") then
-		self.records[params.record] = true
-
+	if params.procs and params.procs[self] then
 		if self.parent:HasModifier("modifier_drow_ranger_marksmanship_custom_legendary_active") then
 			self.parent:EmitSound("Drow.Mark_legendary_attack")
 		end
@@ -454,6 +426,7 @@ function modifier_drow_ranger_marksmanship_custom_tracker:AttackStartEvent_out(p
 
 		if
 			self.ability.talents.has_w7 == 1
+			and params.procs[self].default
 			and IsValid(self.parent.gust_ability)
 			and self.parent.gust_ability:GetCooldownTimeRemaining() > 0
 			and self.parent.gust_ability.can_legendary_cd
@@ -486,8 +459,6 @@ function modifier_drow_ranger_marksmanship_custom_tracker:AttackStartEvent_out(p
 		if self.parent:GetQuest() == "Drow.Quest_8" and not self.parent:QuestCompleted() and target:IsRealHero() then
 			self.parent:UpdateQuest(1)
 		end
-
-		self.parent:RemoveModifierByName("modifier_drow_ranger_marksmanship_custom_proc")
 	end
 
 	if params.no_attack_cooldown then
@@ -506,25 +477,11 @@ function modifier_drow_ranger_marksmanship_custom_tracker:GetModifierProcAttack_
 	if not params.target:IsUnit() then
 		return
 	end
-
-	local target = params.target
-
-	if
-		self.parent:HasModifier("modifier_drow_ranger_frost_arrows_custom_attack_damage")
-		or self.parent:HasModifier("modifier_drow_ranger_frost_arrows_custom_legendary_damage")
-	then
-		if not self.parent:HasModifier("modifier_drow_ranger_innate_custom_active") then
-			return
-		end
-		if not self:RollRandom() then
-			return
-		end
-	else
-		if not self.records[params.record] then
-			return
-		end
+	if not self.parent:IsProc(self, params.record) and not self.parent:IsProc(self, params.record, "extra") then
+		return
 	end
 
+	local target = params.target
 	local effect = "particles/drow_ranger/frost_cleave.vpcf"
 	local damage = self.ability.damage
 
@@ -619,25 +576,15 @@ function modifier_drow_ranger_marksmanship_custom_tracker:GetModifierProcAttack_
 	return damage
 end
 
-function modifier_drow_ranger_marksmanship_custom_tracker:RecordDestroyEvent(params)
-	self.records[params.record] = nil
-end
-
 function modifier_drow_ranger_marksmanship_custom_tracker:GetPriority()
-	if
-		not self.parent:HasModifier("modifier_drow_ranger_frost_arrows_custom_tracker")
-		and self.parent:HasModifier("modifier_drow_ranger_marksmanship_custom_proc")
-	then
+	if not self.parent:HasModifier("modifier_drow_ranger_frost_arrows_custom_tracker") and self.ability:HasProc() then
 		return MODIFIER_PRIORITY_SUPER_ULTRA
 	end
 	return MODIFIER_PRIORITY_LOW
 end
 
 function modifier_drow_ranger_marksmanship_custom_tracker:GetModifierProjectileName()
-	if
-		not self.parent:HasModifier("modifier_drow_ranger_frost_arrows_custom_tracker")
-		and self.parent:HasModifier("modifier_drow_ranger_marksmanship_custom_proc")
-	then
+	if not self.parent:HasModifier("modifier_drow_ranger_frost_arrows_custom_tracker") and self.ability:HasProc() then
 		return self.ability:GetProj()
 	end
 end
@@ -837,8 +784,6 @@ function modifier_drow_ranger_marksmanship_custom_legendary_stack:OnDestroy()
 	end
 	self.mod:UpdateUI()
 end
-
-modifier_drow_ranger_marksmanship_custom_proc = class(mod_hidden)
 
 modifier_drow_ranger_marksmanship_custom_gust_spell = class(mod_visible)
 function modifier_drow_ranger_marksmanship_custom_gust_spell:OnCreated()

@@ -65,13 +65,7 @@ function phantom_assassin_innate_custom:UpdateTalents(name)
 	if not self.init then
 		self.init = true
 		self.talents = {
-			has_q3 = 0,
-			q3_heal = 0,
-
-			has_r2 = 0,
-			r2_lifesteal = 0,
 			r2_range = 0,
-			r2_multiplier = caster:GetTalentValue("modifier_phantom_assassin_crit_2", "multiplier", true),
 
 			has_h1 = 0,
 			h1_move = 0,
@@ -89,17 +83,8 @@ function phantom_assassin_innate_custom:UpdateTalents(name)
 		}
 	end
 
-	if caster:HasTalent("modifier_phantom_assassin_dagger_3") then
-		self.talents.has_q3 = 1
-		self.talents.q3_heal = caster:GetTalentValue("modifier_phantom_assassin_dagger_3", "heal") / 100
-		caster:AddDamageEvent_out(self.tracker, true)
-	end
-
 	if caster:HasTalent("modifier_phantom_assassin_crit_2") then
-		self.talents.has_r2 = 1
-		self.talents.r2_lifesteal = caster:GetTalentValue("modifier_phantom_assassin_crit_2", "lifesteal") / 100
 		self.talents.r2_range = caster:GetTalentValue("modifier_phantom_assassin_crit_2", "range")
-		caster:AddDamageEvent_out(self.tracker, true)
 	end
 
 	if caster:HasTalent("modifier_phantom_assassin_hero_1") then
@@ -459,44 +444,6 @@ function modifier_phantom_assassin_innate_custom:OnTooltip2()
 	end
 
 	return self.parent.crit_ability:GetBleedDamage() * 100
-end
-
-function modifier_phantom_assassin_innate_custom:DamageEvent_out(params)
-	if not IsServer() then
-		return
-	end
-
-	local result = self.parent:CheckLifesteal(params)
-	if not result then
-		return
-	end
-
-	if self.ability.talents.has_q3 == 1 and params.inflictor then
-		self.parent:GenericHeal(
-			self.ability.talents.q3_heal * params.damage * result,
-			self.ability,
-			true,
-			"particles/items3_fx/octarine_core_lifesteal.vpcf",
-			"modifier_phantom_assassin_dagger_3"
-		)
-	end
-
-	if self.ability.talents.has_r2 == 1 and not params.inflictor then
-		local crit = self.parent.crit_ability.tracker.records[params.record]
-		local heal = self.ability.talents.r2_lifesteal * params.damage * result
-
-		if crit then
-			heal = heal * self.ability.talents.r2_multiplier
-		end
-
-		self.parent:GenericHeal(
-			heal,
-			self.ability,
-			not crit,
-			"particles/generic_gameplay/generic_lifesteal.vpcf",
-			"modifier_phantom_assassin_crit_2"
-		)
-	end
 end
 
 modifier_phantom_assassin_innate_custom_illusion = class(mod_hidden)

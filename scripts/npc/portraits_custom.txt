@@ -2992,4 +2992,36 @@
     "PortraitDesaturateHero"        "1"
     "PortraitVignetteItem"          "0"
 }
+
+"models/heroes/puck/puck.vmdl"
+{
+    "PortraitLightPosition"         "87.90 -71.04 192.77"
+    "PortraitLightAngles"           "28.60 127.71 0.30"
+    "PortraitLightFOV"              "58"
+    "PortraitLightDistance"         "147"
+    "PortraitLightColor"            "181 246 254"
+    "PortraitShadowColor"           "0 0 0"
+    "PortraitShadowScale"           "5.000000"
+    "PortraitAmbientColor"          "157 48 97"
+    "PortraitAmbientScale"          "5.000000"
+    "PortraitSpecularColor"         "254 254 254"
+    "PortraitBackgroundTexture"     "materials/vgui/hud/heroportraits/portraitbackground_motion_swoops.vmat"
+    "PortraitBackgroundColor1"      ".6 .2 1"
+    "PortraitBackgroundColor2"      ".2 .7 1"
+    "PortraitBackgroundColor3"      ".5 1 1"
+    "PortraitBackgroundColor4"      ".4 1 1"
+    "PortraitLightScale"            "1.400000"
+    "PortraitGroundShadowScale"     "1.500000"
+    "PortraitAmbientDirection"      "17.510 31.040 -20.140"
+    "PortraitAnimationActivity"     "ACT_DOTA_IDLE"
+    "cameras"
+    {
+        "default"
+        {
+            "PortraitPosition"      "32176.71 -45.00 135.41"
+            "PortraitAngles"        "358.87 164.15 0.00"
+            "PortraitFOV"           "20"
+        }
+    }
+}
 }

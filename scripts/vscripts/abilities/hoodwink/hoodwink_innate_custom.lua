@@ -48,12 +48,6 @@ function hoodwink_innate_custom:UpdateTalents()
 			h3_magic = 0,
 			h3_status = 0,
 
-			has_q2 = 0,
-			q2_heal = 0,
-
-			has_r1 = 0,
-			r1_heal = 0,
-
 			has_h5 = 0,
 			h5_health = caster:GetTalentValue("modifier_hoodwink_hero_5", "health", true),
 			h5_shield = caster:GetTalentValue("modifier_hoodwink_hero_5", "shield", true) / 100,
@@ -66,18 +60,6 @@ function hoodwink_innate_custom:UpdateTalents()
 	if caster:HasTalent("modifier_hoodwink_hero_3") then
 		self.talents.h3_magic = caster:GetTalentValue("modifier_hoodwink_hero_3", "magic")
 		self.talents.h3_status = caster:GetTalentValue("modifier_hoodwink_hero_3", "status")
-	end
-
-	if caster:HasTalent("modifier_hoodwink_acorn_2") then
-		self.talents.has_q2 = 1
-		self.talents.q2_heal = caster:GetTalentValue("modifier_hoodwink_acorn_2", "heal") / 100
-		caster:AddDamageEvent_out(self.tracker, true)
-	end
-
-	if caster:HasTalent("modifier_hoodwink_sharp_1") then
-		self.talents.has_r1 = 1
-		self.talents.r1_heal = caster:GetTalentValue("modifier_hoodwink_sharp_1", "heal") / 100
-		caster:AddDamageEvent_out(self.tracker, true)
 	end
 
 	if caster:HasTalent("modifier_hoodwink_hero_5") then
@@ -119,36 +101,6 @@ function modifier_hoodwink_innate_custom:OnCreated(table)
 
 	self:OnIntervalThink()
 	self:StartIntervalThink(self.interval)
-end
-
-function modifier_hoodwink_innate_custom:DamageEvent_out(params)
-	if not IsServer() then
-		return
-	end
-	local result = self.parent:CheckLifesteal(params)
-	if not result then
-		return
-	end
-
-	if self.ability.talents.has_q2 == 1 and not params.inflictor then
-		self.parent:GenericHeal(
-			self.ability.talents.q2_heal * params.damage * result,
-			self.ability,
-			true,
-			nil,
-			"modifier_hoodwink_acorn_2"
-		)
-	end
-
-	if self.ability.talents.has_r1 == 1 and params.inflictor then
-		self.parent:GenericHeal(
-			self.ability.talents.r1_heal * params.damage * result,
-			self.ability,
-			true,
-			"particles/items3_fx/octarine_core_lifesteal.vpcf",
-			"modifier_hoodwink_sharp_1"
-		)
-	end
 end
 
 function modifier_hoodwink_innate_custom:DamageEvent_inc(params)

@@ -37,6 +37,7 @@ end
 
 function item_octarine_core_custom:Spawn()
 	self.cdr_bonus = self:GetSpecialValueFor("cdr_bonus")
+	self.item_damage = self:GetSpecialValueFor("item_damage")
 	self.bonus_health = self:GetSpecialValueFor("bonus_health")
 	self.bonus_mana = self:GetSpecialValueFor("bonus_mana")
 	self.mana_reduce = self:GetSpecialValueFor("mana_reduce")
@@ -70,6 +71,11 @@ function modifier_item_octarine_core_custom:OnCreated()
 	self.bonus_health = self.ability.bonus_health
 	self.bonus_mana = self.ability.bonus_mana
 	self.mana_reduce = self.ability.mana_reduce
+	self.item_damage = self.ability.item_damage
+end
+
+function modifier_item_octarine_core_custom:GetItemDamage()
+	return self.item_damage
 end
 
 function modifier_item_octarine_core_custom:DeclareFunctions()

@@ -175,14 +175,13 @@ function modifier_item_harpoon_custom_pull:OnCreated(params)
 
 	if self.is_tree == 1 then
 		self.point = self.target:GetAbsOrigin()
+		UTIL_Remove(self.target)
 	else
 		self.point = (self.parent:GetAbsOrigin() + self.target:GetAbsOrigin()) / 2
 		self.point = self.point - self.angle * 50
 	end
 
 	self.speed = (self.parent:GetAbsOrigin() - self.point):Length2D() / self:GetRemainingTime()
-
-	self.target:RemoveModifierByName("modifier_item_harpoon_custom_thinker")
 
 	if self:ApplyHorizontalMotionController() == false then
 		self:Destroy()
@@ -253,6 +252,7 @@ function modifier_item_harpoon_custom:OnCreated()
 		self.parent:IsRealHero() and not self.parent:HasModifier("modifier_monkey_king_wukongs_command_custom_soldier")
 	then
 		self.parent:AddAttackStartEvent_out(self)
+		self.parent:AddProc(self, { group = "echo_harpoon", priority = 1, extra = false, any = true })
 	end
 
 	self.int = self.ability.bonus_intellect
@@ -309,6 +309,16 @@ function modifier_item_harpoon_custom:StartSpeed(target, slow)
 	)
 end
 
+function modifier_item_harpoon_custom:GetProcChance()
+	if self.parent:IsRangedAttacker() then
+		return 0
+	end
+	if self.parent:HasModifier("modifier_item_harpoon_custom_cd") then
+		return 0
+	end
+	return 100
+end
+
 function modifier_item_harpoon_custom:AttackStartEvent_out(params)
 	if not IsServer() then
 		return
@@ -334,13 +344,9 @@ function modifier_item_harpoon_custom:AttackStartEvent_out(params)
 		mod:Destroy()
 	end
 
-	if self.parent:HasModifier("modifier_item_harpoon_custom_cd") then
+	if not params.procs or not params.procs[self] then
 		return
 	end
-	if self.parent:IsRangedAttacker() then
-		return
-	end
-
 	self:StartSpeed(params.target, true)
 end
 

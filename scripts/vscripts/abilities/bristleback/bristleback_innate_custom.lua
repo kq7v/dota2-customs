@@ -61,7 +61,6 @@ function bristleback_innate_custom:UpdateTalents(name)
 		self.init = true
 		self.talents = {
 			has_w3 = 0,
-			w3_heal = 0,
 
 			has_w4 = 0,
 			w4_max = caster:GetTalentValue("modifier_bristle_spray_4", "max", true),
@@ -69,9 +68,6 @@ function bristleback_innate_custom:UpdateTalents(name)
 			w4_heal_reduce = caster:GetTalentValue("modifier_bristle_spray_4", "heal_reduce", true),
 			w4_duration = caster:GetTalentValue("modifier_bristle_spray_4", "duration", true),
 			w4_cd_items = caster:GetTalentValue("modifier_bristle_spray_4", "cd_items", true),
-
-			has_r3 = 0,
-			r3_heal = 0,
 
 			h1_slow_resist = 0,
 			h1_move = 0,
@@ -104,20 +100,12 @@ function bristleback_innate_custom:UpdateTalents(name)
 
 	if caster:HasTalent("modifier_bristle_spray_3") then
 		self.talents.has_w3 = 1
-		self.talents.w3_heal = caster:GetTalentValue("modifier_bristle_spray_3", "heal") / 100
-		caster:AddDamageEvent_out(self.tracker, true)
 		caster:AddSpellEvent(self.tracker, true)
 	end
 
 	if caster:HasTalent("modifier_bristle_spray_4") then
 		self.talents.has_w4 = 1
 		caster:AddSpellEvent(self.tracker, true)
-	end
-
-	if caster:HasTalent("modifier_bristle_warpath_3") then
-		self.talents.has_r3 = 1
-		self.talents.r3_heal = caster:GetTalentValue("modifier_bristle_warpath_3", "heal") / 100
-		caster:AddDamageEvent_out(self.tracker, true)
 	end
 end
 
@@ -225,37 +213,6 @@ end
 
 function modifier_bristleback_innate_custom:GetModifierMoveSpeedBonus_Constant()
 	return self.ability.talents.h1_move
-end
-
-function modifier_bristleback_innate_custom:DamageEvent_out(params)
-	if not IsServer() then
-		return
-	end
-	local result = self.parent:CheckLifesteal(params)
-
-	if not result then
-		return
-	end
-
-	if self.ability.talents.has_w3 == 1 and params.inflictor then
-		self.parent:GenericHeal(
-			self.ability.talents.w3_heal * result * params.damage,
-			self.ability,
-			true,
-			"particles/items3_fx/octarine_core_lifesteal.vpcf",
-			"modifier_bristle_spray_3"
-		)
-	end
-
-	if self.ability.talents.has_r3 == 1 and not params.inflictor then
-		self.parent:GenericHeal(
-			self.ability.talents.r3_heal * result * params.damage,
-			self.ability,
-			true,
-			nil,
-			"modifier_bristle_warpath_3"
-		)
-	end
 end
 
 function modifier_bristleback_innate_custom:SpellEvent(params)

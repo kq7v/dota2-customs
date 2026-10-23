@@ -68,7 +68,7 @@
     "AbilityCooldown"               "10"
     "AbilityValues"
     {
-        "damage_crit"               "140 180 220 260"
+        "damage_crit"               "140 165 190 215"
         "damage_bonus"              "5 10 15 20"
         "angle"                     "140"
         "radius"                    "600"

@@ -49,7 +49,6 @@ function morphling_adaptive_strike_custom:Precache(context)
 	)
 	PrecacheResource("particle", "particles/units/heroes/hero_morphling/morphling_adaptive_strike.vpcf", context)
 	PrecacheResource("particle", "particles/units/heroes/hero_morphling/morphling_adaptive_strike_str.vpcf", context)
-	PrecacheResource("particle", "particles/sand_king/stinger_target.vpcf", context)
 	PrecacheResource("particle", "particles/morphling/adaptive_aoe.vpcf", context)
 	PrecacheResource("particle", "particles/morphling/adaptive_aoe_zone.vpcf", context)
 	PrecacheResource("particle", "particles/morphling/adaptive_refresh.vpcf", context)
@@ -76,6 +75,7 @@ function morphling_adaptive_strike_custom:UpdateTalents()
 			w3_chance = caster:GetTalentValue("modifier_morphling_adaptive_3", "chance", true),
 
 			has_w4 = 0,
+			w4_heal = caster:GetTalentValue("modifier_morphling_adaptive_4", "heal", true) / 100,
 			w4_duration = caster:GetTalentValue("modifier_morphling_adaptive_4", "duration", true),
 			w4_max = caster:GetTalentValue("modifier_morphling_adaptive_4", "max", true),
 			w4_timer = caster:GetTalentValue("modifier_morphling_adaptive_4", "timer", true),
@@ -114,17 +114,14 @@ function morphling_adaptive_strike_custom:UpdateTalents()
 
 	if caster:HasTalent("modifier_morphling_adaptive_4") then
 		self.talents.has_w4 = 1
+		caster:AddLifesteal(
+			self.tracker,
+			{ name = "modifier_morphling_adaptive_4", type = 1, value = self.talents.w4_heal }
+		)
 	end
 
 	if caster:HasTalent("modifier_morphling_adaptive_7") then
 		self.talents.has_w7 = 1
-		if IsServer() then
-			CustomGameEventManager:Send_ServerToPlayer(
-				PlayerResource:GetPlayer(caster:GetPlayerOwnerID()),
-				"ability_morphling_adaptive",
-				{}
-			)
-		end
 	end
 end
 

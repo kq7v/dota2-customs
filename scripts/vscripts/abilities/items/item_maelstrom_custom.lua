@@ -41,11 +41,9 @@ function item_maelstrom_custom:Spawn()
 end
 
 modifier_item_maelstrom_custom = class(mod_hidden)
-function modifier_item_maelstrom_custom:OnCreated(table)
+function modifier_item_maelstrom_custom:OnCreated()
 	self.parent = self:GetParent()
 	self.ability = self:GetAbility()
-
-	self.records = {}
 
 	if not IsServer() then
 		return
@@ -53,11 +51,7 @@ function modifier_item_maelstrom_custom:OnCreated(table)
 	if not self.parent:IsRealHero() then
 		return
 	end
-	self:RollProc()
-
-	self.parent:AddRecordDestroyEvent(self, true)
-	self.parent:AddAttackStartEvent_out(self)
-	self.parent:AddAttackEvent_out(self, true)
+	self.parent:AddProc(self, { group = "chain_lightning", cd = self.ability.chain_cooldown, accuracy = true })
 end
 
 function modifier_item_maelstrom_custom:DeclareFunctions()
@@ -80,90 +74,12 @@ function modifier_item_maelstrom_custom:GetModifierHealthBonus()
 	return self.ability.bonus_health
 end
 
-function modifier_item_maelstrom_custom:CheckState()
-	if not IsServer() then
-		return
-	end
-	if not IsValid(self.parent) then
-		return
-	end
-	if not self.parent:HasCd("maelstrom_proc", 3) then
-		return
-	end
-	return {
-		[MODIFIER_STATE_CANNOT_MISS] = true,
-	}
+function modifier_item_maelstrom_custom:GetProcChance()
+	return self.ability.chain_chance
 end
 
-function modifier_item_maelstrom_custom:RecordDestroyEvent(params)
-	if not self.records[params.record] then
-		return
-	end
-	self.records[params.record] = nil
-end
-
-function modifier_item_maelstrom_custom:RollProc()
-	if not IsServer() then
-		return
-	end
-	if self.parent:HasModifier("modifier_item_mjollnir_custom") then
-		return
-	end
-	if self.parent:HasCd("maelstrom_cd", self.ability.chain_cooldown) then
-		return
-	end
-	if not RollPseudoRandomPercentage(self.ability.chain_chance, 4259, self.parent) then
-		return
-	end
-
-	self.parent:StartCd("maelstrom_proc")
-end
-
-function modifier_item_maelstrom_custom:AttackStartEvent_out(params)
-	if not IsServer() then
-		return
-	end
-	if not IsValid(self.ability) then
-		return
-	end
-	if not params.target:IsUnit() then
-		return
-	end
-	if self.parent ~= params.attacker then
-		return
-	end
-	if params.target:GetTeamNumber() == self.parent:GetTeamNumber() then
-		return
-	end
-
-	if self.parent:HasCd("maelstrom_proc", 3) then
-		self.records[params.record] = true
-		self.parent:StartCd("maelstrom_cd")
-	end
-
-	self.parent:RemoveCd("maelstrom_proc")
-	self:RollProc()
-end
-
-function modifier_item_maelstrom_custom:AttackEvent_out(params)
-	if not IsServer() then
-		return
-	end
-	if not IsValid(self.ability) then
-		return
-	end
-	if not params.target:IsUnit() then
-		return
-	end
-	if self.parent ~= params.attacker then
-		return
-	end
-	if not self.records[params.record] then
-		return
-	end
-
+function modifier_item_maelstrom_custom:AttackProc(params)
 	self.parent:GenericHeal(self.ability.chain_heal, self.ability, true, "")
-
 	self.parent:AddNewModifier(
 		self.parent,
 		self.ability,

@@ -210,6 +210,13 @@ function modifier_templar_assassin_psi_blades_custom:DeclareFunctions()
 	}
 end
 
+function modifier_templar_assassin_psi_blades_custom:GetCritChance()
+	if not self.parent:HasTalent("modifier_templar_assassin_psiblades_3") then
+		return 0
+	end
+	return self.crit_chance
+end
+
 function modifier_templar_assassin_psi_blades_custom:GetCritDamage()
 	if not self.parent:HasTalent("modifier_templar_assassin_psiblades_3") then
 		return
@@ -221,13 +228,13 @@ function modifier_templar_assassin_psi_blades_custom:GetModifierPreAttack_Critic
 	if not self.parent:HasTalent("modifier_templar_assassin_psiblades_3") then
 		return
 	end
-	if not RollPseudoRandomPercentage(self.crit_chance, 2742, self.parent) then
+	if not RollPseudoRandomPercentage(self:GetCritChance(), 2742, self.parent) then
 		return
 	end
 
 	self.records[params.record] = true
 
-	return self.parent:GetTalentValue("modifier_templar_assassin_psiblades_3", "damage")
+	return self:GetCritDamage()
 end
 
 function modifier_templar_assassin_psi_blades_custom:RecordDestroyEvent(params)

@@ -41,7 +41,7 @@ end
 function modifier_item_desolator_custom:OnCreated()
 	self.caster = self:GetCaster()
 	self.ability = self:GetAbility()
-	self.caster:AddAttackEvent_out(self, true)
+	self.caster:AddProc(self, { land = true })
 
 	self.armor_reduce = self.ability.corruption_armor
 	self.damage = self.ability.bonus_damage
@@ -65,14 +65,12 @@ function modifier_item_desolator_custom:GetModifierProjectileName()
 	return "particles/items_fx/desolator_projectile.vpcf"
 end
 
-function modifier_item_desolator_custom:AttackEvent_out(params)
+function modifier_item_desolator_custom:GetProcChance()
+	return 100
+end
+
+function modifier_item_desolator_custom:AttackProc(params, name)
 	if not IsValid(self.ability) then
-		return
-	end
-	if params.attacker ~= self.caster then
-		return
-	end
-	if not params.target:IsUnit() then
 		return
 	end
 

@@ -135,10 +135,6 @@
 			_class = "C_INIT_InitialVelocityNoise"
 			m_vecOutputMax = [ 80.0, 80.0, 100.0 ]
 			m_vecOutputMin = [ -80.0, -80.0, 50.0 ]
-			m_TransformInput = 
-			{
-				m_nType = "PT_TYPE_INVALID"
-			}
 		},
 		{
 			_class = "C_INIT_PositionOffset"

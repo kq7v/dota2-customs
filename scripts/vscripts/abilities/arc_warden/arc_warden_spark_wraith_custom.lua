@@ -94,6 +94,7 @@ function arc_warden_spark_wraith_custom:UpdateTalents(name)
 
 			has_e3 = 0,
 			e3_chance = 0,
+			e3_heal = 0,
 			e3_damage = caster:GetTalentValue("modifier_arc_warden_spark_3", "damage", true) / 100,
 			e3_radius = caster:GetTalentValue("modifier_arc_warden_spark_3", "radius", true),
 
@@ -137,7 +138,12 @@ function arc_warden_spark_wraith_custom:UpdateTalents(name)
 	if caster:HasTalent("modifier_arc_warden_spark_3") then
 		self.talents.has_e3 = 1
 		self.talents.e3_chance = caster:GetTalentValue("modifier_arc_warden_spark_3", "chance")
+		self.talents.e3_heal = caster:GetTalentValue("modifier_arc_warden_spark_3", "heal") / 100
 		caster:AddSpellEvent(self.tracker, true)
+		caster:AddLifesteal(
+			self.tracker,
+			{ name = "modifier_arc_warden_spark_3", type = 1, value = self.talents.e3_heal }
+		)
 	end
 
 	if caster:HasTalent("modifier_arc_warden_spark_4") then

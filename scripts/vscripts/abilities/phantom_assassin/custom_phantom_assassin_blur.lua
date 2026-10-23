@@ -168,6 +168,7 @@ function custom_phantom_assassin_blur:UpdateTalents(name)
 			e7_illusion_incoming = caster:GetTalentValue("modifier_phantom_assassin_blur_7", "illusion_incoming", true),
 			e7_illusion_outgoing = caster:GetTalentValue("modifier_phantom_assassin_blur_7", "illusion_outgoing", true),
 			e7_illusion_move = caster:GetTalentValue("modifier_phantom_assassin_blur_7", "illusion_move", true),
+			e7_heal = caster:GetTalentValue("modifier_phantom_assassin_blur_7", "heal", true) / 100,
 
 			has_h1 = 0,
 			h1_duration = caster:GetTalentValue("modifier_phantom_assassin_hero_1", "duration", true),
@@ -184,7 +185,8 @@ function custom_phantom_assassin_blur:UpdateTalents(name)
 		self.talents.has_e1 = 1
 		self.talents.e1_damage = caster:GetTalentValue("modifier_phantom_assassin_blur_1", "damage")
 		self.talents.e1_agi = caster:GetTalentValue("modifier_phantom_assassin_blur_1", "agi") / 100
-		caster:AddAttackEvent_out(self.tracker, true)
+		caster:AddProc(self.tracker, { name = "hit", illusion = true, land = true })
+		caster:AddProc(self.tracker, { illusion = true, land = true })
 	end
 
 	if caster:HasTalent("modifier_phantom_assassin_blur_2") then
@@ -198,13 +200,13 @@ function custom_phantom_assassin_blur:UpdateTalents(name)
 		self.talents.has_e3 = 1
 		self.talents.e3_agi = caster:GetTalentValue("modifier_phantom_assassin_blur_3", "agi") / 100
 		self.talents.e3_attacks = caster:GetTalentValue("modifier_phantom_assassin_blur_3", "attacks")
-		caster:AddAttackEvent_out(self.tracker, true)
+		caster:AddProc(self.tracker, { name = "hit", illusion = true, land = true })
 		caster:AddSpellEvent(self.tracker, true)
 	end
 
 	if caster:HasTalent("modifier_phantom_assassin_blur_4") then
 		self.talents.has_e4 = 1
-		caster:AddAttackEvent_out(self.tracker, true)
+		caster:AddProc(self.tracker, { name = "hit", illusion = true, land = true })
 	end
 
 	if caster:HasTalent("modifier_phantom_assassin_blur_7") then
@@ -562,11 +564,21 @@ function modifier_phantom_assassin_phantom_blur:AttackStartEvent_out(params)
 	end
 end
 
-function modifier_phantom_assassin_phantom_blur:AttackEvent_out(params)
-	if not IsServer() then
-		return
+function modifier_phantom_assassin_phantom_blur:GetProcChance(params, name)
+	if name == "hit" then
+		return 100
 	end
-	if not params.target:IsUnit() then
+	if self.parent.crit_ability.tracker.records[params.record] then
+		return 0
+	end
+	if params.attacker:IsIllusion() then
+		return self.ability.talents.e1_illusion_chance
+	end
+	return self.ability.talents.e1_chance
+end
+
+function modifier_phantom_assassin_phantom_blur:AttackProc(params, name)
+	if name ~= "hit" then
 		return
 	end
 
@@ -591,22 +603,7 @@ function modifier_phantom_assassin_phantom_blur:AttackEvent_out(params)
 		end
 	end
 
-	if self.ability.talents.has_e1 ~= 1 then
-		return
-	end
-	if self.parent.crit_ability.tracker.records[params.record] then
-		return
-	end
-
-	local chance = self.ability.talents.e1_chance
-
-	if params.attacker:IsIllusion() then
-		chance = self.ability.talents.e1_illusion_chance
-	end
-
-	local roll = RollPseudoRandomPercentage(chance, 1228, params.attacker)
-
-	if not roll then
+	if not params.procs[self].default then
 		return
 	end
 
@@ -1245,4 +1242,17 @@ function modifier_phantom_assassin_phantom_blur_illusion:GetModifierProcAttack_F
 		return
 	end
 	self.caster:LogProc("modifier_phantom_assassin_blur_7_attack", nil, params.target)
+
+	local result = self.caster:CanLifesteal(params.target)
+	if not result then
+		return
+	end
+
+	self.caster:GenericHeal(
+		self.caster:GetAgility() * self.ability.talents.e7_heal * result,
+		self.ability,
+		true,
+		nil,
+		"modifier_phantom_assassin_blur_7"
+	)
 end

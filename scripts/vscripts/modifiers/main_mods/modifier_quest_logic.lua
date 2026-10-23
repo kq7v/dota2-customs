@@ -458,11 +458,17 @@ function modifier_quest_logic:StartQuest()
 
 	if name == "Puck.Quest_7" then
 		self.quest_damage_logic = function(params)
-			if
-				self.parent:HasModifier("modifier_custom_puck_phase_shift")
-				and params.damage_type == DAMAGE_TYPE_MAGICAL
-			then
+			if self.parent:HasCd("puck_quest_7", self.parent.quest.number) then
 				self.parent:UpdateQuest(math.floor(params.damage))
+			end
+		end
+		return
+	end
+
+	if name == "Puck.Quest_8" then
+		self.quest_attack_logic = function(params)
+			if params.target:HasModifier("modifier_custom_puck_dream_coil") then
+				self.parent:UpdateQuest(1)
 			end
 		end
 		return

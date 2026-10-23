@@ -122,9 +122,6 @@ function broodmother_insatiable_hunger_custom:UpdateTalents()
 			has_s7 = 0,
 			s7_damage = caster:GetTalentValue("modifier_broodmother_scepter_7", "damage", true) / 100,
 			s7_radius = caster:GetTalentValue("modifier_broodmother_scepter_7", "radius", true),
-
-			has_w2 = 0,
-			w2_heal = 0,
 		}
 	end
 
@@ -160,15 +157,11 @@ function broodmother_insatiable_hunger_custom:UpdateTalents()
 	if caster:HasTalent("modifier_broodmother_hero_5") then
 		self.talents.has_h5 = 1
 		caster:AddHealEvent_inc(self.tracker, true)
+		caster:AddLifesteal(self.tracker, { name = "modifier_broodmother_hero_5", value = self.talents.h5_heal })
 	end
 
 	if caster:HasTalent("modifier_broodmother_scepter_7") then
 		self.talents.has_s7 = 1
-	end
-
-	if caster:HasTalent("modifier_broodmother_web_2") then
-		self.talents.has_w2 = 1
-		self.talents.w2_heal = caster:GetTalentValue("modifier_broodmother_web_2", "heal") / 100
 	end
 end
 
@@ -217,7 +210,18 @@ function modifier_broodmother_insatiable_hunger_custom_tracker:OnCreated(table)
 	self.ability.lifesteal_pct = self.ability:GetSpecialValueFor("lifesteal_pct")
 	self.ability.duration = self.ability:GetSpecialValueFor("duration")
 
-	self.parent:AddDamageEvent_out(self, true)
+	self.parent:AddLifesteal(self, {
+		value = function(params)
+			if not self.parent:HasModifier("modifier_broodmother_insatiable_hunger_custom") then
+				return 0
+			end
+			local heal = self.ability.lifesteal_pct / 100
+			if self.ability.talents.has_q7 == 1 then
+				heal = heal * (1 + self.ability.talents.q7_heal_reduce)
+			end
+			return heal, nil, not params.inflictor
+		end,
+	})
 end
 
 function modifier_broodmother_insatiable_hunger_custom_tracker:OnRefresh()
@@ -225,55 +229,6 @@ function modifier_broodmother_insatiable_hunger_custom_tracker:OnRefresh()
 	self.ability.cleave = self.ability:GetSpecialValueFor("cleave") / 100
 	self.ability.lifesteal_pct = self.ability:GetSpecialValueFor("lifesteal_pct")
 	self.ability.duration = self.ability:GetSpecialValueFor("duration")
-end
-
-function modifier_broodmother_insatiable_hunger_custom_tracker:DamageEvent_out(params)
-	if not IsServer() then
-		return
-	end
-	local has_q = self.parent:HasModifier("modifier_broodmother_insatiable_hunger_custom")
-	local has_h5 = self.ability.talents.has_h5 == 1
-	local has_w2 = self.ability.talents.has_w2 == 1
-	local attacker = params.attacker
-	local is_spider = attacker.owner
-		and attacker.owner == self.parent
-		and attacker:HasModifier("modifier_broodmother_spawn_spiderlings_custom_spider")
-
-	if not has_h5 and not has_q and not has_w2 then
-		return
-	end
-	if attacker ~= self.parent and not is_spider then
-		return
-	end
-
-	local result = self.parent:CheckLifesteal(params, nil, true)
-	if not result then
-		return
-	end
-
-	if has_q and self.parent == attacker then
-		local heal = params.damage * result * self.ability.lifesteal_pct / 100
-		local effect = params.inflictor and "particles/items3_fx/octarine_core_lifesteal.vpcf" or nil
-		if self.ability.talents.has_q7 == 1 then
-			heal = heal * (1 + self.ability.talents.q7_heal_reduce)
-		end
-		self.parent:GenericHeal(heal, self.ability, params.inflictor, effect)
-	end
-
-	if has_w2 and params.inflictor then
-		self.parent:GenericHeal(
-			params.damage * result * self.ability.talents.w2_heal,
-			self.ability,
-			true,
-			"particles/items3_fx/octarine_core_lifesteal.vpcf",
-			"modifier_broodmother_web_2"
-		)
-	end
-
-	if has_h5 then
-		local heal = params.damage * result * self.ability.talents.h5_heal
-		self.parent:GenericHeal(heal, self.ability, true, "", "modifier_broodmother_hero_5")
-	end
 end
 
 function modifier_broodmother_insatiable_hunger_custom_tracker:HealEvent_inc(params)
@@ -387,7 +342,7 @@ function modifier_broodmother_insatiable_hunger_custom:OnCreated(table)
 
 	if self.ability.talents.has_q7 == 1 then
 		self.parent:AddAttackStartEvent_out(self, true)
-		self.parent:AddAttackEvent_out(self, true)
+		self.parent:AddProc(self, { land = true })
 		self.interval = 0.05
 		self:OnIntervalThink()
 		self:StartIntervalThink(self.interval)
@@ -504,18 +459,12 @@ function modifier_broodmother_insatiable_hunger_custom:AttackStartEvent_out(para
 	self:SetDuration(self.duration, true)
 end
 
-function modifier_broodmother_insatiable_hunger_custom:AttackEvent_out(params)
-	if not IsServer() then
-		return
-	end
-	if self.parent ~= params.attacker then
-		return
-	end
-	local target = params.target
+function modifier_broodmother_insatiable_hunger_custom:GetProcChance()
+	return 100
+end
 
-	if not target:IsUnit() then
-		return
-	end
+function modifier_broodmother_insatiable_hunger_custom:AttackProc(params, name)
+	local target = params.target
 
 	if self.ability.talents.has_q7 == 1 and target:IsHero() and self:GetStackCount() < self.ability.talents.q7_max then
 		self:IncrementStackCount()

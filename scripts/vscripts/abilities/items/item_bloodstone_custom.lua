@@ -26,7 +26,6 @@ function item_bloodstone_custom:Precache(context)
 	if self:GetCaster() and self:GetCaster():IsIllusion() then
 		return
 	end
-	PrecacheResource("particle", "particles/items3_fx/octarine_core_lifesteal.vpcf", context)
 	PrecacheResource("particle", "particles/items_fx/bloodstone_heal.vpcf", context)
 	PrecacheResource("particle", "particles/items2_fx/veil_of_discord_debuff.vpcf", context)
 end
@@ -74,12 +73,27 @@ function modifier_item_bloodstone_custom:OnCreated(table)
 	self.ability = self:GetAbility()
 	self.parent = self:GetParent()
 
-	if self.parent:IsRealHero() then
-		self.parent:AddDamageEvent_out(self, true)
-	end
-
 	self.lifesteal = self.ability.spell_lifesteal
 	self.lifesteal_active = self.ability.lifesteal_active
+
+	if not IsServer() then
+		return
+	end
+	if not self.parent:IsRealHero() then
+		return
+	end
+	self.parent:AddLifesteal(self, {
+		type = 1,
+		value = function(params)
+			if params.unit and (params.unit:GetAbsOrigin() - self.parent:GetAbsOrigin()):Length2D() > 2000 then
+				return 0
+			end
+			if self.parent:HasModifier("modifier_item_bloodstone_custom_buff") then
+				return self.lifesteal_active, nil, true
+			end
+			return self.lifesteal
+		end,
+	})
 end
 
 function modifier_item_bloodstone_custom:DeclareFunctions()
@@ -100,36 +114,6 @@ end
 
 function modifier_item_bloodstone_custom:GetModifierBonusStats_Intellect()
 	return self.ability.bonus_int
-end
-
-function modifier_item_bloodstone_custom:DamageEvent_out(params)
-	if not IsServer() then
-		return
-	end
-	if not IsValid(self.ability) then
-		return
-	end
-	local result = self.parent:CheckLifesteal(params, 1)
-	if not result then
-		return
-	end
-	if (params.unit:GetAbsOrigin() - self.parent:GetAbsOrigin()):Length2D() > 2000 then
-		return
-	end
-
-	local lifesteal = self.ability.spell_lifesteal
-	local hide_number = true
-
-	if self.parent:HasModifier("modifier_item_bloodstone_custom_buff") then
-		hide_number = false
-		lifesteal = self.ability.lifesteal_active
-	end
-	self.parent:GenericHeal(
-		params.damage * lifesteal * result,
-		self.ability,
-		hide_number,
-		"particles/items3_fx/octarine_core_lifesteal.vpcf"
-	)
 end
 
 modifier_item_bloodstone_custom_buff = class(mod_visible)

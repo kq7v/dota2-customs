@@ -99,6 +99,7 @@ function tinker_laser_custom:UpdateTalents()
 			q3_duration = caster:GetTalentValue("modifier_tinker_laser_3", "duration", true),
 
 			has_q4 = 0,
+			q4_heal = caster:GetTalentValue("modifier_tinker_laser_4", "heal", true) / 100,
 			q4_health = caster:GetTalentValue("modifier_tinker_laser_4", "health", true),
 			q4_bonus = caster:GetTalentValue("modifier_tinker_laser_4", "bonus", true),
 			q4_duration = caster:GetTalentValue("modifier_tinker_laser_4", "duration", true),
@@ -147,6 +148,14 @@ function tinker_laser_custom:UpdateTalents()
 
 	if caster:HasTalent("modifier_tinker_laser_4") then
 		self.talents.has_q4 = 1
+		caster:AddLifesteal(self.tracker, {
+			name = "modifier_tinker_laser_4",
+			type = 1,
+			value = function()
+				return self.talents.q4_heal
+					* (caster:GetHealthPercent() <= self.talents.q4_health and self.talents.q4_bonus or 1)
+			end,
+		})
 	end
 
 	if caster:HasTalent("modifier_tinker_laser_7") then

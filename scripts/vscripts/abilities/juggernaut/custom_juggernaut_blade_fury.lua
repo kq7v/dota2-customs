@@ -97,7 +97,6 @@ function custom_juggernaut_blade_fury:UpdateTalents(name)
 	if not self.init then
 		self.init = true
 		self.talents = {
-			has_q1 = 0,
 			q1_heal = 0,
 			q1_damage = 0,
 
@@ -128,10 +127,12 @@ function custom_juggernaut_blade_fury:UpdateTalents(name)
 	end
 
 	if caster:HasTalent("modifier_juggernaut_bladefury_1") then
-		self.talents.has_q1 = 1
 		self.talents.q1_heal = caster:GetTalentValue("modifier_juggernaut_bladefury_1", "heal") / 100
 		self.talents.q1_damage = caster:GetTalentValue("modifier_juggernaut_bladefury_1", "damage")
-		caster:AddDamageEvent_out(self.tracker, true)
+		caster:AddLifesteal(
+			self.tracker,
+			{ name = "modifier_juggernaut_bladefury_1", type = 1, value = self.talents.q1_heal }
+		)
 	end
 
 	if caster:HasTalent("modifier_juggernaut_bladefury_2") then
@@ -551,31 +552,6 @@ end
 
 function modifier_custom_juggernaut_blade_fury_tracker:OnRefresh()
 	self.ability.blade_fury_damage = self.ability:GetSpecialValueFor("blade_fury_damage")
-end
-
-function modifier_custom_juggernaut_blade_fury_tracker:DamageEvent_out(params)
-	if not IsServer() then
-		return
-	end
-	if self.ability.talents.has_q1 == 0 then
-		return
-	end
-	if not params.inflictor then
-		return
-	end
-
-	local result = self.parent:CheckLifesteal(params)
-	if not result then
-		return
-	end
-
-	self.parent:GenericHeal(
-		result * params.damage * self.ability.talents.q1_heal,
-		self.ability,
-		true,
-		"particles/items3_fx/octarine_core_lifesteal.vpcf",
-		"modifier_juggernaut_bladefury_1"
-	)
 end
 
 function modifier_custom_juggernaut_blade_fury_tracker:UpdateUI()

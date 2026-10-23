@@ -333,7 +333,7 @@
 
 #TalentUI_short_Number
 {
-	font-family: defaultFont;
+	font-family: Radiance;
 	font-weight: bold;
 	color: #e7e7e7;
 	text-shadow: 1px 1px 2px 3 black;
@@ -346,7 +346,7 @@
 
 #TalentUI_short_text
 {
-	font-family: defaultFont;
+	font-family: Radiance;
 	font-weight: bold;
 	color: #ff3f3f;
 	text-shadow: 1px 1px 2px 3 black;
@@ -358,7 +358,7 @@
 
 #TalentUI_short_Icon_Number
 {
-	font-family: defaultFont;
+	font-family: Radiance;
 	font-weight: bold;
 	color: #e7e7e7;
 	z-index: 8;
@@ -388,7 +388,7 @@
 
 #TalentUI_short_TopText
 {
-	font-family: defaultFont;
+	font-family: Radiance;
 	font-weight: bold;
 	color: #ff3f3f;
 	text-shadow: 1px 1px 2px 3 black;
@@ -479,7 +479,7 @@
 
 .TalentUI_long_Number
 {
-	font-family: defaultFont;
+	font-family: Radiance;
 	font-weight: bold;
 	color: #e7e7e7;
 	text-shadow: 1px 1px 2px 3 black;
@@ -497,7 +497,7 @@
 
 .TalentUI_long_Icon_Number
 {
-	font-family: defaultFont;
+	font-family: Radiance;
 	font-weight: bold;
 	color: #e7e7e7;
 	text-shadow: 1px 1px 3px 5 black;
@@ -586,7 +586,7 @@
 
 .PuckOrb_Filler
 {
-	background-color: gradient( linear, 0% 0%, 100% 0%, from( #1a86da ), to( #a5d1f4 ) );
+	background-color: gradient( linear, 0% 0%, 0% 100%, from( #1a86da ), to( #a5d1f4 ) );
 	transition-duration: 0.3s;
 }
 
@@ -3827,7 +3827,7 @@
 
 .PuckShift_Filler
 {
-	background-color: gradient( linear, 0% 0%, 100% 0%, from( #5053e2 ), to( #b4b6f6 ) );
+	background-color: gradient( linear, 0% 0%, 0% 100%, from( #5053e2 ), to( #b4b6f6 ) );
 	transition-duration: 0.1s;
 }
 
@@ -3850,7 +3850,7 @@
 
 .PuckShift_Filler_Active
 {
-	background-color: gradient( linear, 0% 0%, 100% 0%, from( #5053e2 ), to( #b4b6f6 ) );
+	background-color: gradient( linear, 0% 0%, 0% 100%, from( #5053e2 ), to( #b4b6f6 ) );
 	transition-duration: 0.1s;
 }
 
@@ -3947,6 +3947,90 @@
 		box-shadow: fill #99d4f3 0px 0px 8px -2px;
 	}
 	
+}
+
+.PuckRiftMagic_Bar
+{
+	width: 65px;
+	height: 32px;
+	margin-left: 25px;
+	vertical-align: center;
+	border-top: 1px solid #94d5f7;
+	border-left: 1px solid #94d5f7;
+	border-bottom: 1px solid #94d5f7;
+	background-color: gradient( linear, 0% 0%, 0% 100%, from( #0c1a48 ), to( #050f2e ) );
+	border-bottom-left-radius: 5px;
+	border-top-left-radius: 5px;
+	box-shadow: fill black 0px 0px 10px -2px;
+}
+
+.PuckRiftMagic_Icon
+{
+	width: 40px;
+	height: 40px;
+	margin-left: 0px;
+	vertical-align: center;
+	background-image: url("s2r://panorama/images/custom_game/icons/mini/npc_dota_hero_puck/rift_png.vtex");
+	background-size: contain;
+	background-repeat: no-repeat;
+	box-shadow: fill black 0px 0px 12px -2px;
+	border: 1px solid #94d5f7;
+	border-radius: 3px;
+	z-index: 999;
+}
+
+.PuckRiftMagic_Number
+{
+	font-family: Reaver;
+	font-weight: bold;
+	color: gradient( linear, 0% 100%, 0% 0%, from( #b4e2fb ), to( #ffffff ) );
+	text-shadow: 1px 1px 2px 3 black;
+	z-index: 8;
+	align: center center;
+	font-size: 21px;
+	text-align: center;
+}
+
+.PuckCoil_Bar
+{
+	width: 65px;
+	height: 32px;
+	margin-left: 25px;
+	vertical-align: center;
+	border-top: 1px solid #e8a5d8;
+	border-left: 1px solid #e8a5d8;
+	border-bottom: 1px solid #e8a5d8;
+	background-color: gradient( linear, 0% 0%, 0% 100%, from( #47173f ), to( #2b0c2e ) );
+	border-bottom-left-radius: 5px;
+	border-top-left-radius: 5px;
+	box-shadow: fill black 0px 0px 10px -2px;
+}
+
+.PuckCoil_Icon
+{
+	width: 40px;
+	height: 40px;
+	margin-left: 0px;
+	vertical-align: center;
+	background-image: url("s2r://panorama/images/custom_game/icons/mini/npc_dota_hero_puck/coil_png.vtex");
+	background-size: contain;
+	background-repeat: no-repeat;
+	box-shadow: fill black 0px 0px 12px -2px;
+	border: 1px solid #e8a5d8;
+	border-radius: 3px;
+	z-index: 999;
+}
+
+.PuckCoil_Number
+{
+	font-family: Reaver;
+	font-weight: bold;
+	color: gradient( linear, 0% 100%, 0% 0%, from( #b4e2fb ), to( #ffffff ) );
+	text-shadow: 1px 1px 2px 3 black;
+	z-index: 8;
+	align: center center;
+	font-size: 21px;
+	text-align: center;
 }
 
 .SkyBolt_Bar

@@ -63,7 +63,6 @@ function life_stealer_open_wounds_custom:UpdateTalents()
 			w1_spell = 0,
 			w1_damage = 0,
 
-			has_w2 = 0,
 			w2_heal = 0,
 			w2_cd = 0,
 
@@ -99,10 +98,12 @@ function life_stealer_open_wounds_custom:UpdateTalents()
 	end
 
 	if caster:HasTalent("modifier_lifestealer_wounds_2") then
-		self.talents.has_w2 = 1
 		self.talents.w2_heal = caster:GetTalentValue("modifier_lifestealer_wounds_2", "heal") / 100
 		self.talents.w2_cd = caster:GetTalentValue("modifier_lifestealer_wounds_2", "cd")
-		caster:AddDamageEvent_out(self.tracker, true)
+		caster:AddLifesteal(
+			self.tracker,
+			{ name = "modifier_lifestealer_wounds_2", type = 1, value = self.talents.w2_heal }
+		)
 	end
 
 	if caster:HasTalent("modifier_lifestealer_wounds_3") then
@@ -452,34 +453,6 @@ function modifier_life_stealer_open_wounds_custom_tracker:OnRefresh(table)
 	self.ability.heal_percent = self.ability:GetSpecialValueFor("heal_percent") / 100
 	self.ability.slow = self.ability:GetSpecialValueFor("slow")
 	self.ability.damage = self.ability:GetSpecialValueFor("damage")
-end
-
-function modifier_life_stealer_open_wounds_custom_tracker:DamageEvent_out(params)
-	if not IsServer() then
-		return
-	end
-	if self.ability.talents.has_w2 == 0 then
-		return
-	end
-
-	local real_attacker = params.attacker
-	local attacker = real_attacker.lifestealer_creep and real_attacker.owner or real_attacker
-
-	if attacker ~= self.parent then
-		return
-	end
-
-	local result = real_attacker:CheckLifesteal(params, 1)
-	if not result then
-		return
-	end
-	real_attacker:GenericHeal(
-		params.damage * self.ability.talents.w2_heal * result,
-		self.ability,
-		true,
-		"particles/items3_fx/octarine_core_lifesteal.vpcf",
-		"modifier_lifestealer_wounds_2"
-	)
 end
 
 function modifier_life_stealer_open_wounds_custom_tracker:DeclareFunctions()

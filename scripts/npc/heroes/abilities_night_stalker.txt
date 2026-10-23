@@ -180,7 +180,7 @@
         "shard_slow_turn"           "-50"
         "shard_cd"                  "-30"
         "shard_chance"              "25"
-        "shard_crit"                "150"
+        "shard_crit"                "140"
     }
 }
 

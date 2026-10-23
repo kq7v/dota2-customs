@@ -57,7 +57,7 @@ function modifier_player_main_custom:OnCreated(params)
 	self.rewards = {}
 	self.reward_count = 0
 	self.interval = 0.5
-	self.parent:SetBaseMagicalResistanceValue(30)
+	self.parent:SetBaseMagicalResistanceValue(33)
 
 	if self.parent:IsIllusion() or self.parent:IsTempestDouble() then
 		self.interval = 1
@@ -142,7 +142,7 @@ function modifier_player_main_custom:GetModifierPercentageCooldown(params)
 			break
 		end
 	end
-	return bonus
+	return math.min(bonus, self.cdr_max)
 end
 
 function modifier_player_main_custom:GetModifierIncomingDamage_Percentage(params)
@@ -239,6 +239,9 @@ function modifier_player_main_custom:OnIntervalThink()
 		self.int = self.parent:GetIntellect(false, nil, true) * int_k
 		self.str = self.parent:GetStrength(true) * str_k
 		self.agi = self.parent:GetAgility(true) * agi_k
+		self.int_k = int_k
+		self.str_k = str_k
+		self.agi_k = agi_k
 
 		if self.int ~= prev_int or self.str ~= prev_str or self.agi ~= prev_agi then
 			self.NeedRefresh = true
@@ -282,6 +285,14 @@ function modifier_player_main_custom:OnIntervalThink()
 		end
 		self:SendBuffRefreshToClients()
 		self.stats_changed = true
+	end
+
+	if players[self.parent:GetId()] == self.parent then
+		local cast_range = self.parent:GetCastRangeBonus()
+		if cast_range ~= self.cast_range then
+			self.cast_range = cast_range
+			self.stats_changed = true
+		end
 	end
 
 	if

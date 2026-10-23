@@ -60,7 +60,7 @@ function modifier_item_skadi_custom:OnCreated()
 	if not self.parent:IsRealHero() then
 		return
 	end
-	self.parent:AddAttackEvent_out(self, true)
+	self.parent:AddProc(self, { land = true })
 end
 
 function modifier_item_skadi_custom:DeclareFunctions()
@@ -88,17 +88,12 @@ function modifier_item_skadi_custom:GetModifierBonusStats_Intellect()
 	return self.bonus_intellect
 end
 
-function modifier_item_skadi_custom:AttackEvent_out(params)
-	if not IsServer() then
-		return
-	end
+function modifier_item_skadi_custom:GetProcChance()
+	return 100
+end
+
+function modifier_item_skadi_custom:AttackProc(params, name)
 	if not IsValid(self.ability) then
-		return
-	end
-	if not params.target:IsUnit() then
-		return
-	end
-	if params.attacker ~= self.parent then
 		return
 	end
 

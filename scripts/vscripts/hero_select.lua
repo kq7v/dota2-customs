@@ -50,12 +50,12 @@ DUO_BANNED = {
 
 NO_BANNED_HEROES = {
 	"npc_dota_hero_kunkka",
-	"npc_dota_hero_primal_beast",
+	"npc_dota_hero_puck",
 }
 
 DONATE_HEROES = {
 	["npc_dota_hero_kunkka"] = true,
-	["npc_dota_hero_primal_beast"] = true,
+	["npc_dota_hero_puck"] = true,
 }
 NEW_SYSTEM_HEROES = {
 	[""] = true,
@@ -816,7 +816,8 @@ function hero_select:Start()
 			-- ['244395427'] = true, -- паша фп
 			["232290025"] = not test,
 			["411040863"] = true,
-			-- ['1674997262'] = true, -- ден
+			["850354778"] = true, -- вокид
+			["1674997262"] = true, -- ден
 			--['418896247'] = true,-- колян мейн
 			["1727917408"] = true, -- колян акк для фп
 			["149889029"] = true,

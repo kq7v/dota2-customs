@@ -177,14 +177,14 @@ function monkey_king_boundless_strike_custom:UpdateTalents(name)
 			self.talents.has_q1 = 1
 			self.talents.q1_cleave = caster:GetTalentValue("modifier_monkey_king_boundless_1", "cleave") / 100
 			self.talents.q1_damage = caster:GetTalentValue("modifier_monkey_king_boundless_1", "damage")
-			caster:AddAttackEvent_out(self.tracker, true)
+			caster:AddProc(self.tracker, { land = true })
 		end
 
 		if caster:HasTalent("modifier_monkey_king_boundless_2") then
 			self.talents.has_q2 = 1
 			self.talents.q2_cd = caster:GetTalentValue("modifier_monkey_king_boundless_2", "cd")
 			self.talents.q2_slow = caster:GetTalentValue("modifier_monkey_king_boundless_2", "slow")
-			caster:AddAttackEvent_out(self.tracker, true)
+			caster:AddProc(self.tracker, { land = true })
 		end
 
 		if caster:HasTalent("modifier_monkey_king_boundless_3") then
@@ -911,18 +911,12 @@ function modifier_monkey_king_boundless_strike_custom_tracker:OnRefresh(table)
 	self.ability.bonus_damage = self.ability:GetSpecialValueFor("bonus_damage")
 end
 
-function modifier_monkey_king_boundless_strike_custom_tracker:AttackEvent_out(params)
-	if not IsServer() then
-		return
-	end
-	if self.parent ~= params.attacker then
-		return
-	end
+function modifier_monkey_king_boundless_strike_custom_tracker:GetProcChance()
+	return 100
+end
 
+function modifier_monkey_king_boundless_strike_custom_tracker:AttackProc(params, name)
 	local target = params.target
-	if not target:IsUnit() then
-		return
-	end
 
 	if self.ability.talents.has_q1 == 1 and not params.no_cleave_flag then
 		DoCleaveAttack(

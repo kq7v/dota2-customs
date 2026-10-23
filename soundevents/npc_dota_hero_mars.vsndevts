@@ -468,21 +468,6 @@
 		volume = 1.4
 		pitch_rand_min = -0.4
 	}
-	Mars.Soldier_spawn = 
-	{
-		pitch_rand_max = 0.1
-		type = "dota_src1_3d"
-		soundlevel = 100
-		vsnd_files = 
-		[
-			"sounds/weapons/hero/mars/phalanx_attack01.vsnd",
-			"sounds/weapons/hero/mars/phalanx_attack02.vsnd",
-		]
-		pitch = 1
-		distance_max = 1600
-		volume = 1.2
-		pitch_rand_min = -0.1
-	}
 	Mars.Revenge_end_target = 
 	{
 		pitch_rand_max = -0.15

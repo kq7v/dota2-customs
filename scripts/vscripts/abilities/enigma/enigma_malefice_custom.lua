@@ -67,7 +67,6 @@ function enigma_malefice_custom:Precache(context)
 	PrecacheResource("particle", "particles/enigma/malefice_shield.vpcf", context)
 	PrecacheResource("particle", "particles/enigma/malefice_aoe.vpcf", context)
 	PrecacheResource("particle", "particles/items4_fx/soul_keeper.vpcf", context)
-	PrecacheResource("particle", "particles/enigma/summon_heal.vpcf", context)
 end
 
 function enigma_malefice_custom:UpdateTalents()
@@ -87,7 +86,6 @@ function enigma_malefice_custom:UpdateTalents()
 			has_q4 = 0,
 			q4_stun = caster:GetTalentValue("modifier_enigma_malefice_4", "stun", true),
 
-			has_h1 = 0,
 			h1_heal = 0,
 
 			has_q7 = 0,
@@ -101,9 +99,6 @@ function enigma_malefice_custom:UpdateTalents()
 			has_r3 = 0,
 			r3_radius = caster:GetTalentValue("modifier_enigma_blackhole_3", "radius", true),
 
-			has_r4 = 0,
-			r4_heal = caster:GetTalentValue("modifier_enigma_blackhole_4", "heal", true) / 100,
-
 			has_r7 = 0,
 		}
 	end
@@ -114,15 +109,14 @@ function enigma_malefice_custom:UpdateTalents()
 	end
 
 	if caster:HasTalent("modifier_enigma_hero_1") then
-		self.talents.has_h1 = 1
 		self.talents.h1_heal = caster:GetTalentValue("modifier_enigma_hero_1", "heal") / 100
-		caster:AddDamageEvent_out(self.tracker, true)
+		caster:AddLifesteal(self.tracker, { name = "modifier_enigma_hero_1", value = self.talents.h1_heal })
 	end
 
 	if caster:HasTalent("modifier_enigma_malefice_3") then
 		self.talents.has_q3 = 1
 		self.talents.q3_health = caster:GetTalentValue("modifier_enigma_malefice_3", "health")
-		caster:AddAttackEvent_out(self.tracker, true)
+		caster:AddProc(self.tracker, { land = true, illusion = true })
 	end
 
 	if caster:HasTalent("modifier_enigma_malefice_4") then
@@ -131,16 +125,11 @@ function enigma_malefice_custom:UpdateTalents()
 
 	if caster:HasTalent("modifier_enigma_malefice_7") then
 		self.talents.has_q7 = 1
-		caster:AddAttackEvent_out(self.tracker, true)
+		caster:AddProc(self.tracker, { land = true, illusion = true })
 	end
 
 	if caster:HasTalent("modifier_enigma_blackhole_3") then
 		self.talents.has_r3 = 1
-	end
-
-	if caster:HasTalent("modifier_enigma_blackhole_4") then
-		self.talents.has_r4 = 1
-		caster:AddDamageEvent_out(self.tracker, true)
 	end
 
 	if caster:HasTalent("modifier_enigma_blackhole_7") then
@@ -331,14 +320,11 @@ function modifier_enigma_malefice_custom_tracker:OnIntervalThink()
 	end
 end
 
-function modifier_enigma_malefice_custom_tracker:AttackEvent_out(params)
-	if not IsServer() then
-		return
-	end
-	if not params.target:IsUnit() then
-		return
-	end
+function modifier_enigma_malefice_custom_tracker:GetProcChance()
+	return 100
+end
 
+function modifier_enigma_malefice_custom_tracker:AttackProc(params, name)
 	local attacker = params.attacker
 	local target = params.target
 	local is_eidolon = attacker:HasModifier("modifier_enigma_demonic_conversion_custom")
@@ -370,48 +356,6 @@ function modifier_enigma_malefice_custom_tracker:AttackEvent_out(params)
 	end
 
 	mod:SetDuration(mod.max_duration, true)
-end
-
-function modifier_enigma_malefice_custom_tracker:DamageEvent_out(params)
-	if not IsServer() then
-		return
-	end
-	local talent_1 = self.ability.talents.has_h1 == 1
-	local talent_4 = self.ability.talents.has_r4 == 1
-		and params.unit:HasModifier("modifier_enigma_black_hole_custom_debuff")
-		and params.inflictor
-
-	if not talent_1 and not talent_4 then
-		return
-	end
-
-	local attacker = params.attacker
-	if attacker.owner then
-		attacker = attacker.owner
-	end
-	if attacker ~= self.parent then
-		return
-	end
-	local result = self.parent:CheckLifesteal(params, nil, true)
-	if not result then
-		return
-	end
-
-	if talent_1 then
-		local heal = result * self.ability.talents.h1_heal * params.damage
-		self.parent:GenericHeal(heal, self.ability, true, "", "modifier_enigma_hero_1")
-	end
-
-	if talent_4 then
-		local heal = result * self.ability.talents.r4_heal * params.damage
-		self.parent:GenericHeal(
-			heal,
-			self.ability,
-			true,
-			"particles/enigma/summon_heal.vpcf",
-			"modifier_enigma_blackhole_4"
-		)
-	end
 end
 
 modifier_enigma_malefice_custom = class(mod_visible)
@@ -455,7 +399,7 @@ function modifier_enigma_malefice_custom:OnCreated(table)
 	self.interval = 0.1
 
 	if self.caster:HasShard() then
-		self.parent:AddAttackEvent_out(self, true)
+		self.parent:AddProc(self, { land = true })
 		self.parent:AddSpellEvent(self, true)
 	end
 
@@ -589,13 +533,11 @@ function modifier_enigma_malefice_custom:AddStack()
 	ParticleManager:SetParticleControl(self.effect, 1, Vector(double, number_1, number_2))
 end
 
-function modifier_enigma_malefice_custom:AttackEvent_out(params)
-	if not IsServer() then
-		return
-	end
-	if self.parent ~= params.attacker then
-		return
-	end
+function modifier_enigma_malefice_custom:GetProcChance()
+	return 100
+end
+
+function modifier_enigma_malefice_custom:AttackProc(params, name)
 	self:AddShield()
 end
 

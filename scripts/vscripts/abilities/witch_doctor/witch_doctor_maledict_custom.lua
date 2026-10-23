@@ -67,6 +67,7 @@ function witch_doctor_maledict_custom:UpdateTalents()
 			has_e3 = 0,
 			e3_magic_stack = 0,
 			e3_heal_reduce_stack = 0,
+			e3_heal = 0,
 			e3_max = caster:GetTalentValue("modifier_witch_doctor_maledict_3", "max", true),
 
 			has_e4 = 0,
@@ -103,6 +104,17 @@ function witch_doctor_maledict_custom:UpdateTalents()
 			/ self.talents.e3_max
 		self.talents.e3_heal_reduce_stack = caster:GetTalentValue("modifier_witch_doctor_maledict_3", "heal_reduce")
 			/ self.talents.e3_max
+		self.talents.e3_heal = caster:GetTalentValue("modifier_witch_doctor_maledict_3", "heal") / 100
+		caster:AddLifesteal(self.tracker, {
+			name = "modifier_witch_doctor_maledict_3",
+			type = 1,
+			value = function(params)
+				if params.inflictor ~= self and params.inflictor ~= caster.maledict_legendary_ability then
+					return 0
+				end
+				return self.talents.e3_heal
+			end,
+		})
 	end
 
 	if caster:HasTalent("modifier_witch_doctor_maledict_4") then

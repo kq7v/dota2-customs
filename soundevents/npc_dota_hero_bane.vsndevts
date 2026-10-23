@@ -216,21 +216,6 @@
 		distance_max = 1600
 		pitch_rand_min = -0.1
 	}
-	Bane.Enfeeble_dispell = 
-	{
-		type = "dota_src1_3d"
-		volume = 1.4
-		vsnd_files = 
-		[
-			"sounds/weapons/hero/bane/enfeeble.vsnd",
-		]
-		pitch_rand_min = 0.15
-		pitch_rand_max = 0.2
-		pitch = 1
-		soundlevel = 100
-		volume_fade_out = 1
-		distance_max = 1600
-	}
 	Bane.Sap_shield = 
 	{
 		type = "dota_src1_3d"

@@ -148,7 +148,7 @@ function bane_nightmare_custom:UpdateTalents()
 		self.talents.has_e1 = 1
 		self.talents.e1_range = caster:GetTalentValue("modifier_bane_nightmare_1", "range")
 		self.talents.e1_slow = caster:GetTalentValue("modifier_bane_nightmare_1", "slow")
-		caster:AddAttackEvent_out(self.tracker, true)
+		caster:AddProc(self.tracker, { land = true })
 	end
 
 	if caster:HasTalent("modifier_bane_nightmare_2") then
@@ -163,12 +163,21 @@ function bane_nightmare_custom:UpdateTalents()
 
 	if caster:HasTalent("modifier_bane_nightmare_4") then
 		self.talents.has_e4 = 1
-		caster:AddDamageEvent_out(self.tracker, true)
+		caster:AddLifesteal(self.tracker, {
+			name = "modifier_bane_nightmare_4",
+			type = 2,
+			value = function(params)
+				if params.unit and params.unit:HasModifier("modifier_bane_nightmare_custom") then
+					return self.talents.e4_heal * self.talents.e4_bonus
+				end
+				return self.talents.e4_heal
+			end,
+		})
 	end
 
 	if caster:HasTalent("modifier_bane_nightmare_7") then
 		self.talents.has_e7 = 1
-		caster:AddAttackEvent_out(self.tracker, true)
+		caster:AddProc(self.tracker, { land = true })
 	end
 
 	if caster:HasTalent("modifier_bane_hero_2") then
@@ -609,16 +618,11 @@ function modifier_bane_nightmare_custom_tracker:GetModifierStatusResistanceStack
 	return self.ability.talents.e4_status
 end
 
-function modifier_bane_nightmare_custom_tracker:AttackEvent_out(params)
-	if not IsServer() then
-		return
-	end
-	if self.parent ~= params.attacker then
-		return
-	end
-	if not params.target:IsUnit() then
-		return
-	end
+function modifier_bane_nightmare_custom_tracker:GetProcChance()
+	return 100
+end
+
+function modifier_bane_nightmare_custom_tracker:AttackProc(params, name)
 	local target = params.target
 
 	local mod = target:FindModifierByName("modifier_bane_nightmare_custom_legendary_damage")
@@ -634,31 +638,6 @@ function modifier_bane_nightmare_custom_tracker:AttackEvent_out(params)
 			{ duration = self.ability.talents.e1_duration }
 		)
 	end
-end
-
-function modifier_bane_nightmare_custom_tracker:DamageEvent_out(params)
-	if not IsServer() then
-		return
-	end
-	if self.ability.talents.has_e4 == 0 then
-		return
-	end
-	local result = self.parent:CheckLifesteal(params, 2)
-	if not result then
-		return
-	end
-
-	local mod = params.unit:FindModifierByName("modifier_bane_nightmare_custom")
-
-	local heal = params.damage * self.ability.talents.e4_heal
-	local effect = ""
-
-	if mod then
-		effect = nil
-		heal = heal * self.ability.talents.e4_bonus
-	end
-
-	self.parent:GenericHeal(heal * result, self.ability, true, effect, "modifier_bane_nightmare_4")
 end
 
 modifier_bane_nightmare_custom_damage = class(mod_visible)

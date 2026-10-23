@@ -108,34 +108,6 @@
 		distance_max = 1600
 		pitch = 1
 	}
-	TB.Reflection_mana = 
-	{
-		vsnd_files = 
-		[
-			"sounds/weapons/creep/neutral/satyr_soulstealer_manaburn.vsnd",
-		]
-		volume = 0.8
-		pitch_rand_min = -0.05
-		pitch_rand_max = 0.05
-		type = "dota_src1_3d"
-		soundlevel = 100
-		distance_max = 1600
-		pitch = 1
-	}
-	TB.Image_legendary = 
-	{
-		vsnd_files = 
-		[
-			"sounds/weapons/hero/terrorblade/demon_zeal.vsnd",
-		]
-		volume = 2
-		pitch_rand_min = -0.05
-		pitch_rand_max = 0.05
-		type = "dota_src1_3d"
-		soundlevel = 100
-		distance_max = 1600
-		pitch = 1
-	}
 	TB.Meta_crit = 
 	{
 		vsnd_files = 
@@ -153,48 +125,6 @@
 		distance_max = 1600
 		pitch = 1
 		volume_fade_out = 0.5
-	}
-	TB.Image_aoe = 
-	{
-		vsnd_files = 
-		[
-			"sounds/weapons/hero/pugna/netherblast.vsnd",
-		]
-		volume = 1.5
-		pitch_rand_min = -0.05
-		pitch_rand_max = 0.05
-		type = "dota_src1_3d"
-		soundlevel = 100
-		distance_max = 1600
-		pitch = 1
-	}
-	TB.Meta_magic = 
-	{
-		vsnd_files = 
-		[
-			"sounds/weapons/hero/shadow_demon/shadow_poison_damage02.vsnd",
-		]
-		volume = 1.5
-		pitch_rand_min = -0.05
-		pitch_rand_max = 0.05
-		type = "dota_src1_3d"
-		soundlevel = 100
-		distance_max = 1600
-		pitch = 1
-	}
-	TB.Meta_lowhp = 
-	{
-		vsnd_files = 
-		[
-			"sounds/weapons/hero/terrorblade/morph_scepter.vsnd",
-		]
-		volume = 2.4
-		pitch_rand_min = -0.05
-		pitch_rand_max = 0.05
-		type = "dota_src1_3d"
-		soundlevel = 100
-		distance_max = 1600
-		pitch = 1
 	}
 	TB.Image_blink_start = 
 	{

@@ -48,18 +48,10 @@ function night_stalker_innate_custom:UpdateTalents(name)
 	if not self.init then
 		self.init = true
 		self.talents = {
-			has_w3 = 0,
-			w3_heal = 0,
-
-			has_r2 = 0,
-			r2_heal = 0,
-			r2_bonus = caster:GetTalentValue("modifier_stalker_dark_2", "bonus", true),
-
 			has_h3 = 0,
 			h3_max_move = 0,
 			h3_move = 0,
 
-			has_h6 = 0,
 			h6_shield_heal = caster:GetTalentValue("modifier_stalker_hero_6", "shield_heal", true) / 100,
 
 			has_e1 = 0,
@@ -76,18 +68,6 @@ function night_stalker_innate_custom:UpdateTalents(name)
 		}
 	end
 
-	if caster:HasTalent("modifier_stalker_fear_3") then
-		self.talents.has_w3 = 1
-		self.talents.w3_heal = caster:GetTalentValue("modifier_stalker_fear_3", "heal") / 100
-		caster:AddDamageEvent_out(self.tracker, true)
-	end
-
-	if caster:HasTalent("modifier_stalker_dark_2") then
-		self.talents.has_r2 = 1
-		self.talents.r2_heal = caster:GetTalentValue("modifier_stalker_dark_2", "heal") / 100
-		caster:AddDamageEvent_out(self.tracker, true)
-	end
-
 	if caster:HasTalent("modifier_stalker_hero_3") then
 		self.talents.has_h3 = 1
 		self.talents.h3_move = caster:GetTalentValue("modifier_stalker_hero_3", "move")
@@ -95,8 +75,15 @@ function night_stalker_innate_custom:UpdateTalents(name)
 	end
 
 	if caster:HasTalent("modifier_stalker_hero_6") then
-		self.talents.has_h6 = 1
-		caster:AddDamageEvent_out(self.tracker, true)
+		caster:AddLifesteal(
+			self.tracker,
+			{
+				name = "modifier_stalker_hero_6",
+				heal = false,
+				proc = "LifestealShield",
+				value = self.talents.h6_shield_heal,
+			}
+		)
 	end
 
 	if caster:HasTalent("modifier_stalker_hunter_1") then
@@ -358,44 +345,14 @@ function modifier_night_stalker_innate_custom:DeathEvent(params)
 	end
 end
 
-function modifier_night_stalker_innate_custom:DamageEvent_out(params)
-	if not IsServer() then
+function modifier_night_stalker_innate_custom:LifestealShield(params, shield)
+	if not self.parent.dark_ability then
 		return
 	end
-	local result = self.parent:CheckLifesteal(params)
-	if not result then
+	if not IsValid(self.parent.dark_ability.shield_mod) then
 		return
 	end
-
-	if
-		self.ability.talents.has_h6 == 1
-		and self.parent.dark_ability
-		and IsValid(self.parent.dark_ability.shield_mod)
-	then
-		local heal = result * params.damage * self.ability.talents.h6_shield_heal
-		self.parent.dark_ability.shield_mod:AddShield(heal)
-	end
-
-	if self.ability.talents.has_r2 == 1 and not params.inflictor then
-		local heal = params.damage * self.ability.talents.r2_heal * result
-		local effect = ""
-
-		if self.parent:HasModifier("modifier_night_stalker_darkness_custom_active") then
-			heal = heal * self.ability.talents.r2_bonus
-			effect = nil
-		end
-		self.parent:GenericHeal(heal, self.ability, true, effect, "modifier_stalker_dark_2")
-	end
-
-	if self.ability.talents.has_w3 == 1 and params.inflictor then
-		self.parent:GenericHeal(
-			result * params.damage * self.ability.talents.w3_heal,
-			self.ability,
-			true,
-			"particles/items3_fx/octarine_core_lifesteal.vpcf",
-			"modifier_stalker_fear_3"
-		)
-	end
+	self.parent.dark_ability.shield_mod:AddShield(shield)
 end
 
 function modifier_night_stalker_innate_custom:DeclareFunctions()

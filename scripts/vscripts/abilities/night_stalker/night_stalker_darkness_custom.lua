@@ -114,8 +114,9 @@ function night_stalker_darkness_custom:UpdateTalents(name)
 			r1_damage_type = caster:GetTalentValue("modifier_stalker_dark_1", "damage_type", true),
 			r1_cd_min = caster:GetTalentValue("modifier_stalker_dark_1", "cd_min", true),
 
-			has_r2 = 0,
 			r2_cd = 0,
+			r2_heal = 0,
+			r2_bonus = caster:GetTalentValue("modifier_stalker_dark_2", "bonus", true),
 
 			has_r3 = 0,
 			r3_heal_reduce = 0,
@@ -152,12 +153,22 @@ function night_stalker_darkness_custom:UpdateTalents(name)
 	if caster:HasTalent("modifier_stalker_dark_1") then
 		self.talents.has_r1 = 1
 		self.talents.r1_damage = caster:GetTalentValue("modifier_stalker_dark_1", "damage") / 100
-		caster:AddAttackEvent_out(self.tracker, true)
+		caster:AddProc(self.tracker, { land = true })
 	end
 
 	if caster:HasTalent("modifier_stalker_dark_2") then
-		self.talents.has_r2 = 1
 		self.talents.r2_cd = caster:GetTalentValue("modifier_stalker_dark_2", "cd")
+		self.talents.r2_heal = caster:GetTalentValue("modifier_stalker_dark_2", "heal") / 100
+		caster:AddLifesteal(self.tracker, {
+			name = "modifier_stalker_dark_2",
+			type = 2,
+			value = function()
+				if caster:HasModifier("modifier_night_stalker_darkness_custom_active") then
+					return self.talents.r2_heal * self.talents.r2_bonus
+				end
+				return self.talents.r2_heal
+			end,
+		})
 	end
 
 	if caster:HasTalent("modifier_stalker_dark_3") then
@@ -169,7 +180,7 @@ function night_stalker_darkness_custom:UpdateTalents(name)
 
 	if caster:HasTalent("modifier_stalker_dark_4") then
 		self.talents.has_r4 = 1
-		caster:AddAttackEvent_out(self.tracker, true)
+		caster:AddProc(self.tracker, { land = true })
 	end
 
 	if caster:HasTalent("modifier_stalker_dark_7") then
@@ -268,19 +279,12 @@ function modifier_night_stalker_darkness_custom:OnRefresh(table)
 	self.ability.duration = self.ability:GetSpecialValueFor("duration")
 end
 
-function modifier_night_stalker_darkness_custom:AttackEvent_out(params)
-	if not IsServer() then
-		return
-	end
-	if self.parent ~= params.attacker then
-		return
-	end
+function modifier_night_stalker_darkness_custom:GetProcChance()
+	return 100
+end
 
+function modifier_night_stalker_darkness_custom:AttackProc(params, name)
 	local target = params.target
-
-	if not target:IsUnit() then
-		return
-	end
 
 	if self.ability.talents.has_r7 == 0 and target:IsRealHero() then
 		local mod = self.parent:FindModifierByName("modifier_night_stalker_darkness_custom_active")
@@ -554,6 +558,13 @@ function modifier_night_stalker_darkness_custom_active:DeclareFunctions()
 	}
 end
 
+function modifier_night_stalker_darkness_custom_active:GetCritChance()
+	if not self.parent:HasShard() then
+		return 0
+	end
+	return self.ability.shard_chance
+end
+
 function modifier_night_stalker_darkness_custom_active:GetCritDamage()
 	if not self.parent:HasShard() then
 		return
@@ -568,11 +579,11 @@ function modifier_night_stalker_darkness_custom_active:GetModifierPreAttack_Crit
 	if not self.parent:HasShard() then
 		return
 	end
-	if not RollPseudoRandomPercentage(self.ability.shard_chance, 1295, self.parent) then
+	if not RollPseudoRandomPercentage(self:GetCritChance(), 1295, self.parent) then
 		return
 	end
 
-	return self.ability.shard_crit
+	return self:GetCritDamage()
 end
 
 function modifier_night_stalker_darkness_custom_active:GetVisualZDelta()
@@ -1370,7 +1381,7 @@ function modifier_night_stalker_darkness_custom_legendary_dash:UpdateHorizontalM
 			if
 				self.ability.talents.has_e3 == 1
 				and IsValid(self.midnight_ability)
-				and RollPseudoRandomPercentage(self.ability.talents.e3_chance, 1324, self.parent)
+				and RollPseudoRandomPercentage(self.ability.talents.e3_chance, "modifier_stalker_hunter_3", self.parent)
 			then
 				target:AddNewModifier(
 					self.parent,

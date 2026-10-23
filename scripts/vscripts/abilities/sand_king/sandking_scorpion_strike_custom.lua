@@ -61,6 +61,9 @@ function sandking_scorpion_strike_custom:Precache(context)
 	PrecacheResource("particle", "particles/neutral_fx/gnoll_poison_debuff.vpcf", context)
 	PrecacheResource("particle", "particles/sand_king/sandking_scorpion_strike_tell.vpcf", context)
 	PrecacheResource("particle", "particles/sand_king/stinger_stack.vpcf", context)
+	PrecacheResource("particle", "particles/units/heroes/hero_marci/marci_dispose_debuff.vpcf", context)
+	PrecacheResource("particle", "particles/sand_king/finale_double_hit.vpcf", context)
+	PrecacheResource("particle", "particles/mars/mars_revenge_proc.vpcf", context)
 end
 
 function sandking_scorpion_strike_custom:GetAOERadius()
@@ -347,11 +350,6 @@ function modifier_sandking_scorpion_strike_custom:OnCreated()
 	if not IsServer() then
 		return
 	end
-	CustomGameEventManager:Send_ServerToPlayer(
-		PlayerResource:GetPlayer(self.parent:GetPlayerOwnerID()),
-		"ability_sandking_stinger",
-		{}
-	)
 	self:StartIntervalThink(0.2)
 end
 

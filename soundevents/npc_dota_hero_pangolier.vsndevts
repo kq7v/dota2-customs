@@ -193,20 +193,6 @@
 		volume = 1.6
 		vsnd_duration = 8.933878
 	}
-	Pango.Shield_purge = 
-	{
-		type = "dota_src1_3d"
-		vsnd_files = 
-		[
-			"sounds/weapons/hero/brewmaster/dispel_magic.vsnd",
-		]
-		pitch_rand_max = 0.05
-		volume = 0.8
-		pitch_rand_min = 0.05
-		distance_max = 1600
-		pitch = 1
-		soundlevel = 100
-	}
 	Pango.Lucky_legendary = 
 	{
 		type = "dota_src1_3d"
@@ -234,20 +220,6 @@
 		distance_max = 1600
 		pitch = 1
 		soundlevel = 81
-	}
-	Pango.Swash_blink = 
-	{
-		type = "dota_src1_3d"
-		vsnd_files = 
-		[
-			"sounds/weapons/hero/pangolier/swashbuckle_cast.vsnd",
-		]
-		pitch_rand_max = 0.1
-		volume = 0.6
-		pitch_rand_min = 0.05
-		distance_max = 1600
-		pitch = 1
-		soundlevel = 100
 	}
 	Pango.Lucky_dash = 
 	{
@@ -453,20 +425,6 @@
 		distance_max = 1600
 		type = "dota_src1_3d"
 		pitch_rand_min = 0.08
-	}
-	Pango.Shield_heal = 
-	{
-		type = "dota_src1_3d"
-		vsnd_files = 
-		[
-			"sounds/weapons/hero/oracle/false_promise_heal.vsnd",
-		]
-		pitch_rand_max = 0.1
-		volume = 1.1
-		pitch_rand_min = 0.1
-		distance_max = 1600
-		pitch = 1
-		soundlevel = 100
 	}
 	Pango.Lucky_legendary_proc = 
 	{

@@ -50,13 +50,6 @@ function pangolier_innate_custom:UpdateTalents(name)
 			has_q7 = 0,
 			q7_bva = caster:GetTalentValue("modifier_pangolier_buckle_7", "bva", true),
 
-			has_w3 = 0,
-			w3_heal = 0,
-
-			has_e2 = 0,
-			e2_heal = 0,
-			e2_bonus = caster:GetTalentValue("modifier_pangolier_lucky_2", "bonus", true),
-
 			has_e7 = 0,
 			e7_bva = caster:GetTalentValue("modifier_pangolier_lucky_7", "bva", true),
 
@@ -75,18 +68,6 @@ function pangolier_innate_custom:UpdateTalents(name)
 
 	if caster:HasTalent("modifier_pangolier_buckle_7") then
 		self.talents.has_q7 = 1
-	end
-
-	if caster:HasTalent("modifier_pangolier_shield_3") then
-		self.talents.has_w3 = 1
-		self.talents.w3_heal = caster:GetTalentValue("modifier_pangolier_shield_3", "heal") / 100
-		caster:AddDamageEvent_out(self.tracker, true)
-	end
-
-	if caster:HasTalent("modifier_pangolier_lucky_2") then
-		self.talents.has_e2 = 1
-		self.talents.e2_heal = caster:GetTalentValue("modifier_pangolier_lucky_2", "heal") / 100
-		caster:AddDamageEvent_out(self.tracker, true)
 	end
 
 	if caster:HasTalent("modifier_pangolier_lucky_7") then
@@ -131,38 +112,6 @@ function modifier_pangolier_innate_custom:OnCreated(table)
 
 	self.parent:AddAttackEvent_inc(self, true)
 	self.parent:AddSpellEvent(self, true)
-end
-
-function modifier_pangolier_innate_custom:DamageEvent_out(params)
-	if not IsServer() then
-		return
-	end
-	local result = self.parent:CheckLifesteal(params)
-	if not result then
-		return
-	end
-
-	if self.ability.talents.has_w3 == 1 and params.inflictor then
-		self.parent:GenericHeal(
-			self.ability.talents.w3_heal * params.damage * result,
-			self.ability,
-			true,
-			"particles/items3_fx/octarine_core_lifesteal.vpcf",
-			"modifier_pangolier_shield_3"
-		)
-	end
-
-	if self.ability.talents.has_e2 == 1 and not params.inflictor then
-		local heal = self.ability.talents.e2_heal * params.damage * result
-
-		if
-			(self.ability.talents.has_e7 == 0 and params.attack_damage_flag == "pangolier_q")
-			or self.parent:GetUpgradeStack("modifier_pangolier_lucky_shot_custom_legendary_caster") == 1
-		then
-			heal = heal * self.ability.talents.e2_bonus
-		end
-		self.parent:GenericHeal(heal, self.ability, true, false, "modifier_pangolier_lucky_2")
-	end
 end
 
 function modifier_pangolier_innate_custom:AttackEvent_inc(params)

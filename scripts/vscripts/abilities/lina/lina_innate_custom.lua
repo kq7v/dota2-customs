@@ -38,14 +38,7 @@ function lina_innate_custom:UpdateTalents(name)
 		self.talents = {
 			w7_damage = caster:GetTalentValue("modifier_lina_array_7", "damage", true) / 100,
 
-			has_q3 = 0,
 			q3_heal = 0,
-
-			has_e4 = 0,
-			e4_heal = caster:GetTalentValue("modifier_lina_soul_4", "heal", true) / 100,
-
-			has_r2 = 0,
-			r2_heal = 0,
 
 			has_r3 = 0,
 			r3_magic = 0,
@@ -63,20 +56,14 @@ function lina_innate_custom:UpdateTalents(name)
 	end
 
 	if caster:HasTalent("modifier_lina_dragon_3") then
-		self.talents.has_q3 = 1
 		self.talents.q3_heal = caster:GetTalentValue("modifier_lina_dragon_3", "heal") / 100
-		caster:AddDamageEvent_out(self.tracker, true)
-	end
-
-	if caster:HasTalent("modifier_lina_soul_4") then
-		self.talents.has_e4 = 1
-		caster:AddDamageEvent_out(self.tracker, true)
-	end
-
-	if caster:HasTalent("modifier_lina_laguna_2") then
-		self.talents.has_r2 = 1
-		self.talents.r2_heal = caster:GetTalentValue("modifier_lina_laguna_2", "heal") / 100
-		caster:AddDamageEvent_out(self.tracker, true)
+		caster:AddLifesteal(self.tracker, {
+			name = "modifier_lina_dragon_3",
+			type = 1,
+			value = function(params)
+				return params.inflictor == self and self.talents.q3_heal or 0
+			end,
+		})
 	end
 
 	if caster:HasTalent("modifier_lina_laguna_3") then
@@ -149,55 +136,14 @@ function modifier_lina_innate_custom:OnCreated(table)
 	self.ability.interval = self.ability:GetSpecialValueFor("interval")
 	self.ability.attack_cd = self.ability:GetSpecialValueFor("attack_cd")
 
-	self.parent:AddAttackEvent_out(self, true)
+	self.parent:AddProc(self, { land = true })
 end
 
-function modifier_lina_innate_custom:DamageEvent_out(params)
-	if not IsServer() then
-		return
-	end
-	local result = self.parent:CheckLifesteal(params)
-	if not result then
-		return
-	end
-
-	if self.ability.talents.has_q3 == 1 and params.inflictor and params.inflictor == self.ability then
-		self.parent:GenericHeal(
-			result * params.damage * self.ability.talents.q3_heal,
-			self.ability,
-			true,
-			"",
-			"modifier_lina_dragon_3"
-		)
-	end
-
-	if self.ability.talents.has_e4 == 1 and not params.inflictor then
-		local heal = (1 - self.parent:GetHealthPercent() / 100) * self.ability.talents.e4_heal * result
-		self.parent:GenericHeal(heal * params.damage, self.ability, true, false, "modifier_lina_soul_4")
-	end
-
-	if self.ability.talents.has_r2 == 1 and params.inflictor then
-		self.parent:GenericHeal(
-			self.ability.talents.r2_heal * result * params.damage,
-			self.ability,
-			true,
-			"particles/items3_fx/octarine_core_lifesteal.vpcf",
-			"modifier_lina_laguna_2"
-		)
-	end
+function modifier_lina_innate_custom:GetProcChance()
+	return 100
 end
 
-function modifier_lina_innate_custom:AttackEvent_out(params)
-	if not IsServer() then
-		return
-	end
-	if self.parent ~= params.attacker then
-		return
-	end
-	if not params.target:IsUnit() then
-		return
-	end
-
+function modifier_lina_innate_custom:AttackProc(params, name)
 	local k = 1
 	if not self.parent:HasModifier("modifier_lina_light_strike_array_custom_legendary") then
 		if not self.parent:CheckCd("lina_innate", self.ability.attack_cd) then

@@ -98,6 +98,7 @@ resources.Particles = {
 	"particles/base_static/experience_shrine_ambient_endcap.vpcf",
 	"particles/pangolier/swashbuckle_bleed_number.vpcf",
 	"particles/kunkka/xmark_bleed_number.vpcf",
+	"particles/puck/orb_legendary_number.vpcf",
 	"particles/ogre_magi/fireblast_number.vpcf",
 	"particles/muerta/shot_legendary_damage.vpcf",
 	"particles/nature_prophet/teleport_legendary_number.vpcf",
@@ -589,4 +590,10 @@ resources.Particles = {
 	"particles/econ/events/ti8/shivas_guard_ti8_impact.vpcf",
 	"particles/econ/events/ti9/shivas_guard_ti9_impact.vpcf",
 	"particles/econ/events/fall_2022/maelstrom/maelstrom_fall2022.vpcf",
+	"particles/ui_mouseactions/custom_range_finder_cone.vpcf",
+	"particles/ui_mouseactions/custom_range_finder_cone_dual.vpcf",
+	"particles/ui_mouseactions/range_finder_linear.vpcf",
+	"particles/ui_mouseactions/range_display.vpcf",
+	"particles/sand_king/stinger_target.vpcf",
+	"particles/slark/pounce_legendary_ui.vpcf",
 }

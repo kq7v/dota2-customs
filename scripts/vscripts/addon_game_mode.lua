@@ -25,14 +25,14 @@ _G.Time_to_pick_Base = 20
 _G.pro_mod = false
 _G.pro_mod_data = {
 	new_system = false,
-	disable_vision = false,
+	disable_vision = true,
 	show_random = false,
-	same_heroes = false,
+	same_heroes = true,
 	enable_pause = true,
 	double_legendary = false,
-	long_hook = false,
+	long_hook = true,
 	custom_rules = false,
-	enable_voice_radius = true,
+	enable_voice_radius = false,
 	voice_radius = 1200,
 	disable_heroes = {
 		--["npc_dota_hero_pangolier"] = true
@@ -380,7 +380,6 @@ require("spawn")
 require("upgrade")
 require("start_quest")
 require("hero_select")
-require("vector_target")
 require("patrol_main")
 require("quests_table")
 require("wearables_system/wearables_system")
@@ -829,7 +828,7 @@ r:Send( function( res ) end)
 			return
 		end
 
-		local rate = 400000
+		local rate = Convars:GetInt("sv_minrate")
 		connect_times[player_id] = { connect = Time() }
 		print("[RATE] player=" .. player_id .. " sv_minrate=" .. tostring(rate))
 		if rate > 80000 then
@@ -972,6 +971,8 @@ r:Send( function( res ) end)
 	CustomGameEventManager:RegisterListener("request_items", Dynamic_Wrap(self, "SendItems"))
 	CustomGameEventManager:RegisterListener("request_minimap_icons", Dynamic_Wrap(self, "RequestMinimapIcons"))
 	CustomGameEventManager:RegisterListener("request_player_stats", Dynamic_Wrap(self, "RequestPlayerStats"))
+	CustomGameEventManager:RegisterListener("stats_tooltip_request", Dynamic_Wrap(self, "RequestStatsTooltip"))
+	CustomGameEventManager:RegisterListener("item_tooltip_request", Dynamic_Wrap(self, "RequestItemTooltip"))
 	CustomGameEventManager:RegisterListener("CustomPick", Dynamic_Wrap(self, "CustomPick"))
 	CustomGameEventManager:RegisterListener("TipPlayer", Dynamic_Wrap(self, "TipPlayer"))
 	CustomGameEventManager:RegisterListener("select_current_emblem", Dynamic_Wrap(shop, "select_current_emblem"))

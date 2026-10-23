@@ -61,12 +61,7 @@ function modifier_item_witch_blade_custom_passive:OnCreated()
 	if not self.parent:IsRealHero() then
 		return
 	end
-
-	self.records = {}
-
-	self.parent:AddAttackStartEvent_out(self)
-	self.parent:AddAttackEvent_out(self, true)
-	self.parent:AddRecordDestroyEvent(self, true)
+	self.parent:AddProc(self, { current = true, accuracy = true, cd = true, strike = true })
 end
 
 function modifier_item_witch_blade_custom_passive:DeclareFunctions()
@@ -128,51 +123,12 @@ function modifier_item_witch_blade_custom_passive:GetModifierHealthBonus()
 	return self.ability.bonus_health
 end
 
-function modifier_item_witch_blade_custom_passive:RecordDestroyEvent(params)
-	if not self.records[params.record] then
-		return
-	end
-	self.records[params.record] = nil
+function modifier_item_witch_blade_custom_passive:GetProcChance()
+	return 100
 end
 
-function modifier_item_witch_blade_custom_passive:AttackStartEvent_out(params)
-	if not IsServer() then
-		return
-	end
-	if not IsValid(self.ability) then
-		return
-	end
-	if not self.ability:IsFullyCastable() then
-		return
-	end
-	if self.parent ~= params.attacker then
-		return
-	end
-	if not params.target:IsUnit() then
-		return
-	end
-
-	self.records[params.record] = true
-	self.ability:StartCd()
-end
-
-function modifier_item_witch_blade_custom_passive:AttackEvent_out(params)
-	if not IsServer() then
-		return
-	end
-	if not IsValid(self.ability) then
-		return
-	end
-	if not self.records[params.record] then
-		return
-	end
-	if self.parent ~= params.attacker then
-		return
-	end
+function modifier_item_witch_blade_custom_passive:AttackProc(params)
 	if self.parent:HasModifier("modifier_item_devastator_custom_passive") then
-		return
-	end
-	if not params.target:IsUnit() then
 		return
 	end
 	local target = params.target

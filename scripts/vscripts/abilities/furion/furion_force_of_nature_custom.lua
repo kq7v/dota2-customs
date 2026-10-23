@@ -70,10 +70,6 @@ function furion_force_of_nature_custom:Precache(context)
 	PrecacheResource("particle", "particles/nature_prophet/call_legendary_link.vpcf", context)
 	PrecacheResource("particle", "particles/nature_prophet/call_legendary_hands.vpcf", context)
 	PrecacheResource("particle", "particles/nature_prophet/call_legendary_overhead.vpcf", context)
-	PrecacheResource("particle", "particles/status_fx/status_effect_doom.vpcf", context)
-	PrecacheResource("particle", "particles/nature_prophet/call_root.vpcf", context)
-	PrecacheResource("particle", "particles/generic/patrol_refresh.vpcf", context)
-	PrecacheResource("particle", "particles/generic/generic_armor_reduction.vpcf", context)
 	PrecacheResource("particle", "particles/units/heroes/hero_meepo/meepo_ransack.vpcf", context)
 	PrecacheResource("particle", "particles/nature_prophet/sprout_hit.vpcf", context)
 end
@@ -89,6 +85,7 @@ function furion_force_of_nature_custom:UpdateTalents(name)
 
 			has_e2 = 0,
 			e2_health = 0,
+			e2_heal = 0,
 			e2_max = caster:GetTalentValue("modifier_furion_call_2", "max", true),
 
 			has_e3 = 0,
@@ -144,6 +141,8 @@ function furion_force_of_nature_custom:UpdateTalents(name)
 	if caster:HasTalent("modifier_furion_call_2") then
 		self.talents.has_e2 = 1
 		self.talents.e2_health = caster:GetTalentValue("modifier_furion_call_2", "health")
+		self.talents.e2_heal = caster:GetTalentValue("modifier_furion_call_2", "heal") / 100
+		caster:AddLifesteal(self.tracker, { name = "modifier_furion_call_2", type = 2, value = self.talents.e2_heal })
 	end
 
 	if caster:HasTalent("modifier_furion_call_3") then
@@ -154,6 +153,7 @@ function furion_force_of_nature_custom:UpdateTalents(name)
 
 	if caster:HasTalent("modifier_furion_call_4") then
 		self.talents.has_e4 = 1
+		caster:AddProc(self.tracker, { cd = self.talents.e4_talent_cd, land = true })
 	end
 
 	if caster:HasTalent("modifier_furion_call_7") then
@@ -373,6 +373,14 @@ function modifier_furion_force_of_nature_custom:OnCreated(table)
 	end
 
 	self.ability.all_treants[self.parent] = true
+	self.parent:AddLifesteal(self, {
+		name = "modifier_furion_call_2",
+		type = 2,
+		heal_unit = self.caster,
+		value = function()
+			return self.ability.talents.e2_heal
+		end,
+	})
 
 	if self.ability.talents.has_e4 == 1 then
 		self.parent.creep_status = self.ability.talents.e4_status
@@ -501,7 +509,7 @@ function modifier_furion_force_of_nature_custom_tracker:OnCreated()
 	self.ability.creeps_damage = self.ability:GetSpecialValueFor("creeps_damage") / 100
 
 	self.parent:AddDeathEvent(self, true)
-	self.parent:AddAttackEvent_out(self, true)
+	self.parent:AddProc(self, { name = "hit", land = true, illusion = true })
 end
 
 function modifier_furion_force_of_nature_custom_tracker:OnRefresh()
@@ -510,11 +518,15 @@ function modifier_furion_force_of_nature_custom_tracker:OnRefresh()
 	self.ability.base_armor = self.ability:GetSpecialValueFor("base_armor")
 end
 
-function modifier_furion_force_of_nature_custom_tracker:AttackEvent_out(params)
-	if not IsServer() then
-		return
+function modifier_furion_force_of_nature_custom_tracker:GetProcChance(params, name)
+	if name == "hit" then
+		return 100
 	end
-	if not params.target:IsUnit() then
+	return self.ability.talents.e4_chance
+end
+
+function modifier_furion_force_of_nature_custom_tracker:AttackProc(params, name)
+	if name ~= "hit" then
 		return
 	end
 
@@ -555,11 +567,7 @@ function modifier_furion_force_of_nature_custom_tracker:AttackEvent_out(params)
 		)
 	end
 
-	if
-		self.ability.talents.has_e4 == 1
-		and not attacker.is_treant
-		and self.parent:CheckCd("furion_e4", self.ability.talents.e4_talent_cd, self.ability.talents.e4_chance, 8997)
-	then
+	if params.procs[self].default then
 		target:EmitSound("Furion.Call_bash")
 		target:EmitSound("Furion.Call_bash2")
 		target:AddNewModifier(

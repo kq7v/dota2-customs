@@ -159,12 +159,20 @@ function centaur_return_custom:UpdateTalents()
 		self.talents.has_e1 = 1
 		self.talents.e1_armor = caster:GetTalentValue("modifier_centaur_retaliate_1", "armor")
 		self.talents.e1_damage = caster:GetTalentValue("modifier_centaur_retaliate_1", "damage")
-		caster:AddAttackEvent_out(self.tracker, true)
+		caster:AddProc(self.tracker, { name = "hit", land = true })
 	end
 
 	if caster:HasTalent("modifier_centaur_retaliate_2") then
 		self.talents.has_e2 = 1
 		self.talents.e2_heal = caster:GetTalentValue("modifier_centaur_retaliate_2", "heal") / 100
+		caster:AddLifesteal(self.tracker, {
+			name = "modifier_centaur_retaliate_2",
+			type = 2,
+			value = function()
+				return self.talents.e2_heal
+					* (caster:HasModifier("modifier_centaur_stampede_custom") and self.talents.e2_bonus or 1)
+			end,
+		})
 	end
 
 	if caster:HasTalent("modifier_centaur_hero_3") then
@@ -177,17 +185,18 @@ function centaur_return_custom:UpdateTalents()
 		self.talents.has_e3 = 1
 		self.talents.e3_str = caster:GetTalentValue("modifier_centaur_retaliate_3", "str")
 		self.talents.e3_damage = caster:GetTalentValue("modifier_centaur_retaliate_3", "damage") / 100
-		caster:AddAttackEvent_out(self.tracker, true)
+		caster:AddProc(self.tracker, { name = "hit", land = true })
+		caster:AddProc(self.tracker, { land = true })
 	end
 
 	if caster:HasTalent("modifier_centaur_retaliate_4") then
 		self.talents.has_e4 = 1
-		caster:AddAttackEvent_out(self.tracker, true)
+		caster:AddProc(self.tracker, { name = "hit", land = true })
 	end
 
 	if caster:HasTalent("modifier_centaur_retaliate_7") then
 		self.talents.has_e7 = 1
-		caster:AddAttackEvent_out(self.tracker, true)
+		caster:AddProc(self.tracker, { name = "hit", land = true })
 	end
 
 	if caster:HasTalent("modifier_centaur_hero_5") then
@@ -501,14 +510,15 @@ function modifier_centaur_return_custom:GetModifierStatusResistanceStacking()
 		)
 end
 
-function modifier_centaur_return_custom:AttackEvent_out(params)
-	if not IsServer() then
-		return
+function modifier_centaur_return_custom:GetProcChance(params, name)
+	if name == "hit" then
+		return 100
 	end
-	if self.parent ~= params.attacker then
-		return
-	end
-	if not params.target:IsUnit() then
+	return self.ability.talents.e3_chance
+end
+
+function modifier_centaur_return_custom:AttackProc(params, name)
+	if name ~= "hit" then
 		return
 	end
 	local target = params.target
@@ -522,10 +532,7 @@ function modifier_centaur_return_custom:AttackEvent_out(params)
 		)
 	end
 
-	if
-		self.ability.talents.has_e3 == 1
-		and RollPseudoRandomPercentage(self.ability.talents.e3_chance, 334, self.parent)
-	then
+	if params.procs[self].default then
 		local vec = (target:GetAbsOrigin() - self.parent:GetAbsOrigin()):Normalized()
 		vec.z = 0
 		local particle_edge_fx = ParticleManager:CreateParticle(

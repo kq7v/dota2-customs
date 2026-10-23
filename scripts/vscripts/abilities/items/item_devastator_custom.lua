@@ -68,12 +68,8 @@ function modifier_item_devastator_custom_passive:OnCreated()
 	if not self.parent:IsRealHero() then
 		return
 	end
-
-	self.records = {}
-
-	self.parent:AddAttackStartEvent_out(self)
-	self.parent:AddAttackEvent_out(self, true)
-	self.parent:AddRecordDestroyEvent(self, true)
+	self.parent:AddProc(self, { current = true, accuracy = true, cd = true, strike = true })
+	self.parent:AddProc(self, { name = "resist", land = true })
 end
 
 function modifier_item_devastator_custom_passive:DeclareFunctions()
@@ -135,67 +131,24 @@ function modifier_item_devastator_custom_passive:GetModifierHealthBonus()
 	return self.ability.bonus_health
 end
 
-function modifier_item_devastator_custom_passive:RecordDestroyEvent(params)
-	if not self.records[params.record] then
-		return
-	end
-	self.records[params.record] = nil
+function modifier_item_devastator_custom_passive:GetProcChance()
+	return 100
 end
 
-function modifier_item_devastator_custom_passive:AttackStartEvent_out(params)
-	if not IsServer() then
-		return
-	end
-	if not IsValid(self.ability) then
-		return
-	end
-	if not self.ability:IsFullyCastable() then
-		return
-	end
-	if self.parent ~= params.attacker then
-		return
-	end
-	if not params.target:IsUnit() then
-		return
-	end
-	if params.target:GetTeamNumber() == self.parent:GetTeamNumber() then
-		return
-	end
-
-	self.records[params.record] = true
-	self.ability:StartCd()
-end
-
-function modifier_item_devastator_custom_passive:AttackEvent_out(params)
-	if not IsServer() then
-		return
-	end
-	if not IsValid(self.ability) then
-		return
-	end
-	if self.parent ~= params.attacker then
-		return
-	end
-	if not params.target:IsUnit() then
-		return
-	end
-	if params.target:GetTeamNumber() == self.parent:GetTeamNumber() then
-		return
-	end
+function modifier_item_devastator_custom_passive:AttackProc(params, name)
 	local target = params.target
 
-	target:AddNewModifier(
-		self.parent,
-		self.ability,
-		"modifier_item_devastator_custom_resist",
-		{ duration = self.ability.resist_duration }
-	)
-
-	if not self.records[params.record] then
+	if name == "resist" then
+		target:AddNewModifier(
+			self.parent,
+			self.ability,
+			"modifier_item_devastator_custom_resist",
+			{ duration = self.ability.resist_duration }
+		)
 		return
 	end
-	target:EmitSound("Item.WitchBlade.Target")
 
+	target:EmitSound("Item.WitchBlade.Target")
 	target:RemoveModifierByName("modifier_item_devastator_custom_poison")
 	target:AddNewModifier(self.parent, self.ability, "modifier_item_devastator_custom_poison", {})
 end

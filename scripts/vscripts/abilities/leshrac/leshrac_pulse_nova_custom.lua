@@ -78,6 +78,7 @@ function leshrac_pulse_nova_custom:UpdateTalents(name)
 
 			has_r2 = 0,
 			r2_heal_reduce = 0,
+			r2_heal = 0,
 			r2_duration = caster:GetTalentValue("modifier_leshrac_nova_2", "duration", true),
 
 			has_r3 = 0,
@@ -118,6 +119,8 @@ function leshrac_pulse_nova_custom:UpdateTalents(name)
 	if caster:HasTalent("modifier_leshrac_nova_2") then
 		self.talents.has_r2 = 1
 		self.talents.r2_heal_reduce = caster:GetTalentValue("modifier_leshrac_nova_2", "heal_reduce")
+		self.talents.r2_heal = caster:GetTalentValue("modifier_leshrac_nova_2", "heal") / 100
+		caster:AddLifesteal(self.tracker, { name = "modifier_leshrac_nova_2", type = 1, value = self.talents.r2_heal })
 	end
 
 	if caster:HasTalent("modifier_leshrac_nova_3") then

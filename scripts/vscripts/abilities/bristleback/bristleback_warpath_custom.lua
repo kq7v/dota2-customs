@@ -88,6 +88,7 @@ function bristleback_warpath_custom:UpdateTalents(name)
 
 			has_r3 = 0,
 			r3_damage = 0,
+			r3_heal = 0,
 			r3_duration = caster:GetTalentValue("modifier_bristle_warpath_3", "duration", true),
 
 			has_r4 = 0,
@@ -135,6 +136,11 @@ function bristleback_warpath_custom:UpdateTalents(name)
 	if caster:HasTalent("modifier_bristle_warpath_3") then
 		self.talents.has_r3 = 1
 		self.talents.r3_damage = caster:GetTalentValue("modifier_bristle_warpath_3", "damage")
+		self.talents.r3_heal = caster:GetTalentValue("modifier_bristle_warpath_3", "heal") / 100
+		caster:AddLifesteal(
+			self.tracker,
+			{ name = "modifier_bristle_warpath_3", type = 2, value = self.talents.r3_heal }
+		)
 	end
 
 	if caster:HasTalent("modifier_bristle_warpath_4") then

@@ -175,21 +175,6 @@
 		pitch_rand_min = 0.2
 		pitch_rand_max = 0.3
 	}
-	Stalker.Fear_knock = 
-	{
-		type = "dota_src1_3d"
-		vsnd_files = 
-		[
-			"sounds/weapons/hero/abaddon/curse_proc.vsnd",
-		]
-		pitch = 1
-		soundlevel = 100
-		volume_fade_out = 1
-		distance_max = 1600
-		volume = 0.6
-		pitch_rand_min = -0.15
-		pitch_rand_max = -0.05
-	}
 	Stalker.Hunter_double_start = 
 	{
 		type = "dota_src1_3d"

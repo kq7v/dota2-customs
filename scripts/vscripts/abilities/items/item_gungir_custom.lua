@@ -39,6 +39,7 @@ function item_gungir_custom:Spawn()
 	self.bonus_mana = self:GetSpecialValueFor("bonus_mana")
 	self.cast_speed = self:GetSpecialValueFor("cast_speed")
 	self.bonus_damage = self:GetSpecialValueFor("bonus_damage")
+	self.item_damage = self:GetSpecialValueFor("item_damage")
 	self.movespeed = self:GetSpecialValueFor("movespeed")
 end
 
@@ -150,9 +151,6 @@ modifier_item_gungir_custom = class(mod_hidden)
 function modifier_item_gungir_custom:RemoveOnDeath()
 	return false
 end
-function modifier_item_gungir_custom:GetAttributes()
-	return MODIFIER_ATTRIBUTE_MULTIPLE
-end
 function modifier_item_gungir_custom:OnCreated(table)
 	self.parent = self:GetParent()
 	self.ability = self:GetAbility()
@@ -162,6 +160,11 @@ function modifier_item_gungir_custom:OnCreated(table)
 	self.mana = self.ability.bonus_mana
 	self.cast = self.ability.cast_speed
 	self.bonus_damage = self.ability.bonus_damage
+	self.item_damage = self.ability.item_damage
+end
+
+function modifier_item_gungir_custom:GetItemDamage()
+	return self.item_damage
 end
 
 function modifier_item_gungir_custom:DeclareFunctions()

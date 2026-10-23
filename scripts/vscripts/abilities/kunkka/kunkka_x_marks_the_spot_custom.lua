@@ -107,6 +107,8 @@ function kunkka_x_marks_the_spot_custom:UpdateTalents(name)
 			e1_bonus = caster:GetTalentValue("modifier_kunkka_xmark_1", "bonus", true),
 
 			e2_cd = 0,
+			e2_lifesteal = 0,
+			e2_bonus = caster:GetTalentValue("modifier_kunkka_xmark_2", "bonus", true),
 
 			has_e3 = 0,
 			e3_bonus_duration = 0,
@@ -197,19 +199,30 @@ function kunkka_x_marks_the_spot_custom:UpdateTalents(name)
 	if caster:HasTalent("modifier_kunkka_xmark_1") then
 		self.talents.has_e1 = 1
 		self.talents.e1_crit = caster:GetTalentValue("modifier_kunkka_xmark_1", "crit") + 100
-		self.caster:AddAttackEvent_out(self.tracker, true)
+		self.caster:AddProc(self.tracker, { land = true, ally = true })
 		self.caster:AddRecordDestroyEvent(self.tracker, true)
 	end
 
 	if caster:HasTalent("modifier_kunkka_xmark_2") then
 		self.talents.e2_cd = caster:GetTalentValue("modifier_kunkka_xmark_2", "cd")
+		self.talents.e2_lifesteal = caster:GetTalentValue("modifier_kunkka_xmark_2", "lifesteal") / 100
+		caster:AddLifesteal(self.tracker, {
+			name = "modifier_kunkka_xmark_2",
+			value = function(params)
+				if params.inflictor and params.inflictor ~= caster.tidebringer_ability then
+					return 0
+				end
+				return self.talents.e2_lifesteal
+					* (caster:HasModifier("modifier_kunkka_xmark_custom_target") and self.talents.e2_bonus or 1)
+			end,
+		})
 	end
 
 	if caster:HasTalent("modifier_kunkka_xmark_3") then
 		self.talents.has_e3 = 1
 		self.talents.e3_bonus_duration = caster:GetTalentValue("modifier_kunkka_xmark_3", "bonus_duration")
 		self.talents.e3_damage = caster:GetTalentValue("modifier_kunkka_xmark_3", "damage") / 100
-		self.caster:AddAttackEvent_out(self.tracker, true)
+		self.caster:AddProc(self.tracker, { land = true, ally = true })
 	end
 
 	if caster:HasTalent("modifier_kunkka_xmark_4") then
@@ -233,7 +246,7 @@ function kunkka_x_marks_the_spot_custom:UpdateTalents(name)
 	if caster:HasTalent("modifier_kunkka_shop_2") then
 		self.talents.has_s2 = 1
 		self.talents.s2_damage = caster:GetTalentValue("modifier_kunkka_shop_2", "damage")
-		self.caster:AddAttackEvent_out(self.tracker, true)
+		self.caster:AddProc(self.tracker, { land = true, ally = true })
 	end
 
 	if caster:HasTalent("modifier_kunkka_shop_3") then
@@ -250,7 +263,7 @@ function kunkka_x_marks_the_spot_custom:UpdateTalents(name)
 		self.talents.s5_stats = caster:GetTalentValue("modifier_kunkka_shop_5", "stats")
 		if IsServer() then
 			self.caster:CalculateStatBonus(true)
-			self.caster:AddAttackEvent_out(self.tracker, true)
+			self.caster:AddProc(self.tracker, { land = true, ally = true })
 		end
 	end
 
@@ -268,7 +281,7 @@ function kunkka_x_marks_the_spot_custom:UpdateTalents(name)
 
 	if caster:HasTalent("modifier_kunkka_shop_8") then
 		self.talents.has_s8 = 1
-		self.caster:AddAttackEvent_out(self.tracker, true)
+		self.caster:AddProc(self.tracker, { land = true, ally = true })
 	end
 
 	if caster:HasTalent("modifier_kunkka_shop_9") then
@@ -919,13 +932,6 @@ function modifier_kunkka_xmark_custom_tracker:OnCreated(table)
 		["item_vanguard"] = {
 			health = 250,
 		},
-		["item_yasha"] = {
-			agi = 16,
-			speed = 15,
-		},
-		["item_mage_slayer"] = {
-			damage = 15,
-		},
 		["item_moon_shard"] = {
 			speed = 130,
 		},
@@ -959,21 +965,19 @@ function modifier_kunkka_xmark_custom_tracker:SpellEvent(params)
 	end
 end
 
-function modifier_kunkka_xmark_custom_tracker:AttackEvent_out(params)
-	if not IsServer() then
-		return
+function modifier_kunkka_xmark_custom_tracker:GetProcChance(params)
+	if params.target:GetTeamNumber() == self.parent:GetTeamNumber() and not params.target.is_kunkka_target then
+		return 0
 	end
-	if self.parent ~= params.attacker then
-		return
-	end
+	return 100
+end
+
+function modifier_kunkka_xmark_custom_tracker:AttackProc(params, name)
 	if params.attack_flag == "kunkka_w4" then
 		return
 	end
 
 	local target = params.target
-	if not target:IsUnit() then
-		return
-	end
 
 	local mod = self.parent:FindModifierByName("modifier_kunkka_xmark_custom_target")
 	if mod then
@@ -1383,6 +1387,17 @@ function modifier_kunkka_xmark_custom_tracker:GetStats()
 		+ self.ability.talents.s5_bonus * self.parent:GetUpgradeStack("modifier_kunkka_xmark_custom_stats_bonus")
 end
 
+function modifier_kunkka_xmark_custom_tracker:GetCritChance()
+	if self.ability.talents.has_e1 == 0 then
+		return 0
+	end
+	if self.parent:HasModifier("modifier_kunkka_xmark_custom_target") then
+		return self.ability.talents.e1_chance * self.ability.talents.e1_bonus, 1922
+	end
+
+	return self.ability.talents.e1_chance, 1921
+end
+
 function modifier_kunkka_xmark_custom_tracker:GetCritDamage()
 	return self.ability.talents.e1_crit
 end
@@ -1401,9 +1416,8 @@ function modifier_kunkka_xmark_custom_tracker:GetModifierPreAttack_CriticalStrik
 		return
 	end
 
-	local bonus = self.parent:HasModifier("modifier_kunkka_xmark_custom_target") and self.ability.talents.e1_bonus or 1
-	local prd = bonus == self.ability.talents.e1_bonus and 1922 or 1921
-	if not RollPseudoRandomPercentage(self.ability.talents.e1_chance * bonus, prd, self.parent) then
+	local chance, prd = self:GetCritChance()
+	if not RollPseudoRandomPercentage(chance, prd, self.parent) then
 		return
 	end
 

@@ -28,32 +28,12 @@ function axe_innate_custom:UpdateTalents(name)
 	if not self.init then
 		self.init = true
 		self.talents = {
-			has_w3 = 0,
-			w3_heal = 0,
-
-			has_r2 = 0,
-			r2_heal = 0,
-			r2_bonus = caster:GetTalentValue("modifier_axe_culling_2", "bonus", true),
-			r2_health = caster:GetTalentValue("modifier_axe_culling_2", "health", true),
-
 			has_h6 = 0,
 			h6_max = caster:GetTalentValue("modifier_axe_hero_6", "max", true),
 			h6_cdr = caster:GetTalentValue("modifier_axe_hero_6", "cdr", true),
 			h6_heal = caster:GetTalentValue("modifier_axe_hero_6", "heal", true),
 			h6_bonus = caster:GetTalentValue("modifier_axe_hero_6", "bonus", true),
 		}
-	end
-
-	if caster:HasTalent("modifier_axe_hunger_3") then
-		self.talents.has_w3 = 1
-		self.talents.w3_heal = caster:GetTalentValue("modifier_axe_hunger_3", "heal") / 100
-		caster:AddDamageEvent_out(self.tracker, true)
-	end
-
-	if caster:HasTalent("modifier_axe_culling_2") then
-		self.talents.has_r2 = 1
-		self.talents.r2_heal = caster:GetTalentValue("modifier_axe_culling_2", "heal") / 100
-		caster:AddDamageEvent_out(self.tracker, true)
 	end
 
 	if caster:HasTalent("modifier_axe_hero_6") then
@@ -91,46 +71,6 @@ function modifier_axe_coat_of_blood_custom:OnCreated(table)
 	end
 	self.parent:AddDeathEvent(self, true)
 	self:SetStackCount(0)
-end
-
-function modifier_axe_coat_of_blood_custom:DamageEvent_out(params)
-	if not IsServer() then
-		return
-	end
-	if self.parent ~= params.attacker then
-		return
-	end
-
-	local result = self.parent:CheckLifesteal(params)
-	if not result then
-		return
-	end
-
-	if params.inflictor then
-		if self.ability.talents.has_w3 == 0 then
-			return
-		end
-		self.parent:GenericHeal(
-			params.damage * self.ability.talents.w3_heal * result,
-			self.ability,
-			true,
-			"particles/items3_fx/octarine_core_lifesteal.vpcf",
-			"modifier_axe_hunger_3"
-		)
-		return
-	end
-
-	if self.ability.talents.has_r2 == 0 then
-		return
-	end
-
-	local effect = ""
-	local heal = params.damage * result * self.ability.talents.r2_heal
-	if params.unit:GetHealthPercent() >= self.ability.talents.r2_health then
-		heal = heal * self.ability.talents.r2_bonus
-		effect = nil
-	end
-	self.parent:GenericHeal(heal, self.ability, true, effect, "modifier_axe_culling_2")
 end
 
 function modifier_axe_coat_of_blood_custom:DeclareFunctions()

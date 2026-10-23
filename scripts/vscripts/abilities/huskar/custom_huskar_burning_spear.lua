@@ -74,7 +74,6 @@ function custom_huskar_burning_spear:Precache(context)
 	PrecacheResource("particle", "particles/units/heroes/hero_huskar/huskar_burning_spear.vpcf", context)
 	PrecacheResource("particle", "particles/huskar/huskar_fast.vpcf", context)
 	PrecacheResource("particle", "particles/units/heroes/hero_ogre_magi/ogre_magi_fireblast.vpcf", context)
-	PrecacheResource("particle", "particles/units/heroes/hero_monkey_king/monkey_king_quad_tap_hit.vpcf", context)
 	PrecacheResource("particle", "particles/jakiro/orange_heal.vpcf", context)
 	PrecacheResource("particle", "particles/units/heroes/hero_huskar/huskar_burning_spear_debuff.vpcf", context)
 	PrecacheResource("particle", "particles/units/heroes/hero_huskar/huskar_base_attack.vpcf", context)
@@ -143,6 +142,7 @@ function custom_huskar_burning_spear:UpdateTalents()
 	if caster:HasTalent("modifier_huskar_spears_3") then
 		self.talents.has_w3 = 1
 		self.talents.w3_chance = caster:GetTalentValue("modifier_huskar_spears_3", "chance")
+		caster:AddProc(self.tracker, { extra = false })
 	end
 
 	if caster:HasTalent("modifier_huskar_spears_4") then
@@ -490,7 +490,7 @@ function modifier_custom_huskar_burning_spear_tracker:OnCreated()
 	self.parent:AddRecordDestroyEvent(self, true)
 	self.parent:AddAttackRecordEvent_out(self)
 	self.parent:AddAttackStartEvent_out(self)
-	self.parent:AddAttackEvent_out(self, true)
+	self.parent:AddProc(self, { name = "hit", land = true })
 	self.parent:AddOrderEvent(self)
 
 	self.records = {}
@@ -554,6 +554,13 @@ function modifier_custom_huskar_burning_spear_tracker:AttackRecordEvent_out(para
 	self.parent:AddNewModifier(self.parent, self.ability, "modifier_custom_huskar_burning_spear_attack", {})
 end
 
+function modifier_custom_huskar_burning_spear_tracker:GetProcChance(params, name)
+	if name == "hit" then
+		return 100
+	end
+	return self.ability.talents.w3_chance
+end
+
 function modifier_custom_huskar_burning_spear_tracker:AttackStartEvent_out(params)
 	if not IsServer() then
 		return
@@ -572,16 +579,7 @@ function modifier_custom_huskar_burning_spear_tracker:AttackStartEvent_out(param
 		spear = 1
 	end
 
-	if not target:IsUnit() then
-		return
-	end
-	if self.ability.talents.has_w3 == 0 then
-		return
-	end
-	if params.no_attack_cooldown then
-		return
-	end
-	if not RollPseudoRandomPercentage(self.ability.talents.w3_chance, 5961, self.parent) then
+	if not params.procs or not params.procs[self] then
 		return
 	end
 
@@ -593,14 +591,8 @@ function modifier_custom_huskar_burning_spear_tracker:AttackStartEvent_out(param
 	)
 end
 
-function modifier_custom_huskar_burning_spear_tracker:AttackEvent_out(params)
-	if not IsServer() then
-		return
-	end
-	if self.parent ~= params.attacker then
-		return
-	end
-	if not params.target:IsUnit() then
+function modifier_custom_huskar_burning_spear_tracker:AttackProc(params, name)
+	if name ~= "hit" then
 		return
 	end
 

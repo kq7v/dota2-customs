@@ -94,20 +94,6 @@
 		distance_max = 1600
 		pitch = 1
 	}
-	TA.Meld_heal = 
-	{
-		vsnd_files = 
-		[
-			"sounds/weapons/hero/dawnbreaker/healing_touch_powerup.vsnd",
-		]
-		volume = 1.6
-		pitch_rand_min = -0.01
-		pitch_rand_max = 0.01
-		type = "dota_src1_3d"
-		soundlevel = 81
-		distance_max = 1600
-		pitch = 1
-	}
 	TA.Meld_stun = 
 	{
 		vsnd_files = 
@@ -206,21 +192,6 @@
 		distance_max = 1600
 		pitch = 1
 	}
-	TA.Psibaldes_ranged_attack = 
-	{
-		vsnd_files = 
-		[
-			"sounds/weapons/hero/templar_assassin/attack3.vsnd",
-			"sounds/weapons/hero/templar_assassin/attack4.vsnd",
-		]
-		volume = 1.2
-		pitch_rand_min = -0.01
-		pitch_rand_max = 0.01
-		type = "dota_src1_3d"
-		soundlevel = 81
-		distance_max = 1600
-		pitch = 1
-	}
 	TA.Trap_stun = 
 	{
 		vsnd_files = 
@@ -251,21 +222,6 @@
 		pitch = 1
 		volume_fade_out = 1
 	}
-	TA.Trap_refresh = 
-	{
-		vsnd_files = 
-		[
-			"sounds/weapons/hero/rattletrap/overclock_cast.vsnd",
-		]
-		volume = 0.6
-		pitch_rand_min = -0.05
-		pitch_rand_max = 0.05
-		type = "dota_src1_3d"
-		soundlevel = 100
-		distance_max = 1600
-		pitch = 1
-		volume_fade_out = 1
-	}
 	TA.Scepter_active = 
 	{
 		vsnd_files = 
@@ -288,20 +244,6 @@
 			"sounds/weapons/hero/wisp/spirit_target.vsnd",
 		]
 		volume = 0.3
-		pitch_rand_min = -0.01
-		pitch_rand_max = 0.01
-		type = "dota_src1_3d"
-		soundlevel = 81
-		distance_max = 1600
-		pitch = 1
-	}
-	TA.Trap_legendary = 
-	{
-		vsnd_files = 
-		[
-			"sounds/weapons/hero/marci/unleash_charged.vsnd",
-		]
-		volume = 1.6
 		pitch_rand_min = -0.01
 		pitch_rand_max = 0.01
 		type = "dota_src1_3d"

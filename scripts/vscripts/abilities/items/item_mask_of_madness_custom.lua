@@ -76,9 +76,13 @@ function modifier_item_mask_of_madness_custom:OnCreated()
 	self.ability = self:GetAbility()
 	self.parent = self:GetParent()
 
-	if self.parent:IsRealHero() then
-		self.parent:AddDamageEvent_out(self, true)
+	if not IsServer() then
+		return
 	end
+	if not self.parent:IsRealHero() then
+		return
+	end
+	self.parent:AddLifesteal(self, { type = 2, value = self.ability.lifesteal_percent })
 end
 
 function modifier_item_mask_of_madness_custom:DeclareFunctions()
@@ -94,20 +98,6 @@ end
 
 function modifier_item_mask_of_madness_custom:GetModifierAttackSpeedBonus_Constant()
 	return self.ability.bonus_speed
-end
-
-function modifier_item_mask_of_madness_custom:DamageEvent_out(params)
-	if not IsServer() then
-		return
-	end
-	if not IsValid(self.ability) then
-		return
-	end
-	local result = self.parent:CheckLifesteal(params, 2)
-	if not result then
-		return
-	end
-	self.parent:GenericHeal(self.ability.lifesteal_percent * result * params.damage, self.ability, true)
 end
 
 modifier_item_mask_of_madness_custom_speed = class(mod_visible)

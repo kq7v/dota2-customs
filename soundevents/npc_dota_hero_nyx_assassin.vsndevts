@@ -130,36 +130,6 @@
 		volume_fade_out = 0.5
 		distance_max = 1600
 	}
-	Nyx.Impale_delay = 
-	{
-		type = "dota_src1_3d"
-		volume = 1.2
-		vsnd_files = 
-		[
-			"sounds/weapons/hero/earth_spirit/magnetize_end.vsnd",
-		]
-		pitch_rand_max = -0.3
-		pitch_rand_min = -0.3
-		pitch = 1
-		soundlevel = 100
-		volume_fade_out = 0.5
-		distance_max = 1600
-	}
-	Nyx.Impale_return = 
-	{
-		type = "dota_src1_3d"
-		volume = 1
-		vsnd_files = 
-		[
-			"sounds/weapons/hero/nyx/impale.vsnd",
-		]
-		pitch_rand_max = 0.1
-		pitch_rand_min = 0.1
-		pitch = 1
-		soundlevel = 100
-		volume_fade_out = 0.5
-		distance_max = 1600
-	}
 	Nyx.Mind_legendary_mana = 
 	{
 		type = "dota_src1_3d"
@@ -353,21 +323,6 @@
 		]
 		pitch_rand_max = 0.05
 		pitch_rand_min = -0.05
-		pitch = 1
-		soundlevel = 100
-		volume_fade_out = 0.5
-		distance_max = 1600
-	}
-	Nyx.Vendetta_root = 
-	{
-		type = "dota_src1_3d"
-		volume = 0.7
-		vsnd_files = 
-		[
-			"sounds/weapons/hero/underlord/pit_target_hero.vsnd",
-		]
-		pitch_rand_max = -0.1
-		pitch_rand_min = -0.1
 		pitch = 1
 		soundlevel = 100
 		volume_fade_out = 0.5

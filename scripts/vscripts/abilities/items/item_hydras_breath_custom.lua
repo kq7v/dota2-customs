@@ -32,7 +32,6 @@ function item_hydras_breath_custom:Precache(context)
 	PrecacheResource("particle", "particles/items8_fx/hydras_breath_endcap.vpcf", context)
 	PrecacheResource("particle", "particles/items8_fx/hydras_breath_single_proc.vpcf", context)
 	PrecacheResource("particle", "particles/items8_fx/hydras_breath_burn_debuff.vpcf", context)
-	PrecacheResource("particle", "particles/items3_fx/octarine_core_lifesteal.vpcf", context)
 end
 
 function item_hydras_breath_custom:Spawn()
@@ -104,11 +103,11 @@ function modifier_item_hydras_breath_custom:OnCreated()
 	if not self.parent:IsRealHero() then
 		return
 	end
-	self.records = {}
-	self.parent:AddDamageEvent_out(self, true)
-	self.parent:AddAttackStartEvent_out(self, true)
-	self.parent:AddAttackEvent_out(self, true)
-	self.parent:AddRecordDestroyEvent(self, true)
+	self.parent:AddLifesteal(self, { type = 1, value = self.ability.spell_lifesteal })
+	self.parent:AddProc(
+		self,
+		{ group = "brooch_hydra", priority = 1, target_cd = self.ability.cooldown, target_prd = true }
+	)
 end
 
 function modifier_item_hydras_breath_custom:DeclareFunctions()
@@ -142,32 +141,15 @@ function modifier_item_hydras_breath_custom:GetModifierTotalDamageOutgoing_Perce
 	return self.ability.proc_damage - 100
 end
 
-function modifier_item_hydras_breath_custom:AttackStartEvent_out(params)
-	if not IsServer() then
-		return
-	end
-	if not IsValid(self.ability) then
-		return
-	end
-	if self.parent ~= params.attacker then
-		return
-	end
-	if not params.target:IsUnit() then
-		return
-	end
-	if params.target:GetTeamNumber() == self.parent:GetTeamNumber() then
-		return
-	end
-	local target = params.target
+function modifier_item_hydras_breath_custom:GetProcChance()
+	return self.ability.proc_chance
+end
 
-	if not target:CheckCd("hydras_breath", self.ability.cooldown, self.ability.proc_chance, 9403) then
-		return
-	end
-
-	self.records[params.record] = true
+function modifier_item_hydras_breath_custom:AttackProcStart(params)
 	if params.no_attack_cooldown then
 		return
 	end
+	local target = params.target
 
 	local count = 0
 	local speed = 900
@@ -208,48 +190,8 @@ function modifier_item_hydras_breath_custom:AttackStartEvent_out(params)
 	end
 end
 
-function modifier_item_hydras_breath_custom:AttackEvent_out(params)
-	if not IsServer() then
-		return
-	end
-	if not IsValid(self.ability) then
-		return
-	end
-	if self.parent ~= params.attacker then
-		return
-	end
-	if not self.records[params.record] then
-		return
-	end
-
+function modifier_item_hydras_breath_custom:AttackProc(params)
 	self.ability:ProcEffect(params.target)
-end
-
-function modifier_item_hydras_breath_custom:DamageEvent_out(params)
-	if not IsServer() then
-		return
-	end
-	if not IsValid(self.ability) then
-		return
-	end
-	local result = self.parent:CheckLifesteal(params, 1)
-	if not result then
-		return
-	end
-
-	self.parent:GenericHeal(
-		params.damage * self.ability.spell_lifesteal * result,
-		self.ability,
-		true,
-		"particles/items3_fx/octarine_core_lifesteal.vpcf"
-	)
-end
-
-function modifier_item_hydras_breath_custom:RecordDestroyEvent(params)
-	if not IsServer() then
-		return
-	end
-	self.records[params.record] = nil
 end
 
 modifier_item_hydras_breath_custom_burn = class(mod_visible)

@@ -44,14 +44,8 @@ function legion_commander_innate_custom:UpdateTalents(name)
 	if not self.init then
 		self.init = true
 		self.talents = {
-			has_w3 = 0,
-			w3_heal = 0,
-
 			has_e4 = 0,
 			e4_duration = caster:GetTalentValue("modifier_legion_moment_4", "duration", true),
-
-			has_r2 = 0,
-			r2_heal = 0,
 
 			r3_str = 0,
 
@@ -66,19 +60,12 @@ function legion_commander_innate_custom:UpdateTalents(name)
 	end
 
 	if caster:HasTalent("modifier_legion_press_3") then
-		self.talents.has_w3 = 1
-		self.talents.w3_heal = caster:GetTalentValue("modifier_legion_press_3", "heal") / 100
 		caster:AddSpellEvent(self.tracker, true)
 	end
 
 	if caster:HasTalent("modifier_legion_moment_4") then
 		self.talents.has_e4 = 1
 		caster:AddSpellEvent(self.tracker, true)
-	end
-
-	if caster:HasTalent("modifier_legion_duel_2") then
-		self.talents.has_r2 = 1
-		self.talents.r2_heal = caster:GetTalentValue("modifier_legion_duel_2", "heal") / 100
 	end
 
 	if caster:HasTalent("modifier_legion_duel_3") then
@@ -167,31 +154,6 @@ function modifier_legion_commander_innate_custom:DamageEvent_out(params)
 	if not IsServer() then
 		return
 	end
-
-	if self.ability.talents.has_w3 == 1 or self.ability.talents.has_r2 == 1 then
-		local result = self.parent:CheckLifesteal(params)
-		if result then
-			if self.ability.talents.has_w3 == 1 and params.inflictor then
-				self.parent:GenericHeal(
-					self.ability.talents.w3_heal * params.damage * result,
-					self.ability,
-					true,
-					"particles/items3_fx/octarine_core_lifesteal.vpcf",
-					"modifier_legion_press_3"
-				)
-			end
-			if self.ability.talents.has_r2 == 1 and not params.inflictor then
-				self.parent:GenericHeal(
-					self.ability.talents.r2_heal * params.damage * result,
-					self.ability,
-					true,
-					"",
-					"modifier_legion_duel_2"
-				)
-			end
-		end
-	end
-
 	if self:GetStackCount() >= self:GetMax() then
 		return
 	end

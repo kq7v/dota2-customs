@@ -166,7 +166,14 @@ function custom_juggernaut_blade_dance:UpdateTalents()
 
 	if caster:HasTalent("modifier_juggernaut_bladedance_4") then
 		self.talents.has_e4 = 1
-		caster:AddDamageEvent_out(self.tracker, true)
+		caster:AddLifesteal(self.tracker, {
+			name = "modifier_juggernaut_bladedance_4",
+			type = 2,
+			value = function(params)
+				return self.talents.e4_heal
+					* (params.attack_damage_flag == "jugg_omnislash" and self.talents.e4_bonus or 1)
+			end,
+		})
 	end
 
 	if caster:HasTalent("modifier_juggernaut_bladedance_7") then
@@ -279,6 +286,19 @@ function custom_juggernaut_blade_dance:OnSpellStart()
 	)
 end
 
+function custom_juggernaut_blade_dance:GetCritChance()
+	local chance = self.chance + self.talents.e1_chance
+
+	if
+		IsValid(self.caster.omnislash_ability)
+		and self.caster:HasModifier("modifier_custom_juggernaut_omnislash_attack")
+	then
+		return chance * self.caster.omnislash_ability.crit_bonus, 1393
+	end
+
+	return chance, 1392
+end
+
 function custom_juggernaut_blade_dance:GetCrit(ignore_random)
 	if not IsServer() then
 		return
@@ -296,15 +316,8 @@ function custom_juggernaut_blade_dance:GetCrit(ignore_random)
 	if ignore_random then
 		return damage
 	end
-	local chance = self.chance + self.talents.e1_chance
-	local index = 1392
-	if
-		IsValid(self.caster.omnislash_ability)
-		and self.caster:HasModifier("modifier_custom_juggernaut_omnislash_attack")
-	then
-		chance = chance * self.caster.omnislash_ability.crit_bonus
-		index = 1393
-	end
+
+	local chance, index = self:GetCritChance()
 
 	if self.caster:HasModifier("modifier_custom_juggernaut_blade_dance_illusion_damage") then
 		return
@@ -469,7 +482,7 @@ function modifier_custom_juggernaut_blade_dance:OnCreated()
 		return
 	end
 
-	self.parent:AddAttackEvent_out(self, true)
+	self.parent:AddProc(self, { land = true, illusion = true })
 	self:UpdateEffects()
 end
 
@@ -541,6 +554,13 @@ function modifier_custom_juggernaut_blade_dance:GetModifierMoveSpeedBonus_Consta
 	return self.ability.talents.h3_move
 end
 
+function modifier_custom_juggernaut_blade_dance:GetCritChance()
+	if self.parent:HasModifier("modifier_custom_juggernaut_blade_dance_illusion") then
+		return 0
+	end
+	return self.ability:GetCritChance()
+end
+
 function modifier_custom_juggernaut_blade_dance:GetCritDamage()
 	return self.ability:GetCrit(true)
 end
@@ -569,14 +589,11 @@ function modifier_custom_juggernaut_blade_dance:GetModifierPreAttack_CriticalStr
 	return crit
 end
 
-function modifier_custom_juggernaut_blade_dance:AttackEvent_out(params)
-	if not IsServer() then
-		return
-	end
-	if not params.target:IsUnit() then
-		return
-	end
+function modifier_custom_juggernaut_blade_dance:GetProcChance()
+	return 100
+end
 
+function modifier_custom_juggernaut_blade_dance:AttackProc(params, name)
 	local target = params.target
 	local real_attacker = params.attacker
 	local attacker = params.attacker
@@ -684,31 +701,6 @@ function modifier_custom_juggernaut_blade_dance:AttackEvent_out(params)
 
 	self.ability:CasterProc()
 	self.ability:ProcCrit(target)
-end
-
-function modifier_custom_juggernaut_blade_dance:DamageEvent_out(params)
-	if not IsServer() then
-		return
-	end
-	if self.ability.talents.has_e4 == 0 then
-		return
-	end
-
-	local result = self.parent:CheckLifesteal(params, 2)
-	if not result then
-		return
-	end
-
-	local bonus = (params.attack_damage_flag and params.attack_damage_flag == "jugg_omnislash")
-			and self.ability.talents.e4_bonus
-		or 1
-	self.parent:GenericHeal(
-		result * self.ability.talents.e4_heal * params.damage * bonus,
-		self.ability,
-		true,
-		nil,
-		"modifier_juggernaut_bladedance_4"
-	)
 end
 
 function modifier_custom_juggernaut_blade_dance:OnIntervalThink()

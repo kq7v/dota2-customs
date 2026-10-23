@@ -175,7 +175,7 @@ end
 function modifier_item_celestial_spear_custom:OnCreated()
 	self.caster = self:GetCaster()
 	self.ability = self:GetAbility()
-	self.caster:AddAttackEvent_out(self, true)
+	self.caster:AddProc(self, { land = true })
 	self.caster.celestial_spear_ability = self.ability
 
 	self.corruption_duration = self.ability.corruption_duration
@@ -209,14 +209,12 @@ function modifier_item_celestial_spear_custom:GetModifierProjectileName()
 	return "particles/items_fx/desolator_projectile.vpcf"
 end
 
-function modifier_item_celestial_spear_custom:AttackEvent_out(params)
+function modifier_item_celestial_spear_custom:GetProcChance()
+	return 100
+end
+
+function modifier_item_celestial_spear_custom:AttackProc(params, name)
 	if not IsValid(self.ability) then
-		return
-	end
-	if params.attacker ~= self.caster then
-		return
-	end
-	if not params.target:IsUnit() then
 		return
 	end
 

@@ -37,6 +37,189 @@
 				<Panel id="AghsShardCards" class="AghsCards" />
 			</Panel>
 		</Panel>
+		<Panel id="StatsDetails">
+			<Panel id="StatsGroups" class="StatsRow">
+				<Panel class="StatsGroupBack StatsBackGeneral" />
+				<Panel class="StatsGroupBack StatsBackAttack" />
+				<Panel class="StatsGroupBack StatsBackMagic" />
+				<Panel class="StatsGroup StatsGroupGeneral">
+					<Label class="StatsGroupTitle" text="#tooltip_stats_general" />
+					<Panel class="StatsLine">
+						<Panel class="StatsNameBox">
+							<Label class="StatsName" text="#tooltip_stats_health" />
+							<Label id="StatsHealthPercent" class="StatsBonus StatsServer" />
+						</Panel>
+						<Label id="StatsHealth" class="StatsValue StatsServer" />
+						<Label id="StatsHealthBonus" class="StatsBonus StatsServer" />
+					</Panel>
+					<Panel class="StatsLine">
+						<Label class="StatsName" text="#tooltip_stats_move_speed" />
+						<Label id="StatsMoveSpeed" class="StatsValue" />
+						<Label id="StatsMoveSpeedBonus" class="StatsBonus" />
+					</Panel>
+					<Panel class="StatsLine">
+						<Label class="StatsName" text="#tooltip_stats_armor" />
+						<Label id="StatsArmor" class="StatsValue" />
+					</Panel>
+					<Panel class="StatsLine">
+						<Label class="StatsName" text="#tooltip_stats_magic_resist" />
+						<Label id="StatsMagicResist" class="StatsValue" />
+						<Label id="StatsMagicResistBonus" class="StatsBonus" />
+					</Panel>
+					<Panel class="StatsLine">
+						<Label class="StatsName" text="#tooltip_stats_status_resist" />
+						<Label id="StatsStatusResist" class="StatsValue" />
+					</Panel>
+					<Panel class="StatsLine">
+						<Label class="StatsName" text="#tooltip_stats_slow_resist" />
+						<Label id="StatsSlowResist" class="StatsValue" />
+					</Panel>
+					<Panel class="StatsLine">
+						<Label class="StatsName" text="#tooltip_stats_evasion" />
+						<Label id="StatsEvasion" class="StatsValue" />
+					</Panel>
+					<Panel class="StatsLine">
+						<Label class="StatsName" text="#tooltip_stats_heal" />
+						<Label id="StatsHeal" class="StatsValue StatsServer" />
+					</Panel>
+				</Panel>
+				<Panel class="StatsGroup StatsGroupAttack">
+					<Label class="StatsGroupTitle" text="#DOTA_HUD_Attack" />
+					<Panel class="StatsLine">
+						<Label class="StatsName" text="#tooltip_stats_damage" />
+						<Label id="StatsDamage" class="StatsValue" />
+					</Panel>
+					<Panel class="StatsLine">
+						<Panel class="StatsNameBox">
+							<Label class="StatsName" text="#tooltip_stats_attack_speed" />
+							<Label id="StatsAttackSpeedPercent" class="StatsBonus StatsServer" />
+						</Panel>
+						<Label id="StatsAttackSpeed" class="StatsValue StatsServer" />
+						<Label id="StatsAttackSpeedBonus" class="StatsBonus StatsServer" />
+						<Label id="StatsAttackTime" class="StatsValue" />
+					</Panel>
+					<Panel class="StatsLine">
+						<Label class="StatsName" text="#tooltip_stats_bat" />
+						<Label id="StatsBat" class="StatsValue" />
+					</Panel>
+					<Panel class="StatsLine">
+						<Label class="StatsName" text="#tooltip_stats_attack_range" />
+						<Label id="StatsAttackRange" class="StatsValue" />
+					</Panel>
+					<Panel class="StatsLine">
+						<Label class="StatsName" text="#tooltip_stats_lifesteal" />
+						<Label id="StatsAttackLifesteal" class="StatsValue StatsServer" />
+					</Panel>
+					<Panel class="StatsLine">
+						<Label class="StatsName" text="#tooltip_stats_accuracy" />
+						<Label id="StatsAccuracy" class="StatsValue StatsServer" />
+					</Panel>
+					<Panel class="StatsLine">
+						<Label class="StatsName" text="#tooltip_stats_crit" />
+						<Label id="StatsCritChance" class="StatsCritChance StatsServer" />
+						<Label id="StatsCritDamage" class="StatsCritDamage StatsServer" />
+						<Label id="StatsCritBonus" class="StatsCritBonus StatsServer" />
+					</Panel>
+					<Panel id="StatsCritList" />
+				</Panel>
+				<Panel class="StatsGroup StatsGroupMagic">
+					<Label class="StatsGroupTitle" text="#tooltip_stats_magic" />
+					<Panel class="StatsLine">
+						<Panel class="StatsNameBox">
+							<Label class="StatsName" text="#tooltip_stats_mana" />
+							<Label id="StatsManaPercent" class="StatsBonus StatsServer" />
+						</Panel>
+						<Label id="StatsMana" class="StatsValue StatsServer" />
+						<Label id="StatsManaBonus" class="StatsBonus StatsServer" />
+					</Panel>
+					<Panel class="StatsLine">
+						<Label class="StatsName" text="#tooltip_stats_spell_amp" />
+						<Label id="StatsSpellAmp" class="StatsValue" />
+					</Panel>
+					<Panel class="StatsLine">
+						<Label class="StatsName" text="#tooltip_stats_item_damage" />
+						<Label id="StatsItemDamage" class="StatsValue StatsServer" />
+					</Panel>
+					<Panel class="StatsLine">
+						<Label class="StatsName" text="#tooltip_stats_cast_range" />
+						<Label id="StatsCastRange" class="StatsValue StatsServer" />
+					</Panel>
+					<Panel class="StatsLine">
+						<Label class="StatsName" text="#tooltip_stats_lifesteal" />
+						<Label id="StatsSpellLifesteal" class="StatsValue StatsServer" />
+					</Panel>
+					<Panel class="StatsLine">
+						<Label class="StatsName" text="#tooltip_stats_mana_cost" />
+						<Label id="StatsManaCost" class="StatsValue StatsServer" />
+					</Panel>
+					<Panel class="StatsLine">
+						<Label class="StatsName" text="#tooltip_stats_cooldown" />
+						<Label id="StatsCooldown" class="StatsValue StatsServer" />
+					</Panel>
+				</Panel>
+			</Panel>
+			<Panel id="StatsAttributes" class="StatsRow">
+				<Panel id="StatsColumnStrength" class="StatsAttribute">
+					<Panel class="StatsAttributeIcon" />
+					<Panel class="StatsAttributeText">
+						<Panel class="StatsAttributeHeader">
+							<Label class="StatsAttributeTitle" text="#DOTA_Tooltip_Ability_item_power_treads_str" />
+							<Label id="StatsStrengthGain" class="StatsAttributeGain" />
+						</Panel>
+						<Panel class="StatsAttributeValues">
+							<Label id="StatsStrength" class="StatsAttributeValue" />
+							<Label id="StatsStrengthBonus" class="StatsBonus StatsAttributeValue" />
+							<Label id="StatsStrengthDamage" class="StatsAttributeDamage StatsServer" />
+						</Panel>
+					</Panel>
+					<Label id="StatsStrengthPercent" class="StatsAttributePercent StatsServer" />
+				</Panel>
+				<Panel id="StatsColumnAgility" class="StatsAttribute">
+					<Panel class="StatsAttributeIcon" />
+					<Panel class="StatsAttributeText">
+						<Panel class="StatsAttributeHeader">
+							<Label class="StatsAttributeTitle" text="#DOTA_Tooltip_Ability_item_power_treads_agi" />
+							<Label id="StatsAgilityGain" class="StatsAttributeGain" />
+						</Panel>
+						<Panel class="StatsAttributeValues">
+							<Label id="StatsAgility" class="StatsAttributeValue" />
+							<Label id="StatsAgilityBonus" class="StatsBonus StatsAttributeValue" />
+							<Label id="StatsAgilityDamage" class="StatsAttributeDamage StatsServer" />
+						</Panel>
+					</Panel>
+					<Label id="StatsAgilityPercent" class="StatsAttributePercent StatsServer" />
+				</Panel>
+				<Panel id="StatsColumnIntelligence" class="StatsAttribute">
+					<Panel class="StatsAttributeIcon" />
+					<Panel class="StatsAttributeText">
+						<Panel class="StatsAttributeHeader">
+							<Label class="StatsAttributeTitle" text="#DOTA_Tooltip_Ability_item_power_treads_int" />
+							<Label id="StatsIntelligenceGain" class="StatsAttributeGain" />
+						</Panel>
+						<Panel class="StatsAttributeValues">
+							<Label id="StatsIntelligence" class="StatsAttributeValue" />
+							<Label id="StatsIntelligenceBonus" class="StatsBonus StatsAttributeValue" />
+							<Label id="StatsIntelligenceDamage" class="StatsAttributeDamage StatsServer" />
+						</Panel>
+					</Panel>
+					<Label id="StatsIntelligencePercent" class="StatsAttributePercent StatsServer" />
+				</Panel>
+				<Panel id="StatsColumnAll" class="StatsAttribute">
+					<Panel class="StatsAttributeIcon" />
+					<Panel class="StatsAttributeText">
+						<Panel class="StatsAttributeHeader">
+							<Label class="StatsAttributeTitle" text="#stats_all" />
+							<Label id="StatsAllGain" class="StatsAttributeGain" />
+						</Panel>
+						<Panel class="StatsAttributeValues">
+							<Label id="StatsAll" class="StatsAttributeValue" />
+							<Label id="StatsAllBonus" class="StatsBonus StatsAttributeValue" />
+							<Label id="StatsAllDamage" class="StatsAttributeDamage StatsServer" />
+						</Panel>
+					</Panel>
+				</Panel>
+			</Panel>
+		</Panel>
 		<Panel id="InnateLegendary" class="InnateCard InnateLegendaryCard">
 			<Panel class="InnateHeader">
 				<Panel class="InnateHeaderBack" />
@@ -134,6 +317,82 @@
 					<Label id="AbilityLore" />
 				</Panel>
 			</Panel>
+		</Panel>
+		<Panel id="ItemDetails">
+			<Panel id="ItemHeader">
+				<DOTAItemImage id="ItemImage" />
+				<Panel id="ItemHeaderLabels">
+					<Panel id="ItemTitle">
+						<Label id="ItemName" html="true" />
+						<Label id="ItemLevel" html="true" />
+					</Panel>
+					<Panel id="ItemSubHeader">
+						<Panel id="ItemCost">
+							<Panel id="ItemCostIcon" />
+							<Label id="ItemBuyCost" />
+							<Label id="ItemBuyCostDeficit" />
+						</Panel>
+						<Label id="ItemRestockTime" />
+						<Label id="ItemStockAmount" />
+					</Panel>
+					<Label id="ItemCostToComplete" />
+				</Panel>
+			</Panel>
+			<Panel id="ItemTarget">
+				<Label id="ItemCastType" html="true" />
+				<Label id="ItemDamageType" html="true" />
+				<Label id="ItemSpellImmunityType" html="true" />
+				<Label id="ItemDispelType" html="true" />
+				<Label id="ItemBreakable" html="true" />
+			</Panel>
+			<Panel id="ItemCoreDetails">
+				<Label id="ItemAttributes" html="true" />
+				<Panel id="ItemDescriptionOuter">
+					<Panel id="ItemCosts">
+						<Label id="ItemCooldown" class="Cooldown" html="true" />
+					</Panel>
+					<Panel id="ItemDescription" />
+				</Panel>
+				<Panel id="ItemDiff" class="AbilityCreeps AbilityDiff">
+					<Panel class="AbilityCreepsHeader">
+						<Panel class="AbilityCreepsIcon" />
+						<Label class="AbilityCreepsTitle" text="#tooltip_ability_diff" />
+					</Panel>
+					<Panel id="ItemDiffText" class="AbilityCreepsText" />
+				</Panel>
+				<Panel id="ItemFeatures" class="AbilityCreeps AbilityFeatures">
+					<Panel class="AbilityCreepsHeader">
+						<Panel class="AbilityCreepsIcon" />
+						<Label class="AbilityCreepsTitle" text="#tooltip_ability_features" />
+					</Panel>
+					<Panel id="ItemFeaturesText" class="AbilityCreepsText" />
+				</Panel>
+				<Panel id="ItemCreeps" class="AbilityCreeps">
+					<Panel class="AbilityCreepsHeader">
+						<Panel class="AbilityCreepsIcon" />
+						<Label class="AbilityCreepsTitle" text="#tooltip_ability_creeps" />
+					</Panel>
+					<Panel id="ItemCreepsText" class="AbilityCreepsText" />
+				</Panel>
+				<Panel id="ItemBuildings" class="AbilityCreeps AbilityBuildings">
+					<Panel class="AbilityCreepsHeader">
+						<Panel class="AbilityCreepsIcon" />
+						<Label class="AbilityCreepsTitle" text="#tooltip_ability_buildings" />
+					</Panel>
+					<Panel id="ItemBuildingsText" class="AbilityCreepsText" />
+				</Panel>
+				<Panel id="ItemBasher" />
+				<Panel id="ItemGroups" />
+				<Label id="ItemCharges" html="true" />
+				<Label id="ItemExtraAttributes" html="true" />
+				<Label id="ItemLore" html="true" />
+				<Label id="ItemOwnedBy" html="true" />
+				<Label id="ItemSellPrice" class="ItemSell" />
+				<Label id="ItemSellPriceTime" class="ItemSell" />
+				<Label id="ItemDisassemble" class="ItemSell" />
+				<Label id="ItemDisassembleTime" class="ItemSell" />
+			</Panel>
+			<Label id="ItemConsumableInfo" html="true" />
 		</Panel>
 	</Panel>
 </root>

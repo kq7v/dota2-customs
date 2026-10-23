@@ -33,6 +33,7 @@ function item_black_king_bar_custom:Spawn()
 	self.duration = self:GetSpecialValueFor("duration")
 	self.duration_duo = self:GetSpecialValueFor("duration_duo")
 	self.magic_resist = self:GetSpecialValueFor("magic_resist")
+	self.armor = self:GetSpecialValueFor("armor")
 	self.AbilityCooldown = self:GetSpecialValueFor("AbilityCooldown")
 	self.bonus_strength = self:GetSpecialValueFor("bonus_strength")
 	self.bonus_damage = self:GetSpecialValueFor("bonus_damage")
@@ -130,6 +131,7 @@ end
 function modifier_item_black_king_bar_custom_active:DeclareFunctions()
 	return {
 		MODIFIER_PROPERTY_MODEL_SCALE,
+		MODIFIER_PROPERTY_PHYSICAL_ARMOR_BONUS,
 	}
 end
 
@@ -138,4 +140,8 @@ function modifier_item_black_king_bar_custom_active:GetModifierModelScale()
 		return
 	end
 	return self.ability.model_scale
+end
+
+function modifier_item_black_king_bar_custom_active:GetModifierPhysicalArmorBonus()
+	return self.ability.armor
 end

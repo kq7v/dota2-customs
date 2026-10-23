@@ -336,11 +336,46 @@ end
 
 function C_DOTA_BaseNPC:CheckCd(name, cd) end
 
+function C_DOTA_BaseNPC:AddUniqueStat(mod, ...)
+	if not self.unique_stats then
+		self.unique_stats = {}
+	end
+	for _, name in pairs({ ... }) do
+		if not self.unique_stats[name] then
+			self.unique_stats[name] = {}
+		end
+		self.unique_stats[name][mod] = true
+	end
+end
+
+function C_DOTA_BaseNPC:UniqueStat(mod, name)
+	local best
+	local best_value = 0
+	for item_mod in pairs(self.unique_stats[name]) do
+		if IsValid(item_mod) then
+			local value = item_mod:GetUniqueStat(name) or 0
+			if value > best_value then
+				best = item_mod
+				best_value = value
+			end
+		else
+			self.unique_stats[name][item_mod] = nil
+		end
+	end
+
+	if best ~= mod then
+		return
+	end
+	return best_value
+end
+
 function C_DOTA_BaseNPC:AddAttackEvent_out(new_mod) end
 function C_DOTA_BaseNPC:AddAttackEvent_inc(new_mod) end
 
 function C_DOTA_BaseNPC:AddAttackStartEvent_out(mod) end
 function C_DOTA_BaseNPC:AddAttackStartEvent_inc(mod) end
+function C_DOTA_BaseNPC:AddProc(mod, data) end
+function C_DOTA_BaseNPC:LandProcs(params) end
 
 function C_DOTA_BaseNPC:AddAttackRecordEvent_out(mod) end
 function C_DOTA_BaseNPC:AddAttackRecordEvent_inc(mod) end
@@ -353,6 +388,7 @@ function C_DOTA_BaseNPC:AddAttackCreateEvent(mod) end
 
 function C_DOTA_BaseNPC:AddDamageEvent_out(new_mod) end
 function C_DOTA_BaseNPC:AddDamageEvent_inc(new_mod) end
+function C_DOTA_BaseNPC:AddLifesteal(mod, data) end
 
 function C_DOTA_BaseNPC:AddHealEvent_inc(new_mod) end
 

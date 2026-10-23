@@ -32,13 +32,6 @@ function primal_beast_innate_custom:UpdateTalents(name)
 	if not self.init then
 		self.init = true
 		self.talents = {
-			has_w2 = 0,
-			w2_heal = 0,
-			w2_mana = 0,
-
-			has_e2 = 0,
-			e2_heal = 0,
-
 			has_e7 = 0,
 
 			h1_move = 0,
@@ -51,19 +44,6 @@ function primal_beast_innate_custom:UpdateTalents(name)
 			h5_health = caster:GetTalentValue("modifier_primal_beast_hero_5", "health", true),
 			h5_max = caster:GetTalentValue("modifier_primal_beast_hero_5", "max", true),
 		}
-	end
-
-	if caster:HasTalent("modifier_primal_beast_trample_2") then
-		self.talents.has_w2 = 1
-		self.talents.w2_heal = caster:GetTalentValue("modifier_primal_beast_trample_2", "heal") / 100
-		self.talents.w2_mana = caster:GetTalentValue("modifier_primal_beast_trample_2", "mana") / 100
-		caster:AddDamageEvent_out(self.tracker, true)
-	end
-
-	if caster:HasTalent("modifier_primal_beast_uproar_2") then
-		self.talents.has_e2 = 1
-		self.talents.e2_heal = caster:GetTalentValue("modifier_primal_beast_uproar_2", "heal") / 100
-		caster:AddDamageEvent_out(self.tracker, true)
 	end
 
 	if caster:HasTalent("modifier_primal_beast_uproar_7") then
@@ -115,7 +95,7 @@ function modifier_primal_beast_innate_custom:OnCreated(params)
 	if not IsServer() then
 		return
 	end
-	self.parent:AddAttackEvent_out(self, true)
+	self.parent:AddProc(self, { land = true })
 	self.current_scale = self.parent:GetModelScale()
 	self.speed = 0.01
 	self:OnIntervalThink()
@@ -263,17 +243,11 @@ function modifier_primal_beast_innate_custom:GetModifierProcAttack_Feedback(para
 	params.target:EmitSound(params.no_attack_cooldown and "PBeast.Attack_custom_auto" or "PBeast.Attack_custom")
 end
 
-function modifier_primal_beast_innate_custom:AttackEvent_out(params)
-	if not IsServer() then
-		return
-	end
-	if self.parent ~= params.attacker then
-		return
-	end
-	if not params.target:IsUnit() then
-		return
-	end
+function modifier_primal_beast_innate_custom:GetProcChance()
+	return 100
+end
 
+function modifier_primal_beast_innate_custom:AttackProc(params, name)
 	if IsValid(self.parent.onslaught_ability) then
 		self.parent.onslaught_ability:ProcSlow(params.target)
 	end
@@ -296,36 +270,6 @@ function modifier_primal_beast_innate_custom:AttackEvent_out(params)
 		500 + self:GetModifierAttackRangeBonus(),
 		"particles/items_fx/battlefury_cleave_custom.vpcf"
 	)
-end
-
-function modifier_primal_beast_innate_custom:DamageEvent_out(params)
-	if not IsServer() then
-		return
-	end
-	local result = self.parent:CheckLifesteal(params)
-	if not result then
-		return
-	end
-
-	if self.ability.talents.has_w2 == 1 and params.inflictor and params.inflictor ~= self.ability then
-		local heal = self.ability.talents.w2_heal * result * params.damage
-		if params.inflictor == self.parent.trample_ability then
-			heal = heal * 2
-		end
-		self.parent:GenericHeal(
-			heal,
-			self.ability,
-			true,
-			"particles/items3_fx/octarine_core_lifesteal.vpcf",
-			"modifier_primal_beast_trample_2"
-		)
-		self.parent:GiveMana(self.ability.talents.w2_mana * result * params.damage)
-	end
-
-	if self.ability.talents.has_e2 == 1 and not params.inflictor then
-		local heal = (1 - self.parent:GetHealthPercent() / 100) * self.ability.talents.e2_heal * result
-		self.parent:GenericHeal(heal * params.damage, self.ability, true, false, "modifier_primal_beast_uproar_2")
-	end
 end
 
 function modifier_primal_beast_innate_custom:GetK()

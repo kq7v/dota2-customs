@@ -132,6 +132,7 @@ end
 modifier_item_wraith_aura_custom_active_aura = class(mod_hidden)
 function modifier_item_wraith_aura_custom_active_aura:OnCreated()
 	self.parent = self:GetParent()
+	self.caster = self:GetCaster()
 	self.ability = self:GetAbility()
 
 	self.damage_reduce = self.ability.damage_reduce
@@ -163,6 +164,38 @@ function modifier_item_wraith_aura_custom_active_aura:OnCreated()
 		true
 	)
 	self:AddParticle(effect_cast, false, false, -1, false, false)
+
+	self.parent:AddLifesteal(self, {
+		type = 2,
+		heal_unit = self.caster,
+		illusion = true,
+		effect = false,
+		proc = "LifestealParticle",
+		value = function()
+			return self.parent:HasModifier("modifier_item_wraith_aura_custom_aura") and self.ability.caster_heal or 0
+		end,
+	})
+end
+
+function modifier_item_wraith_aura_custom_active_aura:LifestealParticle(params, heal)
+	if not IsServer() then
+		return
+	end
+	local effect_cast = ParticleManager:CreateParticle(
+		"particles/units/heroes/hero_skeletonking/wraith_king_vampiric_aura_lifesteal.vpcf",
+		PATTACH_ABSORIGIN_FOLLOW,
+		self.caster
+	)
+	ParticleManager:SetParticleControlEnt(
+		effect_cast,
+		1,
+		self.caster,
+		PATTACH_POINT_FOLLOW,
+		"attach_hitloc",
+		self.caster:GetAbsOrigin(),
+		true
+	)
+	ParticleManager:ReleaseParticleIndex(effect_cast)
 end
 
 function modifier_item_wraith_aura_custom_active_aura:DeclareFunctions()
@@ -228,7 +261,6 @@ end
 
 modifier_item_wraith_aura_custom_aura = class(mod_visible)
 function modifier_item_wraith_aura_custom_aura:OnCreated()
-	self.caster = self:GetCaster()
 	self.ability = self:GetAbility()
 	self.parent = self:GetParent()
 
@@ -236,16 +268,11 @@ function modifier_item_wraith_aura_custom_aura:OnCreated()
 	self.armor = self.ability.armor_aura
 	self.mana = self.ability.mana_regen_aura
 	self.heal = self.ability.lifesteal_aura
-	self.active_heal = self.ability.caster_heal
 
 	if not IsServer() then
 		return
 	end
-	self.event_owner = self.parent:IsTempestDouble() and self.parent or self.parent:FindOwner()
-	if self.parent ~= self.event_owner then
-		return
-	end
-	self.event_owner:AddDamageEvent_out(self, true)
+	self.parent:AddLifesteal(self, { type = 2, value = self.heal, illusion = true })
 end
 
 function modifier_item_wraith_aura_custom_aura:DeclareFunctions()
@@ -266,59 +293,4 @@ end
 
 function modifier_item_wraith_aura_custom_aura:GetModifierBaseDamageOutgoing_Percentage()
 	return self.damage
-end
-
-function modifier_item_wraith_aura_custom_aura:DamageEvent_out(params)
-	if not IsServer() then
-		return
-	end
-	if not IsValid(self.ability) then
-		return
-	end
-	if not params.unit:IsUnit() then
-		return
-	end
-	local attacker = params.attacker
-	if not attacker:HasModifier(self:GetName()) then
-		return
-	end
-	local lifesteal = attacker:CheckLifesteal(params, 2)
-
-	if not lifesteal then
-		return
-	end
-
-	local heal = params.damage * self.heal * lifesteal
-	attacker:GenericHeal(heal, self.ability, true)
-
-	self.unit_owner = attacker:FindOwner()
-
-	if not self.unit_owner then
-		return
-	end
-	if not attacker.owner then
-		return
-	end
-	if not self.unit_owner:HasModifier("modifier_item_wraith_aura_custom_active") then
-		return
-	end
-	if self.unit_owner ~= self.caster then
-		return
-	end
-	local effect_cast = ParticleManager:CreateParticle(
-		"particles/units/heroes/hero_skeletonking/wraith_king_vampiric_aura_lifesteal.vpcf",
-		PATTACH_ABSORIGIN_FOLLOW,
-		self.unit_owner
-	)
-	ParticleManager:SetParticleControlEnt(
-		effect_cast,
-		1,
-		self.unit_owner,
-		PATTACH_POINT_FOLLOW,
-		"attach_hitloc",
-		self.unit_owner:GetAbsOrigin(),
-		true
-	)
-	ParticleManager:ReleaseParticleIndex(effect_cast)
-	self.unit_owner:GenericHeal(params.damage * self.active_heal * lifesteal, self.ability, true, "")
 end

@@ -14,6 +14,11 @@ LinkLuaModifier(
 	LUA_MODIFIER_MOTION_NONE
 )
 LinkLuaModifier(
+	"modifier_ember_spirit_fire_remnant_custom_unit",
+	"abilities/ember_spirit/fire_remnant",
+	LUA_MODIFIER_MOTION_NONE
+)
+LinkLuaModifier(
 	"modifier_ember_spirit_fire_remnant_custom_timer",
 	"abilities/ember_spirit/fire_remnant",
 	LUA_MODIFIER_MOTION_NONE
@@ -317,6 +322,7 @@ function ember_spirit_fire_remnant_custom:Cast(new_pos)
 
 	remnant_unit:SetDayTimeVisionRange(700)
 	remnant_unit:SetNightTimeVisionRange(700)
+	remnant_unit:AddNewModifier(self.caster, self, "modifier_ember_spirit_fire_remnant_custom_unit", {})
 	remnant_unit:AddNewModifier(self.caster, self, "modifier_ember_spirit_fire_remnant_custom_remnant", {})
 	remnant_unit.targets_hit = {}
 
@@ -587,18 +593,6 @@ function modifier_ember_spirit_fire_remnant_custom_remnant:OnCreated()
 	end
 end
 
-function modifier_ember_spirit_fire_remnant_custom_remnant:CheckState()
-	return {
-		[MODIFIER_STATE_NO_UNIT_COLLISION] = true,
-		[MODIFIER_STATE_INVULNERABLE] = true,
-		[MODIFIER_STATE_UNSELECTABLE] = true,
-		[MODIFIER_STATE_OUT_OF_GAME] = true,
-		[MODIFIER_STATE_NO_HEALTH_BAR] = true,
-		[MODIFIER_STATE_ROOTED] = true,
-		[MODIFIER_STATE_FORCED_FLYING_VISION] = true,
-	}
-end
-
 function modifier_ember_spirit_fire_remnant_custom_remnant:ClearEffect()
 	if not IsServer() then
 		return
@@ -633,6 +627,19 @@ function modifier_ember_spirit_fire_remnant_custom_remnant:OnDestroy()
 	if self.ability_activate then
 		self.ability_activate:FilterRemnants(self.parent)
 	end
+end
+
+modifier_ember_spirit_fire_remnant_custom_unit = class(mod_hidden)
+function modifier_ember_spirit_fire_remnant_custom_unit:CheckState()
+	return {
+		[MODIFIER_STATE_NO_UNIT_COLLISION] = true,
+		[MODIFIER_STATE_INVULNERABLE] = true,
+		[MODIFIER_STATE_UNSELECTABLE] = true,
+		[MODIFIER_STATE_OUT_OF_GAME] = true,
+		[MODIFIER_STATE_NO_HEALTH_BAR] = true,
+		[MODIFIER_STATE_ROOTED] = true,
+		[MODIFIER_STATE_FORCED_FLYING_VISION] = true,
+	}
 end
 
 modifier_ember_spirit_activate_fire_remnant_custom_legendary_timer = class(mod_hidden)

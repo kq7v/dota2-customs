@@ -33,20 +33,6 @@
 		]
 		distance_max = 1600
 	}
-	Hoodwink.Sharp_max = 
-	{
-		pitch = 1
-		volume = 3.5
-		pitch_rand_min = -0.03
-		pitch_rand_max = 0.03
-		type = "dota_src1_3d"
-		soundlevel = 100
-		vsnd_files = 
-		[
-			"sounds/weapons/hero/arc_warden/rune_forge.vsnd",
-		]
-		distance_max = 1600
-	}
 	Hoodwink.Innate_proc = 
 	{
 		pitch = 1
@@ -171,20 +157,6 @@
 		vsnd_files = 
 		[
 			"sounds/weapons/hero/hoodwink/scurry_end.vsnd",
-		]
-		distance_max = 1600
-	}
-	Hoodwink.Bush_silence = 
-	{
-		pitch = 1
-		volume = 0.8
-		pitch_rand_min = -0.03
-		pitch_rand_max = 0.03
-		type = "dota_src1_3d"
-		soundlevel = 100
-		vsnd_files = 
-		[
-			"sounds/weapons/hero/hoodwink/boomerang_slow.vsnd",
 		]
 		distance_max = 1600
 	}

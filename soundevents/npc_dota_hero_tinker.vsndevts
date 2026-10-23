@@ -10,21 +10,6 @@
 
 <!-- kv3 encoding:text:version{e21c7f3c-8a33-41c5-9977-a76d3a32aa0d} format:generic:version{7412167c-06e9-4698-aff2-e63eb59037e7} -->
 {
-	Tinker.Laser_legendary_attack = 
-	{
-		type = "dota_src1_3d"
-		volume = 0.75
-		vsnd_files = 
-		[
-			"sounds/weapons/hero/tinker/attack.vsnd",
-		]
-		pitch_rand_max = 0.6
-		pitch_rand_min = 0.3
-		pitch = 1
-		soundlevel = 100
-		volume_fade_out = 0.5
-		distance_max = 1600
-	}
 	Tinker.Laser_legendary_cast = 
 	{
 		type = "dota_src1_3d"
@@ -102,21 +87,6 @@
 		volume_fade_out = 0.5
 		distance_max = 1600
 	}
-	Tinker.March_haste = 
-	{
-		type = "dota_src1_3d"
-		volume = 0.6
-		vsnd_files = 
-		[
-			"sounds/weapons/hero/ringmaster/enc/wheel_deploy_layer.vsnd",
-		]
-		pitch_rand_max = -0.05
-		pitch_rand_min = -0.05
-		pitch = 1
-		soundlevel = 100
-		volume_fade_out = 0.5
-		distance_max = 1600
-	}
 	Tinker.March_legendary_start = 
 	{
 		type = "dota_src1_3d"
@@ -180,23 +150,6 @@
 		volume_fade_out = 0.5
 		distance_max = 1600
 	}
-	Tinker.Matrix_legendary_damage = 
-	{
-		type = "dota_src1_3d"
-		volume = 0.3
-		vsnd_files = 
-		[
-			"sounds/weapons/hero/razor/razor_lightning_strike_01.vsnd",
-			"sounds/weapons/hero/razor/razor_lightning_strike_02.vsnd",
-			"sounds/weapons/hero/razor/razor_lightning_strike_03.vsnd",
-		]
-		pitch_rand_max = 0.1
-		pitch_rand_min = -0.1
-		pitch = 1
-		soundlevel = 100
-		volume_fade_out = 0.5
-		distance_max = 1600
-	}
 	Tinker.Matrix_legendary_loop = 
 	{
 		type = "dota_src1_3d"
@@ -222,66 +175,6 @@
 		]
 		pitch_rand_max = 0.0
 		pitch_rand_min = -0.1
-		pitch = 1
-		soundlevel = 100
-		volume_fade_out = 0.5
-		distance_max = 1600
-	}
-	Tinker.Matrix_invun = 
-	{
-		type = "dota_src1_3d"
-		volume = 1
-		vsnd_files = 
-		[
-			"sounds/weapons/hero/templar_assassin/refraction_absorb.vsnd",
-		]
-		pitch_rand_min = -0.3
-		pitch_rand_max = -0.1
-		pitch = 1
-		soundlevel = 100
-		volume_fade_out = 0.5
-		distance_max = 1600
-	}
-	Tinker.Matrix_launch = 
-	{
-		type = "dota_src1_3d"
-		volume = 0.7
-		vsnd_files = 
-		[
-			"sounds/weapons/hero/disruptor/repulsion.vsnd",
-		]
-		pitch_rand_min = -0.05
-		pitch_rand_max = -0.05
-		pitch = 1
-		soundlevel = 100
-		volume_fade_out = 0.5
-		distance_max = 1600
-	}
-	Tinker.Matrix_hit = 
-	{
-		type = "dota_src1_3d"
-		volume = 0.5
-		vsnd_files = 
-		[
-			"sounds/weapons/hero/phoenix/projectile_impact.vsnd",
-		]
-		pitch_rand_min = -0.1
-		pitch_rand_max = -0.1
-		pitch = 1
-		soundlevel = 100
-		volume_fade_out = 0.5
-		distance_max = 1600
-	}
-	Tinker.Rearm_bkb = 
-	{
-		type = "dota_src1_3d"
-		volume = 1
-		vsnd_files = 
-		[
-			"sounds/items/minotaur_horn.vsnd",
-		]
-		pitch_rand_min = -0.05
-		pitch_rand_max = 0.05
 		pitch = 1
 		soundlevel = 100
 		volume_fade_out = 0.5
@@ -328,21 +221,6 @@
 		]
 		pitch_rand_min = 0.1
 		pitch_rand_max = 0.1
-		pitch = 1
-		soundlevel = 100
-		volume_fade_out = 0.5
-		distance_max = 1600
-	}
-	Tinker.Scepter_proc = 
-	{
-		type = "dota_src1_3d"
-		volume = 1
-		vsnd_files = 
-		[
-			"sounds/weapons/hero/tinker/rearm_anim.vsnd",
-		]
-		pitch_rand_max = 0.1
-		pitch_rand_min = 0.05
 		pitch = 1
 		soundlevel = 100
 		volume_fade_out = 0.5

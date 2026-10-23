@@ -38,7 +38,6 @@ function item_alchemist_gold_satanic:Spawn()
 	self.bonus_strength = self:GetSpecialValueFor("bonus_strength")
 	self.bonus_damage = self:GetSpecialValueFor("bonus_damage")
 	self.lifesteal = self:GetSpecialValueFor("lifesteal")
-	self.creeps = self:GetSpecialValueFor("creeps")
 	self.lifesteal_active = self:GetSpecialValueFor("lifesteal_active")
 	self.active_damage = self:GetSpecialValueFor("active_damage")
 end
@@ -65,8 +64,6 @@ function modifier_item_alchemist_gold_satanic:OnCreated()
 	self.bonus_str = self.ability.bonus_strength
 	self.bonus_damage = self.ability.bonus_damage
 	self.lifesteal = self.ability.lifesteal / 100
-	self.creeps = self.ability.creeps
-	self.active_lifesteal = self.ability.lifesteal_active / 100
 
 	if not IsServer() then
 		return
@@ -74,7 +71,7 @@ function modifier_item_alchemist_gold_satanic:OnCreated()
 	if not self.parent:IsRealHero() then
 		return
 	end
-	self.parent:AddDamageEvent_out(self, true)
+	self.parent:AddLifesteal(self, { type = 2, value = self.lifesteal })
 end
 
 function modifier_item_alchemist_gold_satanic:DeclareFunctions()
@@ -90,29 +87,6 @@ end
 
 function modifier_item_alchemist_gold_satanic:GetModifierBonusStats_Strength()
 	return self.bonus_str
-end
-
-function modifier_item_alchemist_gold_satanic:DamageEvent_out(params)
-	if not IsServer() then
-		return
-	end
-	if not IsValid(self.ability) then
-		return
-	end
-	if not self.parent:CheckLifesteal(params, 2) then
-		return
-	end
-
-	local heal = self.parent:HasModifier("modifier_item_alchemist_gold_satanic_active")
-			and params.damage * self.active_lifesteal
-		or params.damage * self.lifesteal
-	heal = params.unit:IsCreep() and heal / self.creeps or heal
-
-	self.parent:GenericHeal(
-		heal,
-		self.ability,
-		not self.parent:HasModifier("modifier_item_alchemist_gold_satanic_active")
-	)
 end
 
 modifier_item_alchemist_gold_satanic_active = class(mod_visible)
@@ -132,6 +106,10 @@ function modifier_item_alchemist_gold_satanic_active:OnCreated()
 		self.ability,
 		"modifier_generic_debuff_immune",
 		{ duration = self:GetRemainingTime(), effect = 1 }
+	)
+	self.parent:AddLifesteal(
+		self,
+		{ type = 2, value = (self.ability.lifesteal_active - self.ability.lifesteal) / 100, text = true }
 	)
 end
 

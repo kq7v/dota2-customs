@@ -74,7 +74,6 @@ function bane_enfeeble_custom:UpdateTalents()
 			q2_speed_reduce = 0,
 			q2_speed = 0,
 
-			has_q3 = 0,
 			q3_damage = 0,
 			q3_radius = caster:GetTalentValue("modifier_bane_enfeeble_3", "radius", true),
 			q3_damage_type = caster:GetTalentValue("modifier_bane_enfeeble_3", "damage_type", true),
@@ -110,9 +109,8 @@ function bane_enfeeble_custom:UpdateTalents()
 	end
 
 	if caster:HasTalent("modifier_bane_enfeeble_3") then
-		self.talents.has_q3 = 1
 		self.talents.q3_damage = caster:GetTalentValue("modifier_bane_enfeeble_3", "damage") / 100
-		caster:AddDamageEvent_out(self.tracker, true)
+		caster:AddProc(self.tracker, { damage = true })
 	end
 
 	if caster:HasTalent("modifier_bane_enfeeble_4") then
@@ -441,30 +439,13 @@ function modifier_bane_enfeeble_custom_tracker:GetModifierAttackSpeedBonus_Const
 	return self.ability.talents.q2_speed
 end
 
-function modifier_bane_enfeeble_custom_tracker:DamageEvent_out(params)
-	if not IsServer() then
-		return
-	end
-	if self.ability.talents.has_q3 == 0 then
-		return
-	end
-	if self.parent ~= params.attacker then
-		return
-	end
-	if params.inflictor then
-		return
-	end
+function modifier_bane_enfeeble_custom_tracker:GetProcChance(params)
+	return self.ability.talents.q3_chance
+		* (params.target:HasModifier("modifier_bane_enfeeble_custom") and self.ability.talents.q3_bonus or 1)
+end
 
-	local target = params.unit
-
-	if not target:IsUnit() then
-		return
-	end
-	local chance = self.ability.talents.q3_chance
-		* (target:HasModifier("modifier_bane_enfeeble_custom") and self.ability.talents.q3_bonus or 1)
-	if not RollPseudoRandomPercentage(chance, 4351, self.parent) then
-		return
-	end
+function modifier_bane_enfeeble_custom_tracker:DamageProc(params, name)
+	local target = params.target
 
 	target:EmitSound("Bane.Enfeeble_end")
 	target:EmitSound("Bane.Enfeeble_end_2")

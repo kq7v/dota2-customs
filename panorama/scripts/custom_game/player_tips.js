@@ -58,7 +58,7 @@ class PlayerTips {
         let icon_name =  event.image
         let icon = `url("file://{images}/custom_game/tips/tip_${icon_name}.png")`
 
-
+ 
         image.style.backgroundImage = icon;
         image.style.backgroundSize = "100%";
 
@@ -70,4 +70,4 @@ class PlayerTips {
     }
 }
 
-var player_tips = new PlayerTips();
+var player_tips = new PlayerTips();

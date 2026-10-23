@@ -166,8 +166,13 @@ function dota1x6:SendPlayerStats(hero, player)
 		return
 	end
 
-	local data =
-		{ id = hero:GetId(), str = hero.stats_cache.str, agi = hero.stats_cache.agi, int = hero.stats_cache.int }
+	local data = {
+		id = hero:GetId(),
+		str = hero.stats_cache.str,
+		agi = hero.stats_cache.agi,
+		int = hero.stats_cache.int,
+		cast_range = hero:GetCastRangeBonus(),
+	}
 
 	if player then
 		CustomGameEventManager:Send_ServerToPlayer(player, "update_player_stats", data)
@@ -186,6 +191,185 @@ function dota1x6:RequestPlayerStats(data)
 	for _, hero in pairs(players) do
 		dota1x6:SendPlayerStats(hero, PlayerResource:GetPlayer(id))
 	end
+end
+
+function dota1x6:RequestStatsTooltip(data)
+	local id = data.PlayerID
+
+	if id == nil then
+		return
+	end
+	if data.unit == nil then
+		return
+	end
+
+	local player = PlayerResource:GetPlayer(id)
+	local unit = EntIndexToHScript(data.unit)
+
+	if not player then
+		return
+	end
+	if not IsValid(unit) then
+		return
+	end
+	if not unit:IsBaseNPC() then
+		return
+	end
+
+	local time = Time()
+
+	if player.stats_tooltip_time and time - player.stats_tooltip_time < 0.4 then
+		return
+	end
+
+	player.stats_tooltip_time = time
+
+	local heal_change = unit.heal_reduce_mods and unit:GetHealChange() or 1
+	local crit_bonus = unit.crit_damage_mods and 1 + unit:GetCritDamageBonus() / 100 or 1
+	local tracker = unit:FindModifierByName("modifier_player_main_custom")
+	local mana_cost = 1
+	local health_percent = 0
+	local mana_percent = 0
+	local attack_speed_percent = 0
+	local crits = {}
+	local params = {}
+	local miss = 1
+
+	for _, mod in pairs(unit:FindAllModifiers()) do
+		if mod.GetModifierPercentageManacostStacking then
+			mana_cost = mana_cost * (1 - (mod:GetModifierPercentageManacostStacking(params) or 0) / 100)
+		end
+		if mod.GetModifierExtraHealthPercentage then
+			health_percent = health_percent + (mod:GetModifierExtraHealthPercentage() or 0)
+		end
+		if mod.GetModifierExtraManaPercentage then
+			mana_percent = mana_percent + (mod:GetModifierExtraManaPercentage() or 0)
+		end
+		if mod.GetModifierAttackSpeedPercentage then
+			attack_speed_percent = attack_speed_percent + (mod:GetModifierAttackSpeedPercentage() or 0)
+		end
+		if mod.GetAccuracyChance then
+			miss = miss * (1 - math.min(mod:GetAccuracyChance() or 0, 100) / 100)
+		end
+		if mod.GetCritChance then
+			local chance = mod:GetCritChance()
+			local damage = mod:GetCritDamage()
+			if chance and chance > 0 and damage then
+				table.insert(crits, { chance = math.min(chance, 100), damage = damage * crit_bonus })
+			end
+		end
+	end
+
+	for _, data in ipairs(unit.proc_active or {}) do
+		if data.accuracy and not data.strike and IsValid(data.mod) then
+			miss = miss * (1 - math.min(data.mod:GetProcChance(nil, data.name) or 0, 100) / 100)
+		end
+	end
+
+	table.sort(crits, function(a, b)
+		return a.damage > b.damage
+	end)
+
+	local mana = unit:GetMaxMana()
+	local health = unit:GetMaxHealth()
+	local attack_speed = unit:GetDisplayAttackSpeed()
+	local primary
+	local primary_damage = 0
+
+	if unit:IsHero() then
+		local game_mode = GameRules:GetGameModeEntity()
+		local kv = GetUnitKeyValuesByName(unit:GetUnitName()) or {}
+		local str = math.floor(unit:GetStrength(true))
+		local agility = unit:GetAgility(true)
+		local agi = math.floor(agility)
+		local int = math.floor(unit:GetIntellect(false, nil, true))
+		local attributes = {
+			[DOTA_ATTRIBUTE_STRENGTH] = { "Strength", str, DOTA_ATTRIBUTE_STRENGTH_DAMAGE },
+			[DOTA_ATTRIBUTE_AGILITY] = { "Agility", agi, DOTA_ATTRIBUTE_AGILITY_DAMAGE },
+			[DOTA_ATTRIBUTE_INTELLECT] = { "Intelligence", int, DOTA_ATTRIBUTE_INTELLIGENCE_DAMAGE },
+			[DOTA_ATTRIBUTE_ALL] = { "All", str + agi + int, DOTA_ATTRIBUTE_ALL_DAMAGE },
+		}
+		local attribute = attributes[unit:GetPrimaryAttribute()]
+
+		mana = (tonumber(kv.StatusMana) or 75)
+			+ int * game_mode:GetCustomAttributeDerivedStatValue(DOTA_ATTRIBUTE_INTELLIGENCE_MANA)
+		health = (tonumber(kv.StatusHealth) or 120)
+			+ str * game_mode:GetCustomAttributeDerivedStatValue(DOTA_ATTRIBUTE_STRENGTH_HP)
+		attack_speed = (tonumber(kv.BaseAttackSpeed) or 100)
+			+ agility * game_mode:GetCustomAttributeDerivedStatValue(DOTA_ATTRIBUTE_AGILITY_ATTACK_SPEED)
+		primary = attribute and attribute[1]
+		primary_damage = attribute and attribute[2] * game_mode:GetCustomAttributeDerivedStatValue(attribute[3]) or 0
+	end
+
+	CustomGameEventManager:Send_ServerToPlayer(player, "stats_tooltip_data", {
+		request = data.request,
+		cooldown = (1 - unit:GetCooldownReduction()) * 100,
+		mana_cost = (mana_cost - 1) * 100,
+		mana = mana,
+		mana_bonus = unit:GetMaxMana() - mana,
+		health = health,
+		health_bonus = unit:GetMaxHealth() - health,
+		percent = {
+			Health = health_percent,
+			Mana = mana_percent,
+			AttackSpeed = attack_speed_percent,
+			Strength = (tracker and tracker.str_k or 0) * 100,
+			Agility = (tracker and tracker.agi_k or 0) * 100,
+			Intelligence = (tracker and tracker.int_k or 0) * 100,
+		},
+		attack_speed = attack_speed,
+		attack_speed_bonus = unit:GetDisplayAttackSpeed() - attack_speed,
+		primary = primary,
+		primary_damage = primary_damage,
+		cast_range = unit:GetCastRangeBonus(),
+		item_damage = unit.item_damage_mods and unit:GetItemDamage() or 0,
+		attack_lifesteal = unit:Lifesteal({ attacker = unit, damage = 1, dry = true }) * 100,
+		spell_lifesteal = unit:Lifesteal({ attacker = unit, damage = 1, dry = true, inflictor = {} }) * 100,
+		heal = (heal_change - 1) * 100,
+		crits = crits,
+		accuracy = unit:IsUnableToMiss() and 100 or (1 - miss) * 100,
+	})
+end
+
+function dota1x6:RequestItemTooltip(data)
+	local id = data.PlayerID
+
+	if id == nil then
+		return
+	end
+	if type(data.item) ~= "string" then
+		return
+	end
+
+	local player = PlayerResource:GetPlayer(id)
+	local kv = GetAbilityKeyValuesByName(data.item) or {}
+	local keys = {}
+
+	if not player then
+		return
+	end
+
+	for key, value in pairs(type(kv.AbilityValues) == "table" and kv.AbilityValues or {}) do
+		keys[key] = tostring(type(value) == "table" and (value.value or "") or value)
+	end
+
+	for _, field in ipairs({
+		"AbilityDuration",
+		"AbilityCastRange",
+		"AbilityCastPoint",
+		"AbilityChargeRestoreTime",
+		"AbilityHealthCost",
+	}) do
+		if kv[field] then
+			keys[field:lower()] = tostring(kv[field])
+		end
+	end
+
+	CustomGameEventManager:Send_ServerToPlayer(
+		player,
+		"item_tooltip_keys",
+		{ item = data.item, keys = keys, damage = kv.AbilityUnitDamageType and _G[kv.AbilityUnitDamageType] or 0 }
+	)
 end
 
 function dota1x6:GetPlayerNames(data)
@@ -775,7 +959,7 @@ function dota1x6:send_cursor_position(data)
 
 	if ability and ability.GetCursor then
 		local point = GetGroundPosition(Vector(data.x, data.y, 0), nil)
-		ability:GetCursor(point)
+		ability:GetCursor(point, data)
 	end
 end
 
@@ -828,7 +1012,13 @@ function dota1x6:TipPlayer(data)
 		local player_tips = sub_data.player_tips
 		local selected = sub_data.selected_tip
 
-		if player_tips and selected and player_tips[selected] and player_tips[selected] ~= 0 then
+		if
+			player_tips
+			and selected
+			and player_tips[selected]
+			and player_tips[selected] ~= 0
+			and shop:HasSelectItem(id, tips_item_list, player_tips[selected])
+		then
 			image = player_tips[selected]
 		end
 	end

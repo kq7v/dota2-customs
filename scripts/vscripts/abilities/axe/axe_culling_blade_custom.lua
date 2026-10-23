@@ -95,6 +95,10 @@ function axe_culling_blade_custom:UpdateTalents(name)
 			r1_damage_type = caster:GetTalentValue("modifier_axe_culling_1", "damage_type", true),
 			r1_interval = caster:GetTalentValue("modifier_axe_culling_1", "interval", true),
 
+			r2_heal = 0,
+			r2_bonus = caster:GetTalentValue("modifier_axe_culling_2", "bonus", true),
+			r2_health = caster:GetTalentValue("modifier_axe_culling_2", "health", true),
+
 			has_r3 = 0,
 			r3_damage = 0,
 			r3_damage_stack = 0,
@@ -115,19 +119,33 @@ function axe_culling_blade_custom:UpdateTalents(name)
 		self.talents.has_r1 = 1
 		self.talents.r1_slow = caster:GetTalentValue("modifier_axe_culling_1", "slow")
 		self.talents.r1_damage = caster:GetTalentValue("modifier_axe_culling_1", "damage") / 100
-		caster:AddAttackEvent_out(self.tracker, true)
+		caster:AddProc(self.tracker, { land = true })
+	end
+
+	if caster:HasTalent("modifier_axe_culling_2") then
+		self.talents.r2_heal = caster:GetTalentValue("modifier_axe_culling_2", "heal") / 100
+		caster:AddLifesteal(self.tracker, {
+			name = "modifier_axe_culling_2",
+			type = 2,
+			value = function(params)
+				if params.unit and params.unit:GetHealthPercent() >= self.talents.r2_health then
+					return self.talents.r2_heal * self.talents.r2_bonus
+				end
+				return self.talents.r2_heal
+			end,
+		})
 	end
 
 	if caster:HasTalent("modifier_axe_culling_3") then
 		self.talents.has_r3 = 1
 		self.talents.r3_damage = caster:GetTalentValue("modifier_axe_culling_3", "damage")
 		self.talents.r3_damage_stack = caster:GetTalentValue("modifier_axe_culling_3", "damage_stack") / 100
-		caster:AddAttackEvent_out(self.tracker, true)
+		caster:AddProc(self.tracker, { land = true })
 	end
 
 	if caster:HasTalent("modifier_axe_culling_4") then
 		self.talents.has_r4 = 1
-		caster:AddAttackEvent_out(self.tracker, true)
+		caster:AddProc(self.tracker, { land = true })
 	end
 end
 
@@ -312,18 +330,12 @@ function modifier_axe_culling_blade_custom_tracker:GetModifierDamageOutgoing_Per
 	return self.ability.talents.r3_damage
 end
 
-function modifier_axe_culling_blade_custom_tracker:AttackEvent_out(params)
-	if not IsServer() then
-		return
-	end
-	if self.parent ~= params.attacker then
-		return
-	end
+function modifier_axe_culling_blade_custom_tracker:GetProcChance()
+	return 100
+end
 
+function modifier_axe_culling_blade_custom_tracker:AttackProc(params, name)
 	local target = params.target
-	if not target:IsUnit() then
-		return
-	end
 
 	if self.ability.talents.has_r1 == 1 then
 		target:AddNewModifier(self.parent, self.ability, "modifier_axe_culling_blade_custom_slow", {})

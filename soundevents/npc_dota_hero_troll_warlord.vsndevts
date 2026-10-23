@@ -111,48 +111,6 @@
 		distance_max = 1600
 		pitch = 1
 	}
-	Troll.Charge = 
-	{
-		vsnd_files = 
-		[
-			"sounds/weapons/hero/phantom_lancer/phantom_edge.vsnd",
-		]
-		volume = 1.4
-		pitch_rand_min = -0.03
-		pitch_rand_max = 0.03
-		type = "dota_src1_3d"
-		soundlevel = 81
-		distance_max = 1600
-		pitch = 1
-	}
-	Troll.ChargeHit = 
-	{
-		vsnd_files = 
-		[
-			"sounds/weapons/hero/slardar/bash_stun.vsnd",
-		]
-		volume = 1.4
-		pitch_rand_min = -0.03
-		pitch_rand_max = 0.03
-		type = "dota_src1_3d"
-		soundlevel = 81
-		distance_max = 1600
-		pitch = 1
-	}
-	Troll.Bloodrage = 
-	{
-		vsnd_files = 
-		[
-			"sounds/weapons/hero/marci/unleash_charged.vsnd",
-		]
-		volume = 2
-		pitch_rand_min = -0.03
-		pitch_rand_max = 0.03
-		type = "dota_src1_3d"
-		soundlevel = 81
-		distance_max = 1600
-		pitch = 1
-	}
 	Troll.Fervor_voice = 
 	{
 		vsnd_files = 

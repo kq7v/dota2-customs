@@ -62,6 +62,7 @@ function slark_shadow_dance_custom:Precache(context)
 	PrecacheResource("particle", "particles/units/heroes/hero_slark/slark_shadow_dance.vpcf", context)
 	PrecacheResource("particle", "particles/slark/dance_legendary.vpcf", context)
 	PrecacheResource("particle", "particles/void_spirit/void_mark_hit.vpcf", context)
+	PrecacheResource("particle", "particles/slark/dance_lifesteal.vpcf", context)
 end
 
 function slark_shadow_dance_custom:UpdateTalents()
@@ -75,6 +76,8 @@ function slark_shadow_dance_custom:UpdateTalents()
 
 			has_r4 = 0,
 			r4_range = caster:GetTalentValue("modifier_slark_dance_4", "range", true),
+			r4_heal = caster:GetTalentValue("modifier_slark_dance_4", "heal", true) / 100,
+			r4_bonus = caster:GetTalentValue("modifier_slark_dance_4", "bonus", true),
 
 			has_r7 = 0,
 			r7_bva_base = caster:GetTalentValue("modifier_slark_dance_7", "bva_base", true),
@@ -100,6 +103,16 @@ function slark_shadow_dance_custom:UpdateTalents()
 
 	if caster:HasTalent("modifier_slark_dance_4") then
 		self.talents.has_r4 = 1
+		caster:AddLifesteal(self.tracker, {
+			name = "modifier_slark_dance_4",
+			type = 2,
+			value = function()
+				if caster:HasModifier("modifier_slark_shadow_dance_custom_effect") then
+					return self.talents.r4_heal * self.talents.r4_bonus, "particles/slark/dance_lifesteal.vpcf"
+				end
+				return self.talents.r4_heal
+			end,
+		})
 	end
 
 	if caster:HasTalent("modifier_slark_dance_7") then

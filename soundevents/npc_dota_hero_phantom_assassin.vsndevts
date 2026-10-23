@@ -24,21 +24,6 @@
 		distance_max = 1600
 		pitch = 1
 	}
-	PA.Blur_legendary_evasion = 
-	{
-		vsnd_files = 
-		[
-			"sounds/weapons/hero/silencer/curse_tick.vsnd",
-		]
-		volume = 0.8
-		pitch_rand_min = -0.2
-		pitch_rand_max = -0.1
-		type = "dota_src1_3d"
-		soundlevel = 100
-		distance_max = 1600
-		pitch = 1
-		volume_fade_out = 1
-	}
 	PA.Dagger_root = 
 	{
 		vsnd_files = 
@@ -115,62 +100,6 @@
 		distance_max = 1600
 		pitch = 1
 	}
-	PA.Blink_haste = 
-	{
-		vsnd_files = 
-		[
-			"sounds/weapons/hero/phantom_lancer/phantom_edge.vsnd",
-		]
-		volume = 0.4
-		pitch_rand_min = -0.1
-		pitch_rand_max = 0
-		type = "dota_src1_3d"
-		soundlevel = 100
-		distance_max = 1600
-		pitch = 1
-	}
-	Phantom_Assassin.Dagger_Sleep = 
-	{
-		vsnd_files = 
-		[
-			"sounds/weapons/hero/riki/sleep_dart_target.vsnd",
-		]
-		volume = 1.6
-		pitch_rand_min = -0.05
-		pitch_rand_max = 0.05
-		type = "dota_src1_3d"
-		soundlevel = 100
-		distance_max = 1600
-		pitch = 1
-	}
-	Phantom_Assassin.Dagger_Sleep_target = 
-	{
-		vsnd_files = 
-		[
-			"sounds/weapons/hero/riki/sleep_dart_damage.vsnd",
-		]
-		volume = 1.6
-		pitch_rand_min = -0.05
-		pitch_rand_max = 0.05
-		type = "dota_src1_3d"
-		soundlevel = 100
-		distance_max = 1600
-		pitch = 1
-	}
-	PA.Blur_attack = 
-	{
-		vsnd_files = 
-		[
-			"sounds/weapons/hero/riki/sleep_dart_damage.vsnd",
-		]
-		volume = 1.6
-		pitch_rand_min = -0.05
-		pitch_rand_max = 0.05
-		type = "dota_src1_3d"
-		soundlevel = 100
-		distance_max = 1600
-		pitch = 1
-	}
 	PA.Blur_absorb = 
 	{
 		vsnd_files = 
@@ -180,48 +109,6 @@
 		volume = 1.2
 		pitch_rand_min = 0.05
 		pitch_rand_max = 0.15
-		type = "dota_src1_3d"
-		soundlevel = 100
-		distance_max = 1600
-		pitch = 1
-	}
-	PA.Crit_shield = 
-	{
-		vsnd_files = 
-		[
-			"sounds/weapons/hero/centaur/retaliate_cast.vsnd",
-		]
-		volume = 1.3
-		pitch_rand_min = 0.05
-		pitch_rand_max = 0.15
-		type = "dota_src1_3d"
-		soundlevel = 100
-		distance_max = 1600
-		pitch = 1
-	}
-	Phantom_Assassin.Blink_start = 
-	{
-		vsnd_files = 
-		[
-			"sounds/weapons/hero/riki/tricks_of_the_trade.vsnd",
-		]
-		volume = 1.2
-		pitch_rand_min = -0.05
-		pitch_rand_max = 0.05
-		type = "dota_src1_3d"
-		soundlevel = 100
-		distance_max = 1600
-		pitch = 1
-	}
-	Phantom_Assassin.Blink_hit = 
-	{
-		vsnd_files = 
-		[
-			"sounds/weapons/hero/riki/sleep_dart_cast.vsnd",
-		]
-		volume = 1.2
-		pitch_rand_min = -0.05
-		pitch_rand_max = 0.05
 		type = "dota_src1_3d"
 		soundlevel = 100
 		distance_max = 1600
@@ -271,21 +158,6 @@
 		distance_max = 1600
 		pitch = 1
 	}
-	Phantom_Assassin.Heal = 
-	{
-		vsnd_files = 
-		[
-			"sounds/weapons/hero/bloodseeker/bloodbath01.vsnd",
-			"sounds/weapons/hero/bloodseeker/bloodbath02.vsnd",
-		]
-		volume = 1
-		pitch_rand_min = -0.05
-		pitch_rand_max = 0.05
-		type = "dota_src1_3d"
-		soundlevel = 100
-		distance_max = 1600
-		pitch = 1
-	}
 	PA.Scepter_target = 
 	{
 		vsnd_files = 
@@ -327,48 +199,6 @@
 		soundlevel = 100
 		distance_max = 1600
 		volume_fade_out = 0.5
-		pitch = 1
-	}
-	Phantom_Assassin.Armor = 
-	{
-		vsnd_files = 
-		[
-			"sounds/items/medallion_of_courage.vsnd",
-		]
-		volume = 0.6
-		pitch_rand_min = -0.05
-		pitch_rand_max = 0.05
-		type = "dota_src1_3d"
-		soundlevel = 100
-		distance_max = 1600
-		pitch = 1
-	}
-	Phantom_Assassin.Silence = 
-	{
-		vsnd_files = 
-		[
-			"sounds/weapons/hero/silencer/curse_tick.vsnd",
-		]
-		volume = 1.5
-		pitch_rand_min = -0.05
-		pitch_rand_max = 0.05
-		type = "dota_src1_3d"
-		soundlevel = 100
-		distance_max = 1600
-		pitch = 1
-	}
-	Phantom_Assassin.Blind = 
-	{
-		vsnd_files = 
-		[
-			"sounds/weapons/hero/keeper/blinding_light.vsnd",
-		]
-		volume = 1
-		pitch_rand_min = -0.05
-		pitch_rand_max = 0.05
-		type = "dota_src1_3d"
-		soundlevel = 100
-		distance_max = 1600
 		pitch = 1
 	}
 	Phantom_Assassin.PoisonImpact = 
@@ -564,34 +394,6 @@
 			"sounds/items/nullifier_slow.vsnd",
 		]
 		volume = 0.5
-		pitch_rand_min = -0.05
-		pitch_rand_max = 0.05
-		type = "dota_src1_3d"
-		soundlevel = 100
-		distance_max = 1600
-		pitch = 1
-	}
-	Phantom_Assassin.BlurAttack = 
-	{
-		vsnd_files = 
-		[
-			"sounds/weapons/hero/doom_bringer/infernal_blade_preattack.vsnd",
-		]
-		volume = 1
-		pitch_rand_min = -0.05
-		pitch_rand_max = 0.05
-		type = "dota_src1_3d"
-		soundlevel = 100
-		distance_max = 1600
-		pitch = 1
-	}
-	Phantom_Assassin.CritAttack = 
-	{
-		vsnd_files = 
-		[
-			"sounds/weapons/hero/luna/luna_eclipse_impact_miss.vsnd",
-		]
-		volume = 1
 		pitch_rand_min = -0.05
 		pitch_rand_max = 0.05
 		type = "dota_src1_3d"

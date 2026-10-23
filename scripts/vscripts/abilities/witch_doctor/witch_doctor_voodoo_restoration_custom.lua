@@ -90,7 +90,6 @@ function witch_doctor_voodoo_restoration_custom:UpdateTalents(name)
 			w1_heal = 0,
 			w1_damage = 0,
 
-			has_w2 = 0,
 			w2_heal = 0,
 			w2_slow = 0,
 
@@ -129,7 +128,6 @@ function witch_doctor_voodoo_restoration_custom:UpdateTalents(name)
 			h2_duration = caster:GetTalentValue("modifier_witch_doctor_hero_2", "duration", true),
 			h2_bonus = caster:GetTalentValue("modifier_witch_doctor_hero_2", "bonus", true),
 
-			has_h3 = 0,
 			h3_str = 0,
 			h3_mana = 0,
 
@@ -144,13 +142,7 @@ function witch_doctor_voodoo_restoration_custom:UpdateTalents(name)
 
 			e2_radius_voodoo = 0,
 
-			has_e3 = 0,
-			e3_heal = 0,
-
 			has_e7 = 0,
-
-			has_r3 = 0,
-			r3_heal = 0,
 		}
 	end
 
@@ -161,10 +153,12 @@ function witch_doctor_voodoo_restoration_custom:UpdateTalents(name)
 	end
 
 	if caster:HasTalent("modifier_witch_doctor_voodoo_2") then
-		self.talents.has_w2 = 1
 		self.talents.w2_heal = caster:GetTalentValue("modifier_witch_doctor_voodoo_2", "heal") / 100
 		self.talents.w2_slow = caster:GetTalentValue("modifier_witch_doctor_voodoo_2", "slow")
-		caster:AddDamageEvent_out(self.tracker, true)
+		caster:AddLifesteal(
+			self.tracker,
+			{ name = "modifier_witch_doctor_voodoo_2", type = 1, value = self.talents.w2_heal }
+		)
 	end
 
 	if caster:HasTalent("modifier_witch_doctor_voodoo_3") then
@@ -194,13 +188,15 @@ function witch_doctor_voodoo_restoration_custom:UpdateTalents(name)
 	end
 
 	if caster:HasTalent("modifier_witch_doctor_hero_3") then
-		self.talents.has_h3 = 1
 		self.talents.h3_str = caster:GetTalentValue("modifier_witch_doctor_hero_3", "str")
 		self.talents.h3_mana = caster:GetTalentValue("modifier_witch_doctor_hero_3", "mana") / 100
 		if IsServer() then
 			caster:CalculateStatBonus(true)
-			caster:AddDamageEvent_out(self.tracker, true)
 		end
+		caster:AddLifesteal(
+			self.tracker,
+			{ name = "modifier_witch_doctor_hero_3", heal = false, proc = "LifestealMana", value = self.talents.h3_mana }
+		)
 	end
 
 	if caster:HasTalent("modifier_witch_doctor_hero_4") then
@@ -219,20 +215,8 @@ function witch_doctor_voodoo_restoration_custom:UpdateTalents(name)
 		end
 	end
 
-	if caster:HasTalent("modifier_witch_doctor_maledict_3") then
-		self.talents.has_e3 = 1
-		self.talents.e3_heal = caster:GetTalentValue("modifier_witch_doctor_maledict_3", "heal") / 100
-		caster:AddDamageEvent_out(self.tracker, true)
-	end
-
 	if caster:HasTalent("modifier_witch_doctor_maledict_7") then
 		self.talents.has_e7 = 1
-	end
-
-	if caster:HasTalent("modifier_witch_doctor_deathward_3") then
-		self.talents.has_r3 = 1
-		self.talents.r3_heal = caster:GetTalentValue("modifier_witch_doctor_deathward_3", "heal") / 100
-		caster:AddDamageEvent_out(self.tracker, true)
 	end
 end
 
@@ -669,62 +653,8 @@ function modifier_witch_doctor_voodoo_restoration_custom_tracker:OnRefresh()
 	self.parent:AddNewModifier(self.parent, self.ability, "modifier_witch_doctor_voodoo_restoration_custom", {})
 end
 
-function modifier_witch_doctor_voodoo_restoration_custom_tracker:DamageEvent_out(params)
-	if not IsServer() then
-		return
-	end
-	if params.attacker:FindOwner() ~= self.parent then
-		return
-	end
-	local result = self.parent:CheckLifesteal(params, nil, true)
-	if not result then
-		return
-	end
-
-	if self.ability.talents.has_w2 == 1 and params.inflictor and self.parent == params.attacker then
-		self.parent:GenericHeal(
-			result * params.damage * self.ability.talents.w2_heal,
-			self.ability,
-			true,
-			"",
-			"modifier_witch_doctor_voodoo_2"
-		)
-	end
-
-	if
-		self.ability.talents.has_e3 == 1
-		and params.inflictor
-		and (
-			params.inflictor == self.parent.maledict_ability
-			or params.inflictor == self.parent.maledict_legendary_ability
-		)
-	then
-		self.parent:GenericHeal(
-			result * params.damage * self.ability.talents.e3_heal,
-			self.ability,
-			true,
-			"particles/items3_fx/octarine_core_lifesteal.vpcf",
-			"modifier_witch_doctor_maledict_3"
-		)
-	end
-
-	if self.ability.talents.has_h3 == 1 then
-		local mana = params.damage * self.ability.talents.h3_mana * result
-		self.parent:GiveMana(mana)
-	end
-
-	if
-		self.ability.talents.has_r3 == 1
-		and ((not params.inflictor and self.parent == params.attacker) or params.attacker.is_wd_ward)
-	then
-		self.parent:GenericHeal(
-			result * params.damage * self.ability.talents.r3_heal,
-			self.ability,
-			true,
-			false,
-			"modifier_witch_doctor_deathward_3"
-		)
-	end
+function modifier_witch_doctor_voodoo_restoration_custom_tracker:LifestealMana(params, mana)
+	self.parent:GiveMana(mana)
 end
 
 function modifier_witch_doctor_voodoo_restoration_custom_tracker:DeclareFunctions()

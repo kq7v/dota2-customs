@@ -424,7 +424,7 @@ function modifier_crystal_maiden_arcane_aura_custom:OnCreated(table)
 
 	self.parent:AddAttackStartEvent_out(self)
 	self.parent:AddSpellEvent(self, true)
-	self.parent:AddAttackEvent_out(self, true)
+	self.parent:AddProc(self, { land = true })
 	self.parent:AddRecordDestroyEvent(self, true)
 end
 
@@ -555,19 +555,14 @@ function modifier_crystal_maiden_arcane_aura_custom:AttackStartEvent_out(params)
 	self.records[params.record] = type
 end
 
-function modifier_crystal_maiden_arcane_aura_custom:AttackEvent_out(params)
-	if not IsServer() then
-		return
-	end
-	if self.parent ~= params.attacker then
-		return
-	end
+function modifier_crystal_maiden_arcane_aura_custom:GetProcChance()
+	return 100
+end
+
+function modifier_crystal_maiden_arcane_aura_custom:AttackProc(params, name)
 	local target = params.target
 	local type = self.records[params.record]
 
-	if not target:IsUnit() then
-		return
-	end
 	if not type then
 		return
 	end

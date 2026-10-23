@@ -99,7 +99,6 @@ function invoker_quas_custom:UpdateTalents()
 	if not self.init then
 		self.init = true
 		self.talents = {
-			has_q3 = 0,
 			q3_heal = 0,
 
 			has_q7 = 0,
@@ -114,9 +113,8 @@ function invoker_quas_custom:UpdateTalents()
 	end
 
 	if caster:HasTalent("modifier_invoker_quas_3") then
-		self.talents.has_q3 = 1
 		self.talents.q3_heal = caster:GetTalentValue("modifier_invoker_quas_3", "heal") / 100
-		caster:AddDamageEvent_out(self.tracker, true)
+		caster:AddLifesteal(self.tracker, { name = "modifier_invoker_quas_3", type = 1, value = self.talents.q3_heal })
 	end
 
 	if caster:HasTalent("modifier_invoker_quas_7") then
@@ -221,27 +219,6 @@ end
 
 function modifier_invoker_quas_custom_passive:OnRefresh()
 	self:OnCreated()
-end
-
-function modifier_invoker_quas_custom_passive:DamageEvent_out(params)
-	if not IsServer() then
-		return
-	end
-	if self.ability.talents.has_q3 == 0 then
-		return
-	end
-	local result = self.parent:CheckLifesteal(params, 1)
-	if not result then
-		return
-	end
-
-	self.parent:GenericHeal(
-		result * params.damage * self.ability.talents.q3_heal,
-		self.ability,
-		true,
-		"particles/items3_fx/octarine_core_lifesteal.vpcf",
-		"modifier_invoker_quas_3"
-	)
 end
 
 function modifier_invoker_quas_custom_passive:DeclareFunctions()
@@ -1076,10 +1053,6 @@ function invoker_ice_wall_custom:UpdateTalents()
 
 	if caster:HasTalent("modifier_invoker_quas_4") then
 		self.talents.has_q4 = 1
-		if IsServer() and not self.vector_init then
-			self.vector_init = true
-			self:UpdateVectorValues()
-		end
 	end
 end
 
@@ -1130,8 +1103,8 @@ function invoker_ice_wall_custom:OnVectorCastStart(vStartLocation, vDirection)
 	end
 
 	local ice_wall_length = self.wall_element_spacing * self.num_wall_elements
-	local pos1 = GetGroundPosition(self:GetVectorPosition() + (ice_wall_length / 2) * vDirection, nil)
-	local pos2 = GetGroundPosition(self:GetVectorPosition() - (ice_wall_length / 2) * vDirection, nil)
+	local pos1 = GetGroundPosition(vStartLocation + (ice_wall_length / 2) * vDirection, nil)
+	local pos2 = GetGroundPosition(vStartLocation - (ice_wall_length / 2) * vDirection, nil)
 
 	CreateModifierThinker(self.caster, self, "modifier_invoker_ice_wall_custom", {
 		duration = self.duration,

@@ -134,14 +134,14 @@ function morphling_morph_agi_custom:UpdateTalents()
 		self.talents.has_e1 = 1
 		self.talents.e1_speed = caster:GetTalentValue("modifier_morphling_attribute_1", "speed")
 		self.talents.e1_damage = caster:GetTalentValue("modifier_morphling_attribute_1", "damage") / 100
-		caster:AddAttackEvent_out(self.tracker, true)
+		caster:AddProc(self.tracker, { name = "hit", land = true })
 	end
 
 	if caster:HasTalent("modifier_morphling_attribute_2") then
 		self.talents.has_e2 = 1
 		self.talents.e2_range = caster:GetTalentValue("modifier_morphling_attribute_2", "range")
 		self.talents.e2_damage = caster:GetTalentValue("modifier_morphling_attribute_2", "damage") / 100
-		caster:AddAttackEvent_out(self.tracker, true)
+		caster:AddProc(self.tracker, { name = "hit", land = true })
 	end
 
 	if caster:HasTalent("modifier_morphling_attribute_3") then
@@ -155,13 +155,14 @@ function morphling_morph_agi_custom:UpdateTalents()
 		self.talents.has_e4 = 1
 		if IsServer() then
 			self.tracker:OnIntervalThink()
-			caster:AddAttackEvent_out(self.tracker, true)
+			caster:AddProc(self.tracker, { name = "hit", land = true })
+			caster:AddProc(self.tracker, { land = true })
 		end
 	end
 
 	if caster:HasTalent("modifier_morphling_attribute_7") then
 		self.talents.has_e7 = 1
-		caster:AddAttackEvent_out(self.tracker, true)
+		caster:AddProc(self.tracker, { name = "hit", land = true })
 		if IsServer() then
 			self:SendJs()
 			self.tracker:UpdateUI()
@@ -501,27 +502,31 @@ function modifier_morphling_morph_agi_custom_tracker:GiveStats(hit_hero)
 	)
 end
 
-function modifier_morphling_morph_agi_custom_tracker:AttackEvent_out(params)
-	if not IsServer() then
-		return
+function modifier_morphling_morph_agi_custom_tracker:GetProcChance(params, name)
+	if name == "hit" then
+		return 100
 	end
-	if self.parent ~= params.attacker then
-		return
+	if params.target:HasModifier("modifier_morphling_morph_custom_stun_cd") then
+		return 0
 	end
+	return self.ability.talents.e4_chance
+end
 
-	local target = params.target
-	if not target:IsUnit() then
+function modifier_morphling_morph_agi_custom_tracker:AttackProc(params, name)
+	if name ~= "hit" then
 		return
 	end
+	local target = params.target
 
 	if self.ability.talents.has_e1 == 1 then
 		target:AddNewModifier(self.parent, self.ability, "modifier_morphling_morph_custom_burn", {})
 	end
 
 	if
-		self.ability.talents.has_e4 == 1
+		params.procs
+		and params.procs[self]
+		and params.procs[self].default
 		and not target:HasModifier("modifier_morphling_morph_custom_stun_cd")
-		and RollPseudoRandomPercentage(self.ability.talents.e4_chance, 1235, self.parent)
 	then
 		target:AddNewModifier(
 			self.parent,
@@ -529,7 +534,6 @@ function modifier_morphling_morph_agi_custom_tracker:AttackEvent_out(params)
 			"modifier_morphling_morph_custom_stun_cd",
 			{ duration = self.ability.talents.e4_talent_cd }
 		)
-
 		local stun = math.min(
 			self.ability.talents.e4_max_stun,
 			self.ability.talents.e4_stun * (self.parent:GetStrength() / self.ability.talents.e4_str)

@@ -71,13 +71,7 @@ function mars_bulwark_custom:Precache(context)
 	PrecacheResource("particle", "particles/units/heroes/hero_mars/mars_shield_of_mars_small.vpcf", context)
 	PrecacheResource("particle", "particles/mars/mars_revenge_proc.vpcf", context)
 	PrecacheResource("particle", "particles/huskar/huskar_lowhp.vpcf", context)
-	PrecacheResource("particle", "particles/status_fx/status_effect_beserkers_call.vpcf", context)
-	PrecacheResource("particle", "particles/items2_fx/sange_maim.vpcf", context)
 	PrecacheResource("particle", "particles/units/heroes/hero_marci/marci_unleash_pulse_debuff.vpcf", context)
-	PrecacheResource("particle", "particles/status_fx/status_effect_snapfire_slow.vpcf", context)
-	PrecacheResource("particle", "particles/units/heroes/hero_pangolier/pangolier_tailthump_buff.vpcf", context)
-	PrecacheResource("particle", "particles/units/heroes/hero_pangolier/pangolier_tailthump_buff_egg.vpcf", context)
-	PrecacheResource("particle", "particles/units/heroes/hero_pangolier/pangolier_tailthump_buff_streaks.vpcf", context)
 	PrecacheResource("particle", "particles/nyx_assassin/vendetta_bash.vpcf", context)
 	PrecacheResource("particle", "particles/mars/bulwark_legendary_start.vpcf", context)
 	PrecacheResource("particle", "particles/units/heroes/hero_sven/sven_spell_gods_strength.vpcf", context)
@@ -97,8 +91,12 @@ function mars_bulwark_custom:UpdateTalents(name)
 			e1_max = caster:GetTalentValue("modifier_mars_bulwark_1", "max", true),
 			e1_stack = caster:GetTalentValue("modifier_mars_bulwark_1", "stack", true),
 
+			e2_heal = 0,
+			e2_bonus = caster:GetTalentValue("modifier_mars_bulwark_2", "bonus", true),
+
 			has_e3 = 0,
 			e3_damage = 0,
+			e3_heal = 0,
 			e3_chance = caster:GetTalentValue("modifier_mars_bulwark_3", "chance", true),
 			e3_duration = caster:GetTalentValue("modifier_mars_bulwark_3", "duration", true),
 			e3_max = caster:GetTalentValue("modifier_mars_bulwark_3", "max", true),
@@ -130,22 +128,47 @@ function mars_bulwark_custom:UpdateTalents(name)
 		self.talents.has_e1 = 1
 		self.talents.e1_damage = caster:GetTalentValue("modifier_mars_bulwark_1", "damage")
 		self.talents.e1_speed = caster:GetTalentValue("modifier_mars_bulwark_1", "speed")
-		caster:AddAttackEvent_out(self.tracker, true)
+		caster:AddProc(self.tracker, { name = "hit", illusion = true, land = true })
+	end
+
+	if caster:HasTalent("modifier_mars_bulwark_2") then
+		self.talents.e2_heal = caster:GetTalentValue("modifier_mars_bulwark_2", "heal") / 100
+		caster:AddLifesteal(self.tracker, {
+			name = "modifier_mars_bulwark_2",
+			type = 2,
+			value = function()
+				return self.talents.e2_heal
+					* (caster:HasModifier("modifier_mars_innate_custom_effect") and self.talents.e2_bonus or 1)
+			end,
+		})
 	end
 
 	if caster:HasTalent("modifier_mars_bulwark_3") then
 		self.talents.has_e3 = 1
 		self.talents.e3_damage = caster:GetTalentValue("modifier_mars_bulwark_3", "damage")
-		caster:AddAttackEvent_out(self.tracker, true)
+		self.talents.e3_heal = caster:GetTalentValue("modifier_mars_bulwark_3", "heal") / 100
+		caster:AddProc(self.tracker, { name = "hit", illusion = true, land = true })
+		caster:AddLifesteal(self.tracker, {
+			name = "modifier_mars_bulwark_3",
+			type = 2,
+			value = function(params)
+				return params.attack_damage_flag == "mars_e3" and self.talents.e3_heal or 0
+			end,
+		})
+		caster:AddProc(self.tracker, { group = "modifier_mars_bulwark_3", extra = false, land = true })
 	end
 
 	if caster:HasTalent("modifier_mars_bulwark_4") then
 		self.talents.has_e4 = 1
+		caster:AddProc(
+			self.tracker,
+			{ name = "stun", group = "modifier_mars_bulwark_4", target_prd = true, illusion = true, land = true }
+		)
 	end
 
 	if caster:HasTalent("modifier_mars_bulwark_7") then
 		self.talents.has_e7 = 1
-		caster:AddAttackEvent_out(self.tracker, true)
+		caster:AddProc(self.tracker, { name = "hit", illusion = true, land = true })
 	end
 
 	if caster:HasTalent("modifier_mars_hero_6") then
@@ -273,7 +296,7 @@ function mars_bulwark_custom:AddDamage(is_hero, more_stack)
 	)
 end
 
-function mars_bulwark_custom:ProcStun(target, is_proc)
+function mars_bulwark_custom:ProcStun(target, source)
 	if not IsServer() then
 		return
 	end
@@ -285,15 +308,15 @@ function mars_bulwark_custom:ProcStun(target, is_proc)
 	end
 
 	local chance = nil
-	if not is_proc then
+	if not source then
 		chance = self.talents.e4_chance
 	end
 
-	if not target:CheckCd("mars_e4", self.talents.e4_talent_cd, chance, 5491) then
+	if not target:CheckCd("mars_e4", self.talents.e4_talent_cd, chance, "modifier_mars_bulwark_4") then
 		return
 	end
 
-	if not is_proc then
+	if source ~= "rebuke" then
 		target:EmitSound("Mars.Bulwark_bash")
 	end
 
@@ -345,7 +368,7 @@ function mars_bulwark_custom:ProcSoldier(new_point, is_proc)
 	end
 
 	if not is_proc then
-		if not RollPseudoRandomPercentage(self.talents.e3_chance, 5999, self.caster) then
+		if not RollPseudoRandomPercentage(self.talents.e3_chance, "modifier_mars_bulwark_3", self.caster) then
 			return
 		end
 	end
@@ -1014,16 +1037,31 @@ function modifier_mars_bulwark_custom:OnDestroy()
 	self.parent:RemoveModifierByName("modifier_mars_bulwark_custom_idle")
 end
 
-function modifier_mars_bulwark_custom:AttackEvent_out(params)
-	if not IsServer() then
+function modifier_mars_bulwark_custom:GetProcChance(params, name)
+	if name == "hit" then
+		return 100
+	end
+	if name == "stun" then
+		if not params.attacker:HasModifier("modifier_mars_bulwark_custom_unit_passive") then
+			return 0
+		end
+		if params.target:HasCd("mars_e4", self.ability.talents.e4_talent_cd) then
+			return 0
+		end
+		return self.ability.talents.e4_chance
+	end
+	if self:GetStackCount() >= self.ability.talents.e3_max then
+		return 0
+	end
+	return self.ability.talents.e3_chance
+end
+
+function modifier_mars_bulwark_custom:AttackProc(params, name)
+	if name ~= "hit" then
 		return
 	end
 	local target = params.target
 	local attacker = params.attacker
-
-	if not target:IsUnit() then
-		return
-	end
 
 	if
 		attacker:HasModifier("modifier_mars_bulwark_custom_unit_passive")
@@ -1049,7 +1087,9 @@ function modifier_mars_bulwark_custom:AttackEvent_out(params)
 		end
 
 		self.ability:AddDamage(target:IsHero())
-		self.ability:ProcStun(target)
+		if params.procs and params.procs[self] and params.procs[self].stun then
+			self.ability:ProcStun(target, "proc")
+		end
 	end
 
 	if self.parent ~= attacker then
@@ -1059,7 +1099,10 @@ function modifier_mars_bulwark_custom:AttackEvent_out(params)
 		return
 	end
 	self.ability:AddDamage(target:IsHero())
-	self.ability:ProcSoldier(target:GetAbsOrigin() + RandomVector(180))
+
+	if params.procs and params.procs[self] and params.procs[self].default then
+		self.ability:ProcSoldier(target:GetAbsOrigin() + RandomVector(180), true)
+	end
 end
 
 function modifier_mars_bulwark_custom:DeclareFunctions()

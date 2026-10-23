@@ -33,6 +33,9 @@ end
 function modifier_item_lesser_crit_custom:GetCritDamage()
 	return self.crit_multiplier
 end
+function modifier_item_lesser_crit_custom:GetCritChance()
+	return self.crit_chance
+end
 function modifier_item_lesser_crit_custom:OnCreated()
 	self.ability = self:GetAbility()
 	self.parent = self:GetParent()
@@ -70,11 +73,11 @@ function modifier_item_lesser_crit_custom:GetModifierPreAttack_CriticalStrike(pa
 	if not params.target:IsUnit() then
 		return
 	end
-	if not RollPseudoRandomPercentage(self.crit_chance, 109, self.parent) then
+	if not RollPseudoRandomPercentage(self:GetCritChance(), 109, self.parent) then
 		return
 	end
 	if self.parent.wd_ward_attack then
-		return self.crit_multiplier / 100
+		return self:GetCritDamage() / 100
 	end
-	return self.crit_multiplier
+	return self:GetCritDamage()
 end
