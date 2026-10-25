@@ -563,9 +563,9 @@ function ProfileUpdateSide(pd)
 
     var favorites = []
     var top_heroes = ProfileList(pd.top_heroes)
-    for (var h = 0; h < top_heroes.length && h < 3; h++)
+    for (var h = 0; h < top_heroes.length && favorites.length < 3; h++)
     {
-        if (top_heroes[h] && top_heroes[h].hero)
+        if (top_heroes[h] && String(top_heroes[h].hero || "").indexOf("npc_dota_hero_") == 0)
         {
             favorites.push({hero: String(top_heroes[h].hero), games: ProfileNum(top_heroes[h].games)})
         }

@@ -36,6 +36,8 @@ var BOSS_HEALTH_BAR_HERO_ICONS =
 	boss_primal_beast_pve: "primal_beast",
 	boss_earth_spirit_pve: "earth_spirit",
 	boss_elder_titan_pve: "elder_titan",
+	boss_viper_pve: "viper",
+	boss_necrolyte_pve: "necrolyte",
 }
 
 var BOSS_HEALTH_BAR_CUSTOM_ICONS =

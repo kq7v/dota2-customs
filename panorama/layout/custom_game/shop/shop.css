@@ -3559,7 +3559,6 @@
 	font-weight: bold;
 	color: white;
 	text-shadow: 1px 1px 2px 1 black;
-	transform: skew(20deg);
 	z-index: 3;
 }
 
@@ -3576,6 +3575,18 @@
 .MenuCountBadge.MenuCountBadgeRed
 {
 	background-color: gradient(linear, 0% 0%, 0% 100%, from(#ff4d4d), to(#8a1010));
+}
+
+.MenuCountBadge.MenuCountBadgeBlue
+{
+	background-color: gradient(linear, 0% 0%, 0% 100%, from(#5ec8ff), to(#1a5fa8));
+}
+
+.MenuCountBadge.ShopNewBadge
+{
+	ignore-parent-flow: true;
+	margin-top: 6px;
+	margin-right: 8px;
 }
 
 .RunesRouletteFooter.RunesRouletteFooterWide

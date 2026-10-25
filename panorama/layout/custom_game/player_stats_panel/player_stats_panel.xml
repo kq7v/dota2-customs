@@ -33,10 +33,10 @@
 				<Label class="PlayerStatsLabel" text="#flayoutraiting" />
 				<Panel class="PlayerStatsValueRow" hittest="false">
 					<Panel class="PlayerStatsIcon PlayerStatsRatingIcon" />
-					<Label class="PlayerStatsValue" id="PlayerStatsRatingNow" text="0" />
+					<Label class="PlayerStatsValue PlayerStatsRatingValue" id="PlayerStatsRatingNow" text="0" />
 					<Label class="PlayerStatsValue PlayerStatsArrow" text="»" />
-					<Label class="PlayerStatsValue" id="PlayerStatsRatingNew" text="0" />
-					<Label class="PlayerStatsChange" id="PlayerStatsRatingChange" text="" />
+					<Label class="PlayerStatsValue PlayerStatsRatingValue" id="PlayerStatsRatingNew" text="0" />
+					<Label class="PlayerStatsChange PlayerStatsRatingChange" id="PlayerStatsRatingChange" text="" />
 					<Label class="PlayerStatsBadge" id="PlayerStatsBadgeDouble" text="#eliminated_x2_double" />
 				</Panel>
 			</Panel>

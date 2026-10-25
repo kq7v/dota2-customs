@@ -1,0 +1,18 @@
+--[[
+  ~ dumper · customs · dota2
+  ~ credits: rou (a.k.a internetenemy), qfun(a.k.a qfun_g9s)
+  ~ special for t.me/wildguild
+
+  ~ build 1a5b3bb 
+  ~ auto-generated — do not edit
+]]
+
+
+arena_a_0_37
+{
+	material materials/overviews/arena_a_0_37.vmat
+	pos_x -2048
+	pos_y 2048
+	scale 4.000
+}
+

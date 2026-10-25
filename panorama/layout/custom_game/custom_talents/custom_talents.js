@@ -990,9 +990,15 @@ function UpgradeCreateBlockEnemy(panel, upgrade_id, count, player_id)
     talent_block_image.style.backgroundImage = 'url("file://{images}/custom_game/shop/' + upgrade_id + '.png")';
     talent_block_image.style.backgroundSize = "100%";
     let title = $.Localize("#" + upgrade_id)
-    if (upgrade_id == "upgrade_talent_point" || upgrade_id == "upgrade_start_level")
+    if (upgrade_id == "upgrade_talent_point" || upgrade_id == "upgrade_start_level" || upgrade_id == "upgrade_curse_armor" || upgrade_id == "upgrade_curse_magic")
     {
         title = title + " (" + count + ")"
+    }
+    if (upgrade_id == "upgrade_curse_armor" || upgrade_id == "upgrade_curse_magic")
+    {
+        talent_block_image.SetDialogVariableInt("value", count)
+        WodaSetTitleTooltip(talent_block_image, title, WodaGoldNumber($.Localize("#" + upgrade_id + "_level_description", talent_block_image)))
+        return
     }
     WodaSetTitleTooltip(talent_block_image, title, WodaGoldNumber($.Localize("#" + upgrade_id + "_description")))
 }

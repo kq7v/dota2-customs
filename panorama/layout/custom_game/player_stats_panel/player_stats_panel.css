@@ -61,6 +61,16 @@
 	color: #E7D291;
 }
 
+.PlayerStatsRatingValue
+{
+	color: #6fdc6f;
+}
+
+.PlayerStatsPanel.ArenaMode .PlayerStatsRatingValue
+{
+	color: white;
+}
+
 .PlayerStatsValueRow
 {
 	flow-children: right;
@@ -130,6 +140,11 @@
 	color: green;
 	font-family: defaultFont;
 	text-shadow: 2px 2px 2px black;
+}
+
+.PlayerStatsRatingChange
+{
+	color: #6fdc6f;
 }
 
 .PlayerStatsChange.Negative

@@ -18,10 +18,13 @@ var TOP_RATING_LIST = {}
 var CURRENT_PVE_TAB = "1"
 var CURRENT_RANKING_TAB = "pvp"
 var LEADERBOARD_ROWS_PER_FRAME = 12
-var LEADERBOARD_BUILT = {}
-var LEADERBOARD_BUILD_GENERATION = {}
+var LEADERBOARD_BUILD = {}
+var LEADERBOARD_BUILD_SCHEDULED = false
 var LEADERBOARD_REQUEST_PENDING = false
+var LEADERBOARD_SHOP_ROWS = {}
 var LEADERBOARD_SEASON = 1
+var LEADERBOARD_TOOLTIP_ID = "woda_leaderboard_tooltip"
+var LEADERBOARD_TOOLTIP_LAYOUT = "file://{resources}/layout/custom_game/tooltips/leaderboard_tooltip/leaderboard_tooltip.xml"
 
 function InitLeaderboardSeason()
 {
@@ -39,6 +42,16 @@ function ShowLeaderboardSeasonTooltip()
 }
 
 InitLeaderboardSeason()
+
+function ShowLeaderboardMinWavesTooltip()
+{
+    $.DispatchEvent("UIShowCustomLayoutParametersTooltip", $("#LeaderboardMinWavesIcon"), LEADERBOARD_TOOLTIP_ID, LEADERBOARD_TOOLTIP_LAYOUT, "text=Leaderboard_arena_min_waves_tooltip")
+}
+
+function HideLeaderboardMinWavesTooltip()
+{
+    $.DispatchEvent("UIHideCustomLayoutTooltip", $("#LeaderboardMinWavesIcon"), LEADERBOARD_TOOLTIP_ID)
+}
 
 var leaderboard_window_hide_schedule = -1
 
@@ -70,6 +83,11 @@ function SetLeaderboardWindowVisible(visible)
 
 $("#LeaderboardWindow").style.visibility = "collapse"
 
+function IsLeaderboardOpen()
+{
+    return $("#LeaderboardWindow").BHasClass("setvisible")
+}
+
 function ToggleLeaderboard()
 {
     if (!InitLeaderboard)
@@ -78,7 +96,12 @@ function ToggleLeaderboard()
         GetLocalRating()
         FirstOpen()
     }
-    SetLeaderboardWindowVisible(!$("#LeaderboardWindow").BHasClass("setvisible"))
+    let visible = !IsLeaderboardOpen()
+    SetLeaderboardWindowVisible(visible)
+    if (visible)
+    {
+        BuildVisibleLeaderboard()
+    }
 }
 
 function FirstOpen()
@@ -99,7 +122,6 @@ function FirstOpen()
         $("#PanelButPVP").SetHasClass("ButtonRatActive", true)
         $("#PvpInfo").style.visibility = "visible"
     }
-    BuildVisibleLeaderboard()
 }
  
 function GetLocalRating()
@@ -181,8 +203,7 @@ function donate_shop_set_top_rating(data)
 
 function ResetRatingLeaderboard()
 {
-    LEADERBOARD_BUILT["pvp"] = false
-    LEADERBOARD_BUILD_GENERATION["pvp"] = (LEADERBOARD_BUILD_GENERATION["pvp"] || 0) + 1
+    LEADERBOARD_BUILD["pvp"] = null
     $("#PlayersTable").RemoveAndDeleteChildren()
 }
 
@@ -195,27 +216,62 @@ function ResetArenaLeaderboard()
     let keys = ARENA_LEADERBOARD_TABS
     for (let i = 0; i < keys.length; i++)
     {
-        LEADERBOARD_BUILT[keys[i]] = false
-        LEADERBOARD_BUILD_GENERATION[keys[i]] = (LEADERBOARD_BUILD_GENERATION[keys[i]] || 0) + 1
+        LEADERBOARD_BUILD[keys[i]] = null
         $("#PlayersTablePVE" + keys[i]).RemoveAndDeleteChildren()
     }
 }
 
 function BuildVisibleLeaderboard()
 {
+    if (LEADERBOARD_BUILD_SCHEDULED)
+    {
+        return
+    }
+    LeaderboardBuildStep()
+}
+
+function LeaderboardBuildStep()
+{
+    LEADERBOARD_BUILD_SCHEDULED = false
+    if (!InitLeaderboard || !IsLeaderboardOpen())
+    {
+        return
+    }
     let key = CURRENT_RANKING_TAB == "pve" ? CURRENT_PVE_TAB : "pvp"
-    if (LEADERBOARD_BUILT[key])
+    let build = LEADERBOARD_BUILD[key]
+    if (!build)
+    {
+        let rows = GetLeaderboardRows(key)
+        if (!rows)
+        {
+            RequestLeaderboardData()
+            return
+        }
+        build = { rows: rows, index: 0, done: false }
+        LEADERBOARD_BUILD[key] = build
+    }
+    if (build.done)
     {
         return
     }
-    let rows = GetLeaderboardRows(key)
-    if (!rows)
+    let end = Math.min(build.index + LEADERBOARD_ROWS_PER_FRAME, build.rows.length)
+    while (build.index < end)
     {
-        RequestLeaderboardData()
+        let row = build.rows[build.index]
+        build.index++
+        CreateLeaderboardRow(key, row)
+    }
+    if (build.index < build.rows.length)
+    {
+        LEADERBOARD_BUILD_SCHEDULED = true
+        $.Schedule(0, LeaderboardBuildStep)
         return
     }
-    LEADERBOARD_BUILT[key] = true
-    BuildLeaderboardRows(key, rows)
+    build.done = true
+    if (key != "pvp")
+    {
+        AddArenaEmptyLabel($("#PlayersTablePVE" + key))
+    }
 }
 
 function RequestLeaderboardData()
@@ -287,34 +343,6 @@ function CreateLeaderboardRow(key, row)
     {
         CreatePlayers(data.p1, data.p2, data.p3, data.p4, $("#PlayersTablePVE" + key), row.number, data, "pve_" + key)
     }
-}
-
-function BuildLeaderboardRows(key, rows)
-{
-    let generation = LEADERBOARD_BUILD_GENERATION[key] || 0
-    let index = 0
-    let build_step = function()
-    {
-        if ((LEADERBOARD_BUILD_GENERATION[key] || 0) != generation)
-        {
-            return
-        }
-        let end = Math.min(index + LEADERBOARD_ROWS_PER_FRAME, rows.length)
-        for (; index < end; index++)
-        {
-            CreateLeaderboardRow(key, rows[index])
-        }
-        if (index < rows.length)
-        {
-            $.Schedule(0, build_step)
-            return
-        }
-        if (key != "pvp")
-        {
-            AddArenaEmptyLabel($("#PlayersTablePVE" + key))
-        }
-    }
-    build_step()
 }
 
 function CompareArenaResults(a, b)
@@ -696,18 +724,39 @@ function CreateSeasonRewards(Line, board, rank)
     return rewards_list
 }
 
+function FindLeaderboardShopRow(item_id)
+{
+    let key = String(item_id)
+    if (!(key in LEADERBOARD_SHOP_ROWS))
+    {
+        let found = FindShopItemRow(item_id)
+        LEADERBOARD_SHOP_ROWS[key] = found ? {
+            row: found.row,
+            icon: GetShopRowIcon(found.row),
+            tooltip: {
+                item_id: item_id,
+                name_key: found.row[4],
+                desc_key: found.row[4] + "_description",
+                rarity: GetShopRowRarity(found.row),
+                icon: GetShopRowIcon(found.row),
+            },
+        } : null
+    }
+    return LEADERBOARD_SHOP_ROWS[key]
+}
+
 function CreateRewardItem(parent, reward)
 {
-    let found = reward && FindShopItemRow(reward.id)
+    let found = reward && FindLeaderboardShopRow(reward.id)
     if (!found)
     {
         return
     }
     let item_icon = $.CreatePanel("Panel", parent, "");
     item_icon.AddClass("reward_item");
-    item_icon.style.backgroundImage = 'url("' + GetShopRowIcon(found.row) + '")';
+    item_icon.style.backgroundImage = 'url("' + found.icon + '")';
     item_icon.style.backgroundSize = "100%"
-    SetShopItemTooltip(item_icon, reward.id)
+    SetItemTooltip(item_icon, found.tooltip)
     let open_preview = GameUI.CustomUIConfig().OpenCheckoutItemPreview
     if (open_preview)
     {

@@ -80,6 +80,7 @@
 				</Panel>
 				<Panel class="YouLeaderboard">
 					<Panel style="align: center center;flow-children:right;">
+						<Panel class="SmelterHowToIcon" id="LeaderboardMinWavesIcon" onmouseover="ShowLeaderboardMinWavesTooltip()" onmouseout="HideLeaderboardMinWavesTooltip()" />
 						<DOTAAvatarImage steamid="local" class="AvatarLocal" />
 						<Panel class="InfoLocal">
 							<DOTAUserName steamid="local" class="NicknameLocal" />

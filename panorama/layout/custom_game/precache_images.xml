@@ -95,6 +95,12 @@
 		<Image style="opacity:0;" src="s2r://panorama/images/custom_game/shop/upgrade_rune_slot_open_png.vtex" />
 		<Image style="opacity:0;" src="s2r://panorama/images/custom_game/shop/upgrade_backpack_png.vtex" />
 		<Image style="opacity:0;" src="s2r://panorama/images/custom_game/shop/upgrade_backpack_open_png.vtex" />
+		<Image style="opacity:0;" src="s2r://panorama/images/custom_game/shop/upgrade_auto_midas_png.vtex" />
+		<Image style="opacity:0;" src="s2r://panorama/images/custom_game/shop/upgrade_auto_midas_open_png.vtex" />
+		<Image style="opacity:0;" src="s2r://panorama/images/custom_game/shop/upgrade_curse_armor_png.vtex" />
+		<Image style="opacity:0;" src="s2r://panorama/images/custom_game/shop/upgrade_curse_armor_open_png.vtex" />
+		<Image style="opacity:0;" src="s2r://panorama/images/custom_game/shop/upgrade_curse_magic_png.vtex" />
+		<Image style="opacity:0;" src="s2r://panorama/images/custom_game/shop/upgrade_curse_magic_open_png.vtex" />
 		<Image style="opacity:0;" src="s2r://panorama/images/custom_game/shop/dp2_premium_png.vtex" />
 		<Image style="opacity:0;" src="s2r://panorama/images/custom_game/shop/dp_premium_png.vtex" />
 		<Image style="opacity:0;" src="s2r://panorama/images/custom_game/shop/boss_soul_png.vtex" />
@@ -150,6 +156,8 @@
 		<Image style="opacity:0;" src="s2r://panorama/images/custom_game/arena_rooms/arena_a_0_33_png.vtex" />
 		<Image style="opacity:0;" src="s2r://panorama/images/custom_game/arena_rooms/arena_a_0_34_png.vtex" />
 		<Image style="opacity:0;" src="s2r://panorama/images/custom_game/arena_rooms/arena_a_0_35_png.vtex" />
+		<Image style="opacity:0;" src="s2r://panorama/images/custom_game/arena_rooms/arena_a_0_36_png.vtex" />
+		<Image style="opacity:0;" src="s2r://panorama/images/custom_game/arena_rooms/arena_a_0_37_png.vtex" />
 		<Image style="opacity:0;" src="s2r://panorama/images/custom_game/arena_rooms/features/woda_arena_feature_6_png.vtex" />
 		<Image style="opacity:0;" src="s2r://panorama/images/custom_game/arena_rooms/features/woda_arena_feature_7_png.vtex" />
 		<Image style="opacity:0;" src="s2r://panorama/images/custom_game/arena_rooms/features/woda_arena_feature_8_png.vtex" />
@@ -172,6 +180,8 @@
 		<Image style="opacity:0;" src="s2r://panorama/images/custom_game/arena_rooms/features/woda_arena_feature_33_png.vtex" />
 		<Image style="opacity:0;" src="s2r://panorama/images/custom_game/arena_rooms/features/woda_arena_feature_34_png.vtex" />
 		<Image style="opacity:0;" src="s2r://panorama/images/custom_game/arena_rooms/features/woda_arena_feature_35_png.vtex" />
+		<Image style="opacity:0;" src="s2r://panorama/images/custom_game/arena_rooms/features/woda_arena_feature_36_png.vtex" />
+		<Image style="opacity:0;" src="s2r://panorama/images/custom_game/arena_rooms/features/woda_arena_feature_37_png.vtex" />
 		<Image style="opacity:0;" src="s2r://panorama/images/custom_game/talents/boss_radiant_tower_pve_png.vtex" />
 		<Image style="opacity:0;" src="s2r://panorama/images/custom_game/talents/boss_dire_tower_pve_png.vtex" />
 		<Image style="opacity:0;" src="s2r://panorama/images/custom_game/talents/boss_golden_tomb_pve_png.vtex" />

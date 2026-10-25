@@ -394,11 +394,7 @@ function UpdateFreeReward(fast)
             }
         }
     }
-    CheckoutEveryReward(true)
-    $.Schedule( 0.5, function()
-    {
-        CheckoutEveryReward()
-    })
+    CheckoutEveryReward(fast)
 }
 
 function GetFreeReward()
@@ -701,7 +697,30 @@ function CreateShopArenaFilterButton(bar, filter, text)
     })
 }
 
-function CreateItemInShop(panel, table, i) 
+function IsShopItemNew(item_id)
+{
+    if (typeof SHOP_NEW_ITEMS === "undefined" || item_id === undefined || item_id === null) { return false }
+    var date = SHOP_NEW_ITEMS[String(item_id)]
+    if (!date) { return false }
+    var parts = String(date).split("-")
+    var start = Date.UTC(Number(parts[0]), Number(parts[1]) - 1, Number(parts[2]))
+    if (isNaN(start)) { return false }
+    return Date.now() < start + SHOP_NEW_ITEMS_DAYS * 86400000
+}
+
+function AddShopNewBadge(panel, item_id)
+{
+    if (!IsShopItemNew(item_id)) { return }
+    var badge = $.CreatePanel("Label", panel, "")
+    badge.AddClass("MenuCountBadge")
+    badge.AddClass("MenuCountBadgeBlue")
+    badge.AddClass("ShopNewBadge")
+    badge.AddClass("Visible")
+    badge.hittest = false
+    badge.text = "NEW"
+}
+
+function CreateItemInShop(panel, table, i)
 {
     if (table[i][0] == "subscribe_plus_1" || table[i][0] == "battle_pass_1")
     {
@@ -742,6 +761,7 @@ function CreateItemInShop(panel, table, i)
         SetShopItemTooltip(Recom_item, table[i][0])
     }
     ItemImage.SetHasClass("TipImage", GetShopItemType(table) == "Items_tips")
+    AddShopNewBadge(Recom_item, table[i][0])
 
     var ItemNamePanels = $.CreatePanel("Panel", Recom_item, "ItemNamePanels");
     ItemNamePanels.AddClass("ItemNamePanels");
@@ -2080,6 +2100,8 @@ function CreateRuneCard(parent, rune)
 
     var buy_crystal = $.CreatePanel("Panel", buy_content, "")
     buy_crystal.AddClass("RuneCardBuyCrystal")
+
+    AddShopNewBadge(card, rune.id)
 }
 
 function GetRuneMaxEquipped()
@@ -2714,11 +2736,6 @@ function BindQuestClaim(panel, quest, claim, claim_label)
         claim.ClearPanelEvent("onactivate")
         GameEvents.SendCustomGameEventToServer_custom("woda_plus_get_player_reward", {reward_id: quest[0], quest_id: quest[3]})
         LoadingCreated()
-        CheckoutEveryReward(true)
-        $.Schedule(0.5, function()
-        {
-            CheckoutEveryReward()
-        })
     })
 }
 
@@ -2739,6 +2756,32 @@ function RefreshUpgradeCounters()
     for (var item_id in UPGRADE_COUNTER_FIELDS)
     {
         UpdateUpgradeCounterVisual(item_id)
+        MarkUpgradeCardOwned(item_id)
+    }
+}
+
+function MarkUpgradeCardOwned(item_id)
+{
+    if (!IsUpgradeOwned(item_id)) { return }
+    var window = $("#ShopItemsWindow")
+    var card = window ? window.FindChildTraverse(GetShopItemPanelId(item_id)) : null
+    if (!card || card.BHasClass("Owned")) { return }
+    card.AddClass("Owned")
+    card.SetPanelEvent("onactivate", function() {})
+    var icon = card.FindChildTraverse("PriceIcon")
+    if (icon)
+    {
+        icon.DeleteAsync(0)
+    }
+    var buy = card.FindChildTraverse("BuyItemPanel")
+    if (buy)
+    {
+        buy.style.saturation = "0"
+    }
+    var label = card.FindChildTraverse("PriceLabel")
+    if (label)
+    {
+        label.text = $.Localize("#shop_bought")
     }
 }
 
@@ -2868,6 +2911,7 @@ var ACHIEVEMENT_FILTERS =
     ["AgilityQuests", "#DOTA_Tooltip_Ability_item_power_treads_agi"],
     ["IntellectQuests", "#DOTA_Tooltip_Ability_item_power_treads_int"],
     ["UniversalQuests", "#woda_universal"],
+    ["ArenaRoomQuests", "#achievements_filter_arena_rooms"],
     ["ShopSpendQuests", "#achievements_filter_cashback"],
 ]
 
@@ -3082,6 +3126,13 @@ function SetQuestDescription(label, quest)
         label.SetDialogVariable("hero", $.Localize("#" + quest[4]))
         label.text = $.Localize("#quest_arena_hero_difficulty", label)
     }
+    else if (meta && meta.type == "arena_room")
+    {
+        label.SetDialogVariable("room", $.Localize("#arena_room_" + meta.room))
+        label.SetDialogVariableInt("difficulty", meta.difficulty)
+        label.SetDialogVariableInt("count", meta.count)
+        label.text = $.Localize("#quest_arena_room_complete_times", label)
+    }
     else if (meta && meta.type == "difficulty_repeat")
     {
         label.SetDialogVariableInt("difficulty", meta.difficulty)
@@ -3177,11 +3228,6 @@ function CreateQuestPanel(parent, table)
             quest_button_claim.ClearPanelEvent("onactivate")
             GameEvents.SendCustomGameEventToServer_custom("woda_plus_get_player_reward", {reward_id: table[0], quest_id: table[3]})
             LoadingCreated()
-            CheckoutEveryReward(true)
-            $.Schedule(0.5, function()
-            {
-                CheckoutEveryReward()
-            })
         })
     }
 }
@@ -3199,26 +3245,30 @@ function HasClaimableQuest()
     return false
 }
 
-function CheckoutEveryReward(is_fast)
+function CheckoutEveryReward(free_reward_claimed)
 {
-    var has_free_reward = false
-    if (PLAYER_DATA && PLAYER_DATA.free_reward != 1)
-    {
-        has_free_reward = true
-    }
+    var has_free_reward = !free_reward_claimed && PLAYER_DATA && PLAYER_DATA.free_reward != 1
     var has_quest_reward = HasClaimableQuest()
-    if (is_fast)
-    {
-        has_free_reward = false
-        has_quest_reward = false
-    }
-    $("#DonateButton").SetHasClass("HasReward", has_free_reward || has_quest_reward)
+    $("#DonateButton").SetHasClass("HasReward", !!has_free_reward || has_quest_reward)
     var achievements_button = $("#MenuAchievements")
     if (achievements_button)
     {
         achievements_button.SetHasClass("HasReward", has_quest_reward)
     }
-    SetMenuCountBadge("MenuAchievementsCount", is_fast ? 0 : GetClaimableQuestCount())
+    SetMenuCountBadge("MenuAchievementsCount", GetClaimableQuestCount())
+    RefreshAchievementsFilterBadges()
+}
+
+function RefreshAchievementsFilterBadges()
+{
+    for (var i = 0; i < ACHIEVEMENT_FILTERS.length; i++)
+    {
+        var button = $("#AchievementsFilter_" + ACHIEVEMENT_FILTERS[i][0])
+        if (button)
+        {
+            button.SetHasClass("HasReward", HasClaimableQuestForFilter(ACHIEVEMENT_FILTERS[i][0]))
+        }
+    }
 }
 
 var chest_spin_in_progress = false
@@ -3275,6 +3325,7 @@ function GetChestPoolButton()
 }
 var UPGRADE_TALENT_POINTS_MAX = 20
 var UPGRADE_START_LEVEL_MAX = 29
+var UPGRADE_CURSE_MAX = 30
 
 function IsUpgradeOwned(item_id)
 {
@@ -3297,6 +3348,18 @@ function IsUpgradeOwned(item_id)
     if (item_id == "upgrade_start_level")
     {
         return Number(PLAYER_DATA.start_level_bonus) >= UPGRADE_START_LEVEL_MAX
+    }
+    if (item_id == "upgrade_auto_midas")
+    {
+        return Number(PLAYER_DATA.auto_midas_bonus) > 0
+    }
+    if (item_id == "upgrade_curse_armor")
+    {
+        return Number(PLAYER_DATA.curse_armor_bonus) >= UPGRADE_CURSE_MAX
+    }
+    if (item_id == "upgrade_curse_magic")
+    {
+        return Number(PLAYER_DATA.curse_magic_bonus) >= UPGRADE_CURSE_MAX
     }
     return false
 }
@@ -5016,6 +5079,9 @@ var UPGRADE_COUNTER_FIELDS =
     upgrade_start_level: "start_level_bonus",
     upgrade_rune_slot: "rune_slot_bonus",
     upgrade_backpack: "backpack_bonus",
+    upgrade_auto_midas: "auto_midas_bonus",
+    upgrade_curse_armor: "curse_armor_bonus",
+    upgrade_curse_magic: "curse_magic_bonus",
 }
 
 function IsUpgradeCounterItem(item_id)
@@ -5028,6 +5094,8 @@ function GetUpgradeCounterMax(item_id)
     if (item_id == "upgrade_start_level") { return UPGRADE_START_LEVEL_MAX }
     if (item_id == "upgrade_rune_slot") { return 1 }
     if (item_id == "upgrade_backpack") { return 1 }
+    if (item_id == "upgrade_auto_midas") { return 1 }
+    if (item_id == "upgrade_curse_armor" || item_id == "upgrade_curse_magic") { return UPGRADE_CURSE_MAX }
     return UPGRADE_TALENT_POINTS_MAX
 }
 

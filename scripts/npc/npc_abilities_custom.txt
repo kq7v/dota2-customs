@@ -9124,7 +9124,7 @@
 		"SpellDispellableType"	"SPELL_DISPELLABLE_YES"
 		"AbilityUnitTargetType"	"DOTA_UNIT_TARGET_BASIC"
 		"AbilityUnitTargetTeam"	"DOTA_UNIT_TARGET_TEAM_FRIENDLY"
-		"AbilityCastRange"	"200"
+		"AbilityCastRange"	"300"
 		"AbilityCooldown"	"30"
 		"AbilityValues"
 		{
@@ -19147,6 +19147,121 @@
 			"first_delay"			"11"
 		}
 	}
+	"boss_viper_nose_dive"
+	{
+		"BaseClass"					"ability_lua"
+		"AbilityTextureName"		"viper_nose_dive"
+		"ScriptFile"				"neutrals/arena_bosses/boss_viper"
+		"AbilityBehavior"			"DOTA_ABILITY_BEHAVIOR_PASSIVE"
+		"AbilityUnitDamageType"		"DAMAGE_TYPE_PURE"
+		"SpellImmunityType"			"SPELL_IMMUNITY_ENEMIES_YES"
+		"MaxLevel"					"1"
+		"AbilityValues"
+		{
+			"damage"				"25"
+			"delay"					"2.5"
+			"radius"				"400"
+			"slow"					"-50"
+			"debuff_duration"		"5"
+			"dive_duration"			"0.6"
+			"dive_height"			"350"
+			"first_delay"			"3"
+			"next_delay"			"4"
+		}
+	}
+	"boss_viper_nethertoxin"
+	{
+		"BaseClass"					"ability_lua"
+		"AbilityTextureName"		"viper_nethertoxin"
+		"ScriptFile"				"neutrals/arena_bosses/boss_viper"
+		"AbilityBehavior"			"DOTA_ABILITY_BEHAVIOR_PASSIVE"
+		"AbilityUnitDamageType"		"DAMAGE_TYPE_MAGICAL"
+		"SpellImmunityType"			"SPELL_IMMUNITY_ENEMIES_NO"
+		"MaxLevel"					"1"
+		"AbilityValues"
+		{
+			"impact_damage"			"50"
+			"burn_damage"			"25"
+			"burn_duration"			"3"
+			"burn_linger"			"0.5"
+			"radius"				"275"
+			"delay"					"1.8"
+			"projectile_speed"		"1200"
+			"next_delay"			"4"
+		}
+	}
+	"boss_viper_poison_nova"
+	{
+		"BaseClass"					"ability_lua"
+		"AbilityTextureName"		"venomancer_poison_nova"
+		"ScriptFile"				"neutrals/arena_bosses/boss_viper"
+		"AbilityBehavior"			"DOTA_ABILITY_BEHAVIOR_PASSIVE"
+		"AbilityUnitDamageType"		"DAMAGE_TYPE_MAGICAL"
+		"SpellImmunityType"			"SPELL_IMMUNITY_ENEMIES_NO"
+		"MaxLevel"					"1"
+		"AbilityValues"
+		{
+			"radius"				"1200"
+			"cast_time"				"2.5"
+			"damage"				"3"
+			"tick_interval"			"0.5"
+			"duration"				"2.5"
+			"jump_duration"			"0.6"
+			"jump_height"			"350"
+			"nova_speed"			"1500"
+			"next_delay"			"4"
+		}
+	}
+	"boss_necrolyte_reapers_scythe"
+	{
+		"BaseClass"					"ability_lua"
+		"AbilityTextureName"		"necrolyte_reapers_scythe"
+		"ScriptFile"				"neutrals/arena_bosses/boss_necrolyte"
+		"AbilityBehavior"			"DOTA_ABILITY_BEHAVIOR_PASSIVE"
+		"AbilityUnitDamageType"		"DAMAGE_TYPE_PURE"
+		"SpellImmunityType"			"SPELL_IMMUNITY_ENEMIES_YES"
+		"MaxLevel"					"1"
+		"AbilityCooldown"			"15"
+		"AbilityValues"
+		{
+			"damage"				"50"
+			"stun_duration"			"1.5"
+			"delay"					"1"
+			"cast_interval"			"7.5"
+			"first_delay"			"3"
+		}
+	}
+	"boss_necrolyte_ghost_shroud"
+	{
+		"BaseClass"					"ability_lua"
+		"AbilityTextureName"		"necrolyte_ghost_shroud"
+		"ScriptFile"				"neutrals/arena_bosses/boss_necrolyte"
+		"AbilityBehavior"			"DOTA_ABILITY_BEHAVIOR_PASSIVE"
+		"MaxLevel"					"1"
+		"AbilityCooldown"			"15"
+		"AbilityValues"
+		{
+			"duration"				"3"
+			"radius"				"900"
+			"max_multiplier"		"10"
+			"min_multiplier"		"2"
+			"precast"				"1.5"
+		}
+	}
+	"boss_necrolyte_heartstopper_aura"
+	{
+		"BaseClass"					"ability_lua"
+		"AbilityTextureName"		"necrolyte_heartstopper_aura"
+		"ScriptFile"				"neutrals/arena_bosses/boss_necrolyte"
+		"AbilityBehavior"			"DOTA_ABILITY_BEHAVIOR_PASSIVE | DOTA_ABILITY_BEHAVIOR_AURA"
+		"SpellImmunityType"			"SPELL_IMMUNITY_ENEMIES_YES"
+		"MaxLevel"					"1"
+		"AbilityValues"
+		{
+			"health_loss_pct"		"3"
+			"tick"					"0.25"
+		}
+	}
 	"boss_radiant_tower_volley"
 	{
 		"BaseClass"					"ability_lua"
@@ -20139,18 +20254,32 @@
 		"AbilityTextureName"		"nyx_assassin_spiked_carapace"
 		"ScriptFile"				"neutrals/arena_bosses/boss_nyx"
 		"AbilityBehavior"			"DOTA_ABILITY_BEHAVIOR_PASSIVE"
-		"AbilityUnitDamageType"		"DAMAGE_TYPE_PURE"
 		"SpellImmunityType"			"SPELL_IMMUNITY_ENEMIES_YES"
 		"MaxLevel"					"1"
 		"AbilityCooldown"			"13"
 		"AbilityValues"
 		{
 			"warning_time"			"0.8"
-			"duration"				"1"
+			"duration"				"2"
 			"trigger_radius"		"600"
-			"reflect_pct"			"10"
-			"stun_duration"			"1.5"
+			"reflect_pct"			"50"
 			"first_cast_delay"		"5"
+		}
+	}
+	"boss_greater_purge"
+	{
+		"BaseClass"					"ability_lua"
+		"AbilityTextureName"		"satyr_trickster_purge"
+		"ScriptFile"				"neutrals/arena_bosses/boss_greater_purge"
+		"AbilityBehavior"			"DOTA_ABILITY_BEHAVIOR_PASSIVE"
+		"SpellImmunityType"			"SPELL_IMMUNITY_ENEMIES_YES"
+		"MaxLevel"					"1"
+		"AbilityCooldown"			"12"
+		"AbilityValues"
+		{
+			"radius"				"3000"
+			"speed"					"1200"
+			"first_delay"			"12"
 		}
 	}
 	"boss_nyx_mana_burn"

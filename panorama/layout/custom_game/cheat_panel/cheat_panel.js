@@ -89,7 +89,7 @@ function CheatCreateArenaButton(row, key, has_margin)
     })
 }
 
-var CHEAT_ROOM_COUNT = 36
+var CHEAT_ROOM_COUNT = 38
 var CHEAT_ROOMS_PER_ROW = 6
 
 function CheatBuildRoomRows()

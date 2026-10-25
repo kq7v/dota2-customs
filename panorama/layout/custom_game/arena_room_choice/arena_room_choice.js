@@ -60,6 +60,7 @@ function RoomChoiceOpen(data)
 	})
 
 	var cards = $("#RoomChoiceCards")
+	RoomChoiceHideCrystalTooltip()
 	cards.RemoveAndDeleteChildren()
 	for (var r = 0; r < room_choice_rooms.length; r++)
 	{
@@ -79,7 +80,6 @@ function RoomChoiceCreateCard(parent, room)
 	if (!room_choice_fixed)
 	{
 		card.AddClass("Clickable")
-		card.hittestchildren = false
 		card.SetPanelEvent("onactivate", function()
 		{
 			RoomChoiceVote(room.id)
@@ -88,20 +88,24 @@ function RoomChoiceCreateCard(parent, room)
 
 	var body = $.CreatePanel("Panel", card, "")
 	body.AddClass("RoomCardBody")
+	body.hittest = false
 
 	var image = $.CreatePanel("Panel", body, "")
 	image.AddClass("RoomCardImage")
+	image.hittest = false
 	image.style.backgroundImage = 'url("file://{images}/custom_game/arena_rooms/' + room.image + '.png")'
 	image.style.backgroundSize = "100%"
 
 	var name = $.CreatePanel("Label", body, "")
 	name.AddClass("RoomCardName")
+	RoomChoiceDisableHittest(name)
 	name.text = $.Localize("#" + room.name)
 
 	if (room.boss)
 	{
 		var boss = $.CreatePanel("Panel", body, "")
 		boss.AddClass("RoomCardBoss")
+		RoomChoiceDisableHittest(boss)
 		var boss_icon = $.CreatePanel("Panel", boss, "")
 		boss_icon.AddClass("RoomCardBossIcon")
 		boss_icon.style.backgroundImage = 'url("' + RoomChoiceGetBossIcon(room.boss) + '")'
@@ -113,17 +117,88 @@ function RoomChoiceCreateCard(parent, room)
 
 	var bonus = $.CreatePanel("Label", body, "")
 	bonus.AddClass("RoomCardBonus")
+	RoomChoiceDisableHittest(bonus)
 	bonus.text = $.Localize("#" + room.bonus)
 
 	var votes = $.CreatePanel("Panel", image, "RoomCardVotes_" + room.id)
 	votes.AddClass("RoomCardVotes")
+	RoomChoiceDisableHittest(votes)
+
+	RoomChoiceCreateCrystal(image, room)
 
 	if (!room_choice_fixed)
 	{
 		var button = $.CreatePanel("Panel", card, "")
 		button.AddClass("RoomCardButton")
+		RoomChoiceDisableHittest(button)
 		var label = $.CreatePanel("Label", button, "")
 		label.text = $.Localize("#arena_room_choice_go")
+	}
+}
+
+function RoomChoiceDisableHittest(panel)
+{
+	panel.hittest = false
+	panel.hittestchildren = false
+}
+
+var room_choice_crystal_hover = null
+
+function RoomChoiceHideCrystalTooltip()
+{
+	var panel = room_choice_crystal_hover
+	room_choice_crystal_hover = null
+	if (panel && panel.IsValid())
+	{
+		$.DispatchEvent("DOTAHideTextTooltip", panel)
+	}
+}
+
+function RoomChoiceGetPlayerData()
+{
+	var key = String(Players.GetLocalPlayer())
+	if (typeof Game.GetCustomTable === "function")
+	{
+		return Game.GetCustomTable("woda_player_data", key)
+	}
+	var tables = GameUI.CustomUIConfig().CUSTOM_TABLES
+	return tables && tables["woda_player_data"] ? tables["woda_player_data"][key] || null : null
+}
+
+function RoomChoiceGetDifficulty()
+{
+	var info = CustomNetTables.GetTableValue("map_info", "pve_difficulty")
+	return info ? Number(info.level) || 0 : 0
+}
+
+function RoomChoiceCreateCrystal(parent, room)
+{
+	if (typeof GetArenaRoomQuestId !== "function") { return }
+	var difficulty = RoomChoiceGetDifficulty()
+	if (GetArenaRoomQuestId(room.id, difficulty) == null) { return }
+	var player_data = RoomChoiceGetPlayerData()
+	if (!player_data || IsArenaRoomQuestDone(player_data, room.id, difficulty)) { return }
+	var crystal = $.CreatePanel("Panel", parent, "")
+	crystal.AddClass("RoomCardCrystal")
+	crystal.hittest = true
+	crystal.SetDialogVariable("room", $.Localize("#arena_room_" + room.id))
+	crystal.SetDialogVariableInt("difficulty", difficulty)
+	crystal.SetDialogVariableInt("count", ARENA_ROOM_QUEST_TIMES)
+	crystal.SetPanelEvent("onmouseover", function()
+	{
+		room_choice_crystal_hover = crystal
+		$.DispatchEvent("DOTAShowTextTooltip", crystal, $.Localize("#arena_room_quest_tooltip", crystal))
+	})
+	crystal.SetPanelEvent("onmouseout", function()
+	{
+		RoomChoiceHideCrystalTooltip()
+	})
+	if (!room_choice_fixed)
+	{
+		crystal.SetPanelEvent("onactivate", function()
+		{
+			RoomChoiceVote(room.id)
+		})
 	}
 }
 
@@ -187,6 +262,7 @@ function RoomChoiceClose(data)
 	room_choice_open = false
 	room_choice_rooms = []
 	room_choice_votes = {}
+	RoomChoiceHideCrystalTooltip()
 	$("#RoomChoiceWindow").RemoveClass("Visible")
 }
 

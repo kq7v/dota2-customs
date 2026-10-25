@@ -623,10 +623,10 @@ function pick_start()
 		if (player_table.last_leave == 1 && (Game.GetMapInfo().map_display_name.includes("rating")))
 		{
 			$("#PlayerLeavedPanel").style.visibility = "visible"
-		} else if ( (Number(player_table.has_report_kill) > 0) || (Number(player_table.has_report_random) > 0) && (Game.GetMapInfo().map_display_name.includes("rating")))
+		} /* else if ( (Number(player_table.has_report_kill) > 0) || (Number(player_table.has_report_random) > 0) && (Game.GetMapInfo().map_display_name.includes("rating")))
 		{
 			$("#PlayerBanPanel").style.visibility = "visible"
-		}
+		} */
 	}
 }
 

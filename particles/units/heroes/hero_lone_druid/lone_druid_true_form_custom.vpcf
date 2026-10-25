@@ -13,13 +13,34 @@
 	_class = "CParticleSystemDefinition"
 	m_bShouldHitboxesFallbackToRenderBounds = false
 	m_nMaxParticles = 1
+	m_nBehaviorVersion = 12
+	m_controlPointConfigurations = 
+	[
+		{
+			m_name = "preview"
+			m_drivers = 
+			[
+				{
+					m_iAttachType = "PATTACH_WORLDORIGIN"
+					m_entityName = "self"
+				},
+				{
+					m_iControlPoint = 3
+					m_iAttachType = "PATTACH_WORLDORIGIN"
+					m_entityName = "self"
+				},
+				{
+					m_iControlPoint = 62
+					m_iAttachType = "PATTACH_WORLDORIGIN"
+					m_entityName = "self"
+				},
+			]
+		},
+	]
 	m_Children = 
 	[
 		{
 			m_ChildRef = resource:"particles/units/heroes/hero_lone_druid/lone_druid_true_form_customf.vpcf"
-		},
-		{
-			m_ChildRef = resource:"particles/units/heroes/hero_lone_druid/lone_druid_true_form_customc.vpcf"
 		},
 		{
 			m_ChildRef = resource:"particles/units/heroes/hero_lone_druid/lone_druid_true_form_custome.vpcf"
@@ -39,5 +60,4 @@
 			m_ChildRef = resource:"particles/units/heroes/hero_lone_druid/lone_druid_true_form_customb.vpcf"
 		},
 	]
-	m_nBehaviorVersion = 12
 }

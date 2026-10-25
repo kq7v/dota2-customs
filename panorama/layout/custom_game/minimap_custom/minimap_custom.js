@@ -20,20 +20,122 @@ function IsOverlayMapDisabled()
 	return Game.GetMapInfo().map_display_name == "overthrow"
 }
 
+var OVERLAY_MAPS_WODA = ["OverlayMapWODA", "OverlayMapWODAArena", "OverlayMapWODAZoom7", "OverlayMapWODAZoom8"]
+var OVERLAY_MAP_ZOOM_WODA = 0
+
+function SetOverlayMapZoomWODA(data)
+{
+	OVERLAY_MAP_ZOOM_WODA = (data && data.zoom) ? (Number(data.zoom) || 0) : 0
+}
+
+function GetOverlayMapIdWODA()
+{
+	if (IsArenaMapWODA())
+	{
+		return "OverlayMapWODAArena"
+	}
+	if (OVERLAY_MAP_ZOOM_WODA > 0 && $("#OverlayMapWODAZoom" + OVERLAY_MAP_ZOOM_WODA))
+	{
+		return "OverlayMapWODAZoom" + OVERLAY_MAP_ZOOM_WODA
+	}
+	return "OverlayMapWODA"
+}
+
 function GetOverlayMapWODA()
 {
-	var arena = IsArenaMapWODA()
-	$("#OverlayMapWODA").style.visibility = arena ? "collapse" : "visible"
-	$("#OverlayMapWODAArena").style.visibility = arena ? "visible" : "collapse"
-	return arena ? $("#OverlayMapWODAArena") : $("#OverlayMapWODA")
+	var active = GetOverlayMapIdWODA()
+	for (var i = 0; i < OVERLAY_MAPS_WODA.length; i++)
+	{
+		var map = $("#" + OVERLAY_MAPS_WODA[i])
+		if (map)
+		{
+			map.style.visibility = OVERLAY_MAPS_WODA[i] == active ? "visible" : "collapse"
+		}
+	}
+	return $("#" + active)
 }
 
 function HideOverlayMapWODA()
 {
 	$.GetContextPanel().visible = false
-	$("#OverlayMapWODA").style.visibility = "collapse"
-	$("#OverlayMapWODAArena").style.visibility = "collapse"
+	for (var i = 0; i < OVERLAY_MAPS_WODA.length; i++)
+	{
+		var map = $("#" + OVERLAY_MAPS_WODA[i])
+		if (map)
+		{
+			map.style.visibility = "collapse"
+		}
+	}
 	$("#OverlayMapWODABG").style.visibility = "collapse"
+}
+
+function GetHiddenHeroesWODA()
+{
+	var hidden = {}
+	var data = CustomNetTables.GetTableValue("map_info", "hidden_heroes")
+	if (data)
+	{
+		for (var name in data)
+		{
+			hidden[name] = true
+			hidden[String(name).replace("npc_dota_hero_", "")] = true
+			hidden["id_" + data[name]] = true
+		}
+	}
+	return hidden
+}
+
+function IsHeroImageHiddenWODA(panel, hidden)
+{
+	var name = String(panel.heroname || "")
+	if (name != "" && (hidden[name] || hidden[name.replace("npc_dota_hero_", "")]))
+	{
+		return true
+	}
+	return panel.heroid != null && hidden["id_" + panel.heroid] == true
+}
+
+function UpdateHeroImagesWODA(wisp_visible, overlay_ids)
+{
+	var hidden = GetHiddenHeroesWODA()
+	if (wisp_visible == null && Object.keys(hidden).length == 0)
+	{
+		return
+	}
+	var ids = overlay_ids || OVERLAY_MAPS_WODA
+	for (var i = 0; i < ids.length; i++)
+	{
+		var map = $("#" + ids[i])
+		if (!map)
+		{
+			continue
+		}
+		for (var j = 0; j < map.GetChildCount(); j++)
+		{
+			var panel = map.GetChild(j)
+			if (panel && panel.paneltype == "DOTAHeroImage")
+			{
+				if (IsHeroImageHiddenWODA(panel, hidden))
+				{
+					panel.style.opacity = "0"
+				}
+				else if (wisp_visible != null)
+				{
+					panel.style.opacity = String(wisp_visible)
+				}
+			}
+		}
+	}
+}
+
+function UpdateHiddenHeroesLoopWODA()
+{
+	if (IsOverlayMapDisabled() || IsArenaMapWODA())
+	{
+		return
+	}
+	UpdateHeroImagesWODA(null, [GetOverlayMapIdWODA()])
+	$.Schedule(0.25, UpdateHiddenHeroesLoopWODA)
 }
 
 function ApplyMinimapBlockStyle(minimap_container)
@@ -71,12 +173,13 @@ function ChangeMapPlayer(data)
  
 	if (data)
 	{
+		SetOverlayMapZoomWODA(data)
 		let map_now = GetOverlayMapWODA()
 		map_now.fixedoffsetenabled = true;
 		map_now.minheightgroupbrightness = 1;
 		map_now.SetFixedOffset(data.x, data.y);
 	}
-} 
+}
 
 GameEvents.Subscribe_custom( "set_map_hidden_wisp", set_map_hidden_wisp )
 
@@ -87,15 +190,7 @@ function set_map_hidden_wisp(data)
 		HideOverlayMapWODA()
 		return
 	}
-	let map = GetOverlayMapWODA()
-	for (var i = 0; i < map.GetChildCount(); i++)
-	{
-        let panel = map.GetChild(i)
-        if (panel && panel.paneltype == "DOTAHeroImage")
-        {
-        	panel.style.opacity = String(data.visible)
-        }
-    } 
+	UpdateHeroImagesWODA(data.visible, Number(data.visible) == 0 ? [GetOverlayMapIdWODA()] : null)
 }
 
 function SetMinimapReconnect()
@@ -111,6 +206,7 @@ function SetMinimapReconnect()
 		let minimap_container = $.GetContextPanel().GetParent().GetParent().GetParent().FindChild("HUDElements").FindChildTraverse("minimap_container");
 		ApplyMinimapBlockStyle(minimap_container)
 		$("#OverlayMapWODABG").style.visibility = "visible"
+		SetOverlayMapZoomWODA(data)
 		let map = GetOverlayMapWODA()
 		map.fixedoffsetenabled = true;
 		map.SetFixedOffset(data.x, data.y);
@@ -121,4 +217,5 @@ function SetMinimapReconnect()
 $.Schedule(1, function()
 {
     SetMinimapReconnect()
+    UpdateHiddenHeroesLoopWODA()
 })

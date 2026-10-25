@@ -113,6 +113,13 @@ LinkLuaModifier(
 LinkLuaModifier("modifier_woda_emblem", "modifiers/modifier_woda_emblem", LUA_MODIFIER_MOTION_NONE)
 LinkLuaModifier("modifier_woda_emblem_head", "modifiers/modifier_woda_emblem_head", LUA_MODIFIER_MOTION_NONE)
 LinkLuaModifier("modifier_woda_upgrade_backpack", "modifiers/modifier_woda_upgrade_backpack", LUA_MODIFIER_MOTION_NONE)
+LinkLuaModifier(
+	"modifier_woda_upgrade_auto_midas",
+	"modifiers/modifier_woda_upgrade_auto_midas",
+	LUA_MODIFIER_MOTION_NONE
+)
+LinkLuaModifier("modifier_woda_arena_curse_armor", "modifiers/modifier_woda_arena_curse", LUA_MODIFIER_MOTION_NONE)
+LinkLuaModifier("modifier_woda_arena_curse_magic", "modifiers/modifier_woda_arena_curse", LUA_MODIFIER_MOTION_NONE)
 LinkLuaModifier("modifier_woda_smelter_bonus", "modifiers/modifier_woda_smelter_bonus", LUA_MODIFIER_MOTION_NONE)
 LinkLuaModifier("modifier_woda_items_bonus", "modifiers/modifier_woda_items_bonus", LUA_MODIFIER_MOTION_NONE)
 LinkLuaModifier("modifier_woda_hero_level_bonus", "modifiers/modifier_woda_hero_level_bonus", LUA_MODIFIER_MOTION_NONE)
@@ -122,6 +129,7 @@ LinkLuaModifier("modifier_item_book_int", "items/item_book_int", LUA_MODIFIER_MO
 LinkLuaModifier("modifier_woda_bog", "modifiers/modifier_woda_bog", LUA_MODIFIER_MOTION_NONE)
 LinkLuaModifier("modifier_events_thinker_woda", "modifiers/modifier_events_thinker_woda", LUA_MODIFIER_MOTION_NONE)
 LinkLuaModifier("modifier_minimap_hidden", "modifiers/modifier_minimap_hidden", LUA_MODIFIER_MOTION_NONE)
+LinkLuaModifier("modifier_woda_minimap_out", "modifiers/modifier_woda_minimap_out", LUA_MODIFIER_MOTION_NONE)
 LinkLuaModifier("modifier_boss_low_health", "modifiers/modifier_boss_low_health", LUA_MODIFIER_MOTION_NONE)
 LinkLuaModifier("modifier_boss_low_health_buff", "modifiers/modifier_boss_low_health", LUA_MODIFIER_MOTION_NONE)
 LinkLuaModifier("modifier_teleport_fx_client", "modifiers/modifier_teleport_fx_client", LUA_MODIFIER_MOTION_NONE)

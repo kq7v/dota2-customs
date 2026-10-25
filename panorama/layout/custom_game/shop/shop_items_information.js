@@ -74,7 +74,7 @@ var Items_plus =
     //["1058", "coin", "3250", "nydp7", "nydp7"],
 ] 
 
-// Последний юзабельный айди 1104
+// Последний юзабельный айди 1119
 
 var Items_upgrades =
 [
@@ -82,6 +82,9 @@ var Items_upgrades =
     ["upgrade_talent_point", "crystal", "50", "upgrade_talent_point", "upgrade_talent_point"],
     ["upgrade_backpack", "crystal", "1500", "upgrade_backpack", "upgrade_backpack"],
     ["upgrade_start_level", "crystal", "25", "upgrade_start_level", "upgrade_start_level"],
+    ["upgrade_auto_midas", "crystal", "100", "upgrade_auto_midas", "upgrade_auto_midas"],
+    ["upgrade_curse_armor", "crystal", "25", "upgrade_curse_armor", "upgrade_curse_armor"],
+    ["upgrade_curse_magic", "crystal", "25", "upgrade_curse_magic", "upgrade_curse_magic"],
 ]
 
 var Items_Backround =
@@ -710,7 +713,7 @@ var Items_emblems =
 
     ["1074", "coin", "99999", "emblem_130", "emblem_130", true], // SEASON REWARD
     ["1075", "coin", "99999", "emblem_131", "emblem_131", true], // SEASON REWARD
-    ["1084", "coin", "99999", "emblem_140", "emblem_140", true], // SEASON REWARD
+    ["1084", "coin", "99999", "emblem_140", "emblem_140", true], // SEASON REWARD
 ]
 
 var Items_heads = 
@@ -870,7 +873,23 @@ var Items_tips =
     ["885", "coin", "150", "tip", "tipped_885"],
     ["886", "coin", "150", "tip", "tipped_886"],
     ["887", "coin", "150", "tip", "tipped_887"],
-] 
+
+    ["1104", "coin", "150", "tip", "tipped_1104"],
+    ["1105", "coin", "150", "tip", "tipped_1105"],
+    ["1106", "coin", "150", "tip", "tipped_1106"],
+    ["1107", "coin", "150", "tip", "tipped_1107"],
+    ["1108", "coin", "150", "tip", "tipped_1108"],
+    ["1109", "coin", "150", "tip", "tipped_1109"],
+    ["1110", "coin", "150", "tip", "tipped_1110"],
+    ["1111", "coin", "150", "tip", "tipped_1111"],
+    ["1112", "coin", "150", "tip", "tipped_1112"],
+    ["1113", "coin", "150", "tip", "tipped_1113"],
+    ["1114", "coin", "150", "tip", "tipped_1114"],
+    ["1115", "coin", "150", "tip", "tipped_1115"],
+    ["1116", "coin", "150", "tip", "tipped_1116"],
+    ["1117", "coin", "150", "tip", "tipped_1117"],
+    ["1118", "coin", "150", "tip", "tipped_1118"],
+]
 
 var Items_Runes =
 [
@@ -996,4 +1015,28 @@ var HERO_VOTES_TABLE =
     "npc_dota_hero_viper",
     //"npc_dota_hero_visage",
 ]
+
+var SHOP_NEW_ITEMS_DAYS = 14
+
+var SHOP_NEW_ITEMS =
+{
+    "1104": "2026-10-24",
+    "1105": "2026-10-24",
+    "1106": "2026-10-24",
+    "1107": "2026-10-24",
+    "1108": "2026-10-24",
+    "1109": "2026-10-24",
+    "1110": "2026-10-24",
+    "1111": "2026-10-24",
+    "1112": "2026-10-24",
+    "1113": "2026-10-24",
+    "1114": "2026-10-24",
+    "1115": "2026-10-24",
+    "1116": "2026-10-24",
+    "1117": "2026-10-24",
+    "1118": "2026-10-24",
+    "upgrade_auto_midas": "2026-10-24",
+    "upgrade_curse_armor": "2026-10-24",
+    "upgrade_curse_magic": "2026-10-24",
+}
 

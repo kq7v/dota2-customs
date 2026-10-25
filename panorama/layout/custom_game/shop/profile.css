@@ -178,6 +178,7 @@
 {
 	horizontal-align: center;
 	font-family: Reaver;
+	margin-top:3px;
 	font-size: 24px;
 	font-weight: bold;
 	color: white;
@@ -1357,7 +1358,7 @@
 
 .ProfileRecentResult.Positive
 {
-	color: #7ee07e;
+	color: #6fdc6f;
 }
 
 .ProfileRecentResult.Negative

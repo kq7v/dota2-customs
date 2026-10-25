@@ -395,6 +395,51 @@ function IsArenaHeroDifficultyDone(player_data, hero_name, difficulty)
     return false
 }
 
+var ARENA_ROOM_QUEST_FIRST_ID = 600
+var ARENA_ROOM_QUEST_ROOM_STEP = 10
+var ARENA_ROOM_QUEST_TIMES = 10
+var ARENA_ROOM_QUEST_LAST_ROOM = 37
+var ARENA_ROOM_QUEST_EXCLUDED_ROOMS = {8: true, 23: true}
+
+function GetArenaRoomQuestId(room_id, difficulty)
+{
+    var room = Math.floor(Number(room_id))
+    var level = Math.floor(Number(difficulty))
+    if (!isFinite(room) || !isFinite(level)) { return null }
+    if (room < 0 || room > ARENA_ROOM_QUEST_LAST_ROOM || ARENA_ROOM_QUEST_EXCLUDED_ROOMS[room]) { return null }
+    if (level < 1 || level > ARENA_DIFFICULTY_QUESTS_COUNT) { return null }
+    return ARENA_ROOM_QUEST_FIRST_ID + room * ARENA_ROOM_QUEST_ROOM_STEP + level
+}
+
+QUEST_LIST_INFO.ArenaRoomQuests = []
+for (var room_quest_difficulty = 1; room_quest_difficulty <= ARENA_DIFFICULTY_QUESTS_COUNT; room_quest_difficulty++)
+{
+    for (var room_quest_room = 0; room_quest_room <= ARENA_ROOM_QUEST_LAST_ROOM; room_quest_room++)
+    {
+        var room_quest_id = GetArenaRoomQuestId(room_quest_room, room_quest_difficulty)
+        if (room_quest_id)
+        {
+            QUEST_LIST_INFO.ArenaRoomQuests.push([QUEST_REWARD_ID_BASE + room_quest_id, "reward_crystal_name", "wodacrystal_big", room_quest_id, null, {type: "arena_room", room: room_quest_room, difficulty: room_quest_difficulty, count: ARENA_ROOM_QUEST_TIMES, required: ARENA_ROOM_QUEST_TIMES, bottom: true}])
+        }
+    }
+}
+
+function IsArenaRoomQuestDone(player_data, room_id, difficulty)
+{
+    var quest_id = GetArenaRoomQuestId(room_id, difficulty)
+    if (!quest_id || !player_data) { return false }
+    if (player_data.quest_data && Number(player_data.quest_data[quest_id]) >= ARENA_ROOM_QUEST_TIMES) { return true }
+    var reward_id = QUEST_REWARD_ID_BASE + quest_id
+    if (player_data.donate_items)
+    {
+        for (var item_slot in player_data.donate_items)
+        {
+            if (Number(player_data.donate_items[item_slot]) == reward_id) { return true }
+        }
+    }
+    return false
+}
+
 var QUEST_ICON_WITHOUT_OPEN = {wodacoin_big: true, wodacrystal_big: true}
 var QUEST_ICON_NO_TOOLTIP = {wodacoin_big: true, wodacrystal_big: true, boss_soul_big: true}
 

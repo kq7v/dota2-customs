@@ -1,0 +1,47 @@
+--[[
+  ~ dumper · customs · dota2
+  ~ credits: rou (a.k.a internetenemy), qfun(a.k.a qfun_g9s)
+  ~ special for t.me/wildguild
+
+  ~ build 1a5b3bb 
+  ~ auto-generated — do not edit
+]]
+
+
+/* Prettified by Source 2 Viewer 20.1.0.0 - https://valveresourceformat.github.io */
+
+#Contents
+{
+	padding: 0px;
+	margin: 0px;
+	background-color: #10171c00;
+	border: 0px solid black;
+	flow-children: none;
+	box-shadow: #00000000 0px 0px 8px 0px;
+}
+
+.LeaderboardTooltipRoot
+{
+	flow-children: down;
+	padding: 6px;
+}
+
+.LeaderboardTooltip
+{
+	width: 320px;
+	padding: 12px 14px;
+	flow-children: down;
+	background-color: gradient(linear, 0% 0%, 0% 100%, from(#1a1f2af8), to(#0b0d12f8));
+	border: 1px solid #b58f3e66;
+	border-radius: 6px;
+	box-shadow: 0px 0px 0px 0px #000000;
+}
+
+.LeaderboardTooltipText
+{
+	width: 100%;
+	font-family: Radiance;
+	font-size: 15px;
+	color: #dfe8f3;
+	text-shadow: 1px 1px 2px 1 black;
+}

@@ -198,6 +198,7 @@ function WODAGameMode:InitGameMode()
 	GameRules:GetGameModeEntity():SetThink( "OnThink", self, "GlobalThink", 0.1 )
 	GameRules:GetGameModeEntity():SetExecuteOrderFilter( Dynamic_Wrap( self, "ExecuteOrderFilter" ), self )
 	GameRules:GetGameModeEntity():SetBountyRunePickupFilter( Dynamic_Wrap( self, "BountyRunePickupFilter" ), self )
+	GameRules:GetGameModeEntity():SetModifyGoldFilter( Dynamic_Wrap( self, "ModifyGoldFilter" ), self )
 	GameRules:GetGameModeEntity():SetDamageFilter(Dynamic_Wrap(self, "DamageFilter"), self)
     GameRules:GetGameModeEntity():SetModifierGainedFilter(Dynamic_Wrap(self, "ModifierGainedFilter"), self)
 
@@ -561,10 +562,13 @@ function WODAGameMode:OnNPCSpawned(data)
             if IsWodaArenaMap() and WODAGameMode.start_game and PLAYERS[id] and arena_system.SetupPveHero then
                 arena_system:SetupPveHero(id, PLAYERS[id])
             end
+            if WODAGameMode.start_game and arena_system.PlaceLateHero and string.find(GetMapName(), "rating") then
+                arena_system:PlaceLateHero(id, hero)
+            end
 	        if player_system:IsLose(id) then
 	            hero:PlayerForceKillAndLose()
-	        elseif player_system.PLAYERS_GLOBAL_INFORMATION[id] and tonumber(player_system.PLAYERS_GLOBAL_INFORMATION[id].has_report_kill) > 0 and (GetMapName() == "rating" or GetMapName() == "rating_300") then
-	            hero:PlayerForceKillAndLose()
+	        --[[elseif player_system.PLAYERS_GLOBAL_INFORMATION[id] and tonumber(player_system.PLAYERS_GLOBAL_INFORMATION[id].has_report_kill) > 0 and (GetMapName() == "rating" or GetMapName() == "rating_300") then
+	            hero:PlayerForceKillAndLose()]]
 	        end
 	        if hero_select:AllPlayersRespawn() then
 	        	WODAGameMode:StartGame()

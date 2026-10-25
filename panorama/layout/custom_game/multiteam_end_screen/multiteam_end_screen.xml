@@ -68,7 +68,7 @@
 					</Button>
 				</Panel>
 			</Panel>
-			<Image class="WowBanner" id="WowBanner" style="opacity:0;" src="s2r://panorama/images/banners/wow_2_png.vtex" onactivate="ExternalBrowserGoToURL(&apos;https://plrk.co/p/WorldOfDotaAug&apos;);" />
+			<Image class="WowBanner" id="WowBanner" style="opacity:0;" src="s2r://panorama/images/banners/wow_2_png.vtex" onactivate="ExternalBrowserGoToURL(&apos;https://bit.ly/WOD1510&apos;);" />
 		</Panel>
 	</Panel>
 </root>

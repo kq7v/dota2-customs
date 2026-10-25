@@ -226,7 +226,7 @@
 	align:center center;
 	font-size: 22px;
 	font-weight: bold;
-	color: green;
+	color: #6fdc6f;
 	font-family: defaultFont;
 	text-shadow: 2px 2px 2px black;
 	text-overflow: clip;
@@ -457,7 +457,7 @@
 #PlayerRating
 {
 	margin-top:-5px;
-	color:green;
+	color:#6fdc6f;
 	font-size:18px;
 	width:100%;
 	text-shadow:2px 2px 2px black;

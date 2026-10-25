@@ -22,6 +22,20 @@
 			<Label class="WodaConnectTitle" text="#woda_connect_title" />
 			<Label id="WodaConnectStatus" class="WodaConnectStatus" text="" />
 			<Label id="WodaConnectNote" class="WodaRegionCountdown" text="" />
+			<Panel id="WodaPartyBar" class="WodaPartyBar">
+				<Label class="WodaPartyTitle" text="#woda_party_title" />
+				<Panel id="WodaPartySlots" class="WodaPartySlots" />
+				<Panel id="WodaPartyInviteRow" class="WodaPartyInviteRow">
+					<TextEntry id="WodaPartyInviteId" class="WodaPartyInput" maxchars="24" placeholder="#woda_party_id_placeholder" />
+					<Panel id="WodaPartyInviteSend" class="WodaConnectButton Active WodaPartyButton">
+						<Label class="WodaConnectButtonLabel" text="#woda_party_invite" />
+					</Panel>
+				</Panel>
+				<Panel id="WodaPartyLeave" class="WodaConnectButton Danger WodaPartyButton WodaPartyLeave">
+					<Label class="WodaConnectButtonLabel" text="#woda_party_leave" />
+				</Panel>
+				<Label id="WodaPartyNote" class="WodaPartyNote" text="" />
+			</Panel>
 			<Panel id="WodaRegionPicker" class="WodaRegionPicker">
 				<Panel id="WodaRegionList" class="WodaRegionList" />
 				<Panel id="WodaSessionBox" class="WodaSessionBox">
@@ -89,6 +103,25 @@
 						<Label class="WodaConnectButtonLabel" text="#woda_session_new_confirm_no" />
 					</Panel>
 				</Panel>
+			</Panel>
+		</Panel>
+		<Panel id="WodaInviteOverlay" class="WodaConfirmOverlay">
+			<Panel class="WodaConfirmWindow">
+				<Label class="WodaConfirmTitle" text="#woda_party_invite_title" />
+				<Panel id="WodaInvitePlayer" class="WodaBanPlayer WodaInvitePlayer" />
+				<Label class="WodaConfirmText" text="#woda_party_invite_text" />
+				<Panel class="WodaConnectButtons WodaConfirmButtons">
+					<Panel id="WodaInviteAccept" class="WodaConnectButton Active">
+						<Label class="WodaConnectButtonLabel" text="#woda_party_accept" />
+					</Panel>
+					<Panel id="WodaInviteDecline" class="WodaConnectButton Danger">
+						<Label class="WodaConnectButtonLabel" text="#woda_party_decline" />
+					</Panel>
+					<Panel id="WodaInviteBlock" class="WodaInviteBlock">
+						<Panel class="WodaInviteBlockIcon" />
+					</Panel>
+				</Panel>
+				<Label id="WodaInviteLeft" class="WodaRegionCountdown" text="" />
 			</Panel>
 		</Panel>
 	</Panel>

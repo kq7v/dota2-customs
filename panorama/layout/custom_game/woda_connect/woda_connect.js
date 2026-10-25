@@ -24,8 +24,12 @@ var WODA_CONNECT_STATE_KEYS = {
 };
 var g_WodaStatusTime = null;
 var g_WodaRegion = { serial: null, selected: null, deadline: 0, mode: null, newConfirm: false, sessionSerial: null, confirmArmedAt: 0 };
-var g_WodaSearch = { selected: null, picked: false, leader: false, status: null, startedAt: 0, cards: {}, counts: {}, countLabels: {}, regions: {}, region: null, regionPicked: false, lastRegion: "", regionCards: {}, regionLabels: {} };
+var WODA_TEAMING_TOOLTIP_ID = "woda_connect_teaming_tooltip";
+var WODA_TEAMING_TOOLTIP_LAYOUT = "file://{resources}/layout/custom_game/tooltips/leaderboard_tooltip/leaderboard_tooltip.xml";
+var g_WodaSearch = { selected: null, picked: false, leader: false, status: null, startedAt: 0, cards: {}, counts: {}, countLabels: {}, locked: {}, regions: {}, region: null, regionPicked: false, lastRegion: "", regionCards: {}, regionLabels: {} };
 var g_WodaBan = { entries: [], receivedAt: 0, partner: null };
+var g_WodaParty = { data: null, updatedAt: null, receivedAt: 0, state: "", slotsKey: "", noticeSerial: -1, noticeAt: 0, invite: null, inviteKey: "", inviteBlock: false, dismissed: {} };
+var g_WodaSound = { searching: false, played: false };
 
 function WodaLocalizeOr(key, fallback)
 {
@@ -68,6 +72,15 @@ function WodaSelectMode(mode)
 	{
 		g_WodaSearch.cards[key].SetHasClass("Selected", key === mode);
 	}
+	var start = $("#WodaSearchStart");
+	if (start)
+	{
+		start.SetHasClass("Locked", !!g_WodaSearch.locked[mode]);
+		if (!g_WodaSearch.locked[mode])
+		{
+			$.DispatchEvent("UIHideCustomLayoutTooltip", start, WODA_TEAMING_TOOLTIP_ID);
+		}
+	}
 	if (changed)
 	{
 		WodaRenderSearchRegions();
@@ -77,7 +90,7 @@ function WodaSelectMode(mode)
 
 function WodaStartSearch(mode)
 {
-	if (!g_WodaSearch.leader || !mode)
+	if (!g_WodaSearch.leader || !mode || g_WodaSearch.locked[mode])
 	{
 		return;
 	}
@@ -199,6 +212,7 @@ function WodaBuildModeCard(parent, mode)
 	count.AddClass("WodaModeCount");
 	g_WodaSearch.countLabels[mode] = count;
 
+	card.SetHasClass("Locked", !!g_WodaSearch.locked[mode]);
 	card.SetPanelEvent("onactivate", function() { if (g_WodaSearch.leader) { g_WodaSearch.picked = true; WodaSelectMode(mode); } });
 	card.SetPanelEvent("ondblclick", function() { if (g_WodaSearch.leader) { g_WodaSearch.picked = true; WodaSelectMode(mode); WodaStartSearch(mode); } });
 	return card;
@@ -216,6 +230,8 @@ function WodaRenderSearchChoice(status)
 	g_WodaSearch.counts = status.counts || {};
 	g_WodaSearch.regions = status.regions || {};
 	g_WodaSearch.lastRegion = String(status.region || "");
+	g_WodaSearch.locked = {};
+	WodaSplitList(status.locked).forEach(function(mode) { g_WodaSearch.locked[mode] = true; });
 	list.RemoveAndDeleteChildren();
 	g_WodaSearch.cards = {};
 	g_WodaSearch.countLabels = {};
@@ -417,6 +433,282 @@ function WodaHideBan()
 	g_WodaBan.entries = [];
 }
 
+function WodaSendParty(action, target, block)
+{
+	GameEvents.SendCustomGameEventToServer("event_woda_region_choice", { action: action, region: "", mode: "", target: target || "", block: block ? 1 : 0 });
+}
+
+function WodaParsePairs(text)
+{
+	var entries = [];
+	var parts = WodaSplitList(text);
+	for (var i = 0; i < parts.length; i++)
+	{
+		var fields = parts[i].split(":");
+		if (fields[0] !== "")
+		{
+			entries.push({ id: fields[0], left: Number(fields[1]) || 0 });
+		}
+	}
+	return entries;
+}
+
+function WodaPartyShown()
+{
+	var data = g_WodaParty.data;
+	var state = g_WodaParty.state;
+	return !!data && Number(data.enabled) > 0 && (state === "search_choose" || state === "searching" || state === "search_found");
+}
+
+function WodaBuildPartySlot(parent, id, leader, offline, pending)
+{
+	var slot = $.CreatePanel("Panel", parent, "");
+	slot.AddClass("WodaPartySlot");
+	slot.SetHasClass("Leader", leader);
+	slot.SetHasClass("Offline", offline);
+	slot.SetHasClass("Pending", pending);
+	var avatar = $.CreatePanel("DOTAAvatarImage", slot, "", { accountid: id });
+	avatar.AddClass("WodaPartyAvatar");
+	var name = $.CreatePanel("DOTAUserName", slot, "", { accountid: id });
+	name.AddClass("WodaPartyName");
+	if (leader)
+	{
+		var chip = $.CreatePanel("Label", slot, "");
+		chip.AddClass("WodaRegionChip");
+		chip.text = $.Localize("#woda_party_leader");
+	}
+	else if (pending || offline)
+	{
+		var state = $.CreatePanel("Label", slot, "");
+		state.AddClass("WodaPartyState");
+		state.text = $.Localize(pending ? "#woda_party_pending" : "#woda_party_offline");
+	}
+	return slot;
+}
+
+function WodaRenderPartySlots(data)
+{
+	var list = $("#WodaPartySlots");
+	var members = WodaSplitList(data.members);
+	var online = WodaSplitList(data.online);
+	var sent = WodaParsePairs(data.sent);
+	var pendingIds = [];
+	for (var s = 0; s < sent.length; s++)
+	{
+		if (members.indexOf(sent[s].id) < 0 && pendingIds.indexOf(sent[s].id) < 0)
+		{
+			pendingIds.push(sent[s].id);
+		}
+	}
+	var key = members.join(",") + "|" + online.join(",") + "|" + String(data.leader || "") + "|" + pendingIds.join(",");
+	if (key === g_WodaParty.slotsKey)
+	{
+		return;
+	}
+	g_WodaParty.slotsKey = key;
+	list.RemoveAndDeleteChildren();
+	var inParty = members.length > 1;
+	for (var i = 0; i < members.length; i++)
+	{
+		WodaBuildPartySlot(list, members[i], inParty && members[i] === String(data.leader || ""), online[i] === "0", false);
+	}
+	for (var p = 0; p < pendingIds.length; p++)
+	{
+		WodaBuildPartySlot(list, pendingIds[p], false, false, true);
+	}
+}
+
+function WodaUpdatePartyNote()
+{
+	var note = $("#WodaPartyNote");
+	var data = g_WodaParty.data;
+	if (!note || !data)
+	{
+		return;
+	}
+	var text = "";
+	var bad = false;
+	var good = false;
+	var code = String(data.notice || "");
+	if (code !== "" && Date.now() - g_WodaParty.noticeAt < 6000)
+	{
+		var codeName = code.replace(/^party_/, "");
+		text = WodaLocalizeOr("#woda_party_notice_" + codeName, code);
+		good = codeName === "sent";
+		bad = !good;
+	}
+	else if (String(data.follow || "") !== "")
+	{
+		text = $.Localize("#woda_party_search_by");
+		good = true;
+	}
+	note.text = text;
+	note.SetHasClass("Bad", bad);
+	note.SetHasClass("Good", good);
+	note.visible = text !== "";
+}
+
+function WodaRenderParty()
+{
+	var bar = $("#WodaPartyBar");
+	if (!bar)
+	{
+		return;
+	}
+	var shown = WodaPartyShown();
+	bar.SetHasClass("Visible", shown);
+	if (shown)
+	{
+		var data = g_WodaParty.data;
+		WodaRenderPartySlots(data);
+		$("#WodaPartyInviteRow").visible = Number(data.can_invite) > 0;
+		$("#WodaPartyLeave").visible = Number(data.can_leave) > 0;
+		WodaUpdatePartyNote();
+	}
+	WodaRenderInvite();
+}
+
+function WodaRenderInvite()
+{
+	var overlay = $("#WodaInviteOverlay");
+	if (!overlay)
+	{
+		return;
+	}
+	var data = g_WodaParty.data;
+	var invite = null;
+	if (WodaPartyShown() && Number(data.can_answer) > 0)
+	{
+		var invites = WodaParsePairs(data.invites);
+		var elapsed = (Date.now() - g_WodaParty.receivedAt) / 1000;
+		for (var i = 0; i < invites.length; i++)
+		{
+			if (!g_WodaParty.dismissed[invites[i].id] && invites[i].left - elapsed > 0)
+			{
+				invite = invites[i];
+				break;
+			}
+		}
+	}
+	g_WodaParty.invite = invite;
+	if (invite && g_WodaParty.inviteKey !== invite.id)
+	{
+		g_WodaParty.inviteKey = invite.id;
+		WodaSetInviteBlock(false);
+		var player = $("#WodaInvitePlayer");
+		player.RemoveAndDeleteChildren();
+		var avatar = $.CreatePanel("DOTAAvatarImage", player, "", { accountid: invite.id });
+		avatar.AddClass("WodaBanAvatar");
+		var name = $.CreatePanel("DOTAUserName", player, "", { accountid: invite.id });
+		name.AddClass("WodaBanName");
+	}
+	if (!invite)
+	{
+		g_WodaParty.inviteKey = "";
+	}
+	overlay.SetHasClass("Visible", !!invite);
+	WodaUpdateInviteLeft();
+}
+
+function WodaUpdateInviteLeft()
+{
+	var label = $("#WodaInviteLeft");
+	var invite = g_WodaParty.invite;
+	if (!label || !invite)
+	{
+		return;
+	}
+	var left = Math.ceil(invite.left - (Date.now() - g_WodaParty.receivedAt) / 1000);
+	if (left <= 0)
+	{
+		WodaRenderInvite();
+		return;
+	}
+	label.SetDialogVariableInt("seconds", left);
+	label.text = $.Localize("#woda_party_invite_left", label);
+}
+
+function WodaAnswerInvite(accept)
+{
+	var invite = g_WodaParty.invite;
+	if (!invite)
+	{
+		return;
+	}
+	g_WodaParty.dismissed[invite.id] = true;
+	WodaSendParty(accept ? "party_accept" : "party_decline", invite.id, !accept && g_WodaParty.inviteBlock);
+	WodaRenderInvite();
+}
+
+function WodaSetInviteBlock(on)
+{
+	g_WodaParty.inviteBlock = !!on;
+	var box = $("#WodaInviteBlock");
+	if (box)
+	{
+		box.SetHasClass("Checked", g_WodaParty.inviteBlock);
+	}
+}
+
+function WodaSendInvite()
+{
+	var entry = $("#WodaPartyInviteId");
+	var text = String(entry.text || "").replace(/\s+/g, "");
+	if (text === "")
+	{
+		return;
+	}
+	WodaSendParty("party_invite", text);
+	entry.text = "";
+}
+
+function WodaApplyParty(data)
+{
+	if (!data)
+	{
+		return;
+	}
+	g_WodaParty.updatedAt = data.updated_at;
+	g_WodaParty.data = data;
+	g_WodaParty.receivedAt = Date.now();
+	if (Number(data.notice_serial) !== g_WodaParty.noticeSerial)
+	{
+		g_WodaParty.noticeSerial = Number(data.notice_serial);
+		g_WodaParty.noticeAt = String(data.notice || "") !== "" ? Date.now() : 0;
+	}
+	var invites = WodaParsePairs(data.invites);
+	var listed = {};
+	for (var i = 0; i < invites.length; i++)
+	{
+		listed[invites[i].id] = true;
+	}
+	for (var id in g_WodaParty.dismissed)
+	{
+		if (!listed[id])
+		{
+			delete g_WodaParty.dismissed[id];
+		}
+	}
+	WodaRenderParty();
+}
+
+function WodaMatchSound(state)
+{
+	if (state === "search_found" || (state === "ready" && g_WodaSound.searching))
+	{
+		if (!g_WodaSound.played)
+		{
+			g_WodaSound.played = true;
+			Game.EmitSound("Stinger.MatchReady");
+		}
+	}
+	else if (state === "searching" || state === "search_choose")
+	{
+		g_WodaSound.played = false;
+	}
+	g_WodaSound.searching = state === "searching" || state === "search_found";
+}
+
 function WodaSelectRegion(id)
 {
 	g_WodaRegion.selected = id;
@@ -603,6 +895,8 @@ function WodaUpdateCountdown()
 	}
 	WodaUpdateSearchText();
 	WodaUpdateBanText();
+	WodaUpdatePartyNote();
+	WodaUpdateInviteLeft();
 	$.Schedule(0.5, WodaUpdateCountdown);
 }
 
@@ -621,7 +915,21 @@ function WodaBindButtons()
 	$("#WodaConfirmNew").SetPanelEvent("onactivate", WodaConfirmSessionNew);
 	$("#WodaChangeServer").SetPanelEvent("onactivate", function() { WodaSendRegionChoice("change", ""); });
 	$("#WodaSearchStart").SetPanelEvent("onactivate", function() { WodaStartSearch(g_WodaSearch.selected); });
+	$("#WodaSearchStart").SetPanelEvent("onmouseover", function()
+	{
+		if (g_WodaSearch.locked[g_WodaSearch.selected])
+		{
+			$.DispatchEvent("UIShowCustomLayoutParametersTooltip", $("#WodaSearchStart"), WODA_TEAMING_TOOLTIP_ID, WODA_TEAMING_TOOLTIP_LAYOUT, "text=woda_party_notice_teaming");
+		}
+	});
+	$("#WodaSearchStart").SetPanelEvent("onmouseout", function() { $.DispatchEvent("UIHideCustomLayoutTooltip", $("#WodaSearchStart"), WODA_TEAMING_TOOLTIP_ID); });
 	$("#WodaSearchCancel").SetPanelEvent("onactivate", function() { WodaSendRegionChoice("cancel", ""); });
+	$("#WodaPartyInviteSend").SetPanelEvent("onactivate", WodaSendInvite);
+	$("#WodaPartyInviteId").SetPanelEvent("oninputsubmit", WodaSendInvite);
+	$("#WodaPartyLeave").SetPanelEvent("onactivate", function() { WodaSendParty("party_leave", ""); });
+	$("#WodaInviteAccept").SetPanelEvent("onactivate", function() { WodaAnswerInvite(true); });
+	$("#WodaInviteDecline").SetPanelEvent("onactivate", function() { WodaAnswerInvite(false); });
+	$("#WodaInviteBlock").SetPanelEvent("onactivate", function() { WodaSetInviteBlock(!g_WodaParty.inviteBlock); });
 }
 
 function WodaUpdateStatusText(state, status)
@@ -677,6 +985,9 @@ function WodaApplyStatus(status)
 	g_WodaStatusTime = status.updated_at;
 	$("#WodaConnectBox").SetHasClass("Visible", true);
 	var state = status.state || "waiting";
+	WodaMatchSound(state);
+	g_WodaParty.state = state;
+	WodaRenderParty();
 	if (state === "search_ban")
 	{
 		WodaHidePicker();
@@ -731,6 +1042,11 @@ function WodaApplyStatus(status)
 
 function WodaOnStatusChanged(tableName, key, value)
 {
+	if (key === "party")
+	{
+		WodaApplyParty(value);
+		return;
+	}
 	if (key !== "status")
 	{
 		return;
@@ -744,6 +1060,11 @@ function WodaPollStatus()
 	if (status && status.updated_at !== g_WodaStatusTime)
 	{
 		WodaApplyStatus(status);
+	}
+	var party = CustomNetTables.GetTableValue("woda_connect", "party");
+	if (party && party.updated_at !== g_WodaParty.updatedAt)
+	{
+		WodaApplyParty(party);
 	}
 	$.Schedule(1.0, WodaPollStatus);
 }

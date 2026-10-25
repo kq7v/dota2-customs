@@ -23,6 +23,8 @@
 	<Panel hittest="false" style="width:100%;height:100%;">
 		<Panel hittest="true" class="OverlayMapWODABG" id="OverlayMapWODABG" />
 		<DOTAHUDOverlayMap id="OverlayMapWODA" class="OverlayMapWODA" mapscale="4" hittest="true" hittestchildren="true" maptexture="materials/overviews/rating_tga_5bcbe2fa.vtex" />
+		<DOTAHUDOverlayMap id="OverlayMapWODAZoom7" class="OverlayMapWODA" mapscale="7" hittest="true" hittestchildren="true" maptexture="materials/overviews/rating_tga_5bcbe2fa.vtex" />
+		<DOTAHUDOverlayMap id="OverlayMapWODAZoom8" class="OverlayMapWODA" mapscale="8" hittest="true" hittestchildren="true" maptexture="materials/overviews/rating_tga_5bcbe2fa.vtex" />
 		<DOTAHUDOverlayMap id="OverlayMapWODAArena" class="OverlayMapWODA" mapscale="8" hittest="true" hittestchildren="true" maptexture="materials/overviews/arena_tga_7c8ce21.vtex" />
 	</Panel>
 </root>
