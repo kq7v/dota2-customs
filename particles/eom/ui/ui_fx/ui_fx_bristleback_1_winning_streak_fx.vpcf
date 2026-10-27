@@ -1,0 +1,60 @@
+--[[
+  ~ dumper · customs · dota2
+  ~ credits: rou (a.k.a internetenemy), qfun(a.k.a qfun_g9s)
+  ~ special for t.me/wildguild
+
+  ~ build 1a5b3bb 
+  ~ auto-generated — do not edit
+]]
+
+
+<!-- kv3 encoding:text:version{e21c7f3c-8a33-41c5-9977-a76d3a32aa0d} format:vpcf66:version{dd571be4-586e-4f41-8b2d-5bbc969e1c53} -->
+{
+	_class = "CParticleSystemDefinition"
+	m_nBehaviorVersion = 12
+	m_nFirstMultipleOverride_BackwardCompat = 6
+	m_controlPointConfigurations = 
+	[
+		{
+			m_name = "preview"
+			m_drivers = 
+			[
+				{
+					m_iAttachType = "PATTACH_WORLDORIGIN"
+					m_entityName = "self"
+				},
+			]
+		},
+		{
+			m_name = "absorigin_follow"
+			m_drivers = 
+			[
+				{
+					m_entityName = "self"
+				},
+			]
+			m_previewState = 
+			{
+				m_previewModel = "models/heroes/omniknight/omniknight.vmdl"
+				m_nModSpecificData = 13
+				m_sequenceName = "omni_ti8_taunt"
+				m_hitboxSetName = "default"
+			}
+		},
+	]
+	m_Children = 
+	[
+		{
+			m_ChildRef = resource:"particles/eom/ui/ui_fx/ui_fx_bristleback_1_winning_streak_fxc.vpcf"
+		},
+		{
+			m_ChildRef = resource:"particles/eom/ui/ui_fx/ui_fx_bristleback_1_winning_streak_fxa.vpcf"
+		},
+		{
+			m_ChildRef = resource:"particles/eom/ui/ui_fx/ui_fx_bristleback_1_winning_streak_fxb.vpcf"
+		},
+		{
+			m_ChildRef = resource:"particles/eom/ui/ui_fx/ui_fx_bristleback_1_winning_streak_fxd.vpcf"
+		},
+	]
+}

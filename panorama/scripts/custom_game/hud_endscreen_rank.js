@@ -41,13 +41,6 @@ function ReturnToLobby(props) {
   libs.onMount(() => {
     const initialize = () => {
       if (available()) return;
-      const map = Game.GetMapInfo()?.map_display_name;
-      if (map === 'platform_entry' || map === 'platform_lobby') {
-        GameEvents.SendEventClientSide('client_side_event', {
-          event_name: 'platform_client_ready',
-          event_data: map
-        });
-      }
       GameEvents.SendEventClientSide('client_side_event', {
         event_name: 'platform_route_query',
         event_data: '{}'

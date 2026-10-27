@@ -1,0 +1,192 @@
+--[[
+  ~ dumper · customs · dota2
+  ~ credits: rou (a.k.a internetenemy), qfun(a.k.a qfun_g9s)
+  ~ special for t.me/wildguild
+
+  ~ build 1a5b3bb 
+  ~ auto-generated — do not edit
+]]
+
+
+{
+  "version": "0.2.31",
+  "addon": "c4",
+  "files": [
+    {
+      "file": "content/c4/panorama/images/custom_game/eom_platform/launcher/english.png",
+      "sha256": "f6338e077fdf8be7de5fda1137af0de2fa9319c543835bdd48b7f921e8c76d46"
+    },
+    {
+      "file": "content/c4/panorama/images/custom_game/eom_platform/launcher/russian.png",
+      "sha256": "0809ef853f6123d4228f998fa5debb1ecf752ce1f0bc7f8a15b9d97683d761ed"
+    },
+    {
+      "file": "content/c4/panorama/images/custom_game/eom_platform/launcher/schinese.png",
+      "sha256": "9253190ea6724c587804f0352170e2960e92875ab462e030736a2e76e38a348b"
+    },
+    {
+      "file": "content/c4/panorama/layout/custom_game/eom_platform/hud_platform.xml",
+      "sha256": "9c73441b4f3d84c4a59e6e9cac28a159b54f4562f8e755ea5cb5aaae6d6d738a"
+    },
+    {
+      "file": "content/c4/panorama/layout/custom_game/eom_platform/loading.xml",
+      "sha256": "99ad2a789ec2df69b5e9cfcf2ef1c0cd1265ca4a31a92c12de610a95b51bbff6"
+    },
+    {
+      "file": "content/c4/panorama/layout/custom_game/eom_platform/setup.xml",
+      "sha256": "29bdefc610f74621a68324d662a2bedbfe84d61b31e62f280f6e9f34d023ee15"
+    },
+    {
+      "file": "content/c4/panorama/scripts/custom_game/eom_platform/entry_config.js",
+      "sha256": "6013855e45ee1a45e557deaa0b55bd2e480840d4fe426520f7797f06d78b288c"
+    },
+    {
+      "file": "content/c4/panorama/scripts/custom_game/eom_platform/hud_platform.js",
+      "sha256": "7d5c5d05608342d9f2f9e6f5919a0151bbe40c1c19eada3e8fe410938f603e87"
+    },
+    {
+      "file": "content/c4/panorama/scripts/custom_game/eom_platform/integration/loading.js",
+      "sha256": "0f0f417427bdab108f8845ed3ccd826390f6e5cffaa54c23cc220f8d83cd6519"
+    },
+    {
+      "file": "content/c4/panorama/scripts/custom_game/eom_platform/integration/route.js",
+      "sha256": "e9f9ee391183ebdb9a7fe5aa7d5489c890d875466bcdb42c130e73b56d2afe2f"
+    },
+    {
+      "file": "content/c4/panorama/scripts/custom_game/eom_platform/integration/setup.js",
+      "sha256": "61578fab53f19b71d04e72cc8cc0c647871c83e6ad1d32f587d6751717ee4cf8"
+    },
+    {
+      "file": "content/c4/panorama/scripts/custom_game/eom_platform/loading.js",
+      "sha256": "1cb13b722d9d102a34cd6f9560aa9a6a6ff5faf95f94c738bdcd3484a3b44bff"
+    },
+    {
+      "file": "content/c4/panorama/scripts/custom_game/eom_platform/polyfill.js",
+      "sha256": "6018944240f4a00d49acb4713b1d30802d188068adef87d3c977821266dec3c8"
+    },
+    {
+      "file": "content/c4/panorama/styles/custom_game/eom_platform/platform.css",
+      "sha256": "c22b6846ba723168280d06a088a5eead788f3e860f7b60031efbad5d73989f89"
+    },
+    {
+      "file": "game/c4/scripts/vscripts/eom_platform/client.lua",
+      "sha256": "3ab1dcd991f32842b889f182ba984a780bfde75d15d178b813793e9711765ceb"
+    },
+    {
+      "file": "game/c4/scripts/vscripts/eom_platform/connection_client.lua",
+      "sha256": "ac7cbd32b917def20bc22cc295dcd6d26e5a6b0c826b57d9f024203f7b9c61a3"
+    },
+    {
+      "file": "game/c4/scripts/vscripts/eom_platform/lobby_server.lua",
+      "sha256": "72a58e80ac577d0ba795d59e8f3f17f2b05df165a03d283ed08e70b9db85646a"
+    },
+    {
+      "file": "game/c4/scripts/vscripts/eom_platform/server.lua",
+      "sha256": "69511389432569e27853e7c6704155aebc5bc9978f15750973d6e336ac7c2b02"
+    },
+    {
+      "file": "content/c4/maps/platform_entry.vmap",
+      "sha256": "06681303b077f42e246dfe9046d407fa228658e8b2c629a1d01eefee3ff59e09"
+    },
+    {
+      "file": "content/c4/maps/platform_lobby.vmap",
+      "sha256": "4c492755e6492f5bfc65c7884603f5ae0473eafb18db57ca0409a5bb656e65d3"
+    },
+    {
+      "file": "game/c4/maps/platform_entry.vpk",
+      "sha256": "2755f29c4fbfde202cf098b702485580a0108028951172a16f35dd60583ef01c"
+    },
+    {
+      "file": "game/c4/maps/platform_lobby.vpk",
+      "sha256": "5f0a950d466bf2e8d43dfe5e1633c547b567cff8b3fe09a6432fcfd312435533"
+    },
+    {
+      "file": "content/c4/localization/schinese/eom_platform.vdf",
+      "sha256": "e67355c1a3050a5a28e13384835a8f7ec4822349056c3b7d14a1ef64f212df00"
+    },
+    {
+      "file": "game/c4/resource/addon_schinese.txt",
+      "sha256": "6e00f5ec3ee6656739494324c8c2b94e9280ebf925ca8574af7033f276d02979"
+    },
+    {
+      "file": "content/c4/localization/english/eom_platform.vdf",
+      "sha256": "4a797c79bbbdeb7c9fafbb27e4b3848ada782fa316b2c3bbf77e05e8e2f04122"
+    },
+    {
+      "file": "game/c4/resource/addon_english.txt",
+      "sha256": "b3b053c20c42b44d30d24df8293d274f5f06969ba89bb27194a75272909d1ce1"
+    },
+    {
+      "file": "content/c4/localization/russian/eom_platform.vdf",
+      "sha256": "34c6a5bb6f823d58662006625efaafd625a5d2fa667c4e0eb40b1f37527ffe3a"
+    },
+    {
+      "file": "game/c4/resource/addon_russian.txt",
+      "sha256": "6bb6988c33dbbda34b92502c54c19d1b2f3d3e6d7a1b0ce46b989216e500d38e"
+    },
+    {
+      "file": "game/c4/scripts/platform_routing.txt",
+      "sha256": "abc3df6e1c91141b209bb5fa31fb1ae0ec078f5c81f96cdd312202dfc59ebd00"
+    },
+    {
+      "file": "game/c4/scripts/eom_platform.txt",
+      "sha256": "837a2ff945423a984385af84f7acdadcf1fe5396cb5921237ffff9a6e9222395"
+    },
+    {
+      "file": "game/c4/scripts/eom_platform.gameevents",
+      "sha256": "32a60630645cfaa75ce85a348b0fdb55e965bae8159560e47bd32c713ee3792d"
+    },
+    {
+      "file": "game/c4/scripts/vscripts/__eom_original_server.lua",
+      "sha256": "542069ff2d26e0d1d2276c1566089599079c29aedb1dee8cd9f70e2be8616f39"
+    },
+    {
+      "file": "game/c4/scripts/vscripts/__eom_original_client.lua",
+      "sha256": "b9f1c341071d0522981e29fd06e860843baf8a5e7369b2e849be1f2946e78cd4"
+    },
+    {
+      "file": "game/c4/scripts/vscripts/addon_game_mode.lua",
+      "sha256": "0095cde5dddd0cd2f3fb881ae7deeca43c16ad7ae7f25338c1d9d60f38bd6232"
+    },
+    {
+      "file": "game/c4/scripts/vscripts/addon_game_mode_client.lua",
+      "sha256": "8af10faae11928b525f3bc85b44bf22d74380c6ccef64101a22fbf9ae369e87f"
+    },
+    {
+      "file": "content/c4/panorama/layout/custom_game/eom_platform/original_loading.xml",
+      "sha256": "45e00430dd96fa11e96ad820881a2c17a3191815cf390e9a49ac86b72adcb486"
+    },
+    {
+      "file": "content/c4/panorama/layout/custom_game/custom_loading_screen.xml",
+      "sha256": "2607a49392c207ee721dd313fd4c154a9cac70dcb0e249525a1dcfdcce35567c"
+    },
+    {
+      "file": "content/c4/panorama/scripts/custom_game/eom_platform/integration/loading_route.js",
+      "sha256": "9865cb64f4c87d2950d49f3d5037a9c3daa66dce20f8aaf88b4fc0d7e8578449"
+    },
+    {
+      "file": "content/c4/panorama/layout/custom_game/custom_ui_manifest.xml",
+      "sha256": "e295a8d5c263c85210ed30c871ee293ad0fed7b2bf83dc74e389dee8ea55f994"
+    },
+    {
+      "file": "content/c4/panorama/layout/custom_game/eom_platform/original_team_select.xml",
+      "sha256": "b94316fa80c7c9d66f72eb8987bf0c2f35b1b4438853606aff16be26252e8928"
+    },
+    {
+      "file": "content/c4/panorama/layout/custom_game/team_select.xml",
+      "sha256": "b40815a86c1ab089c92fde3a60ee317f173ddd28e13a76ecb1afbacf3be56955"
+    },
+    {
+      "file": "content/c4/panorama/scripts/custom_game/eom_platform/integration/team_select_route.js",
+      "sha256": "c9d89c13bd029b6ffb157c9c1dd8c092e9da78afbbf7bc983a95e14bcaec206c"
+    },
+    {
+      "file": "game/c4/scripts/custom.gameevents",
+      "sha256": "7bd4c6c399444fa822b507e96e707381e9c5a39ee2facb79570051ced5222add"
+    },
+    {
+      "file": "game/c4/addoninfo.txt",
+      "sha256": "23fa481afa6f7598e32ba083521d66284b2ce8d52ac7298d2ad3bc6013d27801"
+    }
+  ]
+}

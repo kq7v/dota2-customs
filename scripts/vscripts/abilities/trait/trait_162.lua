@@ -91,137 +91,133 @@ k(
 		["83"] = 71,
 		["86"] = 74,
 		["87"] = 75,
-		["88"] = 75,
+		["88"] = 76,
 		["89"] = 76,
 		["90"] = 76,
-		["92"] = 77,
-		["93"] = 78,
-		["94"] = 78,
-		["95"] = 78,
-		["97"] = 78,
-		["98"] = 79,
+		["92"] = 76,
+		["93"] = 77,
+		["94"] = 77,
+		["95"] = 77,
+		["97"] = 77,
+		["98"] = 78,
 		["99"] = 79,
-		["100"] = 79,
-		["102"] = 79,
+		["100"] = 80,
+		["101"] = 80,
+		["102"] = 80,
 		["103"] = 80,
 		["104"] = 81,
-		["105"] = 82,
-		["106"] = 82,
 		["107"] = 82,
-		["108"] = 82,
-		["109"] = 83,
-		["112"] = 84,
-		["113"] = 85,
-		["114"] = 86,
-		["116"] = 88,
-		["117"] = 89,
-		["118"] = 65,
-		["119"] = 92,
-		["120"] = 93,
-		["121"] = 93,
-		["122"] = 93,
-		["124"] = 93,
-		["125"] = 94,
+		["108"] = 83,
+		["109"] = 84,
+		["111"] = 86,
+		["112"] = 87,
+		["113"] = 65,
+		["114"] = 90,
+		["115"] = 91,
+		["116"] = 91,
+		["117"] = 91,
+		["119"] = 91,
+		["120"] = 92,
+		["121"] = 92,
+		["122"] = 92,
+		["123"] = 92,
 		["126"] = 94,
 		["127"] = 94,
 		["128"] = 94,
+		["129"] = 94,
+		["130"] = 94,
 		["131"] = 96,
-		["132"] = 96,
-		["133"] = 96,
-		["134"] = 96,
-		["135"] = 96,
-		["136"] = 98,
+		["132"] = 97,
+		["133"] = 97,
+		["135"] = 98,
+		["136"] = 99,
 		["137"] = 99,
 		["138"] = 99,
-		["140"] = 100,
-		["141"] = 101,
-		["142"] = 101,
-		["143"] = 101,
-		["145"] = 101,
-		["146"] = 102,
-		["147"] = 102,
-		["148"] = 102,
-		["149"] = 102,
-		["150"] = 102,
-		["151"] = 103,
-		["152"] = 103,
-		["153"] = 103,
-		["154"] = 103,
-		["155"] = 103,
-		["156"] = 103,
-		["157"] = 103,
-		["158"] = 104,
-		["159"] = 96,
-		["160"] = 96,
-		["161"] = 92,
-		["162"] = 108,
-		["163"] = 109,
-		["164"] = 110,
+		["140"] = 99,
+		["141"] = 100,
+		["142"] = 100,
+		["143"] = 100,
+		["144"] = 100,
+		["145"] = 100,
+		["146"] = 101,
+		["147"] = 101,
+		["148"] = 101,
+		["149"] = 101,
+		["150"] = 101,
+		["151"] = 101,
+		["152"] = 101,
+		["153"] = 102,
+		["154"] = 94,
+		["155"] = 94,
+		["156"] = 90,
+		["157"] = 106,
+		["158"] = 107,
+		["159"] = 108,
+		["162"] = 109,
+		["163"] = 110,
+		["164"] = 111,
+		["165"] = 111,
+		["166"] = 111,
 		["167"] = 111,
-		["168"] = 112,
-		["169"] = 113,
-		["170"] = 113,
-		["171"] = 113,
-		["172"] = 113,
-		["173"] = 113,
-		["174"] = 113,
-		["175"] = 113,
-		["176"] = 113,
-		["179"] = 120,
-		["180"] = 121,
-		["181"] = 122,
-		["184"] = 123,
-		["185"] = 124,
+		["168"] = 111,
+		["169"] = 111,
+		["170"] = 111,
+		["171"] = 111,
+		["174"] = 118,
+		["175"] = 119,
+		["176"] = 120,
+		["179"] = 121,
+		["180"] = 122,
+		["181"] = 123,
+		["182"] = 124,
+		["183"] = 125,
+		["184"] = 125,
+		["185"] = 125,
 		["186"] = 125,
-		["187"] = 126,
-		["188"] = 127,
-		["189"] = 127,
-		["190"] = 127,
+		["187"] = 125,
+		["188"] = 125,
+		["189"] = 125,
 		["191"] = 127,
 		["192"] = 127,
 		["193"] = 127,
 		["194"] = 127,
-		["196"] = 129,
-		["197"] = 129,
-		["198"] = 129,
-		["199"] = 129,
-		["200"] = 129,
-		["201"] = 129,
-		["202"] = 129,
-		["203"] = 129,
-		["206"] = 136,
-		["207"] = 137,
+		["195"] = 127,
+		["196"] = 127,
+		["197"] = 127,
+		["198"] = 127,
+		["201"] = 134,
+		["202"] = 135,
+		["203"] = 136,
+		["206"] = 137,
 		["208"] = 138,
-		["211"] = 139,
-		["213"] = 140,
-		["214"] = 140,
-		["215"] = 141,
-		["216"] = 145,
-		["217"] = 146,
+		["209"] = 138,
+		["210"] = 139,
+		["211"] = 143,
+		["212"] = 144,
+		["215"] = 145,
+		["216"] = 146,
+		["217"] = 147,
+		["218"] = 147,
+		["219"] = 147,
 		["220"] = 147,
-		["221"] = 148,
-		["222"] = 149,
-		["223"] = 149,
-		["224"] = 149,
-		["225"] = 149,
-		["226"] = 149,
-		["227"] = 149,
-		["228"] = 149,
-		["229"] = 149,
-		["230"] = 140,
-		["234"] = 108,
-		["235"] = 158,
-		["236"] = 158,
-		["237"] = 29,
+		["221"] = 147,
+		["222"] = 147,
+		["223"] = 147,
+		["224"] = 147,
+		["225"] = 138,
+		["229"] = 106,
+		["230"] = 156,
+		["231"] = 156,
+		["232"] = 29,
+		["233"] = 22,
+		["234"] = 22,
+		["235"] = 22,
+		["236"] = 22,
+		["237"] = 22,
 		["238"] = 22,
 		["239"] = 22,
-		["240"] = 22,
-		["241"] = 22,
-		["242"] = 22,
-		["243"] = 22,
-		["244"] = 22,
-		["245"] = 29,
-		["247"] = 29,
+		["240"] = 29,
+		["242"] = 29,
 	}
 )
 local l = {}
@@ -289,126 +285,121 @@ function A.prototype.CheckProgress(self)
 		return
 	end
 	local D = f(AbilityShop.banList)
-	local E = PlayerData:getplayerData(w)
-	local F = E and E.bannedSect
-	if F then
-		D[#D + 1] = F
+	local E = C:getAbilityData()
+	local F = PlayerData:loadData(w, t)
+	if F == nil then
+		F = 0
 	end
-	local G = C:getAbilityData()
-	local H = PlayerData:loadData(w, t)
+	local G = F
+	local H = PlayerData:loadData(w, u)
 	if H == nil then
 		H = 0
 	end
 	local I = H
-	local J = PlayerData:loadData(w, u)
-	if J == nil then
-		J = 0
-	end
-	local K = J
-	while I < self.maxRewardLevel do
-		local L = I + 1
-		local M = #i(h(G), function(N, O)
-			return not g(D, O) and G[O].level >= L
+	while G < self.maxRewardLevel do
+		local J = G + 1
+		local K = #i(h(E), function(L, M)
+			return not g(D, M) and E[M].level >= J
 		end)
-		if M < self.sectCount then
+		if K < self.sectCount then
 			break
 		end
-		I = L
-		PlayerData:saveData(w, t, I)
-		K = K + 1
+		G = J
+		PlayerData:saveData(w, t, G)
+		I = I + 1
 	end
-	PlayerData:saveData(w, u, K)
+	PlayerData:saveData(w, u, I)
 	self:TryShowRewardSelection(w)
 end
 function A.prototype.TryShowRewardSelection(self, w)
-	local P = PlayerData:loadData(w, u)
-	if P == nil then
-		P = 0
+	local N = PlayerData:loadData(w, u)
+	if N == nil then
+		N = 0
 	end
-	local K = P
-	if K <= 0 or j(Selection:GetSelectionData(w), function(N, G)
-		return G.type == "trait_reward"
+	local I = N
+	if I <= 0 or j(Selection:GetSelectionData(w), function(L, E)
+		return E.type == "trait_reward"
 	end) then
 		return
 	end
-	Selection:AddSpecialSelection(w, "trait_reward", s, function(N, Q)
+	Selection:AddSpecialSelection(w, "trait_reward", s, function(L, O)
 		local y = v(nil, w)
 		if not y then
 			return false
 		end
-		y:GiveReward(w, Q)
-		local R = PlayerData:loadData(w, u)
-		if R == nil then
-			R = 0
+		y:GiveReward(w, O)
+		local P = PlayerData:loadData(w, u)
+		if P == nil then
+			P = 0
 		end
-		local S = R
-		PlayerData:saveData(w, u, math.max(0, S - 1))
+		local Q = P
+		PlayerData:saveData(w, u, math.max(0, Q - 1))
 		GameTimer(0, function()
-			local T = v(nil, w)
-			return T and T:TryShowRewardSelection(w)
+			local R = v(nil, w)
+			return R and R:TryShowRewardSelection(w)
 		end)
 		return true
 	end)
 end
-function A.prototype.GiveReward(self, w, Q)
-	local U = self:GetAbility()
-	if not U then
+function A.prototype.GiveReward(self, w, O)
+	local S = self:GetAbility()
+	if not S then
 		return
 	end
-	if Q == "trait_162_gold" then
+	if O == "trait_162_gold" then
 		PlayerData:modifyGold(w, self.gold)
 		Notification:combatToPlayer(
 			w,
 			{
 				message = "notify_bonus_gold",
-				string_itemname_artifact = "DOTA_Tooltip_ability_" .. U:GetAbilityName(),
+				string_itemname_artifact = "DOTA_Tooltip_ability_" .. S:GetAbilityName(),
 				int_gold = self.gold,
 			}
 		)
 		return
 	end
-	if Q == "trait_162_health" then
-		local V = PlayerData:getplayerData(w)
-		if not V then
+	if O == "trait_162_health" then
+		local T = PlayerData:getplayerData(w)
+		if not T then
 			return
 		end
-		local W = V.health
+		local U = T.health
 		PlayerData:modifyHealth(w, self.health, true)
-		local X = V.health - W
-		if X > 0 then
-			SendOverheadEventMessage(nil, OVERHEAD_ALERT_HEAL, self:GetParent(), X, self:GetParent():GetPlayerOwner())
+		local V = T.health - U
+		if V > 0 then
+			SendOverheadEventMessage(nil, OVERHEAD_ALERT_HEAL, self:GetParent(), V, self:GetParent():GetPlayerOwner())
 		end
 		Notification:combatToPlayer(
 			w,
-			{ message = "notify_bonus_hp", string_itemname_artifact = "DOTA_Tooltip_ability_" .. U:GetAbilityName(), int_hp = X }
+			{ message = "notify_bonus_hp", string_itemname_artifact = "DOTA_Tooltip_ability_" .. S:GetAbilityName(), int_hp = V }
 		)
 		return
 	end
-	if Q == "trait_162_abilities" then
+	if O == "trait_162_abilities" then
 		local C = PlayerData:getHero(w)
 		if not C then
 			return
 		end
-		local Y = {}
+		local W = {}
 		do
-			local Z = 0
-			while Z < self.abilityCount do
-				local _ = AbilityShop:getRandomAbility(w, 1, { isAbilityShop = false, excludedAbility = Y })
-				local G = _[1]
-				if not G then
+			local X = 0
+			while X < self.abilityCount do
+				local Y = AbilityShop:getRandomAbility(w, 1, { isAbilityShop = false, excludedAbility = W })
+				local E = Y[1]
+				if not E then
 					break
 				end
-				Y[#Y + 1] = G.aid
-				C:learnAbility(G.aid, true)
+				W[#W + 1] = E.aid
+				C:learnAbility(E.aid, true)
 				Notification:combatToPlayer(
 					w,
 					{
-						message = "notify_artifact_ability_" .. G.rarity,
-						string_itemname_artifact = "DOTA_Tooltip_ability_" .. U:GetAbilityName(),
-						string_ability_name = "DOTA_Tooltip_ability_mechanics_" .. G.aid,
+						message = "notify_artifact_ability_" .. E.rarity,
+						string_itemname_artifact = "DOTA_Tooltip_ability_" .. S:GetAbilityName(),
+						string_ability_name = "DOTA_Tooltip_ability_mechanics_" .. E.aid,
 					}
 				)
-				Z = Z + 1
+				X = X + 1
 			end
 		end
 	end

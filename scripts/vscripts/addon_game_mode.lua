@@ -8,49 +8,32 @@
 ]]
 
 
-local a = "addon_game_mode"
-local b = require("lualib_bundle")
-local c = b.__TS__SourceMapTraceBack
-c(
-	debug.getinfo(1).short_src,
-	{
-		["4"] = 2,
-		["5"] = 3,
-		["7"] = 5,
-		["9"] = 8,
-		["10"] = 9,
-		["11"] = 10,
-		["13"] = 12,
-		["15"] = 8,
-		["16"] = 16,
-		["17"] = 17,
-		["18"] = 18,
-		["20"] = 16,
-		["21"] = 22,
-		["22"] = 23,
-		["23"] = 24,
-		["25"] = 22,
-	}
-)
-if GetMapName() == "platform_entry" or GetMapName() == "platform_lobby" then
-	require("platform.bootstrap_server")
+-- EOM SDK managed entry v1
+local map = (GetMapName() or ""):gsub("^maps/", ""):gsub("%.vpk$", "")
+if map == "platform_entry" or map == "platform_lobby" then
+	local sdk = require("eom_platform.server")
+	function Activate()
+		sdk.ActivatePlatform()
+	end
+	function Precache(context) end
+	function SpawnGroupPrecache(group, context) end
 else
-	require("addon_game_mode_battle")
-end
-function Activate()
-	if GetMapName() == "platform_entry" or GetMapName() == "platform_lobby" then
-		ActivatePlatform()
-	else
-		ActivateBattle()
+	local result = require("__eom_original_server")
+	local activate, precache, spawnGroupPrecache = Activate, Precache, SpawnGroupPrecache
+	function Activate(...)
+		if activate then
+			return activate(...)
+		end
 	end
-end
-function Precache(d)
-	if GetMapName() ~= "platform_entry" and GetMapName() ~= "platform_lobby" then
-		PrecacheBattle(d)
+	function Precache(...)
+		if precache then
+			return precache(...)
+		end
 	end
-end
-function SpawnGroupPrecache(e, d)
-	if GetMapName() ~= "platform_entry" and GetMapName() ~= "platform_lobby" then
-		SpawnGroupPrecacheBattle(e, d)
+	function SpawnGroupPrecache(...)
+		if spawnGroupPrecache then
+			return spawnGroupPrecache(...)
+		end
 	end
+	return result
 end

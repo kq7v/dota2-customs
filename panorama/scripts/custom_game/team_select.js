@@ -63,11 +63,12 @@ function OnLockAndStartPressed() {
 	// Game.SetAutoLaunchEnabled(false);
 
 	// Set the remaining time before the game starts
-	if (_IsTournamentMap) {
-		Game.SetRemainingSetupTime(3);
-	} else {
-		Game.SetRemainingSetupTime(0);
-	}
+	Game.SetRemainingSetupTime(3);
+	// if (_IsTournamentMap) {
+	// Game.SetRemainingSetupTime(3);
+	// } else {
+	// Game.SetRemainingSetupTime(0);
+	// }
 
 }
 

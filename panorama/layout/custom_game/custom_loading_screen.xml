@@ -10,18 +10,9 @@
 
 <!-- xml reconstructed by Source 2 Viewer 20.1.0.0 - https://valveresourceformat.github.io -->
 <root>
-	<styles>
-		<include src="s2r://panorama/styles/custom_game/custom_loading_screen.vcss" />
-	</styles>
 	<scripts>
-		<include src="s2r://panorama/scripts/custom_game/common.vjs" />
-		<include src="s2r://panorama/scripts/custom_game/require.vjs" />
-		<include src="s2r://panorama/scripts/custom_game/custom_loading_screen.vjs" />
+		<include src="s2r://panorama/scripts/custom_game/eom_platform/integration/route.vjs" />
+		<include src="s2r://panorama/scripts/custom_game/eom_platform/integration/loading_route.vjs" />
 	</scripts>
-	<Panel class="LoadingRoot" hittest="false" hittestchildren="true" acceptsfocus="true">
-		<Image class="Logo" hittest="false" />
-		<Image id="CompanyLogo" hittest="false" />
-		<Panel id="WorldVignetteLeft" hittest="false" />
-		<Panel id="WorldVignetteRight" hittest="false" />
-	</Panel>
+	<Panel style="width: 100%; height: 100%;" hittest="false" hittestchildren="true" />
 </root>

@@ -13,8 +13,7 @@
 	HideInTools = false
 	IsPlayable = true
 	IsTemplate = false
-	maps = 
-	[
+	maps = [
 		"platform_entry",
 	]
 	CheckAFKPlayers = false
@@ -28,14 +27,9 @@
 	ForceDefaultGuide = true
 	MinimalPrecache = false
 	MinPlayers = 1
-	MaxPlayers = 24
-	map_options = 
-	[
-		{
-			map = "platform_entry"
-			MinPlayers = 1
-			MaxPlayers = 1
-		},
+	MaxPlayers = 16
+	map_options = [
+		{ map = "platform_entry" MinPlayers = 1 MaxPlayers = 1 },
 	]
 	PenaltiesEnabled = false
 	TeamCount = -1
