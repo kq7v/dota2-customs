@@ -6600,4 +6600,19 @@
 		distance_max = "1600.000000"
 		event_type = "1.000000"
 	}
+	dac.coin_soft = 
+	{
+		type = "dota_src1_3d"
+		vsnd_files = 
+		[
+			"sounds/ui/coins.vsnd",
+		]
+		volume = "0.500000"
+		pitch_rand_min = "-0.050000"
+		pitch_rand_max = "0.050000"
+		pitch = "1.000000"
+		soundlevel = "78.000000"
+		distance_max = "1200.000000"
+		event_type = "1.000000"
+	}
 }

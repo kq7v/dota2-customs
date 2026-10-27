@@ -151,8 +151,8 @@ LinkLuaModifier("modifier_ready", "lua_modifier/ready.lua", LUA_MODIFIER_MOTION_
 LinkLuaModifier("modifier_torrent", "lua_modifier/torrent.lua", LUA_MODIFIER_MOTION_BOTH)
 LinkLuaModifier("modifier_gungun", "lua_modifier/gungun.lua", LUA_MODIFIER_MOTION_HORIZONTAL)
 --沉默术士光环
---【沉默术士测试中，暂时关闭】LinkLuaModifier("modifier_sil_aura", "lua_modifier/sil_aura.lua", LUA_MODIFIER_MOTION_NONE)
---【沉默术士测试中，暂时关闭】LinkLuaModifier("modifier_sil_aura_buff", "lua_modifier/sil_aura.lua", LUA_MODIFIER_MOTION_NONE)
+LinkLuaModifier("modifier_sil_aura", "lua_modifier/sil_aura.lua", LUA_MODIFIER_MOTION_NONE)
+LinkLuaModifier("modifier_sil_aura_buff", "lua_modifier/sil_aura.lua", LUA_MODIFIER_MOTION_NONE)
 LinkLuaModifier("modifier_hook", "lua_modifier/hook.lua", LUA_MODIFIER_MOTION_BOTH)
 
 function Precache(context)
@@ -1634,7 +1634,7 @@ function DAC:InitGameMode()
 		[2] = { 'chess_luna', 'chess_lina', 'chess_bs', 'chess_wr', 'chess_fv', 'chess_bm', 'chess_jugg', 'chess_shredder', 'chess_slark', 'chess_ck', 'chess_fur', 'chess_bat', 'chess_meepo', 'chess_sniper', 'chess_largo' , 'chess_puck', 'chess_tiny', 'chess_oracle', 'chess_ct', 'chess_ds', 'chess_gs' },
 		[3] = { 'chess_lyc','chess_slardar', 'chess_viper', 'chess_razor', 'chess_enigma', 'chess_tp', 'chess_es', 'chess_veno', 'chess_sk', 'chess_naga', 'chess_rubick', 'chess_lc', 'chess_huskar', 'chess_marci',  'chess_riki', 'chess_sf', 'chess_tb', 'chess_db', 'chess_om', 'chess_kez' },
 		[4] = { 'chess_am', 'chess_pa',  'chess_dk', 'chess_phx', 'chess_doom', 'chess_medusa', 'chess_et', 'chess_ga', 'chess_light', 'chess_ld', 'chess_pangolier', 'chess_chen', 'chess_kunkka',  'chess_snap', 'chess_mk', 'chess_mag', 'chess_br', 'chess_lion' },
-		[5] = { 'chess_ok', 'chess_ta', 'chess_morph', 'chess_gyro', 'chess_thd', 'chess_tech', 'chess_zeus', 'chess_ts', 'chess_qop', 'chess_wl', 'chess_troll', 'chess_aw', 'chess_disruptor', 'chess_th', 'chess_pb', 'chess_kael', 'chess_sven', 'chess_rm', 'chess_au' }, -- 沉默术士测试中，暂时移出：'chess_sil'
+		[5] = { 'chess_ok', 'chess_sil', 'chess_ta', 'chess_morph', 'chess_gyro', 'chess_thd', 'chess_tech', 'chess_zeus', 'chess_ts', 'chess_qop', 'chess_wl', 'chess_troll', 'chess_aw', 'chess_disruptor', 'chess_th', 'chess_pb', 'chess_kael', 'chess_sven', 'chess_rm', 'chess_au' }, 
 	}
 	_G.chess_remainder_table = {}
 	--已揭示/未揭示 的橙卡棋子列表
@@ -1644,7 +1644,7 @@ function DAC:InitGameMode()
 
 	--金色机械核心可以开出的橙卡棋子（不受本局橙卡池影响）
 	_G.chess_list_by_mana_gold = {
-		'chess_ok', 'chess_disruptor', 'chess_ta', 'chess_gyro', 'chess_thd', 'chess_tech', 'chess_zeus', 'chess_ts', 'chess_wl', 'chess_qop', 'chess_troll', 'chess_aw', 'chess_spe', 'chess_sven', 'chess_th', 'chess_pb', 'chess_kael',  'chess_rm', 'chess_nec', 'chess_snk', 'chess_au','chess_morph',-- 沉默术士测试中，暂时移出：'chess_sil',--,'chess_dp'
+		'chess_ok', 'chess_disruptor', 'chess_ta', 'chess_gyro', 'chess_thd', 'chess_tech', 'chess_zeus', 'chess_ts', 'chess_wl', 'chess_qop', 'chess_troll', 'chess_aw', 'chess_spe', 'chess_sven', 'chess_th', 'chess_pb', 'chess_kael',  'chess_rm', 'chess_nec', 'chess_snk', 'chess_au','chess_morph','chess_sil', --,'chess_dp'
 	}
 	_G.chess_list_by_mana_black = {
 		[1] = { 'chess_ww', 'chess_clinkz', 'chess_abaddon'  },
@@ -2078,7 +2078,7 @@ function DAC:InitGameMode()
 		chess_ds = 'dark_seer_ion_shell',
 
 		--自制技能
-		-- chess_sil = 'sil_silence_all',  -- 沉默术士测试中，暂时关闭
+		chess_sil = 'sil_silence_all',
 		chess_aa = 'aa_ice_blast',
 		chess_io = 'wisp_tether_lua',
 		chess_snk = 'skeletonking_reincarnation',
@@ -4757,10 +4757,12 @@ function Draw5ChessAndShow(team_id, unlock, draw_type)
 			else
 				h.unlucky_draw = h.unlucky_draw + 1		
 			end
+			--加重骰子：返还金币的音效改用轻声版（dac.coin_soft，约 1/3 音量），视觉反馈保持不变
+			local free_draw_sound_volume = 0.35
 			if RandomFloat(0,1) < 5/h.unlucky_draw then
-				AddCourierMana(h,1)  --返还1金币
+				AddCourierMana(h,1,nil,free_draw_sound_volume)  --返还1金币
 			else
-				AddCourierMana(h,2)  --返还2金币
+				AddCourierMana(h,2,nil,free_draw_sound_volume)  --返还2金币
 			end		
 		end
 	end
@@ -5255,11 +5257,42 @@ function SyncHP(hero)
 	end)
 end
 
+--==========================================================
+--已阵亡玩家列表：给客户端兜底用（断线重连后已死玩家不能再亮起来）
+--==========================================================
+function MarkPlayerDeadForUI(hero)
+	if hero == nil or IsUnitExist(hero) == false then
+		return
+	end
+	_G.dead_player_list = _G.dead_player_list or {}
+	local pid = hero:GetPlayerID()
+	if pid == nil or pid < 0 then
+		return
+	end
+	if _G.dead_player_list[pid] == true then
+		return
+	end
+	_G.dead_player_list[pid] = true
+	print('[DEAD] mark player dead for ui: player_id=' .. tostring(pid)
+		.. ' name=' .. tostring(hero:GetUnitName()))
+	SyncDeadPlayerList()
+end
+
+function SyncDeadPlayerList()
+	_G.dead_player_list = _G.dead_player_list or {}
+	CustomNetTables:SetTableValue("dac_table", "dead_player_list", {
+		list = _G.dead_player_list,
+		hehe = RandomInt(1, 100000),
+	})
+end
+
 function SetPlayerDead(hero)
 	if _G.death[hero:GetTeam()] == true then
 		return
 	end
 	_G.death[hero:GetTeam()] = true
+	--登记到「已阵亡玩家」列表，重连后客户端据此保持黑着
+	MarkPlayerDeadForUI(hero)
 	SetRankingState(hero)
 	Timers:CreateTimer(0.5, function()
 		DealFuneralAffairs(hero)
@@ -6564,8 +6597,8 @@ function LoseARound(team, enemychess_new, is_skip)
 				}
 				local zeus_damage = math.floor(hero:GetHealth() * (u_thunder_table[u_thunder_level]) / 100)
 				if HasKillModifier(u) == true then
-					--限时宙斯：减半
-					zeus_damage = zeus_damage / 2.0
+					--限时宙斯：减半（必须取整，否则奇数伤害/2 会得到 .5，扣血就出现 -0.5）
+					zeus_damage = math.floor(zeus_damage / 2 + 0.5)
 				end
 				if zeus_damage > zeus_damage_max then
 					--宙斯雷劈伤害取最高的一个，不叠加
@@ -6614,6 +6647,12 @@ function LoseARound(team, enemychess_new, is_skip)
 		--talent3b
 		if hero:FindModifierByName('modifier_talent_3b_lessdamage') ~= nil then
 			damage_all = math.floor(damage_all * 0.8 + 0.5)
+		end
+
+		--兜底：扣血必须是整数（历史上出现过 0.5 的伤害，扣完血显示成 -0.5）
+		damage_all = math.floor(damage_all + 0.5)
+		if damage_all < 0 then
+			damage_all = 0
 		end
 
 		--talent3a
@@ -8696,6 +8735,33 @@ function AddAffiliatedAbility(u, base_ability, base_ability_level)
 end
 
 --游戏循环2.3——自走！
+--驱散单位身上的沉默效果（术士「血换蓝」专用）
+--注意：沉默术士的 modifier_sil_silence_all 是 IsPurgable = 0，普通 Purge 清不掉，
+--所以这里直接 Destroy 掉名字里带 silenc 的 modifier。
+function DispelSilence(u)
+	if IsUnitExist(u) == false then
+		return 0
+	end
+	local removed = 0
+	for _, m in pairs(u:FindAllModifiers() or {}) do
+		if m ~= nil and m:IsNull() == false then
+			local name = string.lower(m:GetName() or '')
+			local is_silence = string.find(name, 'silenc', 1, true) ~= nil
+				or string.find(name, 'orchid', 1, true) ~= nil
+				or string.find(name, 'bloodthorn', 1, true) ~= nil
+			if is_silence then
+				m:Destroy()
+				removed = removed + 1
+			end
+		end
+	end
+	if removed > 0 then
+		print('[WARLOCK] blood->mana dispel silence: ' .. tostring(u:GetUnitName())
+			.. ' removed=' .. tostring(removed))
+	end
+	return removed
+end
+
 function ChessAI(u, force_delay)
 	if IsUnitExist(u) == false or GetBattleTable(u.at_team_id or u.team_id) == false then
 		return
@@ -8851,15 +8917,27 @@ function ChessAI(u, force_delay)
 			delay = RandomFloat(0.01, 0.1)
 		end
 		--战吼（卡尔的技能不算战吼）
-		if false and u:FindAbilityByName('sil_silence_all') ~= nil and u:HasModifier('modifier_illusion') == false then 
-			EmitSoundOn('Hero_Silencer.GlobalSilence.Cast',u)
-			SilencerGlobalSilence({
-				caster = u,
-				ability = u:FindAbilityByName('sil_silence_all'),
-			})
+		--每场战斗每方只放一次。
+		--注意：上帝之手（chen_fuhuo）复活是「召唤一颗全新的同名棋子」，新实体上没有任何
+		--棋子级标记，所以标记必须打在「玩家 + 回合」上（_G.sil_warcry_round[team]），
+		--这样复活出来的沉默术士不会再放第二次；下一回合 battle_round 变了自然重置。
+		if u:FindAbilityByName('sil_silence_all') ~= nil and u:HasModifier('modifier_illusion') == false then
+			local sil_team = u.team_id or u:GetTeam()
+			if _G.sil_warcry_round == nil then
+				_G.sil_warcry_round = {}
+			end
+			if _G.sil_warcry_round[sil_team] ~= _G.battle_round then
+				_G.sil_warcry_round[sil_team] = _G.battle_round
+				u.sil_warcry_round = _G.battle_round
+				EmitSoundOn('Hero_Silencer.GlobalSilence.Cast', u)
+				SilencerGlobalSilence({
+					caster = u,
+					ability = u:FindAbilityByName('sil_silence_all'),
+				})
+			end
 		end
 		--沉默术士光环（棋盘上的棋子都补一下，幂等）
-		-- ApplySilAuraModifier(u)
+		ApplySilAuraModifier(u)
 		if u:HasAbility('grimstroke_stroke_of_fate_lua') and u:HasModifier('modifier_illusion') == false then
 			local aa = u:FindAbilityByName('grimstroke_stroke_of_fate_lua')
 			local tt = FindFarthestGridForAbility(u,'grimstroke_stroke_of_fate_lua')
@@ -9369,11 +9447,14 @@ function ChessAI(u, force_delay)
 				local result = u:GetHealth() * 0.75
 				if result < 1 then result = 1 end
 				u:SetHealth(result)
+				--25% 生命值 -> 50% 法力值（法力是 0~100 的刻度，所以 +50）
 				local u_mana = u:GetMana() + 50
 				if u_mana > 100 then
 					u_mana = 100
 				end
 				u:SetMana(u_mana)
+				--术士：血换蓝的同时驱散自身的沉默（包括沉默术士的沉默）
+				DispelSilence(u)
 				u.warlock_finished = true
 				return 0.5
 			end
@@ -11105,7 +11186,22 @@ function getSignatureKey(key, dateStamp, regionName, serviceName)
 	return kSigning
 end
 
+--是否天梯地图：地图名包含 ranked（ranked_1x8 / ranked_1x8_bishop+ / ranked_1x8_rook+ / ranked_1x8_king+ …）
+function IsRankedMap()
+	local map_name = GetMapName()
+	if map_name == nil then
+		return false
+	end
+	return string.find(string.lower(map_name), 'ranked', 1, true) ~= nil
+end
+
 function SendAmazonData(ctx, amzdate, datestamp)
+	--只有天梯模式才上报埋点（休闲/活动/测试图一律不发）
+	if IsRankedMap() ~= true then
+		print('[AMAZON] skip: not ranked map, map=' .. tostring(GetMapName()))
+		return
+	end
+
 	local data_compressed = LibDeflate:CompressDeflate(json.encode(ctx));
 	local data = {
 		StreamName = "report_reciver",
@@ -11224,7 +11320,7 @@ function AddChessAbility(x, level)
 		end
 	end
 	--沉默术士：额外挂一个光环（范围内队友攻击命中按概率沉默目标）
-	-- ApplySilAuraModifier(x)
+	ApplySilAuraModifier(x)
 end
 
 function DecreaseMana(keys)
@@ -11385,7 +11481,7 @@ function RandomLegendary()
 	local remove_table = {}
 	local ll = table.maxn(_G.chess_list_by_mana[5])
 	local locked_chess_list = {
-		-- "chess_sil", -- "chess_ok","chess_sven",  -- 沉默术士测试中，暂时关闭
+		-- "chess_sil", -- "chess_ok","chess_sven",
 	}
 
 	--橙卡池：从大于10个，随机减少一些，放到remove_table里。直到剩下10个为止
@@ -12910,7 +13006,7 @@ function AddCourierExp(keys)
 	})
 end
 
-function AddCourierMana(unit, mana, show_number_unit)
+function AddCourierMana(unit, mana, show_number_unit, sound_volume)
 	if mana == nil or mana <= 0 then
 		return
 	end
@@ -12930,10 +13026,22 @@ function AddCourierMana(unit, mana, show_number_unit)
 	end
 	unit:SetMana(mana_result)
 
-	if mana >= 10 then
-		EmitSoundOn("General.CoinsBig", unit)
-	else
-		EmitSoundOn("General.Coins", unit)
+	--sound_volume：可选。nil 或 >=1 = 正常音量（General.Coins / General.CoinsBig）；
+	--                <1  = 用自定义的轻声事件 dac.coin_soft（volume 0.33，定义在
+	--                      soundevents/custom_sounds.vsndevts，原始音频是 sounds/ui/coins.vsnd）
+	--说明：不要用 EmitSoundParams 调音量（刻度不可靠，实测会把声音放到爆大）。
+	local coin_volume = sound_volume
+	if coin_volume == nil then
+		coin_volume = 1.0
+	end
+	if coin_volume >= 1.0 then
+		local coin_sound = "General.Coins"
+		if mana >= 10 then
+			coin_sound = "General.CoinsBig"
+		end
+		EmitSoundOn(coin_sound, unit)
+	elseif coin_volume > 0 then
+		EmitSoundOn("dac.coin_soft", unit)
 	end
 
 	local show_u = show_number_unit or unit
@@ -14313,6 +14421,8 @@ function SetHeroHP(hero, hp)
 	if hero == nil or hp == nil then
 		return
 	end
+	--血量统一取整（这个模式血量是整数刻度，避免出现 98.5 这种半血）
+	hp = math.floor(hp + 0.5)
 	if hp < 0 then
 		hp = 0
 	end
@@ -14631,7 +14741,8 @@ function ShowMiss(keys)
 						local hp_set = u:GetHealth()
 						if hp_set < 1 then hp_set = 1 end
 						w:SetHealth(hp_set)
-						w:AddNewModifier(w, nil, "modifier_illusion", { duration = 7 })
+						--(9)精灵：镜像持续时间 7秒 -> 6秒
+						w:AddNewModifier(w, nil, "modifier_illusion", { duration = 6 })
 						w.is_mirror = true
 						w:SetMaxMana(0)
 						target.elf_illusion = w
@@ -23465,21 +23576,38 @@ function FindFullManaEnemy(u)
 end
 
 function TriggerBKB(u)
+	if IsUnitExist(u) == false then
+		return
+	end
 	if u:FindModifierByName("modifier_bkb_buff") ~= nil then
 		return
 	end
+	local ability = FindItemAbilityByName(u, 'item_bkb')
+	if ability == nil or ability:IsCooldownReady() ~= true then
+		return
+	end
+
+	--【优先级1】自己身上有沉默：不用等受伤，BKB 不在冷却就立刻开
+	--（沉默术士的沉默不可驱散，Purge 清不掉，所以额外调 DispelSilence）
+	if u:IsSilenced() == true or u:HasModifier('modifier_silencer_global_silence') == true then
+		EmitSoundOn('DOTA_Item.BlackKingBar.Activate', u)
+		u:Purge(false, true, false, false, false)
+		DispelSilence(u)
+		ability:ApplyDataDrivenModifier(u, u, 'modifier_bkb_buff', { duration = 4 })
+		print('[BKB] silenced -> activate bkb: ' .. tostring(u:GetUnitName()))
+		return 0.5
+	end
+
+	--【优先级2】原逻辑：挨打了 / 对面有满蓝的威胁才开
 	local spell_danger = FindFullManaEnemy(u)
 	if u.is_bkb_damaged == nil and spell_danger == false then
 		return
 	end
 	u.is_bkb_damaged = nil
-	local ability = FindItemAbilityByName(u, 'item_bkb')
-	if ability and ability:IsCooldownReady() == true then
-		EmitSoundOn('DOTA_Item.BlackKingBar.Activate', u)
-		u:Purge(false, true, false, false, false) --净化
-		ability:ApplyDataDrivenModifier(u, u, 'modifier_bkb_buff', { duration = 4 })
-		return 0.5
-	end
+	EmitSoundOn('DOTA_Item.BlackKingBar.Activate', u)
+	u:Purge(false, true, false, false, false) --净化
+	ability:ApplyDataDrivenModifier(u, u, 'modifier_bkb_buff', { duration = 4 })
+	return 0.5
 end
 
 function TriggerRenjia(u)
@@ -26463,8 +26591,7 @@ end
 
 --==========================================================
 --调试：模拟一次断线重连（单机测试用）
---  _G.DEBUG_FAKE_RECONNECT 改成 false 就能整体关掉
---  触发方式：客户端 DEBUG_FAKE_RECONNECT 打开后定时自动发（不再占用 F8）
+--  _G.DEBUG_FAKE_RECONNECT 改成 true 才会执行（和客户端 DEBUG_FAKE_RECONNECT 双重开关）
 --==========================================================
 _G.DEBUG_FAKE_RECONNECT = false
 
@@ -26503,7 +26630,14 @@ function DAC:OnPlayerReconnected(keys)
 		}
 	)
 
-	
+	--重连兜底：把「已阵亡玩家」列表重新推一遍，避免已死玩家在右侧列表里又亮起来
+	SyncDeadPlayerList()
+	Timers:CreateTimer(1.0, function()
+		SyncDeadPlayerList()
+		if hero ~= nil and IsUnitExist(hero) then
+			SyncHP(hero)
+		end
+	end)
 	local steamid = _G.playerid2steamid[keys.PlayerID]
 	
 	
@@ -26715,6 +26849,7 @@ function DAC:OnPlayerReconnected(keys)
 	else
 		_G.player_state_table[hero:GetTeam()] = 'eliminated'
 		state_change = 'eliminated'
+		MarkPlayerDeadForUI(hero)
 	end
 	print('[HEYBOX] player_state steam='..steamid..' state='..state_change..' round='.._G.battle_round)
 
@@ -30458,9 +30593,6 @@ function DAC:DamageFilter(keys)
 		if mana_get > 20 then
 			mana_get = 20
 		end
-		if v:HasModifier('modifier_sil_silence_all') == true then
-			mana_get = 0
-		end
 		MPRechargeHit({
 			caster = v,
 			mana_base = mana_get,
@@ -30472,9 +30604,6 @@ function DAC:DamageFilter(keys)
 		mana_get = keys.damage / 10
 		if mana_get > 20 then
 			mana_get = 20
-		end
-		if a:HasModifier('modifier_sil_silence_all') == true then
-			mana_get = 0
 		end
 		MPRechargeHit({
 			caster = a,
@@ -36249,9 +36378,7 @@ end
 function AddChessManaInstant(unit,mana,ignore_depre)
 	local base_mana = mana
 	if ignore_depre ~= true then
-		if unit:HasModifier('modifier_item_bingyan_2') then
-			base_mana = base_mana/2
-		end
+		--斯嘉蒂之眼：已移除「法力获取 -50%%」效果（不再减半法力获取）
 		if unit:HasModifier('modifier_grimstroke_stroke_of_fate_lua') then
 			local per = GetAbilityKV(unit:FindModifierByName('modifier_grimstroke_stroke_of_fate_lua'):GetAbility(), "recharge_slow_pct") or 25
 			base_mana = base_mana/100*(100-per)
@@ -36263,9 +36390,7 @@ function MPRechargeBase(keys)
 	if _G.game_status == 2 and keys.caster.ai_started == true then
 		local mana_amp = AmplifyMPRecharge(keys.caster)
 		local mana_per = (100 + mana_amp) / 100
-		if keys.caster:HasModifier('modifier_item_bingyan_2') then
-            mana_per = mana_per/2
-        end
+		--斯嘉蒂之眼：已移除「法力获取 -50%」效果
         if keys.caster:HasModifier('modifier_grimstroke_stroke_of_fate_lua') then
             local per = GetAbilityKV(keys.caster:FindModifierByName('modifier_grimstroke_stroke_of_fate_lua'):GetAbility(), "recharge_slow_pct") or 25
             mana_per = mana_per/100*(100-per)
@@ -36278,9 +36403,7 @@ function MPRechargeHit(keys)
 	local mana_base = keys.mana_base or 0
 	local mana_amp = AmplifyMPRecharge(keys.caster)
 	local mana_per = (100 + mana_amp) / 100
-	if keys.caster:HasModifier('modifier_item_bingyan_2') then
-		mana_per = mana_per/2
-	end
+	--斯嘉蒂之眼：已移除「法力获取 -50%」效果
 	if keys.caster:HasModifier('modifier_grimstroke_stroke_of_fate_lua') then
 		local per = GetAbilityKV(keys.caster:FindModifierByName('modifier_grimstroke_stroke_of_fate_lua'):GetAbility(), "recharge_slow_pct") or 25
 		mana_per = mana_per/100*(100-per)
@@ -41265,9 +41388,7 @@ function AddChessMana(chess, mana, show)
 	if is_demon_eye_dog ~= nil and chess.demon_eye_particle == nil then
 		play_particle("particles/generic_gameplay/generic_manaburn.vpcf", PATTACH_OVERHEAD_FOLLOW, chess, 3)
 	end
-	if chess:HasModifier('modifier_item_bingyan_2') then
-		mana = mana/2
-	end
+	--斯嘉蒂之眼：已移除「法力获取 -50%」效果
 	chess:SetMana(chess:GetMana() + mana)
 
 	if show == true then
@@ -43102,103 +43223,103 @@ function IsChessDiscount(chess_name)
 end
 
 
---function SilencerGlobalSilence(keys)
---	local caster = keys.caster
---	local ability = keys.ability
---	local dur = ability:GetSpecialValueFor('duration') or 4
---	caster:StartGesture(ACT_DOTA_CAST_ABILITY_4)
---	--战吼：当前棋盘上「有蓝条（有法力值）」的棋子才吃沉默（敌我双方都在这个棋盘列表里）
---	for _, unit in pairs(GetValidChessOnBoard(caster.at_team_id or caster.team_id)) do
---		if IsUnitExist(unit) and unit:GetMaxMana() > 0 then
---			ability:ApplyDataDrivenModifier(unit, unit, 'modifier_sil_silence_all', {duration = dur})
---		end
---	end
---end
+function SilencerGlobalSilence(keys)
+	local caster = keys.caster
+	local ability = keys.ability
+	local dur = ability:GetSpecialValueFor('duration') or 4
+	caster:StartGesture(ACT_DOTA_CAST_ABILITY_4)
+	--战吼：当前棋盘上「有蓝条（有法力值）」的棋子才吃沉默（敌我双方都在这个棋盘列表里）
+	for _, unit in pairs(GetValidChessOnBoard(caster.at_team_id or caster.team_id)) do
+		if IsUnitExist(unit) and unit:GetMaxMana() > 0 then
+			ability:ApplyDataDrivenModifier(unit, unit, 'modifier_sil_silence_all', {duration = dur})
+		end
+	end
+end
 
 --沉默术士光环：每隔一小段时间给「半径内、同阵营」的棋子刷 buff
 --（这段必须留在主文件里：lua_modifier/sil_aura.lua 是单独载入的，拿不到这里的 IsUnitExist / GetValidChessOnBoard）
---function SilAuraTick(u)
---	if IsUnitExist(u) == false then
---		return
---	end
---	local ability = u:FindAbilityByName('sil_silence_all')
---	if ability == nil then
---		return
---	end
---	local radius = ability:GetSpecialValueFor('aura_radius') or 300
---	if radius <= 0 then
---		return
---	end
---	local origin = u:GetAbsOrigin()
---	local count = 0
---	for _, ally in pairs(GetValidChessOnBoard(u.at_team_id or u.team_id)) do
---		if IsUnitExist(ally) and ally.team_id == u.team_id then
---			if (ally:GetAbsOrigin() - origin):Length2D() <= radius then
---				count = count + 1
---				--持续刷新，队友离开光环后 0.8 秒自然失效
---				ally:AddNewModifier(u, ability, 'modifier_sil_aura_buff', {duration = 0.8})
---				--脚下光环标记：光环内每个队友脚下都有一个「遗言」状态环
---				--（离开光环后由 modifier_sil_aura_buff 的 OnDestroy 销毁）
---				if ally.sil_aura_hat == nil then
---					ally.sil_aura_hat = ParticleManager:CreateParticle(
---						'particles/units/heroes/hero_silencer/silencer_last_word_status_ring_edge.vpcf',
---						PATTACH_ABSORIGIN_FOLLOW, ally)
---					--环的大小（这个粒子用 CP1 控制半径，想大一点/小一点改这里）
---					ParticleManager:SetParticleControl(ally.sil_aura_hat, 1, Vector(120, 1, 1))
---				end
---			end
---		end
---	end
---	--每 5 秒打一条，方便实机确认光环有没有在跑
---	local now = GameRules:GetGameTime()
---	if now - (u.sil_aura_log or -99) > 5 then
---		u.sil_aura_log = now
---		print('[SILAURA] tick: ent=' .. tostring(u:entindex())
---			.. ' lv=' .. tostring(ability:GetLevel())
---			.. ' radius=' .. tostring(radius) .. ' allies=' .. tostring(count)
---			.. ' board=' .. tostring(u.at_team_id or u.team_id)
---			.. ' team_id=' .. tostring(u.team_id))
---	end
---end
+function SilAuraTick(u)
+	if IsUnitExist(u) == false then
+		return
+	end
+	local ability = u:FindAbilityByName('sil_silence_all')
+	if ability == nil then
+		return
+	end
+	local radius = ability:GetSpecialValueFor('aura_radius') or 300
+	if radius <= 0 then
+		return
+	end
+	local origin = u:GetAbsOrigin()
+	local count = 0
+	for _, ally in pairs(GetValidChessOnBoard(u.at_team_id or u.team_id)) do
+		if IsUnitExist(ally) and ally.team_id == u.team_id then
+			if (ally:GetAbsOrigin() - origin):Length2D() <= radius then
+				count = count + 1
+				--持续刷新，队友离开光环后 0.8 秒自然失效
+				ally:AddNewModifier(u, ability, 'modifier_sil_aura_buff', {duration = 0.8})
+				--脚下光环标记：光环内每个队友脚下都有一个「遗言」状态环
+				--（离开光环后由 modifier_sil_aura_buff 的 OnDestroy 销毁）
+				if ally.sil_aura_hat == nil then
+					ally.sil_aura_hat = ParticleManager:CreateParticle(
+						'particles/units/heroes/hero_silencer/silencer_last_word_status_ring_edge.vpcf',
+						PATTACH_ABSORIGIN_FOLLOW, ally)
+					--环的大小（这个粒子用 CP1 控制半径，想大一点/小一点改这里）
+					ParticleManager:SetParticleControl(ally.sil_aura_hat, 1, Vector(120, 1, 1))
+				end
+			end
+		end
+	end
+	--每 5 秒打一条，方便实机确认光环有没有在跑
+	local now = GameRules:GetGameTime()
+	if now - (u.sil_aura_log or -99) > 5 then
+		u.sil_aura_log = now
+		print('[SILAURA] tick: ent=' .. tostring(u:entindex())
+			.. ' lv=' .. tostring(ability:GetLevel())
+			.. ' radius=' .. tostring(radius) .. ' allies=' .. tostring(count)
+			.. ' board=' .. tostring(u.at_team_id or u.team_id)
+			.. ' team_id=' .. tostring(u.team_id))
+	end
+end
 
 --沉默术士光环：挂 modifier（只管特效）+ 起一个主文件里的定时器驱动 SilAuraTick
---function ApplySilAuraModifier(x)
---	if IsUnitExist(x) == false then
---		return
---	end
---	if string.find(x:GetUnitName(), 'chess_sil', 1, true) == nil then
---		return
---	end
---	if x:HasModifier('modifier_illusion') then
---		return
---	end
---	if x:HasModifier('modifier_sil_aura') == false then
---		local ability = x:FindAbilityByName('sil_silence_all')
---		x:AddNewModifier(x, ability, 'modifier_sil_aura', {})
---		print('[SILAURA] apply aura modifier: ' .. tostring(x:GetUnitName())
---			.. ' ent=' .. tostring(x:entindex())
---			.. ' ability=' .. tostring(ability ~= nil and ability:GetAbilityName() or 'nil')
---			.. ' lv=' .. tostring(ability ~= nil and ability:GetLevel() or -1))
---	end
---	--定时器只起一份
---	if x.sil_aura_running == true then
---		return
---	end
---	x.sil_aura_running = true
---	local ent = x:entindex()
---	Timers:CreateTimer(0.4, function()
---		local u = EntIndexToHScript(ent)
---		if IsUnitExist(u) == false then
---			return nil
---		end
---		if u:HasModifier('modifier_sil_aura') == false then
---			u.sil_aura_running = false
---			return nil
---		end
---		SilAuraTick(u)
---		return 0.4
---	end)
---end
+function ApplySilAuraModifier(x)
+	if IsUnitExist(x) == false then
+		return
+	end
+	if string.find(x:GetUnitName(), 'chess_sil', 1, true) == nil then
+		return
+	end
+	if x:HasModifier('modifier_illusion') then
+		return
+	end
+	if x:HasModifier('modifier_sil_aura') == false then
+		local ability = x:FindAbilityByName('sil_silence_all')
+		x:AddNewModifier(x, ability, 'modifier_sil_aura', {})
+		print('[SILAURA] apply aura modifier: ' .. tostring(x:GetUnitName())
+			.. ' ent=' .. tostring(x:entindex())
+			.. ' ability=' .. tostring(ability ~= nil and ability:GetAbilityName() or 'nil')
+			.. ' lv=' .. tostring(ability ~= nil and ability:GetLevel() or -1))
+	end
+	--定时器只起一份
+	if x.sil_aura_running == true then
+		return
+	end
+	x.sil_aura_running = true
+	local ent = x:entindex()
+	Timers:CreateTimer(0.4, function()
+		local u = EntIndexToHScript(ent)
+		if IsUnitExist(u) == false then
+			return nil
+		end
+		if u:HasModifier('modifier_sil_aura') == false then
+			u.sil_aura_running = false
+			return nil
+		end
+		SilAuraTick(u)
+		return 0.4
+	end)
+end
 
 -- function DAC:OnCollectHost(keys)
 -- 	local host_player_id = keys.host_player_id

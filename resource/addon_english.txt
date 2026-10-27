@@ -513,7 +513,6 @@
 		"text_mima_not_in_map"	"Outside the board"
 		"text_mima_not_avilable_position"	"Slot not available"
 		"text_mima_must_select_a_chess"	"Pick a chess piece first"
-		"pve_preparing"	"Preparing"
 		"DOTA_Tooltip_modifier_hero_level1"	"Chess Piece Chance"
 		"DOTA_Tooltip_modifier_hero_level2"	"Chess Piece Chance"
 		"DOTA_Tooltip_modifier_hero_level3"	"Chess Piece Chance"
@@ -634,10 +633,8 @@
 		"DOTA_Tooltip_modifier_is_element_buff"	"Essence of Earth"
 		"DOTA_Tooltip_ability_is_dwarf_buff"	"Dwarf buff"
 		
-		
 		"DOTA_Tooltip_ability_is_ogre_buff"	"Ogre buff"
 		"DOTA_Tooltip_modifier_is_ogre_buff"	"Two Heads"
-		"DOTA_Tooltip_ability_item_yinyuezhijing_Lore"	"GOTTA HIT FAST"
 		"DOTA_Tooltip_modifier_item_yinyuezhijing"	"Bonus Attack Speed - Moon Shard"
 		"DOTA_Tooltip_modifier_item_yinyuezhijing_Description"	"+70 Attack speed, from Moon Shard"
 		"DOTA_InventoryMenu_ShowInShop"	"Show Combinations"
@@ -655,7 +652,6 @@
 		"DOTA_Tooltip_ability_pick_chess_position_Description"	"Place the chess piece on the grid."
 		"text_mima_chess_max_recall"	"Too many chess pieces."
 		"DOTA_Tooltip_ability_is_druid"	"Druid"
-		"DOTA_Tooltip_ability_is_druid_Lore"	"Shapeshifters and healers that have harnessed the ancient powers of nature, sharing exceptionally profound knowledge among each other."
 		"DOTA_Tooltip_ability_pick_chess_Lore"	"Active chess piece can be placed with left click and reset with right click."
 		"DOTA_Tooltip_ability_cm_mana_aura"	"Arcane Aura"
 		"DOTA_Tooltip_ability_cm_mana_aura_mana_regain"	"Grants additional mana regeneration every 2 seconds"
@@ -970,8 +966,6 @@
 		"DOTA_Tooltip_ability_zeus_thunder"	"Thundergods Wrath"
 		"DOTA_Tooltip_ability_zeus_thunder_damage"	"Base Damage"
 		"DOTA_Tooltip_ability_mars_bulwark"	"Bulwark"
-		"DOTA_Tooltip_ability_zeus_thunder_damage_per"	"Percentage damage"
-		"DOTA_Tooltip_ability_zeus_thunder_damage_courier_per"	"Percentage damage on Courier"
 		"DOTA_Tooltip_ability_zeus_thunder_Lore"	"The Lord of Heaven smites all who oppose him, near or far."
 		"DOTA_Tooltip_ability_is_god"	"God"
 		"DOTA_Tooltip_ability_is_god_Lore"	"The highly worshipped Gods are considered as the creators of Drodo Island. Being both arrogant and prideful, the loyal beliefs from their creations have forged the supreme powers that Gods possess, granting them the most significant potential among all creatures which can completely change the outcome of a battle."
@@ -1113,7 +1107,6 @@
 		"chess_mk"	"Monkey King★"
 		
 		"chess_lc"	"Legion Commander★"
-		"chess_phx"	"Phoenix★"
 		"chess_oracle"	"Oracle★"
 		"chess_huskar"	"Huskar★"
 		"chess_wl"	"Warlock★"
@@ -1125,7 +1118,6 @@
 		"chess_meepo1"	"Meepo★★"
 		
 		"chess_lc1"	"Legion Commander★★"
-		"chess_phx1"	"Phoenix★★"
 		"chess_oracle1"	"Oracle★★"
 		"chess_huskar1"	"Huskar★★"
 		"chess_wl1"	"Warlock★★"
@@ -1138,7 +1130,6 @@
 		"chess_meepo"	"Meepo★"
 		
 		"chess_lc11"	"Legion Commander★★★"
-		"chess_phx11"	"Phoenix★★★"
 		"chess_oracle11"	"Oracle★★★"
 		"chess_huskar11"	"Huskar★★★"
 		"chess_wl11"	"Warlock★★★"
@@ -1203,7 +1194,6 @@
 		"battle_history"	"Battle History"
 		
 		"DOTA_Tooltip_ability_fur_tree_summon_count"	"TREANT NUMBER"
-		"DOTA_Tooltip_ability_item_yuanxingxie"	"<font color=\"#4444ff\">Boots of Travel</font>"
 		"DOTA_Tooltip_ability_item_xiwa_Lore"	"Said to have belonged to a goddess, today it retains much of its former power."
 		"h356"	"Golden Killy the Whaling"
 		"DOTA_Tooltip_ability_item_zhaohuanshenshi_Lore"	"Crush your enemies with ruthless tides of minions. Yeah Minions!"
@@ -1404,7 +1394,6 @@
 		"vote_rework_class"	"Class Perk to be reworked"
 		"h398"	"Googie the Explorer·White"
 		"h397"	"Googie the Explorer·Blue"
-		"item_egg"	"Googie Egg"
 		"obs"	"Spectate"
 		"hatch_progress"	"Googie Egg Hatch: "
 		"round_status_ob"	"Spectating"
@@ -1431,7 +1420,6 @@
 		"award_name_item_egg_1"	"Mysterious Googie Egg"
 		"googie_quest"	"Mysterious Googie Egg"
 		"googie_quest_desc"	"● Egg Collect between: <font color='#fff'>Aug 15th, 2019 ~ Aug 31st, 2019</font><br>● Quests available from: <font color='#fff'>Aug 15th, 2019</font><br>● Participation by: <font color='#fff'>Activating a [DotaAutoChess] Pass</font><br><br>● Googies are lovely birds on Drodo Island, now every habitant on Drodo Island has a change to hatch a little googie!<br>● You can collect 1 point for your googie egg by finishing daily quest and when 15 points collected you'll get a mythical <font color='#ff00ff'>Googie Explorer</font><br>● Each user can have only one googie."
-		"donnot_show_badge"	"Badge hidden"
 		"DOTA_Tooltip_ability_item_jingmixie_Note0"	"Immune to attack and ability when jumping"
 		"DOTA_Tooltip_ability_item_aoshuxie_Note0"	"Immune to attack and ability when jumping"
 		"badge_title_s2"	"S2 - Googie"
@@ -1562,8 +1550,6 @@
 		"store_goods_4_tips"	"Decorate Current Courier"
 		"store_goods_5_tips"	"Assign Pet"
 		
-		"text_my_curr_courier"	"Courier"
-		
 		"text_merge_curr_courier"	"Combine Identical Couriers"
 		"text_my_courier_list"	"My Couriers"
 		"text_confirm_merge_courier"	"Are you sure to combine all identical Couriers to this one?\n (Level stacks, maximum Lv.30)"
@@ -1607,7 +1593,6 @@
 		"DOTA_Tooltip_ability_slardar_amplify_damage_duration"	"DURATION"
 		"DOTA_Tooltip_ability_snapfire_lil_shredder_attack_range_bonus"	"BONUS ATTACK RANGE"
 		"DOTA_Tooltip_ability_antimage_mana_break_percent_damage_per_burn"	"Extra damage percent"
-		"DOTA_Tooltip_ability_antimage_mana_break_mana_per_hit"	"Mana burn per hit"
 		"DOTA_Tooltip_ability_rubick_qiequ_Note1"	"Rubick resets his ability to Spell Steal when combined into a higher level."
 		"DOTA_Tooltip_ability_dazzle_bozang_Note0"	"Shallow grave will first be given to allies hp lower than 50%."
 
@@ -1745,7 +1730,6 @@
 		"DOTA_Tooltip_modifier_lc_qianggong"	"Press the Attack"
 		"DOTA_Tooltip_modifier_lc_qianggong_Description"	"Damage increased."
 		"DOTA_Tooltip_ability_lc_qianggong_damage_bouns_per_victory"	"BONUS DAMAGE PER VICTORY"
-		"DOTA_Tooltip_ability_lc_qianggong_fanji_per"	"COUNTERATTACK PROC CHANCE"
 		"DOTA_Tooltip_ability_lc_qianggong_fanji_xixue"	"COUNTERATTACK LIFESTEAL"
 		"DOTA_Tooltip_ability_windrunner_powershot_powershot_damage"	"MAXIMUM DAMAGE"
 		"DOTA_Tooltip_ability_windrunner_powershot_damage_reduction"	"DAMAGE REDUCTION PER HIT"
@@ -1830,8 +1814,6 @@
 		"text_vip_avatar_desc"	"DAC Pass holders have exclusive golden profile picture border."
 		"text_vip_bullet_title"	"Colored Bullets"
 		"text_vip_bullet_desc"	"DAC Pass holders can send the exclusive colored bullet chats."
-		"text_vip_got"	"Acquired"
-		"text_vip_ungot"	"Unacquired"
 		"text_vip_on"	"Active"
 		"text_vip_off"	"Inactive"
 		"DOTA_Tooltip_ability_jakiro_macropyre_Description"	"Jakiro exhales a wide line of lasting flames, which deals damage per second to any enemy units caught in the fire. Switches to Ice Path after cast."
@@ -1855,7 +1837,6 @@
 		"text_stat_title_player"	"Player"
 		"text_stat_title_level"	"Lv"
 		"text_stat_title_lineup"	"Lineup"
-		"text_stat_title_buff"	"Synergies"
 		"text_stat_title_gold"	"Gold"
 		"text_stat_title_wl"	"W - L"
 		"text_stat_title_damage"	"Damage"
@@ -2095,7 +2076,6 @@
 		"text_store_nogoods"	"The shelf is freaking empty! :("
 		"text_store_refreshing"	"The shelf is being updated. Hold on!"
 		"text_store_closed"	"The store is closed."
-		"courier_collect"	"Courier Exchange"
 		"type_n"	"Entrance"
 		"text_lv1_unlock"	"Unlocks at Lv.1"
 		"text_lv10_unlock"	"Unlocks at Lv.10"
@@ -2267,16 +2247,10 @@
 		"q009"	"Achieve top 3 in a game with more than 10 friendly chess pieces surviving the last round."
 		"q010_title"	"A Winning Start"
 		"q010"	"Achieve top 3 in a game and have stayed full health during the first 10 rounds."
-		"q011_title"	"Fantastic Four"
-		"q011"	"Achieve top 3 in a game with 4 Rank 3 chess pieces."
-		"q013_title"	"Every Piece Matters"
-		"q013"	"Achieve top 3 in a game with a lineup of at least 10 chess pieces."
 		"q014_title"	"Devoted Synergy"
 		"q014"	"Achieve top 3 in a game and have activated a top tier synergy that required more than 6 pieces in a round."
 		"q015_title"	"Versatile Synergy"
 		"q015"	"Achieve top 3 in a game and have activated more than 5 synergies in a single round."
-		"q016_title"	"Bunch of Damage"
-		"q016"	"Achieve top 3 in a game and have one chess piece dealt more than 10000 damage in a single battle."
 		"q017_title"	"Jungle Farmer"
 		"q017"	"Achieve top 3 in a game and have defeated all neutral creeps."
 		"q018_title"	"Excellent Teammate"
@@ -2287,10 +2261,6 @@
 		"q020"	"Achieve top 3 in a game with more than 150 total Courier damage dealt."
 		"q021_title"	"I am Your Nightmare"
 		"q021"	"Achieve top 3 in a game and have ended the winning streak of another player."
-		"q022_title"	"Weapon of Artifact"
-		"q022"	"Achieve top 3 in a game with a Top Tier Item crafted."
-		"q023_title"	"Greed"
-		"q023"	"Achieve top 3 in a game with total gold earned exceeding $400."
 		"q024_title"	"Courier Collector (Common)"
 		"q024"	"Achieve top 3 in a game with a Common Courier."
 		"q025_title"	"Courier Collector (Rare)"
@@ -2301,14 +2271,10 @@
 		"q027"	"Achieve top 3 in a game with a Legendary Courier."
 		"q028_title"	"Crisis Spotter"
 		"q028"	"Dismissed chess pieces that value more than $15 and achieve top 3 in a game."
-		"q029_title"	"Triple Threat"
-		"q029"	"Achieve top 3 in a game and have combined any 3 $5 chess pieces."
 		"q030_title"	"The Luckiest One"
 		"q030"	"Achieve top 3 in a game and have avoided fatal damage with Delicious Apple."
 		"q031_title"	"Money comes from Money"
 		"q031"	"Achieve top 3 in a game and have acquired a full interest($4) at least once."
-		"q032_title"	"An Epic Artifact"
-		"q032"	"Achieve top 3 in a game and have combined any Tier 4 item."
 		"text_cheer_hello_1"	"Go for it!"
 		"text_cheer_hello_2"	"<player_name>, can you sing for us?"
 		"text_cheer_hello_3"	"Its joy to watch <player_name> play."
@@ -2431,7 +2397,6 @@
 		"DOTA_Tooltip_ability_puck_illusory_orb_datadriven_max_distance"	"MAXIMUM DISTANCE"
 		"DOTA_Tooltip_ability_puck_illusory_orb_datadriven_orb_speed"	"ORB SPEED"
 		"DOTA_Tooltip_ability_puck_illusory_orb_datadriven_blind_duration"	"BLIND DURATION"
-		"DOTA_Tooltip_ability_puck_illusory_orb_datadriven_blind_miss_per"	"BLIND MISS CHANCE"
 		"DOTA_Tooltip_ability_fur_tree_summon_duration"	"TREANT DURATION"
 		"DOTA_Tooltip_ability_bm_beast_summon_duration"	"COMPANION DURATION"
 		"DOTA_Tooltip_ability_veno_ward_summon_duration"	"WAR DURATION"
@@ -2497,10 +2462,8 @@
 		"DOTA_Tooltip_ability_item_relicbox_Note0"	"Relic equipped will expire at next relic round."
 		"DOTA_Tooltip_ability_item_relicbox_Note1"	"Exclusive, new relic will replace the former one."
 		"DOTA_Tooltip_ability_item_upgrade_roll_Description"	"Use probability tables for a higher courier level when recruiting."
-		"DOTA_Tooltip_ability_item_double_io_Description"	"Have 5x chance for IO pieces than normal."
 		"DOTA_Tooltip_ability_item_free_ban_Lore"	"From Relicbox"
 		"DOTA_Tooltip_ability_item_relicbox"	"<font color=\"#eb4b4b\">Relicbox</font>"
-		"text_stat_title_relic"	"Relic"
 		"text_stat_title_ban"	"Dismiss"
 		"DOTA_Tooltip_modifier_troll_rexuezhanhun_counter"	"Voodoo Frenzy"
 		"DOTA_Tooltip_modifier_troll_rexuezhanhun_counter_Description"	"Increase attack speed per hit"
@@ -2528,13 +2491,10 @@
 		"relic_list"	"Relic List"
 		"text_season_event_list"	"Seasonal Events"
 		"text_season_event_ranking_top"	"Seasonal Leaderboard"
-		"text_season_event_ranking_friend"	"Friend Leaderboard"
 		"h270"	"Red Dracoling"
 		"h271"	"Blue Dracoling"
 		"h374"	"Black Dracoling"
 		"h469"	"Golden Dracoling"
-		"item_second_chance"	"Second Chance"
-		"DOTA_Tooltip_ability_item_second_chance"	"<font color=\"#ade55c\">Second Chance</font>"
 		"DOTA_Tooltip_ability_item_second_chance_Lore"	"From Relicbox"
 		"DOTA_Tooltip_ability_item_vampiric_embrace_Lore"	"From Relicbox"
 		"DOTA_Tooltip_ability_item_mangotree_Lore"	"From Relicbox"
@@ -2605,7 +2565,6 @@
 		"DOTA_Tooltip_ability_smoke_screen_trigger_Lore"	"Since his escape during the night of his betrayal, Riki has valued the use of a simple smoke screen to confuse his opponents."
 		"DOTA_Tooltip_ability_smoke_screen_trigger_radius"	"RADIUS"
 		"DOTA_Tooltip_ability_smoke_screen_trigger_duration"	"DURATION"
-		"DOTA_Tooltip_ability_smoke_screen_trigger_miss_rate"	"MISS CHANCE"
 		"DOTA_Tooltip_modifier_smoke_screen_trigger"	"Smoke Screen"
 		"DOTA_Tooltip_modifier_smoke_screen_trigger_Description"	"Under Smoke"
 
@@ -2679,8 +2638,6 @@
 		"chessboard_tag_top100_desc"	"Chessboard theme available to Top 100 Queen players in the current season."
 		"chessboard_tag_vip_desc"	"Chessboard theme available to DAC Pass holder."
 		"b202"	"Necro Cave"
-		"buychessboard1"	"Confirm to purchase theme ["
-		"buychessboard2"	"]?"
 		"dac_casual_2x4"	"2x4 Casual Mode"
 		"dac_ranked_2x4"	"2x4 Ranked Mode"
 		"dac_casual_2x4_ob"	"2x4 Casual Mode"
@@ -2734,9 +2691,6 @@
 		"txt_banned_player"	" has been eliminated for being banned due to improper behaviors in previous games."
 		"DOTA_Tooltip_ability_dk_dragon_form"	"Elder Dragon Form"
 		"DOTA_Tooltip_ability_dk_dragon_form_Lore"	"The dormant dragon power springs forth from within Davion, combining the powers of a legendary knight with a legendary Eldwurm."
-		"DOTA_Tooltip_ability_dk_dragon_form_splash_percent"	"SPLASH PERCENTAGE"
-		"DOTA_Tooltip_ability_dk_dragon_form_slow_percent"	"SLOW PERCENTAGE"
-		"DOTA_Tooltip_ability_dk_dragon_form_poison_percent"	"MAGICAL DAMAGE PERCENTAGE"
 		"DOTA_Tooltip_ability_dk_dragon_form_Description"	"<h1>Active ability: Activate on full mana</h1>Davion <font color=\"#5cb85c\">transforms</font> into one of three powerful elder dragons, granting him new <font color=\"#ffffff\">Dragon Breath</font> powers.<br>LEVEL 1 Red Dragon: Attacks deal <font color=\"#d8af54\">splash damage</font> to all enemy units in a 2-square range.<br>LEVEL 2 Blue Dragon: Attacks slow movement speed and attack speed of enemy units in a 2-square range.<br>LEVEL 3 Black Dragon: Attacks additionally deal <font color=\"#5a91cd\">magic damage</font> over time to enemy units in a 2-square range, equal to a percentage of their health."
 		"DOTA_Tooltip_ability_dk_dragon_form_Note0"	"Each LEVEL of Elder Dragon Form grants effects from preceeding LEVELs."
 		"DOTA_Tooltip_ability_dk_dragon_attack"	"Dragon Bearth"
@@ -2782,10 +2736,6 @@
 		"h473"	"Black Sharky"
 		"b204"	"Scarlet Tomb"
 		
-		"chess_mag"		"Magnus★"
-		"chess_mag1"	"Magnus★★"
-		"chess_mag11"	"Magnus★★★"
-		
 		"DOTA_Tooltip_ability_spe_haunt"	"Haunt"
 		"DOTA_Tooltip_ability_spe_haunt_Lore"	"At the height of combat, Mercurials physical manifestation shatters, and the shadowy pieces haunt those who still cling to life."
 		
@@ -2799,7 +2749,6 @@
 		"DOTA_Tooltip_modifier_is_element_buff_plus_Description"	"Has a chance to turn aggressor into stone."
 		"DOTA_Tooltip_ability_sniper_assassinate_Description"	"<h1>Targeted Active ability: Activate on full mana</h1>Sniper locks onto a target enemy chess piece and, after a short aiming duration, fires a devastating shot that deals massive <font color=\"#a02d27\">physical</font> damage at long range."
 		
-		"DOTA_Tooltip_ability_is_centaur"	"Centaur"
 		"DOTA_Tooltip_ability_is_banned"	"Unavailable"
 		"DOTA_Tooltip_ability_is_banned_Description"	"This chess piece has been wickedly cursed that it cannot be added to the chess piece list."
 		
@@ -2822,7 +2771,6 @@
 		"DOTA_Tooltip_ability_tp_Description"	"Teleports your Courier to the starting position."
 		"text_config_courier_tp"		"Reset Courier"
 		"text_config_courier_gg"		"Surrender!"
-		"text_ranking_world_empty"		"Leaderboard unavailable."
 
 		"chess_marci"						"Marci★"
 		"chess_marci1"					"Marci★★"
@@ -2934,8 +2882,6 @@
 		"text_item_t4"	"Tier 4 Items"
 		"DOTA_Tooltip_ability_item_yinyuezhijing_Lore"	"Said to be a tear from the lunar goddess Selemene."
 
-		"item_xueji"	"Bloodthorn"
-		
 		"text_item_t5"	"Tier 5 Items"
 		"DOTA_Tooltip_ability_snapfire_lil_shredder_Description"	"<h1>Active ability: Activate on full mana</h1>Snapfire heats up her mounted turret to rapidly fire attacks that deal <font color=\"#a02d27\">physical damage</font> equal to her attack damage per hit. Each attack slows the enemys attack speed and reduces enemys armor, effect stackable."
 
@@ -2950,7 +2896,6 @@
 		"DOTA_Tooltip_ability_spe_desolate_chaos_duration"	"DISORIENT DURATION"
 		"DOTA_Tooltip_ability_spe_haunt_chaos_duration"		"DISORIENT DURATION"
 
-		"b201"	"Windy Valley Pandaland"
 		"text_mima_cannot_open_more_lootbox"		"Previous Loot Pending"
 
 		"DOTA_Tooltip_ability_is_tauren_Description"	"<h1>SPECIES TRAIT: Totem of the Clan</h1><font color=\"#656585\">Active when you have at least (N) different pieces of this species on board. (Multiple effects stack)</font><br><br>(2) Taurens: Summons a Taunt Totem at the start of the battle.<br>(4) Taurens: Summons a Woodpecker Totem and a Horn Totem at the start of the battle."
@@ -2964,10 +2909,6 @@
 		"badge_text_s17"	"Badge awarded to players with excellent performance in DAC Season 17."
 
 		"DOTA_Tooltip_ability_is_undead_Lore"	"Many humans had unfortunately lost their life to the Scourge King during his conquest of his homeland. The victims were raised as Undeads with cruelty, turned into minions of the fleshless legion, and were forced to destroy their own kingdom under the command of the Fallen Prince."
-
-
-
-
 
 		"text_mima_cannot_do_in_battle"		"Unavailable in battle"
 		"text_mima_import_error"			"Import failed"
@@ -2988,7 +2929,6 @@
 		"h381" 			"Lefty, Octarine Core"
 		"h382" 			"Lefty, Refresher Orb"
 		"h476" 			"Lefty, Aegis"
-		"h477"	 		"Aghanim Donkey"
 		"e417"			"Aghanims Emblem"
 		"m107"			"Void Spirit: Why you?"
 		"m108"			"Templar Assassin: No!"
@@ -3001,16 +2941,8 @@
 		"m404"			"Techies: Over there!"
 		"m405"			"Aster: Pumps Up!"
 
-		"text_icon_emotion_button"			"Send Emote <font color=\"#888\">[K]</font>"
-		"text_icon_emotion_button_desc"		"List the Emotes you have and click to send to chat!"
-		"text_emotion_box"					"Send Emote"
-
-		"DOTA_Tooltip_ability_item_xueji"	"<font color=\"#d32ce6\">Bloodthron</font>"
-
 		"DOTA_Tooltip_ability_item_more_reward_Description"	"Gains 4 XP for every visiting victory, and extra XP equals to Awardx2 when terminating an winning streak or eliminating a player."
 
-
-		"tips_button_board_right"			"Player Details <font color=\"#888\">[F3]</font>"
 		"tips_button_board_right_desc"		"Open the player details panel to view the data and lineup of every player."
 		"tips_minimap"						"Minimap fast operation"
 		"tips_minimap_desc"					"Switch player chessboard <font color=\"#888\">[TAB]</font><br>Select own Courier <font color=\"#888\">[F1]</font><br>Return to own chessboard <font color=\"#888\">[F2] or [`]</font>"
@@ -3037,7 +2969,6 @@
 		"DOTA_Tooltip_modifier_bh_zhuizongshu_shangjin_count"	"Sell Value"
 		"placeholder"									"Magic Turnip"
 
-
 		"item_longxin"	"Heart of Tarrasque"
 		"DOTA_Tooltip_ability_item_longxin"	"<font color=\"#e4ae39\">Heart of Tarrasque</font>"
 		"DOTA_Tooltip_ability_item_longxin_Description"	"Fast movement, +60%% health, +10 health regeneration.\n<h1>Aura:</h1>Allies within the range gain healing per sec equal to 1.5%% of the carriers maximum health.<br><br>Range: %max_distance%"
@@ -3056,16 +2987,13 @@
 
 		"egg"								"Egg"
 
-		"DOTA_Tooltip_ability_item_steal_chess"	"<font color=\"#ade55c\">Rambling Fatebender</font>"
 		"DOTA_Tooltip_ability_item_steal_chess_Note0"	"Magic Card can recruit pieces that are not in the pool but not for free."
 		"DOTA_Tooltip_ability_item_steal_chess_Note1"	"Magic Card is affected by dismission"
 		"DOTA_Tooltip_ability_item_steal_chess_Note2"	"The Target Pool of Magic Card refreshes every time you lose in a home battle."
-		"item_magic_card"							"Magic Card"
 
 		"item_qiongguidun"	"Poor Mans Shield"
 		"DOTA_Tooltip_ability_item_qiongguidun"	"<font color=\"#5e98d9\">Poor Mans Shield</font>"
 		"DOTA_Tooltip_ability_item_qiongguidun_Description"	"+30 physical damage block, +30%% chance to block extra 30%% physical damage."
-
 
 		"DOTA_Tooltip_ability_dr_shooter_aura_Description"	"<h1>Aura</h1>Drows experiences in battle grant her and her allies increased power, increasing the damage of ranged allies who do not face an melee aggressor."
 
@@ -3115,7 +3043,6 @@
 
 		"badge_title_naiping"		"Lucky Feeding-bottle"
 		"badge_text_naiping"		"A milk bottle left by the Pharaoh of Changsha in ancient times."
-		"DOTA_Tooltip_ability_summon_hero_Note0"	""
 		
 		"DOTA_Tooltip_ability_bh_shuriken_Lore"	"Bounty hunter never comes back with empty hands"
 		"DOTA_Tooltip_ability_bh_shuriken_Note0"		"One piece can get a single bag only, and refresh its chance to get when upgraded"
@@ -3123,7 +3050,6 @@
 		"DOTA_Tooltip_modifier_bh_gold"					"Gold"
 		"DOTA_Tooltip_modifier_bh_gold_Description"		"Gold for first blood"
 
-		
 		"show_chess_list"	"◄ CHESS PIECES"
 		"show_item_list"	"ITEMS ►"
 		"show_item_list_2"	"◄ ITEMS"
@@ -3137,9 +3063,6 @@
 
 		"text_ban_panel_show_chess_list"	"◄ CHESS PIECES"
 		"ban_choose"	"<font color='#ff4444'>DISMISS</font> chess pieces you don't wish to recruit."
-
-
-
 
 		"season_s19"		"S19 Alien"
 		"badge_title_s19"		"S19 - Alien"
@@ -3238,7 +3161,6 @@
 		"require_rank_level"	"Required Rank"
 		"text_cross_low_player"		"NO CLICK!"
 
-
 		"badge_title_shilianji"		"10 Champion Streak!"
 		"badge_text_shilianji"		"Winner winner,chicken dinner. You've got a 10 Champion Streak!"
 
@@ -3299,8 +3221,6 @@
 		"DOTA_Tooltip_ability_ud_decay_damage"					"Damage:"
 		"DOTA_Tooltip_ability_ud_decay_Lore"					"The strength of the living is simply borrowed from the strength of the dead."
 
-		"DOTA_Tooltip_ability_item_xueji_Description"	"+20%% attack speed.\n<h1>Active ability: Instant</h1>Roots and silences the highest-level enemy chess piece in the attack range for 6 seconds. Any attacks to the victim causes 200%% critical damage and all allies with in the attack range focus attacking the victim within the duration.<br><br><img src='s2r://panorama/images/status_icons/ability_cooldown_icon_psd.vtex'> 15"
-
 		"DOTA_Tooltip_modifier_mind_control_debuff"		"Mind Control"
 		"DOTA_Tooltip_modifier_mind_control_debuff_Description"		"This piece is controlled by its manipulator."
 
@@ -3321,7 +3241,6 @@
 
 		"text_season_event_ranking_friend"	"Friends Ranking"
 		"text_season_event_ranking_self"	"My Matches"
-		"text_season_event_ranking_vip"		"Pass Info"
 		"text_ranking_self_empty"	"No Matches >_<"
 		"text_ranking_world_empty"	"No Ranking >_<"
 		"text_ranking_friend_empty"	"No Ranking >_<"
@@ -3331,8 +3250,6 @@
 		"text_rank_chicken_count"	"Wins"	
 		"text_rank_chicken_per"		"Win Rate"	
 		"text_ave_rank"				"Rank Avg"
-		"text_test_match"			"Test Match"
-		"text_casual_match"			"Casual Match"
 		"just_now"					"just now"
 		"m_ago"						"m ago"
 		"h_ago"						"h ago"
@@ -3386,10 +3303,7 @@
 		"text_update" 	"update"	
 		"text_event" 	"event"	
 
-		
-
 		"DOTA_Tooltip_ability_lion_mana_drain_datadriven"	"Mana Drain"
-		"DOTA_Tooltip_ability_lion_mana_drain_datadriven_Description"	""
 		"DOTA_Tooltip_ability_lion_mana_drain_datadriven_Description"	    "<h1>Active ability: Instant</h1>Lion has a maximum MP of 200, and keeps channeling: Takes mana of enemy pieces if its mana is less than 100 or transfers mana to ally pieces if its mana is more than 100."
 		"DOTA_Tooltip_ability_lion_mana_drain_datadriven_ally_count"	"CHAKRA MAGIC TARGETS"
 		"DOTA_Tooltip_ability_lion_mana_drain_datadriven_mana_per_second"	"MANA DRAIN PER SECOND"
@@ -3399,14 +3313,11 @@
 
 		"DOTA_Tooltip_modifier_is_demonhunter_buff"					"Shuttered Soul"
 		"DOTA_Tooltip_modifier_is_demonhunter_buff_Description"		"All friendly Demons now count as a single type."
-		"DOTA_Tooltip_modifier_is_demon_buff_Description"	"Deal Pure damage instead of physical damage. Higher effectiveness for more demons."
 
 		"DOTA_Tooltip_ability_enchantress_untouchable"					"Untouchable"
 		"DOTA_Tooltip_ability_enchantress_untouchable_Description" 		"Enchantress beguiles her enemies, slowing their attacks when she is attacked."
 		"DOTA_Tooltip_ability_enchantress_untouchable_Lore" 			"After attacking Aiuthsha, most opponents are overwhelmed with guilt having attacked such a nature beauty."
 		
-
-
 		"DOTA_Tooltip_ability_eh_untouchable_aura"					"Untouchable"
 		"DOTA_Tooltip_ability_eh_untouchable_aura_Description"		"<h1>Aura: </h1>Granting allies nearby to slow enemy attacks when attacked."
 		"DOTA_Tooltip_ability_eh_untouchable_aura_Lore" 			"After attacking Aiuthsha, most opponents are overwhelmed with guilt having attacked such a nature beauty."
@@ -3415,12 +3326,10 @@
 		"DOTA_Tooltip_modifier_modifier_untouchable_aura_debuff"						"Untouchable"
 		"DOTA_Tooltip_modifier_modifier_untouchable_aura_debuff_Description"			"Attack speed decreased."
 
-
 		"event_ti11_title"		"Fantasy Predictor"
 		"event_ti11"			"TI 11 Events"
 		"text_ti11_countdown"			"Countdown "
 		"ti11_countdown_expired"		"Closed"
-		"day"							"Day"
 		"event_ti11_desc_title"			"Instructions"
 		"event_ti11_desc_desc"			"● Pick ONLY ONE favorite team for prediction.\n● You’ll have a top effect until the team is eliminated.\n● If your team get Top 3, you’ll get a Lefty·Radiant Courier!\n● If your team is the Champion, you’ll get a large amount of candies!"
 		"text_ti11_dead_team"			"Eliminated"
@@ -3450,7 +3359,6 @@
 		"e328"			"Suradan:Dire"
 		"e418"			"Lava Emblem"
 
-
 		"chess_ct"		"Centaur Warrunner★"
 		"chess_ct1"		"Centaur Warrunner★★"
 		"chess_ct11"	"Centaur Warrunner★★★"
@@ -3458,7 +3366,6 @@
 		"chess_mag1"	"Magnus★★"
 		"chess_mag11"	"Magnus★★★"
 		"DOTA_Tooltip_ability_is_centaur"	"Centaur"
-		"DOTA_Tooltip_ability_is_centaur_Lore"	"Centaurs are of noble blood, they are given birth by Half-god’s elder son Zaetar and only daughter of Princess Theradras. Cruelty and fierceness fill their blood, generation by generation."
 		"DOTA_Tooltip_ability_mag_reverse_polarity"					"Reverse Polarity"
 		"DOTA_Tooltip_ability_mag_reverse_polarity_Description"		"<h1>Active ability: Activates on full mana</h1>Magnus changes the property of matter, sucking all enemies to him and stunning them with a powerful slam and dealing damage."
 		"DOTA_Tooltip_ability_mag_reverse_polarity_Lore"			"Magnus fights with the fury of the erupting Mt. Joerlak."
@@ -3534,15 +3441,9 @@
 		"badge_title_s23"		"S23 - LoliPanda"
 		"badge_text_s23"		"Badge awarded to players with excellent performance in DAC Season 23."
 
-
 		"e218"		"Frostland"
 
-		"DOTA_Tooltip_ability_is_pandaman_Note0"	"(1) Pandaren do not invite pieces you already have on board."
-
-
-		"dac_candy_5_1x8"	"Candy Contest (5 Candy)"
 		"dac_candy_5_1x8_desc"	"● 8 players compete with each other to determine the last standing winner.\n● 5 Candy required for entry and award will be reallocated due to game rankings."
-		"text_casino_count"	"Candy Contest Progress"
 
 		"DOTA_Tooltip_modifier_is_beast_buff_plus_plus_Description"	"Bonus attack damage."
 		"DOTA_Tooltip_modifier_vs_swap_debuff"	"Nether Swap"
@@ -3591,7 +3492,6 @@
 		"DOTA_Tooltip_modifier_item_linkenfaqiu_buff" "Linkens Sphere"
 		"DOTA_Tooltip_modifier_item_linkenfaqiu_buff_Description" "Blocks targeted spell or item."
 
-		
 		"text_season_event_ranking_vip"			"DAC Pass Privileges"
 		"text_season_event_ranking_quest"		"Quest"
  
@@ -3612,7 +3512,6 @@
 		"text_casino_candy_award"		"Expected Award"
 		"text_casino_rank"				"Rank <rank>"
  
-		
 		"h388"			"Jade Rabbit"
 		
 		"text_test_match"			"Test"
@@ -3749,7 +3648,6 @@
 		"item_malefic_rapture"   					 "Malefic Rapture"
 		"DOTA_Tooltip_ability_item_malefic_rapture"   	 "<font color=\"#ade55c\"> Malefic Rapture"
 		
-
 		"DOTA_Tooltip_ability_item_malefic_rapture_Lore"   		 "From Relic Box"
 		"StatusHealth"   		 "Status Health"
 		"StatusMana"   		 	"Status Mana"
@@ -3800,7 +3698,6 @@
  
 		"DOTA_Tooltip_ability_muerta_pierce_the_veil_Lore"		"Muerta sheds her corporeal form, crossing the spirit veil and striking her enemies with the fury of the damned."
  
- 
 		"DOTA_Tooltip_ability_pudge_meat_hook_lua_Description"	"<h1>Targeted Active ability: Activates instantly</h1>Launches a bloody hook toward the farthest enemy, dragging it back to Pudge and dealing <font color=\"#d8af54\">pure damage</font>, and alias will prioritize attacking this target."
 		"DOTA_Tooltip_ability_pudge_meat_hook_lua_Note0"		"Channeling enemy will be interrupted upon hooked."
 		"DOTA_Tooltip_ability_pudge_meat_hook_lua_Note1"		"Hook can pass through other pieces."
@@ -3808,8 +3705,6 @@
 
 		"DOTA_Tooltip_ability_toggle_ai"					"Auto Chessing"
 		"DOTA_Tooltip_ability_toggle_ai_Description"		"<h1>Togglable Ability: A pet required</h1>Auto chessing by your pet, click again to cancel"
-		"group_desc1"					"● Click to join discord above for matchmaking"
-		"group_desc2"					"Or use general password to find: "
 		"DOTA_Tooltip_ability_item_double_io_Description"	"Every IO recruited will reduce 2x this chance"
 		"donnot_show_badge"			"Hide Badge"
 		"donnot_show_badge_text"	"I’m modest."
@@ -3822,9 +3717,6 @@
  
 		"DOTA_Tooltip_modifier_is_warrior_buff_plus_plus_Description"	"Reflect pure damage when taking physical and magical damage."
 		
- 
-		"DOTA_Tooltip_ability_item_egg_Description"	"Enclose a chess piece into the mysterious egg, which has a chance to grow up at the beginning of every round. You can sell the egg anytime to hatch the chess piece enclosed whose Rank depends on the size of the egg."
- 
 		"DOTA_Tooltip_ability_item_vampiric_embrace_Description"	"Your Courier has +40% lifesteal when dealing Courier damage to other players. You’ll get a Tango instead if your HP will be more than 100 after lifesteal."
  
 		"ai_say_start_ai"			"Start auto chessing"
@@ -3840,8 +3732,6 @@
 		"ai_say_down_chess"			"Recall Piece"
 		"ai_say_combine_chess"		"Combine Piece: "
 
-
-		"group_desc1"		"● Private lobby recommended, click above, joining discord to get password."
 		"group_desc2"		"Or use universal password this rank:"
 
 		"h158" 			"CatDeacon·Grey"
@@ -3882,8 +3772,6 @@
 		"DOTA_Tooltip_ability_item_copy_synergy_Lore"		""
 		"DOTA_Tooltip_ability_item_card_fate_Lore"	""
 		"DOTA_Tooltip_ability_item_card_chance_Lore"	""
-		"DOTA_Tooltip_modifier_shining"		"Grand Magus modifier shining"
-		"DOTA_Tooltip_modifier_shining_Description"		"Permanently gained an additional race or class using a Fate card or Chance card."
 		"item_card_fate"	"Card: Fate"
 		"DOTA_Tooltip_ability_item_card_fate"	"<font color=\"#e4ae39\">Card: Fate</font>"
 		"DOTA_Tooltip_ability_item_card_fate_Description"	" <h1>Courier Consumable: Click to use</h1>You can designate a chess piece to permanently gain an additional race from the nearest other race"
@@ -3902,17 +3790,12 @@
 		"DOTA_Tooltip_ability_item_xueji_Lore"		"A reviled blade that bites deeper with each wriggle of its victims final throes."
 		"DOTA_Tooltip_ability_item_shuaxinqiu_Lore"		"A powerful artifact created for wizards."
 		"text_icon_legendary_box"	"Legendary information <font color=\"#888\">[/]</font>"
-		"tips_gold_1"	"<font color='#fff'>Gold: "
 		"tips_lixi_title"		"Interest"
 		"tips_lixi_text"		"Your held gold will earn an interest income of 10% per round, with a maximum limit of 4."
 		"tips_button_board_right"	"Player Details <font color=\"#888\">[F3]or[=]or[\\]</font>"
-		"text_icon_petgpt_button"	"Pet GPT"
-		"text_icon_petgpt_button_desc"	"Command your pet to take over the game and play on your behalf. It will automatically make moves for you. Click again to end the Pet GPT."
 		"text_low_player"			"You have not met the minimum rank requirement for this lobby. If you forcefully enter the game, you will be considered defeated immediately. Please select an appropriate rank lobby to start the game. Since DOTA 2 Auto Chess does not have a matchmaking system, it is recommended to create or join password-protected lobbies for games with Bishop rank or higher."
 		"group_desc1"					"● Due to the lack of a matchmaking system in the DOTA 2 lobby, it is recommended for games with Bishop rank or higher to create or join private password-protected rooms. Click on Join DAC discord above to access the password."
 		"notice_put_in_egg"			" <chess> is hatching in the Greevils Egg"
-		"notice_add_synergy1"		"s <chess> has gained a new Race: "
-		"notice_add_synergy2"		"s <chess> has gained a new Class: "
 		"DOTA_Tooltip_ability_juggernaut_blade_fury_magic_resist_pct"		"Magical Resistance percent%"
 
 		"badge_title_naiping_1"	"Feeding-bottle·Gold"
@@ -3932,7 +3815,6 @@
 		"season_s26"			"S26 Poker Dragon"
 		"badge_title_s26"		"S26 - Poker Dragon"
 		"badge_text_s26"		"Badge awarded to players with excellent performance in DAC Season 26."
-
 
 		"DOTA_Tooltip_ability_item_lootbox_lv1"	"<font color=\"#b0c3d9\">Spoil Token Level 1</font>"
 		"DOTA_Tooltip_ability_item_lootbox_lv2"	"<font color=\"#5e98d9\">Spoil Token Level 2</font>"
@@ -4007,13 +3889,9 @@
 		"item_zhipeitoukui"						"Hell of the Dominator"
 		"DOTA_Tooltip_ability_item_zhipeitoukui"	"<font color=\"#5e98d9\">Hell of the Dominator</font>"
 		"DOTA_Tooltip_ability_item_zhipeitoukui_Description"	"lifesteal + 15%%.\n<h1>Active ability: Instant</h1>Mind Controls a summoned or creep enemy whose level less than its owner’s level for 10 sec.<br><br><img src='s2r://panorama/images/status_icons/ability_cooldown_icon_psd.vtex'> 60"
-		"item_renjia"					"Blade Mail"
 		"item_tiaozhantoujin"			"Hood of Defiance"
 		"DOTA_Tooltip_ability_item_tiaozhantoujin"	"<font color=\"#5e98d9\">Hood of Defiance</font>"
 		"DOTA_Tooltip_ability_item_tiaozhantoujin_Description"	"+50%% magic resistance."
-		"item_xingyunguazhui"			"Lucky Pendant"
-		"DOTA_Tooltip_ability_item_xingyunguazhui"				"<font color=\"#b0c3d9\">Lucky Pendant</font>"
-		"DOTA_Tooltip_ability_item_xingyunguazhui_Description"	"The carrier has +25%% additional chance on all probability synergies."
 		"item_silingshu"				"Necronomicon"
 		"DOTA_Tooltip_ability_item_silingshu"	"<font color=\"#5e98d9\">Necronomicon</font>"
 		"DOTA_Tooltip_ability_item_silingshu_Description"		"<h1>Active ability: Instant</h1>Summons a Warrior and an Archer to fight for you that have increased health, duration and ability level based on the caster level.<br><br><img src='s2r://panorama/images/status_icons/ability_cooldown_icon_psd.vtex'> 30"
@@ -4061,7 +3939,6 @@
 		"item_zhilidatiaodao"		"Arcane Blink"
 		"DOTA_Tooltip_ability_item_zhilidatiaodao"	"<font color=\"#4b69ff\">Arcane Blink</font>"
 		"DOTA_Tooltip_ability_item_zhilidatiaodao_Description"	"<h1>Active ability: On ability cooling down</h1>Instantly move to the farthest grid  within the range that can attack the enemy, gain 25 mana and +20% magical damage amplification, and reduce ability CD by 5 sec.<br><br>maximum distance:%max_blink_distance%<br><img src='s2r://panorama/images/status_icons/ability_cooldown_icon_psd.vtex'> 10"
-		"item_huiyao"				"Radiance"
 		"item_dadianchui"			"Mjollnir"
 		"DOTA_Tooltip_ability_item_dadianchui"	"<font color=\"#e4ae39\">Mjollnir</font>"
 		"DOTA_Tooltip_ability_item_dadianchui_Description"	"+60%% attack speed.\n20%% chance when attacking or being attacked to release a bolt of electricity that leaps between 5 targets, dealing 100 magical damage to each."
@@ -4102,7 +3979,6 @@
 		"DOTA_Tooltip_ability_medusa_stone_gaze_Note0"		"Only attacks on the original target affected by Hunter - Aimed Shot."
 		"DOTA_Tooltip_modifier_item_fengkuangmianju_debuff"		"Mask of Madness"
 		"DOTA_Tooltip_modifier_item_fengkuangmianju_debuff_Description"		"Attack speed and lifesteal increased, but silences the carrier."
-
 
 		"h160"        "Poker Dragon·️Diamond"
         "h295"        "Poker Dragon·️Club"
@@ -4231,7 +4107,6 @@
 		"DOTA_Tooltip_modifier_is_hunter_buff_new_plus"				"Aimed Shot"
 		"DOTA_Tooltip_modifier_is_hunter_buff_new_plus_Description"		"Have chances to penetrate evasion and perform an additional attack."
 
-
 		"DOTA_Tooltip_modifier_item_weixiuqiju" 	"Book of Shadow"
 		"DOTA_Tooltip_modifier_item_weixiuqiju_Description" 	"If the carriers survive a battle on the main field, you will obtain a Dark heart of Machine."
 		"item_weixiuqiju"							"Book of Shadow"
@@ -4262,7 +4137,6 @@
 		"DOTA_Tooltip_ability_item_meiken"			"<font color=\"#4b69ff\">Mekansm</font>"
 		"DOTA_Tooltip_ability_item_meiken_Description"			"<h1>Active ability: Activate when most allies are wounded</h1>Heals 500 health to all allied units within the range. <br><br>Range:%max_distance%<br><img src='s2r://panorama/images/status_icons/ability_cooldown_icon_psd.vtex'> 15"
 		
-
 		"DOTA_Tooltip_ability_is_goblin_Description"	"<h1>Species Perk: Nanobots</h1><font color=\"#656585\">Active when you have at least (N) different goblin pieces on board. (Multiple effects stack) </font><br><br>(3)Goblins: Grants a random melee ally +10 armour and +20 health regeneration.<br>(6)Goblins: Grants all allies+10 armor and +20 health regeneration."
 
 		"DOTA_Tooltip_ability_is_human_Description"	"<h1>Species Perk: Spark of Mind</h1><font color=\"#656585\">Active when you have at least (N) different human pieces on board. (Multiple effects stack) </font><br><br>(3) Humans: Gain 2 experience points at the start of each round.<br>(6) Humans: Gain (Courier Level - 2) points of experience points at the start of each round if you won your last home battle."
@@ -4271,8 +4145,6 @@
 		"DOTA_Tooltip_ability_shadow_fiend_requiem_of_souls_lua_Description"	"<h1>Active ability: Activates on Full Mana</h1>Shadow Fiend gathers captured souls and releases them in multiple streams of magical energy in all directions, dealing<font color=\"#5a91cd\">magic damage</font>.<br>In addition to the initial quantity, every 1 layer of demonic power will add an extra +1 shadow energy."
 		"tips_camera_title"		"Observer Perspective <font color=\"#888\">[I]</font>"
 		"tips_camera"			"Click the avatar to toggle Observer Perspective, allowing you to closely observe couriers or chess pieces details."
-
-		"text_cannot_move_chess"		"Cannot move chess"
 
 		"DOTA_Tooltip_ability_is_human_Note0"    "Experience gained by Spark of Mind is not restricted by the max level of 10."
 		"DOTA_Tooltip_ability_doom_bringer_doom"	"Doom"
@@ -4290,7 +4162,6 @@
         "DOTA_Tooltip_modifier_ward_taunt_Description"                    "Taunts all nearby enemies."
 
         "text_select_loot"            "Select Loot"
-        "text_lineup_box"            	"Lineup Box"
         "tips_title_image_reroll"                "Second Chance"
         "tips_image_reroll_panel_lootbox"        "Refresh the selection panel immediately to give me additional options."
         "text_confirm_reroll_panel_lootbox"        "Are you sure you want to use Second Chance to get other options?"
@@ -4322,7 +4193,6 @@
 
         "m111"            "Enchantress: Christmas Hahaha"
         "m212"            "Cookie Party!"
-        "b210"            "Pandyland·Treasure"
 
 		"season_s29"            	"S29 Dragon Roar"
         "badge_title_s29"        	"Badge: S29 Mad Mac"
@@ -4383,7 +4253,6 @@
 		"DOTA_Tooltip_modifier_is_monk_buff_Description"	"Have a chance on dealing damage to instantly eliminate the target enemy with a low health"
 		"DOTA_Tooltip_modifier_is_monk_buff_plus"	"Drunken Stagger"
 		"DOTA_Tooltip_modifier_is_monk_buff_plus_Description"	"Have a chance on dealing damage to reduce the current health of the target enemy by half."
-		"DOTA_Tooltip_ability_is_monk_Note0"	"The lower the enemy HP percentage, the higher the probability that Drunken Stagger will trigger."
 		"DOTA_Tooltip_ability_is_monk_Note1"	"The more damage the Monk deals, the higher the probability that Drunken Stagger will trigger."
 		"item_second_chance"		"Second Chance"
 		"DOTA_Tooltip_ability_item_second_chance"	"<font color=\"#ade55c\">Second Chance</font>"
@@ -4683,7 +4552,6 @@
 		"DOTA_Tooltip_ability_clinkz_burning_barrage_projectile_width"		"Projectile Width:"
 		"DOTA_Tooltip_ability_clinkz_burning_barrage_Lore"					"Its hard to say whether the blur around the Bone Fletcher is from his flaming heart or his speed with the quiver."
 
-		"DOTA_Tooltip_modifier_pangolier_swashbuckle_rolling"		"Swashbuckle Rolling"
 		"DOTA_Tooltip_modifier_pangolier_swashbuckle_rolling"		"Immune to all damage when rolling."
 		"DOTA_Tooltip_ability_pangolier_swashbuckle_datadriven_Note0"		"Immune to all damage when rolling."
 
@@ -4707,7 +4575,6 @@
 
 		"DOTA_Tooltip_ability_item_buxiuzhishouhu_Lore"			"Immortals used to have a magical shield to prevent them from death."
 	
-		
         "h2a5"            "Keshira·Blue"
         "h2a6"            "Keshira·Red"
         "h3a6"            "Keshira·White"
@@ -4729,7 +4596,6 @@
 		"DOTA_Tooltip_modifier_is_draenei_buff"					"Blessing of the Naaru"
 		"DOTA_Tooltip_modifier_is_draenei_buff_Description"		"Steal HP from surrounding enemies to heal"
 		
-
 		"DOTA_Tooltip_ability_item_haojie_Lore"				""
  
 		"item_molongqiang"										"DragonLance"
@@ -4744,17 +4610,14 @@
 		"DOTA_Tooltip_ability_item_jingubang"	"<font color=\"#d32ce6\">Monkey King Bar</font>"
 		"DOTA_Tooltip_ability_item_jingubang_Description"		"+40%% attack speed.\nAttacks pierce through evasion and deal an extra 50 magical damage."
 
-
 		"DOTA_Tooltip_ability_medusa_stone_gaze_split_count"			"Split Count: "
 		"DOTA_Tooltip_ability_medusa_stone_gaze_split_damage_per"		"Split Damage Percentage: "
 		"DOTA_Tooltip_ability_gyro_flak_cannon_max_attacks"				"Max attacks: "
 		"DOTA_Tooltip_ability_gyro_flak_cannon_max_targets"				"Max targets: "
 
-
 		"DOTA_Tooltip_ability_juggernaut_blade_fury_lua"					"Blade Fury"
 		"DOTA_Tooltip_ability_juggernaut_blade_fury_lua_Description"		"<h1>Active ability: Activates on Full Mana</h1>Causes a bladestorm of destructive force around Juggernaut, dealing damage to nearby enemies within 2 grids.<font color=\"#5a91cd\">magical damage</font>.<br>During the spin the Juggernaut gets <font color=\"#5cb85c\">80% Magical Resistance</font>.As Juggernauts attack speed increases, the interval between the damages of Blade Fury decreases."
 		"DOTA_Tooltip_ability_juggernaut_blade_fury_lua_Lore"			"Yurneros renowned katana techniques are feared by warriors and sorcerers alike."
-
 
 		"DOTA_Tooltip_ability_juggernaut_blade_fury_lua_blade_fury_radius"		"Radius: "
 		"DOTA_Tooltip_ability_juggernaut_blade_fury_lua_blade_fury_damage"		"Magical damage: "
@@ -4787,7 +4650,6 @@
 		"DOTA_Tooltip_ability_vs_swap"	"Nether Swap"
 		"DOTA_Tooltip_ability_vs_swap_Description"	"<h1>Targeted active ability: Instant</h1>Swap positions with one or more enemy chess pieces whose star level is no higher than(Nether Swap skill level)"
 
-		
 		"DOTA_Tooltip_modifier_ok_angel_buff"			"Guardian Angel"
 		"DOTA_Tooltip_modifier_ok_angel_buff_Description"	"Physical and magical damage reduced"
 		"DOTA_Tooltip_modifier_ok_angel_self_buff"		"Guardian Angel"
@@ -4802,7 +4664,6 @@
 		"DOTA_Tooltip_ability_lion_finger_of_death_Description"		"<h1>Active ability: Activates on full mana</h1>Tear into an enemy, inflicting a substantial amount of <font color=\"#d8af54\">pure damage</font>. For each stack of the Fel Power effect, it will deal additional <font color=\"#d8af54\">pure damage</font>"
 		"DOTA_Tooltip_ability_lion_finger_of_death_damage_bonus"			"Damage per Stack of Fel Power:"
 
-
 		"h2a7"     "Jade Fairy·Emerald"
         "h2a8"     "Jade Fairy·Amber"
         "h3a7"     "Jade Fairy·Amethyst"
@@ -4811,7 +4672,6 @@
         "DOTA_Tooltip_modifier_is_undead_buff_plus_plus_Description"    "Max HP decrease gradually."
         "DOTA_Tooltip_ability_is_undead_Description"        "<h1>Species Trait: Plague</h1><font color=\"#656585\">Active when you have at least (N) different Undead pieces on board. (Multiple effects stack)</font><br><br>(3) Undeads: All non-undead pieces of both sides in the battle gain the plague effect: maximum health -10%%.<br>(6) Undeads: All non-undead pieces of both sides in the battle gain the plague effect: maximum health -30%%.<br>(9) Undeads: All plague-infected pieces lose 5% max health per 2.5 secs (no less than 5%)."
         "DOTA_Tooltip_ability_is_undead_Note1"            "Plague-infected pieces will have at least 5% max HP."
-
 
 		"DOTA_Tooltip_ability_ringmaster_spotlight"                    "Spotlight"
 		"DOTA_Tooltip_ability_ringmaster_spotlight_Description"        "<h1>Active Ability: Instant</h1>Ringmaster shines a spotlight that sweeps an area. Enemies in the light have a chance to miss their attacks and are revealed if invisible. Non-permanent pieces and illusion pieces hit by the beam will fade away, by taking a <font color=\"#d8af54\">Pure</font> damage equal to a percentage of their health each second."
@@ -4822,14 +4682,8 @@
         "badge_title_s33"        "S33 - Champion"
         "badge_text_s33"        "Badge awarded to players with excellent performance in DAC Season 33."
 
-        "item_jinghunzhiren"                        "Diffusal Blade"
-        "DOTA_Tooltip_ability_item_jinghunzhiren"    "<font color=\"#4b69ff\">Diffusal Blade</font>"
-        "DOTA_Tooltip_ability_item_jinghunzhiren_Description"    "Attack damage + 30%. Attack prevents target from mana recharging and Deathrattle triggering."
-        "DOTA_Tooltip_ability_item_jinghunzhiren_Note0"        "Only one Initial target affected by Diffusal debuff on Split Shot."
-	
 		"badge_title_sheep"		"Bug detector"
 		"badge_text_sheep"		"Master of Bugs, adding a touch of mischief to the Auto Chess adventure!"
-
 
     	"chess_bane"    	"Bane★"
     	"chess_bane1"    	"Bane★★"
@@ -4840,7 +4694,6 @@
     	"DOTA_Tooltip_ability_bane_fiends_grip_Description"    	"<h1>Active Skill: Activates at Full Mana</h1>Channeling Spell: Grabs a random enemy chess piece, rendering it unable to act and dealing<font color=\"#d8af54\"> pure damage</font>."
     	"DOTA_Tooltip_ability_bane_fiends_grip_Lore"        	"Victims of Atropos often suffer excruciating agony from the vivid illusions in their nightmares."
 
-    	"DOTA_Tooltip_modifier_ability_viper_viper_strike"    	"Viper Strike"
     	"DOTA_Tooltip_modifier_ability_viper_viper_strike"    	"Due to poisoning, attack speed is reduced and damage is taken over time."
 
     	"DOTA_Tooltip_ability_is_satyr_Description"	"<h1>SPECIES TRAIT: Fear </h1><font color=\"#656585\">Active when you have at least (N) different pieces on board. (Multiple effects stack.)</font><br><br>(2) Satyr: Allied Satyr chess pieces gain the effect: If there is more than 1 enemy nearby, they cause those enemies to lose control due to fear."
@@ -4861,7 +4714,6 @@
     	"DOTA_Tooltip_ability_item_shuijingjian_Description"	"Attacks have a 20%% chance to cause 200%% critical strike damage."
     	"DOTA_Tooltip_ability_smoke_screen_trigger"                	"Smoke Screen"
     	"DOTA_Tooltip_ability_smoke_screen_trigger_Description"    	"<h1>Passive Ability</h1>Hides your position during the preparation phase.\n<h1>Battlecry Ability: Activates before the battle starts</h1>Immediately throws a smoke bomb. If there are enemy chess pieces nearby, the smoke bomb will be thrown at the position of the Riki; otherwise, it will be thrown at the symmetrical center point of the board relative to Riki. Enemies within the smoke are <font color=\"#5cb85c\">silenced</font> and <font color=\"#5cb85c\">blinded</font>(attacks have a chance to miss)"
-
 
     	"h2a9"	"Presenter·Yellow"
 		"h2aa"	"Presenter·Blue"
@@ -4918,7 +4770,6 @@
 		"text_money_rm_token"			"Wheel of Wonder Token"
  
 		"text_relic_ttl"				"Relic Time-to-Live"
-		"DOTA_Tooltip_ability_item_rm_token"			"Wheel of Wonder Token"
 		"DOTA_Tooltip_ability_item_rm_token"					"<font color=\"#b0c3d9\">Wheel of Wonder Token</font>"
 		"DOTA_Tooltip_ability_item_rm_token_Description"			"A special Token for recruiting Discovered pieces, granted by Wheel of Wonder."
 		"DOTA_Tooltip_ability_item_rm_token_Lore"		"From: Wheel of Wonder"
@@ -4931,12 +4782,10 @@
 		"DOTA_Tooltip_ability_is_mech_Note0"		"Heart of the Machine: Refresh your recruitment panel for free."
 		"DOTA_Tooltip_ability_is_mech_Note1"		"Golden Heart of the Machine: DISCOVER a panel of 5 random Legendary chess pieces."
  
-		"DOTA_Tooltip_ability_item_common_token"			"Machine Token"
 		"DOTA_Tooltip_ability_item_common_token"					"<font color=\"#b0c3d9\">Machine Token</font>"
 		"DOTA_Tooltip_ability_item_common_token_Description"			"A special Token for recruiting Discovered pieces, granted by Heart of the Machine."
 		"DOTA_Tooltip_ability_item_common_token_Lore"		"From: Heart of the Machine"
 		"text_mima_no_common_token"			"Not enough Machine tokens"
-		"DOTA_Tooltip_ability_item_gold_token"			"Golden Machine Token"
 		"DOTA_Tooltip_ability_item_gold_token"					"<font color=\"#b0c3d9\">Golden Machine Token</font>"
 		"DOTA_Tooltip_ability_item_gold_token_Description"			"A special Token for recruiting Discovered pieces, granted by Golden Heart of the Machine."
 		"DOTA_Tooltip_ability_item_gold_token_Lore"		"From: Golden Heart of the Machine"
@@ -4951,7 +4800,6 @@
 		"DOTA_Tooltip_ability_item_egg_Lore"		"From Relic Box"
 		"DOTA_Tooltip_ability_item_egg_Note0"		"★★ for no less than 3 points, ★★★ for no less than 9 points."
 		"DOTA_Tooltip_ability_item_egg_Note1"		"Hatching points deduct pieces from the chess pool and will stop growing when there are no pieces in the chess pool."
-		"DOTA_Tooltip_ability_item_egg_Note2"		""
 		"DOTA_Tooltip_modifier_shining"					"Piece with Wonder"
 		"DOTA_Tooltip_modifier_shining_Description"		"Gained an extra synergy from Wheel of Wonder"
 		"notice_add_synergy1"		"Discovered  <chess> with an extra Race "
@@ -5102,7 +4950,6 @@
 		"text_get_season_award"					"Claim Rewards"
 		"text_get_season_award_unavailable"		"Unavailable"
 
-
 		"b211"		"Crownfall Palace"
 		"DOTA_Tooltip_ability_is_shaman_Note0"					"Transformed chess pieces levels will not exceed the current level of the courier. Transformation takes 1.5 seconds to cast."
 		"DOTA_Tooltip_ability_is_aqir_Note1"	"The higher the level of the infected friendly chess piece, the higher the level of the summoned Aqir piece.Rank 1 effect summons the same-level piece as the dying chess piece. Rank 2 summons a chess piece that can be 1 level higher than the dying chess piece, randomly."
@@ -5129,7 +4976,6 @@
 
 		"DOTA_Tooltip_ability_item_more_creep"	"<font color=\"#ade55c\">March of The Beasts</font>"
 		"item_more_creep"	"March of the Beasts"
-		"DOTA_Tooltip_modifier_more_creep"	"March of the Beasts"
 		"DOTA_Tooltip_ability_item_more_creep_Lore"	"From Relic Box"
 		"DOTA_Tooltip_modifier_more_creep"					"March of the Beasts"
 		"DOTA_Tooltip_modifier_more_creep_Description"		"All creeps duplicate themselves and counted as level +1"
@@ -5147,10 +4993,6 @@
 		"DOTA_Tooltip_ability_item_both_leaves_Lore"			"From: Relicbox"
 		"DOTA_Tooltip_ability_is_dwarf_Description"	"<h1>Species Trait: Take Aim</h1><font color=\"#656585\">Active when you have at least (N) different Dwarf pieces on board. (Multiple effects stack)</font><br><br>(2) Dwarves: All dwarves’ attack range +200, physical damage deals 15%% increased damage for every 1 square away from the target."
 
-		"item_zhusidoupeng"				"Gossamer Cape"
-		"DOTA_Tooltip_ability_item_zhusidoupeng"	"<font color=\"#b0c3d9\">Gossamer Cape</font>"
-		"DOTA_Tooltip_ability_item_zhusidoupeng_Description"	"Its owner and his summoned units all immune to mind control."
-	
 		"DOTA_Tooltip_ability_is_elf_Description"	"<h1>Species Trait: Evasion</h1><font color=\"#656585\">Active when you have at least (N) different Elf pieces on board. (Multiple effects stack)</font><br><br>(3) Elves: All friendly elves have +25%% evasion.<br>(6) Elves: All friendly elves have +40%% evasion.<br>(9) Elves: Friendly elves gain the effect: Dodging any attack will conceal itself for 1 second and create a mirrored attack from the attacker, targeting the enemy."
 
 		"item_minglingshu"			"Necronomicon"
@@ -5191,7 +5033,8 @@
 
         "text_mima_no_gold"			"Not Enough Mana"
 
-		"DOTA_Tooltip_ability_primal_beast_pulverize_lua"	"Pulverize"		"DOTA_Tooltip_ability_primal_beast_pulverize_lua_Description"	"<h1>Active Targeted ability: Activates on full mana</h1>Primal Beast channels his rage, grabbing a nearby victim with highest HP and slamming them into the ground repeatedly, <font color=\"#a02d27\">damaging</font> and <font color=\"#5cb85c\">ministunning</font> any enemy caught in the AoE."
+		"DOTA_Tooltip_ability_primal_beast_pulverize_lua"	"Pulverize"
+		"DOTA_Tooltip_ability_primal_beast_pulverize_lua_Description"	"<h1>Active Targeted ability: Activates on full mana</h1>Primal Beast channels his rage, grabbing a nearby victim with highest HP and slamming them into the ground repeatedly, <font color=\"#a02d27\">damaging</font> and <font color=\"#5cb85c\">ministunning</font> any enemy caught in the AoE."
 		"DOTA_Tooltip_ability_primal_beast_pulverize_lua_channel_time"		"Channel Time:"
 		"DOTA_Tooltip_ability_primal_beast_pulverize_lua_splash_radius"		"Radius: "
 		"DOTA_Tooltip_ability_primal_beast_pulverize_lua_interval"			"Interval: "
@@ -5220,9 +5063,7 @@
 
 		"DOTA_Tooltip_ability_item_rm_wheel_of_wonder_Note0" "Discovered pieces with Kobold or Dwarfs may not work due to their species constraints."
 
-
 		"DOTA_Tooltip_ability_bh_shuriken_Description"			"<h1>Targeted Passive Ability</h1>Gets a bag of gold when killing an enemy for the first time\n<h1>Active ability: Activates at Full Mana</h1>throws a deadly dart at the enemy chess piece with the lowest health, dealing <font color=\"#5a91cd\">magical damage</font>and a brief <font color=\"#5cb85c\">Stun</font>."
-
 
 		"h164" "Worm Sheriff·Green"
         "h2ag" "Worm Sheriff·Blue"
@@ -5231,9 +5072,6 @@
         "badge_title_bug"    "Badge: Bug Detector"
         "badge_text_bug"    "Great contribution in detecting bugs in Dota Auto Chess"
         
-
-
-
 		"season_s37"			"S37 Thunder Trace Lei Rong"
 		"badge_title_s37"		"S37 - Thunder Trace Lei Rong"
 		"badge_text_s37"		"Badge awarded to players with excellent performance in DAC Season 37."
@@ -5321,7 +5159,6 @@
 		"DOTA_Tooltip_ability_item_cantie"					"<font color=\"#5e98d9\">Sliver</font>"
 		"DOTA_Tooltip_ability_item_cantie_Description"		"+25 damage.\nConsidered as Tier 3 Item."
 
-
 		"item_xiwa"						"Shivas Guard"
 		"DOTA_Tooltip_ability_item_xiwa"	"<font color=\"#4b69ff\">Shivas Guard</font>"
 		"DOTA_Tooltip_ability_item_xiwa_Description"	"+10 armor.\n<h1>Active ability: Instant</h1> Emits a freezing wave that slows the attack speed and healing effectiveness of enemies within 3 cells by 50%% for 5 seconds and deals 100 magical damage."
@@ -5366,7 +5203,6 @@
 		"DOTA_Tooltip_ability_ok_angel_physical_resist"			"Physical resist%:"
 		"DOTA_Tooltip_ability_ok_angel_heal"				"Heal:"
 
-		
 		"DOTA_Tooltip_ability_is_hunter_buff"	"(3) Hunter buff"
 		"DOTA_Tooltip_modifier_is_hunter_buff"	"Aimed Shot"
 		"DOTA_Tooltip_modifier_is_hunter_buff_Description"	"Penetrates evasion and reduces the armor of its victim."
@@ -5430,9 +5266,6 @@
 		"h3af"		"Mieee Officer·Red"
 		"h4a5"		"Mieee Officer·Gold"
 
-		"DOTA_Tooltip_ability_is_warlock_Description"	"Warlock pieces convert 25%% of their health into 50%% mana when a battle starts.\n<h1>Class Perk: Soul Leech</h1><font color=\"#656585\">Active when you have at least (N) different Warlock pieces on board. (Multiple effects stack)</font><br><br>(2) Warlocks: All allies have All allies have +5%% lifesteal from all damage dealt.<br>(4) Warlocks: All allies have All allies have +20%% lifesteal from all damage dealt.<br>(6) Warlocks: All ally warlocks steal a max health of 0.5x damage on every attack."
-
-
 		"chess_naix"	"Lifestealer☆"
 		"chess_naix1"	"Lifestealer☆☆"
 		"chess_naix11"	"Lifestealer☆☆☆"
@@ -5491,7 +5324,6 @@
 		"DOTA_Tooltip_ability_item_yongqizhiguang"					"<font color=\"#b0c3d9\">Spark of Courage</font>"
 		"DOTA_Tooltip_ability_item_yongqizhiguang_Description"		"Carrier deals +25%% damage to enemies level higher than or equal to carrier."
 
-
 		"h167"	"Momo·Green"
 		"h2aj"	"Momo·Blue"
 		"h3ag"	"Momo·Red"
@@ -5508,7 +5340,6 @@
 		"season_s40"			"S40 Dryad Season"
 		"badge_title_s40"		"S40 - Dryad Season"
 		"badge_text_s40"		"Badge awarded to players with excellent performance in DAC Season 40."
-
 
 		"DOTA_Tooltip_ability_om_multi_cast_aura"				"Multicast Aura"
 		"DOTA_Tooltip_ability_om_multi_cast_aura_Description"	"<h1>Aura</h1> Grants all allies around: Have a chance to recast its ability and gain a bloodlust effect with bonus attack speed."
@@ -5577,10 +5408,6 @@
 		"h3ah"    "Dryad·Pink"
 		"h4a7"    "Dryad·Red"
 
-		
-
-		
-
 		"item_aoshuxie"					"Arcane Boots"
 		"DOTA_Tooltip_ability_item_aoshuxie"	"<font color=\"#4b69ff\">Arcane Boots</font>"
 		"DOTA_Tooltip_ability_item_aoshuxie_Description"		"Fast movement.\n<h1>Active ability: Instant</h1>Restores 40 mana for all allies within the range.<br><br>Range: %max_distance%<br>"
@@ -5595,8 +5422,6 @@
 
 		"DOTA_Tooltip_ability_tiny_touzhi_Description"	"<h1>Passive Ability</h1>Gains 100 max health permanently if killed in a home battle.\n<h1>Active ability: Activates on Full Mana</h1>Grabs a nearby enemy, and launches it at the farthest enemy 3 squares away from the victim, or directly up into the air, to deal damage and stun where they land."
 
-		"badge_title_leaderboard_lineup_value"	"Champion Tops"
-		"badge_text_leaderboard_lineup_value"	"Badge awarded to players in Champion Rankings."
 		"badge_title_leaderboard_lineup_value"	"Lineup Tops"
 		"badge_text_leaderboard_lineup_value"	"Badge awarded to players in Lineup Rankings."
 		"badge_title_leaderboard_mvp_chess"		"Damage Star Tops"
@@ -5655,7 +5480,7 @@
 
 		"DOTA_Tooltip_ability_is_element_Description"	"<h1>Elemental Essence</h1><font color=\"#656585\">Active when you have at least (N) different Element pieces on board. (Multiple effects stack)</font><br><br>(2) Elements: All friendly elementals have +15%% chance to turn melee aggressors into stone for 3 sec.<br>(4) Elements: All allies have +15%% chance to turn melee and ranged aggressors into stone for 4 sec.<br>(6) Elements: Aggressors are stoned for 1 sec longer and take +100% damage."
 
-		"DOTA_Tooltip_ability_is_mage_Description"	"For every standing friendly Mage on the chessboard, Mage pieces receive +10%% bonus mana restoration, up to a maximum of 60%%.\n<h1>Class Perk: Magical Vulnerability</h1><font color=\"#656585\">Active when you have at least (N) different mage pieces on board. (Multiple effects stack) </font><br><br>(3) Mages: All enemies suffer -30%% magic resistance.<br>(6) Mages: All enemies suffer -35%% magic resistance.<br>(9) Mages: All enemies are cursed with frost incantation, which freezes them upon receiving magical damage. Lasts longer for more increased damage taken.  "
+		"DOTA_Tooltip_ability_is_mage_Description"	"For every standing friendly Mage on the chessboard, Mage pieces receive +10%% bonus mana restoration, up to a maximum of 60%%.\n<h1>Class Perk: Magical Vulnerability</h1><font color=\"#656585\">Active when you have at least (N) different mage pieces on board. (Multiple effects stack) </font><br><br>(3) Mages: All enemies suffer -30%% magic resistance.<br>(6) Mages: All enemies suffer -40%% magic resistance.<br>(9) Mages: All enemies are cursed with frost incantation, which freezes them upon receiving magical damage. Lasts longer for more increased damage taken.  "
 		"DOTA_Tooltip_ability_is_mage_Note0"		"Freeze duration equals to magical damage/400 with a minimum of 0.5s."
 
 		"item_fengkuangmianju"			"Mask of Madness"
@@ -5701,7 +5526,6 @@
 		"q053_title"	"Eight Immortals"
 		"q053" "Combine eight ★★★ pieces and finish in the top 3 in this game."
 
-
 		"DOTA_Tooltip_ability_is_undead_Note0"			"Only Base HP is affected by the effect of the reduction in maximum HP."
 
 		"DOTA_Tooltip_modifier_item_feijiangxiaomao_buff" 				"Ascetics Cap"
@@ -5724,9 +5548,6 @@
 		"DOTA_Tooltip_modifier_is_naga_buff_plus_ability_resist"            "Scale Armor"
 		"DOTA_Tooltip_modifier_is_naga_buff_plus_ability_resist_Description"        "Magical damage reduced"
 
-		"season_s43"			"S43 Stella Ranger"
-		"badge_title_s43"		"S43 - Stella Ranger"
-		"badge_text_s43"		"Badge awarded to players with excellent performance in DAC Season 43."
 		"h170"      "Arcade Hunter·Green"
 		"h2an"      "Arcade Hunter·Blue"
 		"h3aj"      "Arcade Hunter·Purple"
@@ -5791,7 +5612,7 @@
 		"DOTA_Tooltip_modifier_item_xingyunguazhui"						"Lucky Pendant"
 		"DOTA_Tooltip_modifier_item_xingyunguazhui_Description"			"Lucky"
 
-		"DOTA_Tooltip_ability_is_warrior_Description"			"Warriors have a double bonus from Fortified Armor while below 50%% health.\n<h1>Class Perk: Fortified Armor</h1><font color=\"#656585\">Active when you have at least (N) different Warrior pieces on board. (Multiple effects stack) </font><br><br>(3) Warriors: All friendly warriors have +3 armour.<br>(6) Warriors: All friendly warriors have +12 armour.<br>(9) Warriors: Reflect pure damage equivalent to (1.5x current armour) when taking physical and magical damage."
+		"DOTA_Tooltip_ability_is_warrior_Description"			"Warriors have a double bonus from Fortified Armor while below 50%% health.\n<h1>Class Perk: Fortified Armor</h1><font color=\"#656585\">Active when you have at least (N) different Warrior pieces on board. (Multiple effects stack) </font><br><br>(3) Warriors: All friendly warriors have +3 armour.<br>(6) Warriors: All friendly warriors have +11 armour.<br>(9) Warriors: Reflect pure damage equivalent to (1.5x current armour) when taking physical and magical damage."
 
 		"DOTA_Tooltip_ability_is_god_Description"	"<h1>SPECIES TRAIT: Overweening superiority</h1><font color=\"#656585\">Active when you have at least (N) different pieces of this species on board. (Multiple effects stack)</font><br><br>(2)Gods: All allies get the effect: skill cooldown time -40%%.<br>(4)Gods: All allies get the effect: skill cooldown time -40%%.<br>(6) Gods: All allies get the effect: Using skills that consume mana  will reduce the current remaining cooldown time of active abilities and items by 60%%."
 
@@ -5808,7 +5629,6 @@
 		"season_s44"			"S44 Crimson Monk"
 		"badge_title_s44"		"S44 - Crimson Monk"
 		"badge_text_s44"		"Badge awarded to players with excellent performance in DAC Season 44."
-
 
 		"DOTA_Tooltip_ability_grimstroke_stroke_of_fate_lua"					"Stroke of Fate"
 		"DOTA_Tooltip_ability_grimstroke_stroke_of_fate_lua_Description"		"<h1>BATTLECRY ABILITY: Activates on battle</h1>Grimstroke paints an ink trail, reducing the attack speed and mana regeneration of enemies on hit."
@@ -5858,9 +5678,7 @@
 		"DOTA_Tooltip_ability_ban_chess_Note1"	"Total dismissal cost scales with unit count of a given synergy, but the average cost per unit goes down progressively."
 		"item_bingyan"					"Eye of Skadi"
 		"DOTA_Tooltip_ability_item_bingyan"	"<font color=\"#e4ae39\">Eye of Skadi</font>"
-		"DOTA_Tooltip_ability_item_bingyan_Description"	"+600 max health.\nAttack speed, Move speed, mana restoration and healing effectiveness -50%%."
 		"DOTA_Tooltip_modifier_item_bingyan_2"				"Eye of Skadi"
-		"DOTA_Tooltip_modifier_item_bingyan_2_Description"	"Attack speed, Move speed, mana restoration and healing effectiveness reduced."
 		"DOTA_Tooltip_ability_is_assassin_Description"	"The first movement of Assassin pieces in each round causes Assassins to leap over to the back of the enemy lineup. The first blow after Backstab Leap is always a critical strike with a random bonus damage amplifier.\n<h1>Class Perk: Coup de Grace</h1><font color=\"#656585\">Active when you have at least (N) different Assassin pieces on board. (Multiple effects stack)</font><br><br>(3) Assassins: All friendly assassins have 15%% chance to critical hit for 250%% damage.<br>(6) Assassins: All assassins have 15%% chance to critical hit for 400%% damage.<br>(9) Assassins: All assassins refresh a Backstab Leap move after killing an enemy or a certain duration. This Backstab Leap always deals the maximum possible critical damage."
 		"item_remainder_seeker"			"Serendipity Compass"
 		"DOTA_Tooltip_ability_item_remainder_seeker"				"<font color=\"#ade55c\">Serendipity Compass</font>"
@@ -5873,7 +5691,6 @@
 		"h3al"    "Crimson Monk·Crimson"
 		"h4ab"    "Crimson Monk·Mushroom"
 
-		
 		"b213"            "Barrens"
 
         "title_is_host"                "Host Player"
@@ -5885,26 +5702,12 @@
         "badge_title_good_host"        "Awakening the Machine - Gold"
         "badge_text_good_host"        "The titanium machine sustains Drodo Islands flourishing prosperity."
 
-
 		"season_s45"			"S45 Grub 11"
 		"badge_title_s45"		"S45 - Grub 11"
 		"badge_text_s45"		"Badge awarded to players with excellent performance in DAC Season 45."
 
 		"npc_dota_hero_wisp"	"Dota Auto Chess"
 		"text_vip_activate_success"		"Auto Chess Pass Activated!<br>Expires: "
-		"text_vip_not_activated"		"Inactive"
-		"text_vip_not_active"		"Pass not activated"
-		"text_vip_active"		"Pass activated"
-		"text_vip_active_expire"		"Pass activated, expires on %s"
-		"text_vip_expire_days"		" (%s days left)"
-		"text_activate_pass"		"Activate Steam Pass"
-		"text_activate_pass_explain"		"If you bought the Auto Chess pass in Steam but it shows as not activated, click the button on the left to activate it."
-		"text_activate_pass_goto_store"		"Go to Store"
-		"text_activate_pass_hint"		"Click to activate the pass automatically. The shop and pass status refresh once it succeeds."
-		"text_activate_pass_success"		"Pass activated!"
-		"text_activate_pass_failed"		"Activation failed, please try again later."
-		"text_activate_pass_loading"		"Checking..."
-		"text_activate_pass_steam_private"		"Cannot activate right now: your Steam inventory is private."
 		"DOTA_Tooltip_ability_sil_silence_all"		"Global Silence"
 		"DOTA_Tooltip_ability_sil_silence_all_Description"		"<h1>Passive: Battle Cry</h1>At the start of combat, applies an undispellable <font color=\"#ffffff\">Silence</font> to every piece on the board that has mana, allies and enemies alike.\n<h1>Aura</h1>When an allied piece inside the aura lands an attack, it has a chance to unleash <font color=\"#ffffff\">Glaives of Wisdom</font>: silencing the target and dealing extra <font color=\"#5a91cd\">magic damage</font>."
 		"DOTA_Tooltip_ability_sil_silence_all_Lore"		"Nortrom's silence does not rob a foe of words; it robs them of the time to speak them."
@@ -5914,5 +5717,14 @@
 		"DOTA_Tooltip_ability_sil_silence_all_aura_duration"		"Aura Silence Duration: "
 		"DOTA_Tooltip_ability_sil_silence_all_aura_damage"		"Bonus Magic Damage: "
 		"DOTA_Tooltip_ability_sil_silence_all_Note0"		"Pieces without mana (no mana bar) are not silenced."
+
+		"chess_sil"    "Silencer★"
+		"chess_sil1"    "Silencer★★"
+		"chess_sil11"    "Silencer★★★"
+		"real_name_chess_sil"    "Nortrom"
+
+		"DOTA_Tooltip_ability_is_warlock_Description"    "Warlock pieces convert 25%% of their health into 50%% mana and dispel silence on themselves when a battle starts.\n<h1>Class Perk: Soul Leech</h1><font color=\"#656585\">Active when you have at least (N) different Warlock pieces on board. (Multiple effects stack)</font><br><br>(2) Warlocks: All allies have +5%% lifesteal from all damage dealt.<br>(4) Warlocks: All allies have +20%% lifesteal from all damage dealt.<br>(6) Warlocks: All ally warlocks steal a max health of 0.5x damage on every attack."
+		"DOTA_Tooltip_ability_item_bingyan_Description"	"+600 max health.\nAttack speed, Move speed, and healing effectiveness -50%%."
+		"DOTA_Tooltip_modifier_item_bingyan_2_Description"	"Attack speed, Move speed, and healing effectiveness reduced."
 	}
 }

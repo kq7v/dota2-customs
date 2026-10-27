@@ -66,6 +66,20 @@ CustomNetTables.SubscribeNetTableListener("game_info", SafeCallback("nt:game_inf
 CustomNetTables.SubscribeNetTableListener("chess_pool_table", SafeCallback("nt:chess_pool_table", ChessPoolTableChanged));
 CustomNetTables.SubscribeNetTableListener("player_id_table", SafeCallback("nt:player_id_table", PlayerIDTableChanged));
 
+// 通行证面板的「是否已激活」外观：
+//   未激活 -> 面板整体换灰色背景，各特权项的状态标签显示「未激活」
+//   已激活 -> 恢复金色背景和原来的「已启用 / 已解锁」文案
+// 面板上所有「已解锁 / 已启用 / 未解锁」状态角标：未激活通行证时统一显示「未激活」
+var VIP_PANEL_STATUS_LABELS = [
+    ['text_vip_roshan_status', '#text_vip_got'],
+    ['text_vip_board1_status', '#text_vip_got'],
+    ['text_vip_board2_status', '#text_vip_got'],
+    ['text_vip_avatar_status', '#text_vip_on'],
+    ['text_vip_bullet_status', '#text_vip_on'],
+    ['text_vip_firstwin_got_1', '#text_vip_ungot'],
+    ['text_vip_quest_got_1', '#text_vip_ungot'],
+];
+
 UpdateHeroIcon();
 ShowAllPlayerInfo();
 // refresh_shop_v5();
@@ -84,14 +98,12 @@ SetHotKey('L', ShowLineupShortCuts, HideLineupShortCuts);
 SetHotKey('J', TogglePetGPTStatus);
 
 //==========================================================
-// 调试：模拟断线重连（不需要按键，定时自动触发）
-//   （之前用 F8，但 F8 和 Dota2 默认快捷键冲突，会顺带触发商店购买并弹「金钱不足」，
-//     所以改成定时自动触发，完全不占按键）
+// 调试：模拟断线重连（不需要按键，定时自动触发；默认关闭）
 //   客户端发 debug_fake_reconnect -> 服务端复用 DAC:OnPlayerReconnected
 //   => 客户端会收到和真重连一样的下行事件（player_reconnect / set_petgpt_status /
 //      update_config / show_all_player_connect_status / sync_hp / 战利品弹窗…）
-// 注意：不会真的重建 Panorama HUD（那是引擎行为），但能覆盖这些"重连时序"崩溃
-// 发布时保持 false 即可（服务端还有一道 _G.DEBUG_FAKE_RECONNECT 开关）
+// 之前用 F8 会和 Dota2 默认快捷键冲突（会顺带触发商店购买弹「金钱不足」），所以改成定时器
+// 需要排查重连问题时把 DEBUG_FAKE_RECONNECT 改 true；发布必须保持 false
 //==========================================================
 var DEBUG_FAKE_RECONNECT = false;          // 总开关（调试时改 true，发布必须 false）
 var DEBUG_FAKE_RECONNECT_FIRST_DELAY = 6;  // 进图后多少秒第一次触发
@@ -197,19 +209,6 @@ function SafeCallback(name, fn) {
 var PORTRAIT_UNIT = Players.GetLocalPlayerPortraitUnit();
 var IS_SEASON_AWARD_AVAILABLE = true;
 
-// 通行证面板的「是否已激活」外观：
-//   未激活 -> 面板整体换灰色背景，各特权项的状态标签显示「未激活」
-//   已激活 -> 恢复金色背景和原来的「已启用 / 已解锁」文案
-// 面板上所有「已解锁 / 已启用 / 未解锁」状态角标：未激活通行证时统一显示「未激活」
-var VIP_PANEL_STATUS_LABELS = [
-    ['text_vip_roshan_status', '#text_vip_got'],
-    ['text_vip_board1_status', '#text_vip_got'],
-    ['text_vip_board2_status', '#text_vip_got'],
-    ['text_vip_avatar_status', '#text_vip_on'],
-    ['text_vip_bullet_status', '#text_vip_on'],
-    ['text_vip_firstwin_got_1', '#text_vip_ungot'],
-    ['text_vip_quest_got_1', '#text_vip_ungot'],
-];
 
 $('#text_chess_list_title').text = $.Localize('#' + 'chess_list') + ' (' + CHESS_COUNT + ')';
 
@@ -388,8 +387,8 @@ if (FindDotaHudElement('inventory')) {
         style: "width:60px;height:40px;vertical-align:top;horizontal-align:right;margin-top:-35px;margin-right:136px;position:0px 10px 0px;transition-duration:0.2s;transition-property:position;z-index:0;",
         hittest: 'true',
     });
-    HudStyle('petgpt_button', 'tooltip-position', 'top');
-    HudVisible('petgpt_button', false);
+    FindDotaHudElement('petgpt_button').style['tooltip-position'] = 'top';
+    FindDotaHudElement('petgpt_button').visible = false;
 
     SetPetGPTStatus({
         key: CLIENT_KEY,
@@ -950,6 +949,16 @@ function ShowLuaInfoOnScreen(info) {
     });
 }
 function GameInfoTableChanged(table, key, data) {
+    // 第二道保险：服务端的阵亡队伍表，按 team 反查玩家索引后压黑
+    if (key == 'death_team' && data) {
+        for (var dead_seat = 0; dead_seat < 8; dead_seat++) {
+            var seat_team = Players.GetTeam(dead_seat);
+            if (seat_team !== undefined && seat_team !== null && data[seat_team] === true) {
+                MarkPlayerDead(dead_seat);
+            }
+        }
+        RefreshDeadPlayerUI();
+    }
     if (key == 'round_info') {
         // ShowTableDataOnScreen(key,data);
         $('#round_info').text = ($.Localize('#text_top_round') || 'ROUND %round%').replace('%round%', data.round || '?');
@@ -1673,10 +1682,28 @@ function DACTableChanged(table, key, data) {
     }
     if (key == 'user_panel_ranking') {
     }
+    // 已阵亡玩家列表（服务端权威，断线重连会重推）
+    if (key == 'dead_player_list') {
+        DEAD_PLAYERS = {};
+        if (data && data.list) {
+            for (var dead_key in data.list) {
+                if (data.list[dead_key] === true || data.list[dead_key] === 1) {
+                    var dead_idx = parseInt(dead_key);
+                    if (!isNaN(dead_idx)) {
+                        DEAD_PLAYERS[dead_idx] = true;
+                    }
+                }
+            }
+        }
+        $.Msg('[DEAD] dead_player_list sync: ' + JSON.stringify(DEAD_PLAYERS));
+        RefreshDeadPlayerUI();
+    }
     // 个人信息显示
     if (key == 'player_info') {
         ShowAllPlayerInfo(data);
         refresh_shop_v5();
+        // 每次刷新玩家信息后，把已阵亡玩家重新压黑（防止被 ShowAllPlayerInfo 点亮）
+        RefreshDeadPlayerUI();
     }
 
     if (key == "show_all_player_connect_status") {
@@ -1694,6 +1721,8 @@ function DACTableChanged(table, key, data) {
                 }
             }
         }
+        // 连回来的人如果早就阵亡了，保持黑着
+        RefreshDeadPlayerUI();
     }
 }
 
@@ -3013,6 +3042,53 @@ function hide_lottery_content() {
 
 
 
+//==========================================================
+// 已阵亡玩家兜底：一旦判定死亡就一直保持「黑着」，断线重连/刷新都不会再亮
+//==========================================================
+var DEAD_PLAYERS = {};
+
+function MarkPlayerDead(player_index) {
+    if (player_index === undefined || player_index === null) {
+        return;
+    }
+    DEAD_PLAYERS[player_index] = true;
+}
+
+// 把「已阵亡」状态重新刷到右侧玩家列表上（黑掉 + FAILED + 小地图头像变暗）
+function RefreshDeadPlayerUI() {
+    for (var key in DEAD_PLAYERS) {
+        if (DEAD_PLAYERS[key] !== true) {
+            continue;
+        }
+        var idx = parseInt(key);
+        if (isNaN(idx)) {
+            continue;
+        }
+        var board = $('#outer_player_board_' + idx);
+        if (board) {
+            board.SetHasClass('unavailable', true);
+        }
+        var hp_text = $('#text_player_hp_' + idx);
+        if (hp_text) {
+            hp_text.text = 'FAILED';
+        }
+        var hp_bar = $('#player_hp_' + idx);
+        if (hp_bar) {
+            hp_bar.style['width'] = '0px';
+        }
+        try {
+            var team = Players.GetTeam(idx);
+            var avatar = FindDotaHudElement('minimap_player_avatar_team_' + team);
+            if (avatar) {
+                avatar.style['brightness'] = '0.1';
+                avatar.style['saturation'] = '0';
+            }
+        }
+        catch (e) {
+        }
+    }
+}
+
 function OnSyncHp(data) {
     data.player_id = GetPlayerIndexByPlayerID(data.player_id);
     if (data.player_id < 0 || data.player_id > 7) {
@@ -3021,7 +3097,13 @@ function OnSyncHp(data) {
     }
 
     $('#text_player_hp_' + (data.player_id)).text = Math.round(data.hp) + '%';
+    // 已判定阵亡的玩家：服务端血量数据不再生效（防断线重连后诈尸亮起来）
+    if (DEAD_PLAYERS[data.player_id] === true && data.hp > 0) {
+        RefreshDeadPlayerUI();
+        return;
+    }
     if (data.hp <= 0) {
+        MarkPlayerDead(data.player_id);
         $('#text_player_hp_' + (data.player_id)).text = "FAILED";
         $('#outer_player_board_' + (data.player_id)).SetHasClass('unavailable', true);
 
@@ -3101,10 +3183,12 @@ function OnPlayerReconnect(data) {
     $("#iconlist").style["position"] = "0px 0px 0px";
     $("#button_board_right").SetHasClass('invisible', false);
 
-    // （3）把右侧玩家列表中的自己亮起来？
+    // （3）把右侧玩家列表中的自己亮起来？（已阵亡的除外）
     if ($("#outer_player_board_" + data.id)) {
         $("#outer_player_board_" + data.id).style["opacity"] = "1";
     }
+    // 重连兜底：自己已经阵亡/已淘汰的话，保持黑着，别诈尸
+    RefreshDeadPlayerUI();
 
     // （4）显示棋子图鉴和装备图鉴
     FillChessListPanel();
@@ -4904,7 +4988,7 @@ function OnPlayerSelectUnit() {
     }
     // if (Players.GetTeam(Players.GetLocalPlayer()) == 1) {
     if (Game.GetPlayerInfo(Players.GetLocalPlayer()).player_team_id == 1) {
-        OnPlayerQueryUnit();
+        OnPlayerQueryUnit(null, true);
         return;
     }
     const unit = Players.GetLocalPlayerPortraitUnit();
@@ -5847,7 +5931,7 @@ function ShowUnitLevelPlus() {
                 if (FindDotaHudElement('ItemCombines') && FindDotaHudElement('ItemCombines').visible != true) {
                     GameUI.SelectUnit(player_hero, false);
                 }
-                OnPlayerQueryUnit();
+                OnPlayerQueryUnit(null, true);
             }
         }
 
@@ -5860,7 +5944,26 @@ function ShowUnitLevelPlus() {
 }
 
 var PORTRAIT_COURIER_PLAYER_ID = -1;
-function OnPlayerQueryUnit(keys) {
+//观战/空选中时 dota_player_update_query_unit 可能高频触发，
+//原实现每次要跑十几个 FindDotaHudElement（整棵树搜索），会明显掉帧，这里做限流
+var LAST_QUERY_UNIT_TIME = -1;
+var QUERY_UNIT_SKIPPED = 0;
+function OnPlayerQueryUnit(keys, force) {
+    var now = Game.GetGameTime();
+    if (force !== true && LAST_QUERY_UNIT_TIME >= 0 && (now - LAST_QUERY_UNIT_TIME) < 0.1) {
+        QUERY_UNIT_SKIPPED++;
+        if (QUERY_UNIT_SKIPPED % 100 === 1) {
+            $.Msg('[OB-DIAG] query_unit throttled, skipped=' + QUERY_UNIT_SKIPPED);
+        }
+        return;
+    }
+    LAST_QUERY_UNIT_TIME = now;
+
+    //观战什么也没选中：portrait unit 是 -1，后面的分支都会拿 -1 去查实体和 HUD，纯浪费
+    if (Players.GetLocalPlayerPortraitUnit() < 0) {
+        return;
+    }
+
     // if (keys.splitscreenplayer == Game.GetLocalPlayerID()) {
     if (GameUI.GetCameraYaw() != 0) {
         GameUI.SetCameraTarget(Players.GetLocalPlayerPortraitUnit());
@@ -5870,7 +5973,9 @@ function OnPlayerQueryUnit(keys) {
     var portrait_unit = Players.GetLocalPlayerPortraitUnit();
     if (portrait_unit == Players.GetPlayerHeroEntityIndex(Game.GetLocalPlayerID())) {
         // 选中自己信使
-        FindDotaHudElement('abilities').style['margin-left'] = '10px';
+        if (FindDotaHudElement('abilities')) {
+            FindDotaHudElement('abilities').style['margin-left'] = '10px';
+        }
         if (FindDotaHudElement('emotion_button')) {
             HudVisible('emotion_button', true);
         }
@@ -5917,7 +6022,9 @@ function OnPlayerQueryUnit(keys) {
         }
         if (Entities.GetTeamNumber(portrait_unit) == Players.GetTeam(Players.GetLocalPlayer())) {
             // 选中友方棋子
-            FindDotaHudElement('abilities').style['margin-left'] = '0px';
+            if (FindDotaHudElement('abilities')) {
+                FindDotaHudElement('abilities').style['margin-left'] = '0px';
+            }
             if (FindDotaHudElement('inventory_tpscroll_container')) {
                 FindDotaHudElement('inventory_tpscroll_container').visible = false;
             }
@@ -5935,7 +6042,9 @@ function OnPlayerQueryUnit(keys) {
             }
             if (Entities.IsHero(portrait_unit)) {
                 // 是信使，展示它的信使名字
-                FindDotaHudElement('abilities').style['margin-left'] = '10px';
+                if (FindDotaHudElement('abilities')) {
+                    FindDotaHudElement('abilities').style['margin-left'] = '10px';
+                }
                 UpdatePortraitCourierName(portrait_unit);
                 ShowDrodoCourierBuffContainer(Entities.GetTeamNumber(portrait_unit));
                 PORTRAIT_COURIER_PLAYER_ID = Entities.GetPlayerOwnerID(portrait_unit);
@@ -5944,7 +6053,9 @@ function OnPlayerQueryUnit(keys) {
                 ShowTalentTreeNew();
             }
             else {
-                FindDotaHudElement('abilities').style['margin-left'] = '0px';
+                if (FindDotaHudElement('abilities')) {
+                    FindDotaHudElement('abilities').style['margin-left'] = '0px';
+                }
                 HideDrodoCourierBuffContainer();
                 if (Entities.GetUnitName(portrait_unit) == 'egg') {
                     UpdatePortraitEggName(portrait_unit);
@@ -5959,7 +6070,9 @@ function OnPlayerQueryUnit(keys) {
     }
     // }
 }
-GameEvents.Subscribe("update_portrait_courier_name", SafeCallback("update_portrait_courier_name", OnPlayerQueryUnit));
+GameEvents.Subscribe("update_portrait_courier_name", SafeCallback("update_portrait_courier_name", function (keys) {
+    OnPlayerQueryUnit(keys, true);
+}));
 function UpdatePortraitCourierName(portrait_unit) {
     if (portrait_unit && FindDotaHudElement('UnitNameLabel')) {
         var data = CustomNetTables.GetTableValue("player_id_table", 'courier_' + Entities.GetPlayerOwnerID(portrait_unit));
@@ -6973,26 +7086,55 @@ function ShowChessDetail(chess) {
                 class: 'detail_top_right_line3',
             });
 
-            // 种族/职业
-            var chess_spec_class_arr = chess_spec_class.split(',');
-            if (chess_spec_class_arr && chess_spec_class_arr.length > 0) {
-                for (var i = 0; i < chess_spec_class_arr.length; i++) {
-                    var s = chess_spec_class_arr[i];
-                    $.CreatePanel('DOTAAbilityImage', detail_top_right_line3, "", {
-                        class: 'detail_top_right_line3_pic',
-                        abilityname: s,
-                        onmouseover: 'DOTAShowAbilityTooltip(' + s + ')',
-                        onmouseout: 'DOTAHideAbilityTooltip()',
-                    });
-                    $.CreatePanel('Label', detail_top_right_line3, "", {
-                        text: $.Localize('#DOTA_Tooltip_ability_' + s),
-                        style: 'margin-left: 5px;margin-right:15px;',
-                    });
+            // 种族/职业：小图标 + 名称，形如「人类 / 刺客」
+            var chess_spec_class_arr = [];
+            if (chess_spec_class != null && chess_spec_class.length > 0) {
+                chess_spec_class_arr = chess_spec_class.split(',');
+            }
+            // 给面板挂上「显示/隐藏羁绊技能 tooltip」的事件
+            function BindSpecTooltip(panel, spec_name) {
+                if (!panel) {
+                    return panel;
+                }
+                panel.SetPanelEvent('onmouseover', function () {
+                    $.DispatchEvent('DOTAShowAbilityTooltip', panel, spec_name);
+                });
+                panel.SetPanelEvent('onmouseout', function () {
+                    $.DispatchEvent('DOTAHideAbilityTooltip');
+                });
+                return panel;
+            }
 
+            var spec_shown = 0;
+            for (var i = 0; i < chess_spec_class_arr.length; i++) {
+                var s = chess_spec_class_arr[i];
+                if (!s || s === '') {
+                    continue;
                 }
-                if (chess == 'chess_rm') {
-                    detail_top_right_line3.SetHasClass('invisible', true);
+                // 两个以上用 / 分隔
+                if (spec_shown > 0) {
+                    $.CreatePanel('Label', detail_top_right_line3, "", {
+                        class: 'detail_top_right_line3_split',
+                        text: '/',
+                    });
                 }
+                var spec_icon = BindSpecTooltip($.CreatePanel('DOTAAbilityImage', detail_top_right_line3, "", {
+                    class: 'detail_top_right_line3_pic',
+                    abilityname: s,
+                }), s);
+                var spec_label = BindSpecTooltip($.CreatePanel('Label', detail_top_right_line3, "", {
+                    class: 'detail_top_right_line3_text',
+                }), s);
+                var spec_loc = $.Localize('#DOTA_Tooltip_ability_' + s);
+                // 缺本地化时 Localize 会原样返回 "#key"，这种情况退回显示技能名
+                if (!spec_loc || spec_loc.charAt(0) === '#') {
+                    spec_loc = s.replace('is_', '');
+                }
+                spec_label.text = spec_loc;
+                spec_shown++;
+            }
+            if (spec_shown === 0 || chess == 'chess_rm') {
+                detail_top_right_line3.SetHasClass('invisible', true);
             }
 
             // 分割线
@@ -7054,7 +7196,7 @@ function ShowChessDetail(chess) {
                 });
 
                 $.CreatePanel('Image', detail_prop_one, "", {
-                    // src: "s2r://panorama/images/hud/reborn/icon_damage_psd.vtex",
+                    src: "s2r://panorama/images/hud/reborn/icon_damage_psd.vtex",
                 });
                 $.CreatePanel('Label', detail_prop_one, "", {
                     text: $.Localize('#AttackDamage'),
@@ -7085,7 +7227,7 @@ function ShowChessDetail(chess) {
                     class: 'detail_prop_one',
                 });
                 $.CreatePanel('Image', detail_prop_one, "", {
-                    // src: "s2r://panorama/images/hud/reborn/icon_attack_speed2_psd.vtex",
+                    src: "s2r://panorama/images/hud/reborn/icon_attack_speed2_psd.vtex",
                 });
 
                 $.CreatePanel('Label', detail_prop_one, "", {
@@ -7097,7 +7239,7 @@ function ShowChessDetail(chess) {
                 });
 
                 $.CreatePanel('Image', detail_prop_one, "", {
-                    // src: "s2r://panorama/images/hud/reborn/icon_attack_range_psd.vtex",
+                    src: "s2r://panorama/images/hud/reborn/icon_attack_range_psd.vtex",
                     style: 'margin-left: 20px;',
                 });
 
@@ -7114,7 +7256,7 @@ function ShowChessDetail(chess) {
                     class: 'detail_prop_one',
                 });
                 $.CreatePanel('Image', detail_prop_one, "", {
-                    // src: "s2r://panorama/images/hud/reborn/icon_armor_psd.vtex",
+                    src: "s2r://panorama/images/hud/reborn/icon_armor_psd.vtex",
                 });
 
                 $.CreatePanel('Label', detail_prop_one, "", {
@@ -7125,7 +7267,7 @@ function ShowChessDetail(chess) {
                     text: chess_kv.ArmorPhysical || 0,
                 });
                 $.CreatePanel('Image', detail_prop_one, "", {
-                    // src: "s2r://panorama/images/hud/reborn/icon_magic_resist_psd.vtex",
+                    src: "s2r://panorama/images/hud/reborn/icon_magic_resist_psd.vtex",
                     style: 'margin-left: 20px;',
                 });
 
@@ -7267,7 +7409,7 @@ function ShowChessDetail(chess) {
                 }
                 if (have_manacost) {
                     $.CreatePanel('Image', ability_kv_prop_one, "", {
-                        // src: "s2r://panorama/images/status_icons/ability_manacost_icon_psd.vtex",
+                        src: "s2r://panorama/images/status_icons/ability_manacost_icon_psd.vtex",
                         style: 'margin-right:5px;',
                     });
                     for (var i = 0; i < v.length; i++) {
@@ -7299,7 +7441,7 @@ function ShowChessDetail(chess) {
                 }
 
                 $.CreatePanel('Image', ability_kv_prop_one, "", {
-                    // src: "s2r://panorama/images/status_icons/ability_cooldown_icon_psd.vtex",
+                    src: "s2r://panorama/images/status_icons/ability_cooldown_icon_psd.vtex",
                     style: 'margin-left:0px;margin-right:5px;',
                 });
 
@@ -10928,7 +11070,7 @@ if (IsOBing() == true) {
     OBSyncCurrCameraChessBoard();
 }
 function OBSyncCurrCameraChessBoard() {
-    $.Schedule(2, function () {
+    $.Schedule(3, function () {
         OBSyncCurrCameraChessBoard();
     });
     GameEvents.SendCustomGameEventToServer("request_damage_stat", {
@@ -10951,10 +11093,24 @@ function SyncCurrCameraChessBoard() {
     var length = 9999;
     var curr_team = Players.GetTeam(Players.GetLocalPlayer());
     for (var i = 6; i <= 14; i++) {
-        var l = GetLength2D(pos, CENTER_ENTITY_INDEX[i]);
+        var center = CENTER_ENTITY_INDEX[i];
+        if (center === undefined || center === null) {
+            // 该棋盘中心坐标还没下发（观战初期常见），原来会拿 undefined 去算距离并抛异常
+            continue;
+        }
+        var l = GetLength2D(pos, center);
         if (l < length) {
             curr_team = i;
             length = l;
+        }
+    }
+    // 迟滞：离当前棋盘没明显更远就不要来回切，
+    // 否则观战自由镜头小幅晃动会不停 reset_fow + 请求伤害统计（掉帧、画面抖）
+    var curr_center = CENTER_ENTITY_INDEX[CURR_CAMERA_TEAM_ID];
+    if (curr_center !== undefined && curr_center !== null) {
+        var curr_len = GetLength2D(pos, curr_center);
+        if (curr_len <= length + 400) {
+            return;
         }
     }
     // $.Msg('队伍'+curr_team+'最近！！');

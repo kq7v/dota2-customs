@@ -201,7 +201,8 @@ function modifier_sil_aura_buff:OnAttackLanded(keys)
 	end
 
 	--【2】沉默（已经处于沉默中就不重复上）
-	if target:HasModifier("modifier_sil_silence_all") == false then
+	--和战吼保持一致：只对有蓝条（有法力值）的目标生效，无蓝条棋子不吃沉默
+	if target:HasModifier("modifier_sil_silence_all") == false and target:GetMaxMana() > 0 then
 		local dur = ability:GetSpecialValueFor("aura_duration") or 2
 		ability:ApplyDataDrivenModifier(caster, target, "modifier_sil_silence_all", { duration = dur })
 	end

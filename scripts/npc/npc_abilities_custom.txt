@@ -3069,7 +3069,7 @@
 				"EffectAttachType"	"follow_overhead"
 				"Properties"
 				{
-					"MODIFIER_PROPERTY_PHYSICAL_ARMOR_BONUS"	"12"
+					"MODIFIER_PROPERTY_PHYSICAL_ARMOR_BONUS"	"11"
 				}
 				"EffectName"	"effect/zhanshi/1.vpcf"
 				"Passive"	"1"
@@ -3093,7 +3093,7 @@
 				"EffectAttachType"	"follow_overhead"
 				"Properties"
 				{
-					"MODIFIER_PROPERTY_PHYSICAL_ARMOR_BONUS"	"12"
+					"MODIFIER_PROPERTY_PHYSICAL_ARMOR_BONUS"	"11"
 				}
 				"EffectName"	"effect/zhanshi/1.vpcf"
 				"Passive"	"0"
@@ -3191,7 +3191,7 @@
 				"IsDebuff"	"1"
 				"Properties"
 				{
-					"MODIFIER_PROPERTY_MAGICAL_RESISTANCE_BONUS"	"-35"
+					"MODIFIER_PROPERTY_MAGICAL_RESISTANCE_BONUS"	"-40"
 				}
 				"Passive"	"1"
 			}

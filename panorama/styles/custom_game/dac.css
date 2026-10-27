@@ -9464,14 +9464,14 @@ DOTAHUDShop DOTAShopItem
 .detail_top
 {
 	width: 100%;
-	height: 180px;
+	height: 190px;
 	flow-children: right;
 }
 
 .detail_top_right
 {
 	width: 400px;
-	height: 180px;
+	height: 190px;
 	flow-children: down;
 }
 
@@ -9490,32 +9490,45 @@ DOTAHUDShop DOTAShopItem
 	text-shadow: 1px 1px 1px 1.0 #000000ff;
 	color: white;
 	margin-top: 5px;
-	line-height: 70px;
-	height: 130px;
+	line-height: 68px;
+	height: 74px;
 	overflow:squish noclip;
 	white-space: normal;
 }
 
 .detail_top_right_line3
 {
-	margin-top: 20px;
+	margin-top: 0px;
 	margin-bottom: 10px;
 	margin-left: 5px;
+	height: 34px;
 	flow-children: right;
 	vertical-align: bottom;
 }
 
 .detail_top_right_line3 Label
 {
-	font-size: 20px;
+	font-size: 22px;
+	vertical-align: center;
 	text-shadow: 1px 1px 1px 1.0 #000000ff;
-	color: #bbb;
+	color: #d8d8d8;
 }
 
 .detail_top_right_line3_pic
 {
-	width: 25px;
-	height: 25px;
+	width: 28px;
+	height: 28px;
+	margin-right: 6px;
+	vertical-align: center;
+}
+
+.detail_top_right_line3 .detail_top_right_line3_split
+{
+	font-size: 20px;
+	color: #8a8a8a;
+	margin-left: 6px;
+	margin-right: 10px;
+	vertical-align: center;
 }
 
 .detail_top_right_line4
