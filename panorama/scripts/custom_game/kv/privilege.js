@@ -830,7 +830,8 @@ GameUI.CustomUIConfig().privilege = {
 		"IsStackable": 0,
 		"AbilityValues": {
 			"count": 1,
-			"interval": 0.5
+			"interval": 0.5,
+			"damage": 20
 		}
 	},
 	"privilege_myth_013": {

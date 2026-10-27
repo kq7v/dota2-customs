@@ -12,25 +12,25 @@ GameUI.CustomUIConfig().hunt_intelligence = {
 	"1": {
 		diff: 1,
 		dungeon_diff: 16,
-		intelligence_drop: "110025:10:100|110025:20:20|110025:50:10|110025:100:5",
+		intelligence_drop: "110025:20:100|110025:50:10|110025:100:5",
 		level_max: 4
 	},
 	"2": {
 		diff: 2,
 		dungeon_diff: 17,
-		intelligence_drop: "110025:10:80|110025:20:32|110025:50:16|110025:100:8",
+		intelligence_drop: "110025:20:80|110025:50:16|110025:100:8",
 		level_max: 6
 	},
 	"3": {
 		diff: 3,
 		dungeon_diff: 18,
-		intelligence_drop: "110025:10:50|110025:20:40|110025:50:20|110025:100:10",
+		intelligence_drop: "110025:20:55|110025:50:20|110025:100:10",
 		level_max: 8
 	},
 	"4": {
 		diff: 4,
 		dungeon_diff: 19,
-		intelligence_drop: "110025:10:0|110025:20:60|110025:50:35|110025:100:10",
+		intelligence_drop: "110025:30:60|110025:40:20|110025:50:20|110025:60:20|110025:100:10",
 		level_max: 10
 	}
 };

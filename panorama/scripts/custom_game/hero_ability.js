@@ -244,4 +244,4 @@ function SetupTooltip() {
 (function () {
   tooltip_base.InitTooltipStyle(root);
   root.SetPanelEvent("ontooltiploaded", SetupTooltip);
-})();
+})();

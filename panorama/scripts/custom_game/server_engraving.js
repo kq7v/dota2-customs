@@ -270,4 +270,4 @@ libs.render(() => libs.createComponent(TooltipContents, {}), root);
 root.style.overflow = "noclip";
 root.GetParent().style.overflow = "noclip";
 root.GetParent().GetParent().style.overflow = "noclip";
-root.SetPanelEvent("ontooltiploaded", SetupTooltip);
+root.SetPanelEvent("ontooltiploaded", SetupTooltip);

@@ -2624,7 +2624,7 @@ const getSelectedHeroDetails = () => {
   const hero = selectedHero();
   if (hero === undefined) return "";
   const heroName = GetLocalization("#" + hero.heroName, hero.heroName);
-  return [`英雄：${heroName}`, `英雄ID：${hero.heroID}`, `combatPower：${Math.floor(hero.combatPower)}`, `privilegeFactor：${hero.privilegeFactor.toFixed(3)}`, `sharedDamageFactor：${hero.sharedDamageFactor.toFixed(3)}`, `attackDps（共享前）：${hero.attackDps.toFixed(2)}`, `skillDps（共享前）：${hero.skillDps.toFixed(2)}`, `ehp：${hero.ehp.toFixed(2)}`, `utilityScore：${hero.utilityScore.toFixed(2)}`, `attributes：${JSON.stringify(hero.attributes ?? {})}`].join("\n");
+  return [`英雄：${heroName}`, `英雄ID：${hero.heroID}`, `combatPower：${Math.floor(hero.combatPower)}`, `legacyCombatPower：${hero.legacyCombatPower === undefined ? "未提供" : Math.floor(hero.legacyCombatPower)}`, `offenseScore：${hero.offenseScore?.toFixed(2) ?? "未提供"}`, `defenseScore：${hero.defenseScore?.toFixed(2) ?? "未提供"}`, `privilegeFactor：${hero.privilegeFactor.toFixed(3)}`, `sharedDamageFactor：${hero.sharedDamageFactor.toFixed(3)}`, `attackDps（共享前）：${hero.attackDps.toFixed(2)}`, `skillDps（共享前）：${hero.skillDps.toFixed(2)}`, `ehp：${hero.ehp.toFixed(2)}`, `utilityScore：${hero.utilityScore.toFixed(2)}`, `attributes：${JSON.stringify(hero.attributes ?? {})}`].join("\n");
 };
 const CombatPowerPicker = () => {
   const result = solid_utils.createPlayerNetDataSignal("common", "combat_power");
@@ -2680,97 +2680,111 @@ const CombatPowerPicker = () => {
       }), null);
       libs.insert(_el$, libs.createComponent(libs.Show, {
         get when() {
+          return result()?.error;
+        },
+        get children() {
+          const _el$5 = libs.createElement("Label", {
+            get text() {
+              return libs.memo(() => result()?.error === "season_unavailable")() ? "战力查询失败：当前赛季信息不可用" : `战力查询失败：${result()?.error}`;
+            }
+          }, null);
+          libs.effect(_$p => libs.setProp(_el$5, "text", libs.memo(() => result()?.error === "season_unavailable")() ? "战力查询失败：当前赛季信息不可用" : `战力查询失败：${result()?.error}`, _$p));
+          return _el$5;
+        }
+      }), null);
+      libs.insert(_el$, libs.createComponent(libs.Show, {
+        get when() {
           return libs.memo(() => !!result())() && !result()?.error;
         },
         get children() {
           return [(() => {
-            const _el$5 = libs.createElement("Label", {
+            const _el$6 = libs.createElement("Label", {
               get text() {
                 return `玩家UID：${result()?.targetUID ?? 0}`;
               }
             }, null);
-            libs.effect(_$p => libs.setProp(_el$5, "text", `玩家UID：${result()?.targetUID ?? 0}`, _$p));
-            return _el$5;
+            libs.effect(_$p => libs.setProp(_el$6, "text", `玩家UID：${result()?.targetUID ?? 0}`, _$p));
+            return _el$6;
           })(), (() => {
-            const _el$6 = libs.createElement("Label", {
+            const _el$7 = libs.createElement("Label", {
               get text() {
                 return `总战力：${Math.floor(result()?.totalCombatPower ?? 0)}`;
               }
             }, null);
-            libs.effect(_$p => libs.setProp(_el$6, "text", `总战力：${Math.floor(result()?.totalCombatPower ?? 0)}`, _$p));
-            return _el$6;
+            libs.effect(_$p => libs.setProp(_el$7, "text", `总战力：${Math.floor(result()?.totalCombatPower ?? 0)}`, _$p));
+            return _el$7;
           })(), (() => {
-            const _el$7 = libs.createElement("Panel", {
+            const _el$8 = libs.createElement("Panel", {
                 flowChildren: "right",
                 marginTop: "8px",
                 marginBottom: "4px"
               }, null),
-              _el$8 = libs.createElement("Label", {
+              _el$9 = libs.createElement("Label", {
                 width: "60px",
                 text: "英雄ID"
-              }, _el$7),
-              _el$9 = libs.createElement("Label", {
+              }, _el$8),
+              _el$0 = libs.createElement("Label", {
                 width: "150px",
                 text: "英雄"
-              }, _el$7),
-              _el$0 = libs.createElement("Label", {
-                width: "80px",
-                text: "战力"
-              }, _el$7),
+              }, _el$8),
               _el$1 = libs.createElement("Label", {
                 width: "80px",
+                text: "战力"
+              }, _el$8),
+              _el$10 = libs.createElement("Label", {
+                width: "80px",
                 text: "操作"
-              }, _el$7);
-            libs.setProp(_el$7, "flowChildren", "right");
-            libs.setProp(_el$7, "marginTop", "8px");
-            libs.setProp(_el$7, "marginBottom", "4px");
-            libs.setProp(_el$8, "width", "60px");
-            libs.setProp(_el$9, "width", "150px");
-            libs.setProp(_el$0, "width", "80px");
+              }, _el$8);
+            libs.setProp(_el$8, "flowChildren", "right");
+            libs.setProp(_el$8, "marginTop", "8px");
+            libs.setProp(_el$8, "marginBottom", "4px");
+            libs.setProp(_el$9, "width", "60px");
+            libs.setProp(_el$0, "width", "150px");
             libs.setProp(_el$1, "width", "80px");
-            return _el$7;
+            libs.setProp(_el$10, "width", "80px");
+            return _el$8;
           })(), (() => {
-            const _el$10 = libs.createElement("Panel", {
+            const _el$11 = libs.createElement("Panel", {
               width: "100%",
               height: "180px",
               scroll: "y",
               flowChildren: "down"
             }, null);
-            libs.setProp(_el$10, "width", "100%");
-            libs.setProp(_el$10, "height", "180px");
-            libs.setProp(_el$10, "scroll", "y");
-            libs.setProp(_el$10, "flowChildren", "down");
-            libs.insert(_el$10, libs.createComponent(libs.For, {
+            libs.setProp(_el$11, "width", "100%");
+            libs.setProp(_el$11, "height", "180px");
+            libs.setProp(_el$11, "scroll", "y");
+            libs.setProp(_el$11, "flowChildren", "down");
+            libs.insert(_el$11, libs.createComponent(libs.For, {
               get each() {
                 return result()?.heroes ?? [];
               },
               children: hero => (() => {
-                const _el$32 = libs.createElement("Panel", {
+                const _el$36 = libs.createElement("Panel", {
                     flowChildren: "right"
                   }, null),
-                  _el$33 = libs.createElement("Label", {
+                  _el$37 = libs.createElement("Label", {
                     width: "60px",
                     get text() {
                       return String(hero.heroID);
                     }
-                  }, _el$32),
-                  _el$34 = libs.createElement("Label", {
+                  }, _el$36),
+                  _el$38 = libs.createElement("Label", {
                     width: "150px",
                     get text() {
                       return "#" + hero.heroName;
                     }
-                  }, _el$32),
-                  _el$35 = libs.createElement("Label", {
+                  }, _el$36),
+                  _el$39 = libs.createElement("Label", {
                     width: "80px",
                     get text() {
                       return String(Math.floor(hero.combatPower));
                     }
-                  }, _el$32);
-                libs.setProp(_el$32, "flowChildren", "right");
-                libs.setProp(_el$33, "width", "60px");
-                libs.setProp(_el$34, "width", "150px");
-                libs.setProp(_el$35, "width", "80px");
-                libs.insert(_el$32, libs.createComponent(EOM_Button.EOM_BaseButton, {
+                  }, _el$36);
+                libs.setProp(_el$36, "flowChildren", "right");
+                libs.setProp(_el$37, "width", "60px");
+                libs.setProp(_el$38, "width", "150px");
+                libs.setProp(_el$39, "width", "80px");
+                libs.insert(_el$36, libs.createComponent(EOM_Button.EOM_BaseButton, {
                   width: "80px",
                   height: "30px",
                   "class": "DemoButton",
@@ -2784,22 +2798,22 @@ const CombatPowerPicker = () => {
                   }
                 }), null);
                 libs.effect(_p$ => {
-                  const _v$9 = String(hero.heroID),
-                    _v$0 = "#" + hero.heroName,
-                    _v$1 = String(Math.floor(hero.combatPower));
-                  _v$9 !== _p$._v$9 && (_p$._v$9 = libs.setProp(_el$33, "text", _v$9, _p$._v$9));
-                  _v$0 !== _p$._v$0 && (_p$._v$0 = libs.setProp(_el$34, "text", _v$0, _p$._v$0));
-                  _v$1 !== _p$._v$1 && (_p$._v$1 = libs.setProp(_el$35, "text", _v$1, _p$._v$1));
+                  const _v$1 = String(hero.heroID),
+                    _v$10 = "#" + hero.heroName,
+                    _v$11 = String(Math.floor(hero.combatPower));
+                  _v$1 !== _p$._v$1 && (_p$._v$1 = libs.setProp(_el$37, "text", _v$1, _p$._v$1));
+                  _v$10 !== _p$._v$10 && (_p$._v$10 = libs.setProp(_el$38, "text", _v$10, _p$._v$10));
+                  _v$11 !== _p$._v$11 && (_p$._v$11 = libs.setProp(_el$39, "text", _v$11, _p$._v$11));
                   return _p$;
                 }, {
-                  _v$9: undefined,
-                  _v$0: undefined,
-                  _v$1: undefined
+                  _v$1: undefined,
+                  _v$10: undefined,
+                  _v$11: undefined
                 });
-                return _el$32;
+                return _el$36;
               })()
             }));
-            return _el$10;
+            return _el$11;
           })()];
         }
       }), null);
@@ -2808,7 +2822,7 @@ const CombatPowerPicker = () => {
           return selectedHero();
         },
         get children() {
-          const _el$11 = libs.createElement("Panel", {
+          const _el$12 = libs.createElement("Panel", {
               width: "100%",
               height: "fill-parent-flow(1)",
               marginTop: "8px",
@@ -2817,153 +2831,170 @@ const CombatPowerPicker = () => {
               flowChildren: "down",
               backgroundColor: "#182333"
             }, null),
-            _el$12 = libs.createElement("Panel", {
+            _el$13 = libs.createElement("Panel", {
               flowChildren: "right",
               "class": "Row"
-            }, _el$11),
-            _el$13 = libs.createElement("Label", {
+            }, _el$12),
+            _el$14 = libs.createElement("Label", {
               get text() {
                 return `英雄详情：#${selectedHero()?.heroName ?? ""}（${selectedHero()?.heroID ?? 0}）`;
               }
-            }, _el$12),
-            _el$17 = libs.createElement("Panel", {
+            }, _el$13),
+            _el$18 = libs.createElement("Panel", {
               flowChildren: "right"
-            }, _el$11),
-            _el$18 = libs.createElement("Label", {
+            }, _el$12),
+            _el$19 = libs.createElement("Label", {
               width: "180px",
               get text() {
                 return `combatPower：${Math.floor(selectedHero()?.combatPower ?? 0)}`;
               }
-            }, _el$17),
-            _el$19 = libs.createElement("Label", {
+            }, _el$18),
+            _el$20 = libs.createElement("Label", {
               width: "180px",
               get text() {
                 return `privilegeFactor：${(selectedHero()?.privilegeFactor ?? 0).toFixed(3)}`;
               }
-            }, _el$17),
-            _el$20 = libs.createElement("Panel", {
-              flowChildren: "right"
-            }, _el$11),
+            }, _el$18),
             _el$21 = libs.createElement("Label", {
+              get text() {
+                return `旧公式战力：${selectedHero()?.legacyCombatPower?.toFixed(0) ?? "未提供"}`;
+              }
+            }, _el$12),
+            _el$22 = libs.createElement("Label", {
+              get text() {
+                return `输出评分：${selectedHero()?.offenseScore?.toFixed(2) ?? "未提供"}；防御评分：${selectedHero()?.defenseScore?.toFixed(2) ?? "未提供"}`;
+              }
+            }, _el$12),
+            _el$23 = libs.createElement("Panel", {
+              flowChildren: "right"
+            }, _el$12),
+            _el$24 = libs.createElement("Label", {
               width: "180px",
               get text() {
                 return `sharedDamageFactor：${(selectedHero()?.sharedDamageFactor ?? 1).toFixed(3)}`;
               }
-            }, _el$20),
-            _el$22 = libs.createElement("Panel", {
-              flowChildren: "right"
-            }, _el$11),
-            _el$23 = libs.createElement("Label", {
-              width: "180px",
-              get text() {
-                return `attackDps（共享前）：${(selectedHero()?.attackDps ?? 0).toFixed(2)}`;
-              }
-            }, _el$22),
-            _el$24 = libs.createElement("Label", {
-              width: "180px",
-              get text() {
-                return `skillDps（共享前）：${(selectedHero()?.skillDps ?? 0).toFixed(2)}`;
-              }
-            }, _el$22),
+            }, _el$23),
             _el$25 = libs.createElement("Panel", {
               flowChildren: "right"
-            }, _el$11),
+            }, _el$12),
             _el$26 = libs.createElement("Label", {
               width: "180px",
               get text() {
-                return `ehp：${(selectedHero()?.ehp ?? 0).toFixed(2)}`;
+                return `attackDps（共享前）：${(selectedHero()?.attackDps ?? 0).toFixed(2)}`;
               }
             }, _el$25),
             _el$27 = libs.createElement("Label", {
               width: "180px",
               get text() {
+                return `skillDps（共享前）：${(selectedHero()?.skillDps ?? 0).toFixed(2)}`;
+              }
+            }, _el$25),
+            _el$28 = libs.createElement("Panel", {
+              flowChildren: "right"
+            }, _el$12),
+            _el$29 = libs.createElement("Label", {
+              width: "180px",
+              get text() {
+                return `ehp：${(selectedHero()?.ehp ?? 0).toFixed(2)}`;
+              }
+            }, _el$28),
+            _el$30 = libs.createElement("Label", {
+              width: "180px",
+              get text() {
                 return `utilityScore：${(selectedHero()?.utilityScore ?? 0).toFixed(2)}`;
               }
-            }, _el$25);
+            }, _el$28);
             libs.createElement("Label", {
               text: "总战力 = 属性战力 × (1 + privilegeFactor)"
-            }, _el$11);
+            }, _el$12);
             libs.createElement("Label", {
-              text: "属性战力 = floor(max(0, (attackDps × 1 + skillDps × 1) × sharedDamageFactor + ehp × 1 + utilityScore × 1))"
-            }, _el$11);
-            const _el$30 = libs.createElement("Panel", {
+              text: "输出评分 = (attackDps + skillDps) × sharedDamageFactor；防御评分 = ehp"
+            }, _el$12);
+            libs.createElement("Label", {
+              text: "属性战力 = floor(max(0, 2 × √(输出评分 × 防御评分) + utilityScore))"
+            }, _el$12);
+            const _el$34 = libs.createElement("Panel", {
               flowChildren: "down",
               width: "100%"
-            }, _el$11);
+            }, _el$12);
             libs.createElement("Label", {
               text: "attributes："
-            }, _el$30);
-          libs.setProp(_el$11, "width", "100%");
-          libs.setProp(_el$11, "height", "fill-parent-flow(1)");
-          libs.setProp(_el$11, "marginTop", "8px");
-          libs.setProp(_el$11, "padding", "8px");
-          libs.setProp(_el$11, "scroll", "y");
-          libs.setProp(_el$11, "flowChildren", "down");
-          libs.setProp(_el$11, "backgroundColor", "#182333");
-          libs.setProp(_el$12, "flowChildren", "right");
-          libs.insert(_el$12, libs.createComponent(EOM_Button.EOM_BaseButton, {
+            }, _el$34);
+          libs.setProp(_el$12, "width", "100%");
+          libs.setProp(_el$12, "height", "fill-parent-flow(1)");
+          libs.setProp(_el$12, "marginTop", "8px");
+          libs.setProp(_el$12, "padding", "8px");
+          libs.setProp(_el$12, "scroll", "y");
+          libs.setProp(_el$12, "flowChildren", "down");
+          libs.setProp(_el$12, "backgroundColor", "#182333");
+          libs.setProp(_el$13, "flowChildren", "right");
+          libs.insert(_el$13, libs.createComponent(EOM_Button.EOM_BaseButton, {
             id: "Copy",
             onactivate: () => {
               $.DispatchEvent("CopyStringToClipboard", getSelectedHeroDetails(), null);
             },
             get children() {
-              const _el$14 = libs.createElement("Panel", {
+              const _el$15 = libs.createElement("Panel", {
                   align: "center center"
                 }, null);
                 libs.createElement("Panel", {
                   id: "Copy1"
-                }, _el$14);
+                }, _el$15);
                 libs.createElement("Panel", {
                   id: "Copy2"
-                }, _el$14);
-              libs.setProp(_el$14, "align", "center center");
-              return _el$14;
+                }, _el$15);
+              libs.setProp(_el$15, "align", "center center");
+              return _el$15;
             }
           }), null);
-          libs.setProp(_el$17, "flowChildren", "right");
-          libs.setProp(_el$18, "width", "180px");
+          libs.setProp(_el$18, "flowChildren", "right");
           libs.setProp(_el$19, "width", "180px");
-          libs.setProp(_el$20, "flowChildren", "right");
-          libs.setProp(_el$21, "width", "180px");
-          libs.setProp(_el$22, "flowChildren", "right");
-          libs.setProp(_el$23, "width", "180px");
+          libs.setProp(_el$20, "width", "180px");
+          libs.setProp(_el$23, "flowChildren", "right");
           libs.setProp(_el$24, "width", "180px");
           libs.setProp(_el$25, "flowChildren", "right");
           libs.setProp(_el$26, "width", "180px");
           libs.setProp(_el$27, "width", "180px");
-          libs.setProp(_el$30, "flowChildren", "down");
-          libs.setProp(_el$30, "width", "100%");
-          libs.insert(_el$30, libs.createComponent(libs.For, {
+          libs.setProp(_el$28, "flowChildren", "right");
+          libs.setProp(_el$29, "width", "180px");
+          libs.setProp(_el$30, "width", "180px");
+          libs.setProp(_el$34, "flowChildren", "down");
+          libs.setProp(_el$34, "width", "100%");
+          libs.insert(_el$34, libs.createComponent(libs.For, {
             get each() {
               return Object.entries(selectedHero()?.attributes ?? {});
             },
             children: entry => (() => {
-              const _el$37 = libs.createElement("Label", {
+              const _el$41 = libs.createElement("Label", {
                 get text() {
                   return `${entry[0]}：${entry[1]}`;
                 }
               }, null);
-              libs.effect(_$p => libs.setProp(_el$37, "text", `${entry[0]}：${entry[1]}`, _$p));
-              return _el$37;
+              libs.effect(_$p => libs.setProp(_el$41, "text", `${entry[0]}：${entry[1]}`, _$p));
+              return _el$41;
             })()
           }), null);
           libs.effect(_p$ => {
             const _v$ = `英雄详情：#${selectedHero()?.heroName ?? ""}（${selectedHero()?.heroID ?? 0}）`,
               _v$2 = `combatPower：${Math.floor(selectedHero()?.combatPower ?? 0)}`,
               _v$3 = `privilegeFactor：${(selectedHero()?.privilegeFactor ?? 0).toFixed(3)}`,
-              _v$4 = `sharedDamageFactor：${(selectedHero()?.sharedDamageFactor ?? 1).toFixed(3)}`,
-              _v$5 = `attackDps（共享前）：${(selectedHero()?.attackDps ?? 0).toFixed(2)}`,
-              _v$6 = `skillDps（共享前）：${(selectedHero()?.skillDps ?? 0).toFixed(2)}`,
-              _v$7 = `ehp：${(selectedHero()?.ehp ?? 0).toFixed(2)}`,
-              _v$8 = `utilityScore：${(selectedHero()?.utilityScore ?? 0).toFixed(2)}`;
-            _v$ !== _p$._v$ && (_p$._v$ = libs.setProp(_el$13, "text", _v$, _p$._v$));
-            _v$2 !== _p$._v$2 && (_p$._v$2 = libs.setProp(_el$18, "text", _v$2, _p$._v$2));
-            _v$3 !== _p$._v$3 && (_p$._v$3 = libs.setProp(_el$19, "text", _v$3, _p$._v$3));
+              _v$4 = `旧公式战力：${selectedHero()?.legacyCombatPower?.toFixed(0) ?? "未提供"}`,
+              _v$5 = `输出评分：${selectedHero()?.offenseScore?.toFixed(2) ?? "未提供"}；防御评分：${selectedHero()?.defenseScore?.toFixed(2) ?? "未提供"}`,
+              _v$6 = `sharedDamageFactor：${(selectedHero()?.sharedDamageFactor ?? 1).toFixed(3)}`,
+              _v$7 = `attackDps（共享前）：${(selectedHero()?.attackDps ?? 0).toFixed(2)}`,
+              _v$8 = `skillDps（共享前）：${(selectedHero()?.skillDps ?? 0).toFixed(2)}`,
+              _v$9 = `ehp：${(selectedHero()?.ehp ?? 0).toFixed(2)}`,
+              _v$0 = `utilityScore：${(selectedHero()?.utilityScore ?? 0).toFixed(2)}`;
+            _v$ !== _p$._v$ && (_p$._v$ = libs.setProp(_el$14, "text", _v$, _p$._v$));
+            _v$2 !== _p$._v$2 && (_p$._v$2 = libs.setProp(_el$19, "text", _v$2, _p$._v$2));
+            _v$3 !== _p$._v$3 && (_p$._v$3 = libs.setProp(_el$20, "text", _v$3, _p$._v$3));
             _v$4 !== _p$._v$4 && (_p$._v$4 = libs.setProp(_el$21, "text", _v$4, _p$._v$4));
-            _v$5 !== _p$._v$5 && (_p$._v$5 = libs.setProp(_el$23, "text", _v$5, _p$._v$5));
+            _v$5 !== _p$._v$5 && (_p$._v$5 = libs.setProp(_el$22, "text", _v$5, _p$._v$5));
             _v$6 !== _p$._v$6 && (_p$._v$6 = libs.setProp(_el$24, "text", _v$6, _p$._v$6));
             _v$7 !== _p$._v$7 && (_p$._v$7 = libs.setProp(_el$26, "text", _v$7, _p$._v$7));
             _v$8 !== _p$._v$8 && (_p$._v$8 = libs.setProp(_el$27, "text", _v$8, _p$._v$8));
+            _v$9 !== _p$._v$9 && (_p$._v$9 = libs.setProp(_el$29, "text", _v$9, _p$._v$9));
+            _v$0 !== _p$._v$0 && (_p$._v$0 = libs.setProp(_el$30, "text", _v$0, _p$._v$0));
             return _p$;
           }, {
             _v$: undefined,
@@ -2973,9 +3004,11 @@ const CombatPowerPicker = () => {
             _v$5: undefined,
             _v$6: undefined,
             _v$7: undefined,
-            _v$8: undefined
+            _v$8: undefined,
+            _v$9: undefined,
+            _v$0: undefined
           });
-          return _el$11;
+          return _el$12;
         }
       }), null);
       return _el$;

@@ -39,7 +39,7 @@ function k.prototype.EventListener(self)
 				and m.shield > 0
 			then
 				self.nextTime = n + self.interval
-				o:LightningStorm(m.damageEvent.attacker, m.shield)
+				o:LightningStorm(m.damageEvent.attacker, self:GetSpecialValueFor("damage"))
 			end
 		end,
 	}

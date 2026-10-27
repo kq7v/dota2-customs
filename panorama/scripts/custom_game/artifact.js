@@ -69,4 +69,4 @@ function SetupTooltip() {
 (function () {
   tooltip_base.InitTooltipStyle(root, "EmptyTooltip");
   root.SetPanelEvent("ontooltiploaded", SetupTooltip);
-})();
+})();

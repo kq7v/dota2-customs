@@ -110,7 +110,7 @@ function formatClearTime(totalTime) {
   }
   return `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
 }
-function openPlayerInfo(rankData, playerID, self = false) {
+function openPlayerInfo$1(rankData, playerID, self = false) {
   const playerExtraData = getPlayerExtraData(rankData, playerID);
   if (playerID == "" || playerExtraData?.invalid_name == "1" || playerExtraData?.is_robot == "1") {
     return;
@@ -454,7 +454,7 @@ function TopRankCard(props) {
           },
           playerID: playerID,
           "class": "TopRankAvatar",
-          onactivate: () => openPlayerInfo(props.rankData, playerID)
+          onactivate: () => openPlayerInfo$1(props.rankData, playerID)
         }));
         return _el$17;
       })()
@@ -650,7 +650,7 @@ function RankRow(props) {
           get self() {
             return props.self;
           },
-          onactivate: () => openPlayerInfo(rankData(), playerID, props.self)
+          onactivate: () => openPlayerInfo$1(rankData(), playerID, props.self)
         }));
         return _el$34;
       })()
@@ -843,12 +843,24 @@ function PlayerAvatar(props) {
           }
         }), (() => {
           const _el$5 = libs.createElement("Panel", {
-            "class": "TipsArea"
+            "class": "TipsArea",
+            get onactivate() {
+              return props.onactivate;
+            }
           }, null);
-          libs.effect(_$p => libs.setProp(_el$5, "customTooltip", accountID() === "0" ? undefined : {
-            name: "player_info",
-            steam_id: accountID()
-          }, _$p));
+          libs.effect(_p$ => {
+            const _v$ = accountID() === "0" ? undefined : {
+                name: "player_info",
+                steam_id: accountID()
+              },
+              _v$2 = props.onactivate;
+            _v$ !== _p$._v$ && (_p$._v$ = libs.setProp(_el$5, "customTooltip", _v$, _p$._v$));
+            _v$2 !== _p$._v$2 && (_p$._v$2 = libs.setProp(_el$5, "onactivate", _v$2, _p$._v$2));
+            return _p$;
+          }, {
+            _v$: undefined,
+            _v$2: undefined
+          });
           return _el$5;
         })()];
       }
@@ -911,7 +923,8 @@ function LadderLobbyBigChartItem(props) {
       },
       get borderID() {
         return local.rankData?.borderID;
-      }
+      },
+      onactivate: () => openPlayerInfo(local.rankData?.accountID)
     }), _el$10);
     libs.insert(_el$10, libs.createComponent(libs.Show, {
       get when() {
@@ -976,29 +989,42 @@ function LadderChartRowHeader() {
         }
       }, _el$22);
     libs.effect(_p$ => {
-      const _v$ = GetLocalization("#LadderChart_LadderNumber"),
-        _v$2 = GetLocalization("#LadderChart_LadderPlayer"),
-        _v$3 = GetLocalization("#LadderChart_LadderPower"),
-        _v$4 = GetLocalization(`#Ladder_Tips2`),
-        _v$5 = GetLocalization("#LadderChart_LadderScore"),
-        _v$6 = GetLocalization(`#Ladder_Tips3`);
-      _v$ !== _p$._v$ && (_p$._v$ = libs.setProp(_el$17, "text", _v$, _p$._v$));
-      _v$2 !== _p$._v$2 && (_p$._v$2 = libs.setProp(_el$19, "text", _v$2, _p$._v$2));
-      _v$3 !== _p$._v$3 && (_p$._v$3 = libs.setProp(_el$21, "text", _v$3, _p$._v$3));
-      _v$4 !== _p$._v$4 && (_p$._v$4 = libs.setProp(_el$21, "tooltip_text", _v$4, _p$._v$4));
-      _v$5 !== _p$._v$5 && (_p$._v$5 = libs.setProp(_el$23, "text", _v$5, _p$._v$5));
-      _v$6 !== _p$._v$6 && (_p$._v$6 = libs.setProp(_el$23, "tooltip_text", _v$6, _p$._v$6));
+      const _v$3 = GetLocalization("#LadderChart_LadderNumber"),
+        _v$4 = GetLocalization("#LadderChart_LadderPlayer"),
+        _v$5 = GetLocalization("#LadderChart_LadderPower"),
+        _v$6 = GetLocalization(`#Ladder_Tips2`),
+        _v$7 = GetLocalization("#LadderChart_LadderScore"),
+        _v$8 = GetLocalization(`#Ladder_Tips3`);
+      _v$3 !== _p$._v$3 && (_p$._v$3 = libs.setProp(_el$17, "text", _v$3, _p$._v$3));
+      _v$4 !== _p$._v$4 && (_p$._v$4 = libs.setProp(_el$19, "text", _v$4, _p$._v$4));
+      _v$5 !== _p$._v$5 && (_p$._v$5 = libs.setProp(_el$21, "text", _v$5, _p$._v$5));
+      _v$6 !== _p$._v$6 && (_p$._v$6 = libs.setProp(_el$21, "tooltip_text", _v$6, _p$._v$6));
+      _v$7 !== _p$._v$7 && (_p$._v$7 = libs.setProp(_el$23, "text", _v$7, _p$._v$7));
+      _v$8 !== _p$._v$8 && (_p$._v$8 = libs.setProp(_el$23, "tooltip_text", _v$8, _p$._v$8));
       return _p$;
     }, {
-      _v$: undefined,
-      _v$2: undefined,
       _v$3: undefined,
       _v$4: undefined,
       _v$5: undefined,
-      _v$6: undefined
+      _v$6: undefined,
+      _v$7: undefined,
+      _v$8: undefined
     });
     return _el$15;
   })();
+}
+function openPlayerInfo(accountID) {
+  if (accountID == undefined || accountID == "" || accountID == "0") {
+    return;
+  }
+  JumpToMenu({
+    window_name: "book",
+    menu: "PlayerInfo_Menu",
+    force: true,
+    data: {
+      steamID: accountID
+    }
+  });
 }
 function LadderChartRow(props) {
   const rank = () => props.rankData?.rank ?? 0;
@@ -1034,7 +1060,7 @@ function LadderChartRow(props) {
       _el$33 = libs.createElement("Label", {
         "class": "LadderChartGroupValue",
         get text() {
-          return FormatNumber(props.rankData?.pvpPower ?? 0);
+          return FormatNumber(props.rankData?.pvpPower ?? 0, 2);
         }
       }, _el$32),
       _el$34 = libs.createElement("Panel", {
@@ -1089,7 +1115,8 @@ function LadderChartRow(props) {
       },
       get borderID() {
         return props.rankData?.borderID;
-      }
+      },
+      onactivate: () => openPlayerInfo(accountID())
     }), null);
     libs.insert(_el$31, libs.createComponent(libs.Show, {
       get when() {
@@ -1116,19 +1143,19 @@ function LadderChartRow(props) {
       }
     }));
     libs.effect(_p$ => {
-      const _v$7 = props.id,
-        _v$8 = libs.classNames("LadderChartRow", {
+      const _v$9 = props.id,
+        _v$0 = libs.classNames("LadderChartRow", {
           [`Rank${rank()}`]: isTopRank()
         }),
-        _v$9 = FormatNumber(props.rankData?.pvpPower ?? 0);
-      _v$7 !== _p$._v$7 && (_p$._v$7 = libs.setProp(_el$24, "id", _v$7, _p$._v$7));
-      _v$8 !== _p$._v$8 && (_p$._v$8 = libs.setProp(_el$24, "class", _v$8, _p$._v$8));
-      _v$9 !== _p$._v$9 && (_p$._v$9 = libs.setProp(_el$33, "text", _v$9, _p$._v$9));
+        _v$1 = FormatNumber(props.rankData?.pvpPower ?? 0, 2);
+      _v$9 !== _p$._v$9 && (_p$._v$9 = libs.setProp(_el$24, "id", _v$9, _p$._v$9));
+      _v$0 !== _p$._v$0 && (_p$._v$0 = libs.setProp(_el$24, "class", _v$0, _p$._v$0));
+      _v$1 !== _p$._v$1 && (_p$._v$1 = libs.setProp(_el$33, "text", _v$1, _p$._v$1));
       return _p$;
     }, {
-      _v$7: undefined,
-      _v$8: undefined,
-      _v$9: undefined
+      _v$9: undefined,
+      _v$0: undefined,
+      _v$1: undefined
     });
     return _el$24;
   })();
@@ -1195,7 +1222,7 @@ function LadderBattleTeam(props) {
         "class": "LadderBattleTeamBP",
         get text() {
           return LocalizeWithVars("#LadderLobby_BattleTeamTitleBP", {
-            bp: FormatNumber(props.team?.power ?? 0)
+            bp: FormatNumber(props.team?.power ?? 0, 2)
           });
         }
       }, _el$42),
@@ -1214,16 +1241,16 @@ function LadderBattleTeam(props) {
       });
     }));
     libs.effect(_p$ => {
-      const _v$0 = GetLocalization("#LadderLobby_BattleTeamTitle"),
-        _v$1 = LocalizeWithVars("#LadderLobby_BattleTeamTitleBP", {
-          bp: FormatNumber(props.team?.power ?? 0)
+      const _v$10 = GetLocalization("#LadderLobby_BattleTeamTitle"),
+        _v$11 = LocalizeWithVars("#LadderLobby_BattleTeamTitleBP", {
+          bp: FormatNumber(props.team?.power ?? 0, 2)
         });
-      _v$0 !== _p$._v$0 && (_p$._v$0 = libs.setProp(_el$43, "text", _v$0, _p$._v$0));
-      _v$1 !== _p$._v$1 && (_p$._v$1 = libs.setProp(_el$44, "text", _v$1, _p$._v$1));
+      _v$10 !== _p$._v$10 && (_p$._v$10 = libs.setProp(_el$43, "text", _v$10, _p$._v$10));
+      _v$11 !== _p$._v$11 && (_p$._v$11 = libs.setProp(_el$44, "text", _v$11, _p$._v$11));
       return _p$;
     }, {
-      _v$0: undefined,
-      _v$1: undefined
+      _v$10: undefined,
+      _v$11: undefined
     });
     return _el$41;
   })();
@@ -1625,20 +1652,20 @@ function LadderLobby() {
         }
       }), null);
       libs.effect(_p$ => {
-        const _v$10 = GetLocalization("#LadderGroup_Group3"),
-          _v$11 = GetLocalization("#LadderLobby_SessionLabel"),
-          _v$12 = GetLocalization("#LadderGroup_Group3"),
-          _v$13 = battleHintText();
-        _v$10 !== _p$._v$10 && (_p$._v$10 = libs.setProp(_el$51, "text", _v$10, _p$._v$10));
-        _v$11 !== _p$._v$11 && (_p$._v$11 = libs.setProp(_el$57, "text", _v$11, _p$._v$11));
-        _v$12 !== _p$._v$12 && (_p$._v$12 = libs.setProp(_el$58, "text", _v$12, _p$._v$12));
-        _v$13 !== _p$._v$13 && (_p$._v$13 = libs.setProp(_el$68, "text", _v$13, _p$._v$13));
+        const _v$12 = GetLocalization("#LadderGroup_Group3"),
+          _v$13 = GetLocalization("#LadderLobby_SessionLabel"),
+          _v$14 = GetLocalization("#LadderGroup_Group3"),
+          _v$15 = battleHintText();
+        _v$12 !== _p$._v$12 && (_p$._v$12 = libs.setProp(_el$51, "text", _v$12, _p$._v$12));
+        _v$13 !== _p$._v$13 && (_p$._v$13 = libs.setProp(_el$57, "text", _v$13, _p$._v$13));
+        _v$14 !== _p$._v$14 && (_p$._v$14 = libs.setProp(_el$58, "text", _v$14, _p$._v$14));
+        _v$15 !== _p$._v$15 && (_p$._v$15 = libs.setProp(_el$68, "text", _v$15, _p$._v$15));
         return _p$;
       }, {
-        _v$10: undefined,
-        _v$11: undefined,
         _v$12: undefined,
-        _v$13: undefined
+        _v$13: undefined,
+        _v$14: undefined,
+        _v$15: undefined
       });
       return _el$46;
     }

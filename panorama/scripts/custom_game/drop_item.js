@@ -27,4 +27,4 @@ const DropItem = () => {
     }
   });
 };
-libs.render(() => libs.createComponent(DropItem, {}), $.GetContextPanel());
+libs.render(() => libs.createComponent(DropItem, {}), $.GetContextPanel());

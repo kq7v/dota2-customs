@@ -73,7 +73,7 @@ function ArenaOpponentInfo(props) {
         "class": "ArenaSelectedCombatPower",
         get text() {
           return LocalizeWithVars("#Arena_CombatPower", {
-            value: FormatNumber(props.opponent?.combatPower ?? 0)
+            value: FormatNumber(props.opponent?.combatPower ?? 0, 2)
           });
         }
       }, _el$);
@@ -102,7 +102,7 @@ function ArenaOpponentInfo(props) {
         }),
         _v$4 = `${props.opponent?.score ?? 0}`,
         _v$5 = LocalizeWithVars("#Arena_CombatPower", {
-          value: FormatNumber(props.opponent?.combatPower ?? 0)
+          value: FormatNumber(props.opponent?.combatPower ?? 0, 2)
         });
       _v$ !== _p$._v$ && (_p$._v$ = libs.setProp(_el$, "visible", _v$, _p$._v$));
       _v$2 !== _p$._v$2 && (_p$._v$2 = libs.setProp(_el$3, "text", _v$2, _p$._v$2));
@@ -149,7 +149,7 @@ function ArenaTeamSelection(props) {
         "class": "ArenaTeamPower",
         get text() {
           return LocalizeWithVars("#Arena_CombatPower", {
-            value: FormatNumber(selectedTeam()?.power ?? 0)
+            value: FormatNumber(selectedTeam()?.power ?? 0, 2)
           });
         }
       }, _el$13),
@@ -237,7 +237,7 @@ function ArenaTeamSelection(props) {
           value: selectedTeamID()
         }),
         _v$8 = LocalizeWithVars("#Arena_CombatPower", {
-          value: FormatNumber(selectedTeam()?.power ?? 0)
+          value: FormatNumber(selectedTeam()?.power ?? 0, 2)
         }),
         _v$9 = props.session.saveError !== undefined,
         _v$0 = GetLocalization("#Arena_SaveFailed");
@@ -626,12 +626,12 @@ function ArenaOpponentCard(props) {
           }, _el$10);
           const _el$12 = libs.createElement("Label", {
             get text() {
-              return FormatNumber(props.opponent.combatPower ?? 0);
+              return FormatNumber(props.opponent.combatPower ?? 0, 2);
             }
           }, _el$10);
         libs.effect(_p$ => {
           const _v$ = GetLocalization("#LadderChart_LadderPower"),
-            _v$2 = FormatNumber(props.opponent.combatPower ?? 0);
+            _v$2 = FormatNumber(props.opponent.combatPower ?? 0, 2);
           _v$ !== _p$._v$ && (_p$._v$ = libs.setProp(_el$0, "tooltip_text", _v$, _p$._v$));
           _v$2 !== _p$._v$2 && (_p$._v$2 = libs.setProp(_el$12, "text", _v$2, _p$._v$2));
           return _p$;

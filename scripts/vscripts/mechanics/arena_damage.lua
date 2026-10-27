@@ -72,19 +72,18 @@ function h.prototype.RecordDamage(self, r)
 	local w = self:GetOrCreateHero(u, s.heroName)
 	local x = self:GetOrCreateHero(v, t.heroName)
 	local y = self:GetDamageSourceKey(r)
-	if y == nil then
-		return
-	end
 	u.totalDamage = u.totalDamage + r.damage
 	v.totalTaken = v.totalTaken + r.damage
 	w.totalDamage = w.totalDamage + r.damage
 	x.totalTaken = x.totalTaken + r.damage
-	local z, A = w.abilities, y
-	if z[A] == nil then
-		z[A] = { totalDamage = 0 }
+	if y ~= nil then
+		local z, A = w.abilities, y
+		if z[A] == nil then
+			z[A] = { totalDamage = 0 }
+		end
+		local B, C = w.abilities[y], "totalDamage"
+		B[C] = B[C] + r.damage
 	end
-	local B, C = w.abilities[y], "totalDamage"
-	B[C] = B[C] + r.damage
 end
 function h.prototype.GetSummary(self, i)
 	local m = self.battles[i]
@@ -144,9 +143,11 @@ function h.prototype.GetOrCreateHero(self, q, l)
 end
 function h.prototype.GetDamageSourceKey(self, r)
 	if r.ability ~= nil and IsValid(r.ability) then
-		local P = r.ability:GetAbilityName()
-		if P ~= "" then
-			return P
+		local P, Q = pcall(function()
+			return r.ability:GetAbilityName()
+		end)
+		if P and Q ~= "" then
+			return Q
 		end
 	end
 	return nil

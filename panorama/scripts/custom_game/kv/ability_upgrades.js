@@ -1336,13 +1336,12 @@ GameUI.CustomUIConfig().ability_upgrades = {
 	"seraphon_upgrade_11": {
 		"AbilityTextureName": "seraphon_upgrade_11",
 		"Note": "壁垒冲击",
-		"Description": "<HotkeyOnly|Dodge/><Ability|seraphon_2/>额外造成自身%damage%伤害",
+		"Description": "<HotkeyOnly|Dodge/><Ability|seraphon_2/>额外造成%damage%伤害",
 		"ability_name": "seraphon_2",
 		"max": 1,
 		"AbilityValues": {
 			"damage": {
-				"value": 0,
-				"+shield": 0.25
+				"value": 50
 			}
 		}
 	},

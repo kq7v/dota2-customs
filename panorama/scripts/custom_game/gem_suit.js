@@ -103,4 +103,4 @@ function SetupTooltip() {
   }), root);
 }
 tooltip_base.InitTooltipStyle(root, "BaseTooltip");
-root.SetPanelEvent("ontooltiploaded", SetupTooltip);
+root.SetPanelEvent("ontooltiploaded", SetupTooltip);

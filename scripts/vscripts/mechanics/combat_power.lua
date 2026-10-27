@@ -24,6 +24,7 @@ local m = {
 	attackCombatPowerPerDps = 1,
 	skillCombatPowerPerDps = 1,
 	ehpCombatPowerPerPoint = 1,
+	balancedCombatPowerScale = 3,
 	defenseIntensityBase = 1000,
 	utilityCombatPowerPerPoint = 1,
 	standardSkillDps = 20,
@@ -220,35 +221,51 @@ function o.prototype.GetCombatPowerFromResolved(self, N)
 	local am = (_ * m.attackCombatPowerPerDps + ad * m.skillCombatPowerPerDps) * X
 	local an = ak * m.ehpCombatPowerPerPoint
 	local ao = al * m.utilityCombatPowerPerPoint
-	local ap = math.floor(math.max(0, am + an + ao))
-	local aq = self:GetPrivilegeCombatPowerFactor(N)
-	local ar = math.floor(math.max(0, ap * (1 + aq)))
-	return { combatPower = ar, privilegeFactor = aq, attackDps = _, skillDps = ad, sharedDamageFactor = X, ehp = ak, utilityScore = al }
+	local ap = math.max(0, am)
+	local aq = math.max(0, an)
+	local ar = m.balancedCombatPowerScale * math.sqrt(ap) * math.sqrt(aq)
+	local as = math.floor(math.max(0, ar + ao))
+	local at = self:GetPrivilegeCombatPowerFactor(N)
+	local au = math.floor(math.max(0, as * (1 + at)))
+	local av = math.floor(math.max(0, am + an + ao))
+	local aw = math.floor(math.max(0, av * (1 + at)))
+	return {
+		combatPower = au,
+		legacyCombatPower = aw,
+		offenseScore = ap,
+		defenseScore = aq,
+		privilegeFactor = at,
+		attackDps = _,
+		skillDps = ad,
+		sharedDamageFactor = X,
+		ehp = ak,
+		utilityScore = al,
+	}
 end
-function o.prototype.CreateCombatSnapshotWithSkillRunes(self, N, as)
+function o.prototype.CreateCombatSnapshotWithSkillRunes(self, N, ax)
 	local E = f({}, N.attributes or {})
-	for s, at in ipairs(g(as)) do
-		local au = at.data
-		local av = au and au.hero_skill_rune
-		for s, aw in ipairs(e(av and av.attributes or {})) do
+	for s, ay in ipairs(g(ax)) do
+		local az = ay.data
+		local aA = az and az.hero_skill_rune
+		for s, aB in ipairs(e(aA and aA.attributes or {})) do
 			do
-				local H = toFiniteNumber(at.data.hero_skill_rune.attributes[aw], 0)
+				local H = toFiniteNumber(ay.data.hero_skill_rune.attributes[aB], 0)
 				if H == 0 then
-					goto ax
+					goto aC
 				end
-				local ay = E[aw]
-				E[aw] = ay == nil and H or PropertySystem:AggregatePropertyValues(aw, ay, H)
+				local aD = E[aB]
+				E[aB] = aD == nil and H or PropertySystem:AggregatePropertyValues(aB, aD, H)
 			end
-			::ax::
+			::aC::
 		end
 	end
 	return f({}, N, { attributes = E })
 end
-function o.prototype.GetCombatPowerFromSnapshot(self, N, as)
-	if as == nil then
-		as = {}
+function o.prototype.GetCombatPowerFromSnapshot(self, N, ax)
+	if ax == nil then
+		ax = {}
 	end
-	return self:GetCombatPowerFromResolved(self:CreateCombatSnapshotWithSkillRunes(N, as))
+	return self:GetCombatPowerFromResolved(self:CreateCombatSnapshotWithSkillRunes(N, ax))
 end
 o = h({ l }, o)
 if CombatPower == nil then
