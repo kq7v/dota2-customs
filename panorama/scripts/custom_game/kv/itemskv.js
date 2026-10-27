@@ -10,6 +10,7 @@
 
 GameUI.CustomUIConfig().ItemsKv = {
 	"item_book_of_strength": {
+		"ID": 2414,
 		"AbilityBehavior": "DOTA_ABILITY_BEHAVIOR_NO_TARGET | DOTA_ABILITY_BEHAVIOR_DONT_RESUME_ATTACK",
 		"AbilityCooldown": 0.0,
 		"ItemCost": 500,
@@ -27,6 +28,7 @@ GameUI.CustomUIConfig().ItemsKv = {
 		},
 	},
 	"item_book_of_agility": {
+		"ID": 2415,
 		"AbilityBehavior": "DOTA_ABILITY_BEHAVIOR_NO_TARGET | DOTA_ABILITY_BEHAVIOR_DONT_RESUME_ATTACK",
 		"AbilityCooldown": 0.0,
 		"ItemCost": 500,
@@ -44,6 +46,7 @@ GameUI.CustomUIConfig().ItemsKv = {
 		},
 	},
 	"item_book_of_intelligence": {
+		"ID": 2416,
 		"AbilityBehavior": "DOTA_ABILITY_BEHAVIOR_NO_TARGET | DOTA_ABILITY_BEHAVIOR_DONT_RESUME_ATTACK",
 		"AbilityCooldown": 0.0,
 		"ItemCost": 500,
@@ -1455,11 +1458,6 @@ GameUI.CustomUIConfig().ItemsKv = {
 	"item_trident": {
 		"ItemDisassembleRule": "DOTA_ITEM_DISASSEMBLE_NEVER",
 	},
-	"item_dagon": "REMOVE",
-	"item_dagon_2": "REMOVE",
-	"item_dagon_3": "REMOVE",
-	"item_dagon_4": "REMOVE",
-	"item_dagon_5": "REMOVE",
 	"item_refresher": "REMOVE",
 	"item_token_lua_tier1": {
 		"ID": 2381,

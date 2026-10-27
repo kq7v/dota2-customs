@@ -9730,6 +9730,138 @@ const DEFAULT_ICON_SIZE = "32px";
 
 /***/ },
 
+/***/ "./debug_tool/AbilitySwitcher.tsx"
+/*!****************************************!*\
+  !*** ./debug_tool/AbilitySwitcher.tsx ***!
+  \****************************************/
+(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* binding */ AbilitySwitcher)
+/* harmony export */ });
+/* harmony import */ var _demon673_react_panorama__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @demon673/react-panorama */ "../../../../../node_modules/@demon673/react-panorama/dist/esm/react-panorama.development.js");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react */ "../../../../../node_modules/react/index.js");
+/* harmony import */ var _EOMDesign_Other_EOM_DebugTool_EOM_DebugTool__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../EOMDesign/Other/EOM_DebugTool/EOM_DebugTool */ "./EOMDesign/Other/EOM_DebugTool/EOM_DebugTool.tsx");
+
+
+
+const DRAG_ABILITY = "debug_switch_ability";
+const DROP_SLOT = "debug_switch_slot";
+function AbilitySwitcher({ abilityNames }) {
+    const [search, setSearch] = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)("");
+    const [selectedSlot, setSelectedSlot] = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)(0);
+    const [hero, setHero] = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)(-1);
+    const [slots, setSlots] = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)(Array(6).fill(""));
+    const root = (0,react__WEBPACK_IMPORTED_MODULE_1__.useRef)(null);
+    const heroRef = (0,react__WEBPACK_IMPORTED_MODULE_1__.useRef)(-1);
+    (0,react__WEBPACK_IMPORTED_MODULE_1__.useEffect)(() => {
+        let timer;
+        let signature = "";
+        const refresh = () => {
+            const unit = Players.GetPlayerHeroEntityIndex(Players.GetLocalPlayer());
+            const names = Array.from({ length: 6 }, (_, index) => {
+                const ability = unit !== -1 ? Entities.GetAbility(unit, index) : -1;
+                const name = ability !== -1 ? Abilities.GetAbilityName(ability) : "";
+                return name.startsWith("empty_") ? "" : name;
+            });
+            const next = unit + ":" + names.join(",");
+            if (next !== signature) {
+                if (heroRef.current !== unit)
+                    setSelectedSlot(0);
+                heroRef.current = unit;
+                setHero(unit);
+                setSlots(names);
+                signature = next;
+            }
+            timer = $.Schedule(0.2, refresh);
+        };
+        refresh();
+        return () => $.CancelScheduled(timer);
+    }, []);
+    const switchAbility = (0,react__WEBPACK_IMPORTED_MODULE_1__.useCallback)((slot, name) => {
+        const unit = heroRef.current;
+        if (unit === -1 || !name || slot < 0 || slot >= 6)
+            return;
+        setSelectedSlot(slot);
+        GameEvents.SendCustomGameEventToServer("DemoEvent", {
+            event_name: "SwitchAbilitySlot",
+            unit,
+            position: GameUI.GetCameraLookAtPosition(),
+            str: slot + ":" + name,
+        });
+    }, []);
+    const ownPanel = (panel) => root.current && (panel === root.current || panel.FindAncestor("DebugAbilitySwitcherContent") === root.current);
+    (0,_demon673_react_panorama__WEBPACK_IMPORTED_MODULE_0__.useRegisterForUnhandledEvent)("DragStart", (panel, settings) => {
+        if (!ownPanel(panel))
+            return;
+        const name = panel.GetAttributeString(DRAG_ABILITY, "");
+        if (!name)
+            return;
+        const preview = $.CreatePanel("Panel", panel, "");
+        preview.SetAttributeString(DRAG_ABILITY, name);
+        preview.hittest = false;
+        preview.hittestchildren = false;
+        preview.style.width = "64px";
+        preview.style.height = "64px";
+        (0,_demon673_react_panorama__WEBPACK_IMPORTED_MODULE_0__.render)(react__WEBPACK_IMPORTED_MODULE_1__.createElement(DOTAAbilityImage, { abilityname: name, style: { width: "64px", height: "64px" } }), preview);
+        settings.displayPanel = preview;
+        settings.offsetX = 0;
+        settings.offsetY = 0;
+        $.DispatchEvent("DOTAHideAbilityTooltip", panel);
+        return true;
+    }, []);
+    (0,_demon673_react_panorama__WEBPACK_IMPORTED_MODULE_0__.useRegisterForUnhandledEvent)("DragEnter", (panel, dragged) => {
+        if (!ownPanel(panel) || panel.GetAttributeInt(DROP_SLOT, -1) < 0 || !dragged.GetAttributeString(DRAG_ABILITY, ""))
+            return false;
+        panel.AddClass("DropTarget");
+        return true;
+    }, []);
+    (0,_demon673_react_panorama__WEBPACK_IMPORTED_MODULE_0__.useRegisterForUnhandledEvent)("DragLeave", (panel) => {
+        if (ownPanel(panel))
+            panel.RemoveClass("DropTarget");
+    }, []);
+    (0,_demon673_react_panorama__WEBPACK_IMPORTED_MODULE_0__.useRegisterForUnhandledEvent)("DragDrop", (panel, dragged) => {
+        if (!ownPanel(panel))
+            return false;
+        const slot = panel.GetAttributeInt(DROP_SLOT, -1);
+        const name = dragged.GetAttributeString(DRAG_ABILITY, "");
+        if (slot < 0 || !name)
+            return false;
+        panel.RemoveClass("DropTarget");
+        switchAbility(slot, name);
+        return true;
+    }, [switchAbility]);
+    (0,_demon673_react_panorama__WEBPACK_IMPORTED_MODULE_0__.useRegisterForUnhandledEvent)("DragEnd", (panel, dragged) => {
+        var _a;
+        if (!ownPanel(panel) || !panel.GetAttributeString(DRAG_ABILITY, ""))
+            return;
+        (_a = root.current) === null || _a === void 0 ? void 0 : _a.FindChildrenWithClassTraverse("DropTarget").forEach(slot => slot.RemoveClass("DropTarget"));
+        if (dragged !== panel && dragged.IsValid())
+            dragged.DeleteAsync(0);
+    }, []);
+    const query = search.trim().toLowerCase();
+    const names = abilityNames.filter(name => (name + " " + $.Localize("#DOTA_Tooltip_ability_" + name)).toLowerCase().includes(query));
+    return (react__WEBPACK_IMPORTED_MODULE_1__.createElement(_EOMDesign_Other_EOM_DebugTool_EOM_DebugTool__WEBPACK_IMPORTED_MODULE_2__.SelectContainer, { eventName: "DebugSwitchAbility", title: $.Localize("#HUD_SwitchAbility"), width: "1040px", height: "760px", hasRawMode: false, hasToggleSize: false, hasLock: false, onSearch: setSearch },
+        react__WEBPACK_IMPORTED_MODULE_1__.createElement(Panel, { id: "DebugAbilitySwitcherContent", className: "DebugAbilitySwitcher", ref: panel => { root.current = panel; } },
+            react__WEBPACK_IMPORTED_MODULE_1__.createElement(Label, { className: "DebugAbilityHeading", localizedText: "#HUD_DebugAbilitySlots" }),
+            react__WEBPACK_IMPORTED_MODULE_1__.createElement(Label, { className: "DebugAbilityHint", text: $.Localize(hero === -1 ? "#HUD_DebugAbilityNoHero" : "#HUD_DebugAbilityHint") }),
+            react__WEBPACK_IMPORTED_MODULE_1__.createElement(Panel, { className: "DebugAbilitySlots" }, slots.map((name, slot) => (react__WEBPACK_IMPORTED_MODULE_1__.createElement(Panel, { key: slot, className: "DebugAbilitySlot" + (selectedSlot === slot ? " Selected" : ""), hittestchildren: false, ref: panel => panel === null || panel === void 0 ? void 0 : panel.SetAttributeInt(DROP_SLOT, slot), onactivate: () => setSelectedSlot(slot) },
+                react__WEBPACK_IMPORTED_MODULE_1__.createElement(Label, { className: "DebugAbilitySlotNumber", text: $.Localize("#HUD_DebugAbilitySlot") + " " + (slot + 1) }),
+                name ? (react__WEBPACK_IMPORTED_MODULE_1__.createElement(DOTAAbilityImage, { abilityname: name })) : (react__WEBPACK_IMPORTED_MODULE_1__.createElement(Label, { className: "DebugAbilityEmpty", localizedText: "#HUD_DebugAbilityEmpty" })),
+                react__WEBPACK_IMPORTED_MODULE_1__.createElement(Label, { className: "DebugAbilityName", text: name ? $.Localize("#DOTA_Tooltip_ability_" + name) : "" }))))),
+            react__WEBPACK_IMPORTED_MODULE_1__.createElement(Label, { className: "DebugAbilityHeading", localizedText: "#HUD_DebugAbilityList" }),
+            react__WEBPACK_IMPORTED_MODULE_1__.createElement(Panel, { className: "DebugAbilityList" },
+                names.map(name => (react__WEBPACK_IMPORTED_MODULE_1__.createElement(Panel, { key: name, className: "DebugAbilityListItem", draggable: true, hittestchildren: false, ref: panel => panel === null || panel === void 0 ? void 0 : panel.SetAttributeString(DRAG_ABILITY, name), onactivate: () => switchAbility(selectedSlot, name), onmouseover: panel => $.DispatchEvent("DOTAShowAbilityTooltip", panel, name), onmouseout: panel => $.DispatchEvent("DOTAHideAbilityTooltip", panel) },
+                    react__WEBPACK_IMPORTED_MODULE_1__.createElement(DOTAAbilityImage, { abilityname: name }),
+                    react__WEBPACK_IMPORTED_MODULE_1__.createElement(Label, { className: "DebugAbilityName", text: $.Localize("#DOTA_Tooltip_ability_" + name) })))),
+                names.length === 0 && (react__WEBPACK_IMPORTED_MODULE_1__.createElement(Label, { className: "DebugAbilityHint", localizedText: "#HUD_DebugAbilityNoResults" }))))));
+}
+
+
+/***/ },
+
 /***/ "?559b"
 /*!********************************!*\
   !*** ./util.inspect (ignored) ***!
@@ -9845,6 +9977,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _demon673_react_panorama__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @demon673/react-panorama */ "../../../../../node_modules/@demon673/react-panorama/dist/esm/react-panorama.development.js");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react */ "../../../../../node_modules/react/index.js");
 /* harmony import */ var _EOMDesign_Other_EOM_DebugTool_EOM_DebugTool__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../EOMDesign/Other/EOM_DebugTool/EOM_DebugTool */ "./EOMDesign/Other/EOM_DebugTool/EOM_DebugTool.tsx");
+/* harmony import */ var _AbilitySwitcher__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./AbilitySwitcher */ "./debug_tool/AbilitySwitcher.tsx");
+
 
 
 
@@ -9908,9 +10042,17 @@ function DebugTool() {
         return abilities;
     }, []);
     const abilityList = (0,react__WEBPACK_IMPORTED_MODULE_1__.useMemo)(() => getAbilityList(), []);
+    const allAbilityNames = (0,react__WEBPACK_IMPORTED_MODULE_1__.useMemo)(() => Array.from(new Set([
+        ...abilityList,
+        ...Object.keys(GameUI.CustomUIConfig().AbilitiesKv).filter(name => {
+            const data = GameUI.CustomUIConfig().AbilitiesKv[name];
+            return typeof data === "object" && !name.startsWith("special_bonus_") && !name.startsWith("empty_") && !name.startsWith("item_");
+        }),
+    ])).sort(), [abilityList]);
     return (react__WEBPACK_IMPORTED_MODULE_1__.createElement(_EOMDesign_Other_EOM_DebugTool_EOM_DebugTool__WEBPACK_IMPORTED_MODULE_2__["default"], { containerElement: react__WEBPACK_IMPORTED_MODULE_1__.createElement(react__WEBPACK_IMPORTED_MODULE_1__.Fragment, null,
             react__WEBPACK_IMPORTED_MODULE_1__.createElement(_EOMDesign_Other_EOM_DebugTool_EOM_DebugTool__WEBPACK_IMPORTED_MODULE_2__.EOM_DebugTool_IconPicker, null),
             react__WEBPACK_IMPORTED_MODULE_1__.createElement(_EOMDesign_Other_EOM_DebugTool_EOM_DebugTool__WEBPACK_IMPORTED_MODULE_2__.EOM_DebugTool_AbilityPicker, { title: $.Localize("#HUD_AddAbility"), eventName: "AddAbilityButtonPressed", abilityNames: abilityList }),
+            react__WEBPACK_IMPORTED_MODULE_1__.createElement(_AbilitySwitcher__WEBPACK_IMPORTED_MODULE_3__["default"], { abilityNames: allAbilityNames }),
             react__WEBPACK_IMPORTED_MODULE_1__.createElement(_EOMDesign_Other_EOM_DebugTool_EOM_DebugTool__WEBPACK_IMPORTED_MODULE_2__.EOM_DebugTool_HeroPicker, { title: $.Localize("#HUD_ReplaceHero"), eventName: "SwitchHero", unitNames: Object.keys(GameUI.CustomUIConfig().HeroListKv) }),
             react__WEBPACK_IMPORTED_MODULE_1__.createElement(_EOMDesign_Other_EOM_DebugTool_EOM_DebugTool__WEBPACK_IMPORTED_MODULE_2__.EOM_UnitInfo, null),
             Game.IsInToolsMode() && react__WEBPACK_IMPORTED_MODULE_1__.createElement(HeroSkinPicker, null)) },
@@ -9921,7 +10063,8 @@ function DebugTool() {
         react__WEBPACK_IMPORTED_MODULE_1__.createElement(_EOMDesign_Other_EOM_DebugTool_EOM_DebugTool__WEBPACK_IMPORTED_MODULE_2__.EOM_DebugTool_Category, { title: $.Localize("#HUD_Category_AbilitiesAndItems") },
             react__WEBPACK_IMPORTED_MODULE_1__.createElement(_EOMDesign_Other_EOM_DebugTool_EOM_DebugTool__WEBPACK_IMPORTED_MODULE_2__.DemoSelectionButton, { eventName: "AddNeutralItemButtonPressed", text: $.Localize("#HUD_AddNeutralItem") }),
             react__WEBPACK_IMPORTED_MODULE_1__.createElement(_EOMDesign_Other_EOM_DebugTool_EOM_DebugTool__WEBPACK_IMPORTED_MODULE_2__.DemoButton, { eventName: "RemoveInventoryItemsButtonPressed", text: $.Localize("#HUD_RemoveItems") }),
-            react__WEBPACK_IMPORTED_MODULE_1__.createElement(_EOMDesign_Other_EOM_DebugTool_EOM_DebugTool__WEBPACK_IMPORTED_MODULE_2__.DemoSelectionButton, { eventName: "AddAbilityButtonPressed", text: $.Localize("#HUD_AddAbility") })),
+            react__WEBPACK_IMPORTED_MODULE_1__.createElement(_EOMDesign_Other_EOM_DebugTool_EOM_DebugTool__WEBPACK_IMPORTED_MODULE_2__.DemoSelectionButton, { eventName: "AddAbilityButtonPressed", text: $.Localize("#HUD_AddAbility") }),
+            react__WEBPACK_IMPORTED_MODULE_1__.createElement(_EOMDesign_Other_EOM_DebugTool_EOM_DebugTool__WEBPACK_IMPORTED_MODULE_2__.DemoSelectionButton, { eventName: "DebugSwitchAbility", text: $.Localize("#HUD_SwitchAbility") })),
         react__WEBPACK_IMPORTED_MODULE_1__.createElement(_EOMDesign_Other_EOM_DebugTool_EOM_DebugTool__WEBPACK_IMPORTED_MODULE_2__.EOM_DebugTool_Category, { title: $.Localize("#HUD_Category_Unit") },
             react__WEBPACK_IMPORTED_MODULE_1__.createElement(_EOMDesign_Other_EOM_DebugTool_EOM_DebugTool__WEBPACK_IMPORTED_MODULE_2__.DemoSelectionButton, { eventName: "SwitchHero", text: $.Localize("#HUD_ReplaceHero") }),
             react__WEBPACK_IMPORTED_MODULE_1__.createElement(_EOMDesign_Other_EOM_DebugTool_EOM_DebugTool__WEBPACK_IMPORTED_MODULE_2__.DemoButton, { eventName: "ControlUnitButtonPressed", text: $.Localize("#HUD_SwitchControl") }),

@@ -323,13 +323,7 @@
 	width: 22px;
 	height: 22px;
 	vertical-align: center;
-	background-image: url("s2r://panorama/images/custom_game/button_audio_on_psd.vtex");
 	background-size: 100%;
-}
-
-#Hud_Scoreboard_main #Hud_Scoreboard_bottombar #Hud_Scoreboard_Mute #AllMute_Button.Muted
-{
-	background-image: url("s2r://panorama/images/custom_game/button_audio_off_psd.vtex");
 }
 
 #Hud_Scoreboard_main #Hud_Scoreboard_bottombar #Hud_Scoreboard_Mute #AllMute_Button:hover
@@ -442,7 +436,6 @@
 	width: 22px;
 	height: 22px;
 	vertical-align: center;
-	background-image: url("s2r://panorama/images/custom_game/button_audio_on_psd.vtex");
 	background-size: 100%;
 	visibility: collapse;
 }
@@ -450,11 +443,6 @@
 #PlayerInfo_main #PlayerInfo_hero #PlayerInfo_mute.Show
 {
 	visibility: visible;
-}
-
-#PlayerInfo_main #PlayerInfo_hero #PlayerInfo_mute.Muted
-{
-	background-image: url("s2r://panorama/images/custom_game/button_audio_off_psd.vtex");
 }
 
 #PlayerInfo_main #PlayerInfo_hero #PlayerInfo_mute:hover

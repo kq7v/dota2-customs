@@ -19,4 +19,4 @@
 	"LoadingScreen_launcher_copied"	"Ссылка скопирована"
 	"LoadingScreen_launcher_warning"	"Внимание: браузер Dota 2 не поддерживает скачивание и веб-версию. Скопируйте ссылку и откройте её во внешнем браузере!"
 	"LoadingScreen_launcher_play_step"	"2. Откройте лаунчер, привяжите Steam, создайте лобби и начните игру!"
-}
+}

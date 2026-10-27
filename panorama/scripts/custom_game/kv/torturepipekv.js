@@ -64,7 +64,7 @@ GameUI.CustomUIConfig().TorturePipeKv = {
 	"sandking_epicenter": 1,
 	"broodmother_sticky_snare": 1,
 	"item_cloak_of_flames": 1,
-	"dragon_knight_fireball": 1,
+	"custom_dragon_knight_fireball": 1,
 	"ancient_apparition_ice_vortex": 1,
 	"dawnbreaker_celestial_hammer": 1,
 	"dawnbreaker_solar_guardian": 1,

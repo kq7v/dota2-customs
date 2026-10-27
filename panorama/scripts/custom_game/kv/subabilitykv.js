@@ -54,7 +54,7 @@ GameUI.CustomUIConfig().SubAbilityKv = {
 	"slark_depth_shroud": 1,
 	"witch_doctor_voodoo_switcheroo_lua": 1,
 	"tidehunter_arm_of_the_deep": 1,
-	"dragon_knight_fireball": 1,
+	"custom_dragon_knight_fireball": 1,
 	"alchemist_berserk_potion": 1,
 	"bristleback_hairball": 1,
 	"rattletrap_jetpack": 1,

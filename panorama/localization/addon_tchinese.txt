@@ -19,4 +19,4 @@
 	"LoadingScreen_launcher_copied"	"已複製下載連結"
 	"LoadingScreen_launcher_warning"	"請注意：Dota2瀏覽器不支援下載及網頁端使用，需要複製連結到外部瀏覽器開啟！"
 	"LoadingScreen_launcher_play_step"	"2. 開啟助手，綁定Steam，建立房間，開始遊戲！"
-}
+}

@@ -15,12 +15,12 @@
 		<include src="s2r://panorama/styles/hudstyles.vcss_c" />
 		<include src="s2r://panorama/styles/hud/hud_reborn.vcss_c" />
 		<include src="s2r://panorama/styles/custom_ui.vcss_c" />
-		<include src="s2r://panorama/layout/custom_game/notification/styles.vcss_c" />
+		<include src="s2r://panorama/layout/custom_game/notification/styles.vcss" />
 	</styles>
 	<scripts>
 		<include src="s2r://panorama/scripts/sequence_actions.vjs_c" />
-		<include src="s2r://panorama/scripts/custom_game/common.vjs_c" />
-		<include src="s2r://panorama/layout/custom_game/notification/script.vjs_c" />
+		<include src="s2r://panorama/scripts/custom_game/common.vjs" />
+		<include src="s2r://panorama/layout/custom_game/notification/script.vjs" />
 	</scripts>
 	<snippets>
 		<snippet name="CombatEventPlayerIcon">

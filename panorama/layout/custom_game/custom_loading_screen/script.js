@@ -6094,9 +6094,12 @@ function LauncherGuide() {
         react__WEBPACK_IMPORTED_MODULE_1__.createElement(Label, { id: "LauncherGuidePlayStep", className: "LauncherGuideStep", text: $.Localize("#LoadingScreen_launcher_play_step") }));
 }
 function CustomLoadingScreen() {
-    return react__WEBPACK_IMPORTED_MODULE_1__.createElement(_EOMDesign_Container_EOM_Panel_EOM_Panel__WEBPACK_IMPORTED_MODULE_2__["default"], { id: "CustomLoadingScreen", className: $.Language().toLowerCase() },
+    return (react__WEBPACK_IMPORTED_MODULE_1__.createElement(_EOMDesign_Container_EOM_Panel_EOM_Panel__WEBPACK_IMPORTED_MODULE_2__["default"], { id: "CustomLoadingScreen", className: $.Language().toLowerCase() },
         react__WEBPACK_IMPORTED_MODULE_1__.createElement(Panel, { id: "Logo" }),
-        react__WEBPACK_IMPORTED_MODULE_1__.createElement(LauncherGuide, null));
+        react__WEBPACK_IMPORTED_MODULE_1__.createElement(LauncherGuide, null),
+        react__WEBPACK_IMPORTED_MODULE_1__.createElement(Panel, { id: "StartTips", hittest: false },
+            react__WEBPACK_IMPORTED_MODULE_1__.createElement(Label, { id: "StartTipsTitle", text: $.Localize("#LoadingScreen_rank_title") }),
+            react__WEBPACK_IMPORTED_MODULE_1__.createElement(Label, { id: "StartTipsLabel", html: true, text: $.Localize("#LoadingScreen_rank_rules") }))));
 }
 function adjustChatPanel() {
     let pHud = $.GetContextPanel();

@@ -21,7 +21,6 @@
 {
 	width: height-percentage(100%);
 	height: 100%;
-	background-image: url("s2r://");
 	background-size: 100%;
 	background-repeat: no-repeat;
 }
@@ -36,7 +35,6 @@
 	horizontal-align: center;
 	width: 321px;
 	height: 32px;
-	background-image: url("s2r://");
 	background-size: 100%;
 }
 
@@ -121,7 +119,6 @@
 	transition-duration: 0.05s;
 	width: 34px;
 	height: 34px;
-	background-image: url("s2r://");
 	z-index: 100;
 }
 
@@ -150,7 +147,6 @@
 	transition-duration: 0.05s;
 	width: 34px;
 	height: 34px;
-	background-image: url("s2r://");
 	z-index: 100;
 }
 
@@ -179,7 +175,6 @@
 	transition-duration: 0.05s;
 	width: 48px;
 	height: 48px;
-	background-image: url("s2r://");
 }
 
 .EOM_AddButtonPlus:disabled
@@ -207,7 +202,6 @@
 	transition-duration: 0.05s;
 	width: 48px;
 	height: 48px;
-	background-image: url("s2r://");
 }
 
 .EOM_SubButtonPlus:disabled
@@ -267,41 +261,6 @@
 	text-align: center;
 }
 
-.EOM_CommonTextButton.COMMON
-{
-	background-image: url("s2r://");
-}
-
-.EOM_CommonTextButton.FREE
-{
-	background-image: url("s2r://");
-}
-
-.EOM_CommonTextButton.MONEY
-{
-	background-image: url("s2r://");
-}
-
-.EOM_CommonTextButton.CANCEL
-{
-	background-image: url("s2r://");
-}
-
-.EOM_CommonTextButton.WARN
-{
-	background-image: url("s2r://");
-}
-
-.EOM_CommonTextButton.ENDCHECK
-{
-	background-image: url("s2r://");
-}
-
-.EOM_CommonTextButton.SUBMIT
-{
-	background-image: url("s2r://");
-}
-
 .EOM_SearchBoxButton
 {
 	background-size: 100%;
@@ -352,7 +311,6 @@
 
 .EOM_TextEntry
 {
-	background-image: url("s2r://");
 	background-size: 100%;
 	height: 44px;
 	width: 175px;
@@ -390,13 +348,11 @@
 
 .EOM_Divider.SHORT
 {
-	background-image: url("s2r://");
 	width: 456px;
 }
 
 .EOM_Divider.LONG
 {
-	background-image: url("s2r://");
 	width: 796px;
 }
 
@@ -404,7 +360,6 @@
 {
 	width: 211px;
 	height: 292px;
-	background-image: url("s2r://");
 	background-size: 100%;
 }
 
@@ -475,7 +430,6 @@
 	width: 132px;
 	height: 100%;
 	margin-left: 5px;
-	background-image: url("s2r://");
 	background-size: 100%;
 	z-index: -1;
 }
@@ -516,7 +470,6 @@
 	width: 24px;
 	height: 24px;
 	background-size: 100%;
-	background-image: url("s2r://");
 }
 
 .EOM_Money .EOM_MoneyIcon_3000002
@@ -525,7 +478,6 @@
 	width: 24px;
 	height: 24px;
 	background-size: 100%;
-	background-image: url("s2r://");
 }
 
 .EOM_Money .EOM_MoneyIcon_2001001
@@ -534,7 +486,6 @@
 	width: 24px;
 	height: 24px;
 	background-size: 100%;
-	background-image: url("s2r://");
 }
 
 .EOM_Money .EOM_MoneyIcon_2002001
@@ -543,7 +494,6 @@
 	width: 24px;
 	height: 24px;
 	background-size: 100%;
-	background-image: url("s2r://");
 }
 
 .EOM_Money .EOM_MoneyIcon_8000001
@@ -552,7 +502,6 @@
 	width: 24px;
 	height: 24px;
 	background-size: 100%;
-	background-image: url("s2r://");
 }
 
 .EOM_Money .EOM_MoneyIcon_8000002
@@ -561,7 +510,6 @@
 	width: 24px;
 	height: 24px;
 	background-size: 100%;
-	background-image: url("s2r://");
 }
 
 .EOM_Money .EOM_MoneyIcon_8000003
@@ -570,7 +518,6 @@
 	width: 24px;
 	height: 24px;
 	background-size: 100%;
-	background-image: url("s2r://");
 }
 
 .EOM_Money .EOM_MoneyIcon_8000005
@@ -579,7 +526,6 @@
 	width: 24px;
 	height: 24px;
 	background-size: 100%;
-	background-image: url("s2r://");
 }
 
 .EOM_Money .EOM_MoneyIcon_8000006
@@ -588,7 +534,6 @@
 	width: 24px;
 	height: 24px;
 	background-size: 100%;
-	background-image: url("s2r://");
 }
 
 .EOM_Money .EOM_MoneyIcon_8000007
@@ -597,7 +542,6 @@
 	width: 24px;
 	height: 24px;
 	background-size: 100%;
-	background-image: url("s2r://");
 }
 
 .EOM_Money .EOM_MoneyIcon_8000008
@@ -606,7 +550,6 @@
 	width: 24px;
 	height: 24px;
 	background-size: 100%;
-	background-image: url("s2r://");
 }
 
 .EOM_Money .EOM_MoneyIcon_8000009
@@ -615,7 +558,6 @@
 	width: 24px;
 	height: 24px;
 	background-size: 100%;
-	background-image: url("s2r://");
 }
 
 .EOM_Money .EOM_MoneyIcon_8000012
@@ -624,7 +566,6 @@
 	width: 24px;
 	height: 24px;
 	background-size: 100%;
-	background-image: url("s2r://");
 }
 
 .EOM_Money .EOM_MoneyLabel
@@ -729,61 +670,51 @@
 
 .EOM_ImageNumber1 .EOM_NUM_0
 {
-	background-image: url("s2r://");
 	background-size: 100% 91.7%;
 }
 
 .EOM_ImageNumber1 .EOM_NUM_1
 {
-	background-image: url("s2r://");
 	background-size: 47% 91.7%;
 }
 
 .EOM_ImageNumber1 .EOM_NUM_2
 {
-	background-image: url("s2r://");
 	background-size: 88.2% 95.8%;
 }
 
 .EOM_ImageNumber1 .EOM_NUM_3
 {
-	background-image: url("s2r://");
 	background-size: 82.4% 95.8%;
 }
 
 .EOM_ImageNumber1 .EOM_NUM_4
 {
-	background-image: url("s2r://");
 	background-size: 100% 91.7%;
 }
 
 .EOM_ImageNumber1 .EOM_NUM_5
 {
-	background-image: url("s2r://");
 	background-size: 88.2% 100%;
 }
 
 .EOM_ImageNumber1 .EOM_NUM_6
 {
-	background-image: url("s2r://");
 	background-size: 94.1% 91.7%;
 }
 
 .EOM_ImageNumber1 .EOM_NUM_7
 {
-	background-image: url("s2r://");
 	background-size: 94.1% 91.7%;
 }
 
 .EOM_ImageNumber1 .EOM_NUM_8
 {
-	background-image: url("s2r://");
 	background-size: 88.2% 95.8%;
 }
 
 .EOM_ImageNumber1 .EOM_NUM_9
 {
-	background-image: url("s2r://");
 	background-size: 94.1% 91.7%;
 }
 
@@ -805,61 +736,51 @@
 
 .EOM_ImageNumber2 .EOM_NUM_0
 {
-	background-image: url("s2r://");
 	background-size: 100% 91.7%;
 }
 
 .EOM_ImageNumber2 .EOM_NUM_1
 {
-	background-image: url("s2r://");
 	background-size: 47% 91.7%;
 }
 
 .EOM_ImageNumber2 .EOM_NUM_2
 {
-	background-image: url("s2r://");
 	background-size: 88.2% 95.8%;
 }
 
 .EOM_ImageNumber2 .EOM_NUM_3
 {
-	background-image: url("s2r://");
 	background-size: 82.4% 95.8%;
 }
 
 .EOM_ImageNumber2 .EOM_NUM_4
 {
-	background-image: url("s2r://");
 	background-size: 100% 91.7%;
 }
 
 .EOM_ImageNumber2 .EOM_NUM_5
 {
-	background-image: url("s2r://");
 	background-size: 88.2% 100%;
 }
 
 .EOM_ImageNumber2 .EOM_NUM_6
 {
-	background-image: url("s2r://");
 	background-size: 94.1% 91.7%;
 }
 
 .EOM_ImageNumber2 .EOM_NUM_7
 {
-	background-image: url("s2r://");
 	background-size: 94.1% 91.7%;
 }
 
 .EOM_ImageNumber2 .EOM_NUM_8
 {
-	background-image: url("s2r://");
 	background-size: 88.2% 95.8%;
 }
 
 .EOM_ImageNumber2 .EOM_NUM_9
 {
-	background-image: url("s2r://");
 	background-size: 94.1% 91.7%;
 }
 
@@ -881,62 +802,52 @@
 
 .EOM_ImageNumber3 .EOM_NUM_0
 {
-	background-image: url("s2r://");
 	background-size: 100% 100%;
 }
 
 .EOM_ImageNumber3 .EOM_NUM_1
 {
-	background-image: url("s2r://");
 	background-size: 100% 100%;
 	width: height-percentage(55%);
 }
 
 .EOM_ImageNumber3 .EOM_NUM_2
 {
-	background-image: url("s2r://");
 	background-size: 100% 100%;
 }
 
 .EOM_ImageNumber3 .EOM_NUM_3
 {
-	background-image: url("s2r://");
 	background-size: 100% 100%;
 }
 
 .EOM_ImageNumber3 .EOM_NUM_4
 {
-	background-image: url("s2r://");
 	background-size: 100% 100%;
 }
 
 .EOM_ImageNumber3 .EOM_NUM_5
 {
-	background-image: url("s2r://");
 	background-size: 100% 100%;
 }
 
 .EOM_ImageNumber3 .EOM_NUM_6
 {
-	background-image: url("s2r://");
 	background-size: 100% 100%;
 }
 
 .EOM_ImageNumber3 .EOM_NUM_7
 {
-	background-image: url("s2r://");
 	background-size: 100% 100%;
 }
 
 .EOM_ImageNumber3 .EOM_NUM_8
 {
-	background-image: url("s2r://");
 	background-size: 100% 100%;
 }
 
 .EOM_ImageNumber3 .EOM_NUM_9
 {
-	background-image: url("s2r://");
 	background-size: 100% 100%;
 }
 
@@ -956,56 +867,6 @@
 	background-size: contain;
 }
 
-.EOM_ImageNumber4 .EOM_NUM_0
-{
-	background-image: url("s2r://");
-}
-
-.EOM_ImageNumber4 .EOM_NUM_1
-{
-	background-image: url("s2r://");
-}
-
-.EOM_ImageNumber4 .EOM_NUM_2
-{
-	background-image: url("s2r://");
-}
-
-.EOM_ImageNumber4 .EOM_NUM_3
-{
-	background-image: url("s2r://");
-}
-
-.EOM_ImageNumber4 .EOM_NUM_4
-{
-	background-image: url("s2r://");
-}
-
-.EOM_ImageNumber4 .EOM_NUM_5
-{
-	background-image: url("s2r://");
-}
-
-.EOM_ImageNumber4 .EOM_NUM_6
-{
-	background-image: url("s2r://");
-}
-
-.EOM_ImageNumber4 .EOM_NUM_7
-{
-	background-image: url("s2r://");
-}
-
-.EOM_ImageNumber4 .EOM_NUM_8
-{
-	background-image: url("s2r://");
-}
-
-.EOM_ImageNumber4 .EOM_NUM_9
-{
-	background-image: url("s2r://");
-}
-
 .EOM_TooltipBG
 {
 	width: 100%;
@@ -1019,7 +880,6 @@
 	align: left top;
 	width: 60px;
 	height: 60px;
-	background-image: url("s2r://");
 	background-size: 100%;
 	background-repeat: no-repeat;
 	z-index: 2;
@@ -1032,7 +892,6 @@
 	height: 10px;
 	margin-left: 60px;
 	margin-right: 60px;
-	background-image: url("s2r://");
 	background-size: 4px 100%;
 	background-repeat: repeat-x;
 }
@@ -1042,7 +901,6 @@
 	align: right top;
 	width: 60px;
 	height: 60px;
-	background-image: url("s2r://");
 	background-size: 100%;
 	background-repeat: no-repeat;
 	z-index: 2;
@@ -1055,7 +913,6 @@
 	height: 100%;
 	margin-top: 60px;
 	margin-bottom: 60px;
-	background-image: url("s2r://");
 	background-size: 100% 4px;
 	background-repeat: repeat-y;
 }
@@ -1067,7 +924,6 @@
 	height: 100%;
 	margin-top: 60px;
 	margin-bottom: 60px;
-	background-image: url("s2r://");
 	background-size: 100% 4px;
 	background-repeat: repeat-y;
 }
@@ -1077,7 +933,6 @@
 	align: left bottom;
 	width: 60px;
 	height: 60px;
-	background-image: url("s2r://");
 	background-size: 100%;
 	background-repeat: no-repeat;
 	z-index: 2;
@@ -1090,7 +945,6 @@
 	height: 10px;
 	margin-left: 60px;
 	margin-right: 60px;
-	background-image: url("s2r://");
 	background-size: 4px 100%;
 	background-repeat: repeat-x;
 }
@@ -1100,7 +954,6 @@
 	align: right bottom;
 	width: 60px;
 	height: 60px;
-	background-image: url("s2r://");
 	background-size: 100%;
 	background-repeat: no-repeat;
 	z-index: 2;
@@ -1117,7 +970,6 @@
 	horizontal-align: center;
 	width: 480px;
 	height: 54px;
-	background-image: url("s2r://");
 	background-size: 100%;
 	z-index: 3;
 }
@@ -1127,7 +979,6 @@
 	width: 100%;
 	height: 100%;
 	margin-top: 13px;
-	background-image: url("s2r://");
 	background-size: 100%;
 	z-index: 4;
 }
@@ -1138,7 +989,6 @@
 	width: 120px;
 	height: 120px;
 	margin-top: 13px;
-	background-image: url("s2r://");
 	background-size: 100%;
 	background-repeat: no-repeat;
 	z-index: 2;
@@ -1152,7 +1002,6 @@
 	margin-top: 13px;
 	margin-left: 120px;
 	margin-right: 120px;
-	background-image: url("s2r://");
 	background-size: 100%;
 	background-repeat: repeat-x;
 }
@@ -1163,7 +1012,6 @@
 	width: 120px;
 	height: 120px;
 	margin-top: 13px;
-	background-image: url("s2r://");
 	background-size: 100%;
 	background-repeat: no-repeat;
 	z-index: 2;
@@ -1175,7 +1023,6 @@
 	width: 100%;
 	height: 100%;
 	margin: 120px;
-	background-image: url("s2r://");
 	background-size: 100%;
 	background-repeat: no-repeat;
 	z-index: -1;
@@ -1188,7 +1035,6 @@
 	height: 100%;
 	margin-top: 120px;
 	margin-bottom: 120px;
-	background-image: url("s2r://");
 	background-size: 100%;
 	background-repeat: repeat-y;
 }
@@ -1200,7 +1046,6 @@
 	height: 100%;
 	margin-top: 120px;
 	margin-bottom: 120px;
-	background-image: url("s2r://");
 	background-size: 100%;
 	background-repeat: repeat-y;
 }
@@ -1210,7 +1055,6 @@
 	align: left bottom;
 	width: 120px;
 	height: 120px;
-	background-image: url("s2r://");
 	background-size: 100%;
 	background-repeat: no-repeat;
 	z-index: 2;
@@ -1223,7 +1067,6 @@
 	height: 120px;
 	margin-left: 120px;
 	margin-right: 120px;
-	background-image: url("s2r://");
 	background-size: 100%;
 	background-repeat: repeat-x;
 }
@@ -1233,7 +1076,6 @@
 	align: right bottom;
 	width: 120px;
 	height: 120px;
-	background-image: url("s2r://");
 	background-size: 100%;
 	background-repeat: no-repeat;
 	z-index: 2;
@@ -1278,7 +1120,6 @@
 {
 	margin-right: 0px;
 	width: 6px;
-	background-image: url("s2r://"), url("s2r://"), url("s2r://");
 	background-size: 24px 29px, 24px 29px, 24px 100%;
 	background-position: center top, center bottom, center top;
 	background-repeat: no-repeat;
@@ -1288,7 +1129,6 @@
 
 .EOMGameAttributesList > VerticalScrollBar .ScrollThumb
 {
-	background-image: url("s2r://"), url("s2r://"), url("s2r://");
 	background-size: 4px 80%, 8px 5%, 8px 5%;
 	background-position: center center, center 5%, center 95%;
 	background-repeat: no-repeat;
@@ -1313,7 +1153,6 @@
 	min-height: 60px;
 	flow-children: down;
 	padding: 8px;
-	background-image: url("s2r://");
 	background-size: 100%;
 	background-repeat: no-repeat;
 }
@@ -1322,7 +1161,6 @@
 {
 	width: 100%;
 	height: 20px;
-	background-image: url("s2r://");
 	background-size: 142px 14px;
 	background-position: left bottom;
 	background-repeat: no-repeat;
@@ -1355,7 +1193,6 @@
 {
 	width: height-percentage(100%);
 	height: 100%;
-	background-image: url("s2r://");
 	background-size: 100%;
 	background-repeat: no-repeat;
 }
@@ -1429,13 +1266,7 @@
 	width: 160px;
 	height: 225px;
 	overflow: noclip;
-	background-image: url("s2r://");
 	background-size: 100%;
-}
-
-.EOM_CommonItem:selected
-{
-	background-image: url("s2r://"), url("s2r://");
 }
 
 .EOM_CommonItem.Disabled #EOM_CommonItemImage
@@ -1478,7 +1309,6 @@
 	margin-top: 40px;
 	width: 40px;
 	height: 40px;
-	background-image: url("s2r://");
 	background-size: 100%;
 	background-repeat: no-repeat;
 	visibility: collapse;
@@ -1577,7 +1407,6 @@
 
 .EOM_Pagination .EOM_Pagination_JumpExtry
 {
-	background-image: url("s2r://");
 	background-size: 100%;
 	height: 32px;
 	width: fit-children;
@@ -1619,7 +1448,6 @@
 {
 	margin-right: 0px;
 	width: 6px;
-	background-image: url("s2r://"), url("s2r://"), url("s2r://");
 	background-size: 24px 29px, 24px 29px, 24px 100%;
 	background-position: center top, center bottom, center top;
 	background-repeat: no-repeat;
@@ -1629,7 +1457,6 @@
 
 .EOM_Box > VerticalScrollBar .ScrollThumb
 {
-	background-image: url("s2r://"), url("s2r://"), url("s2r://");
 	background-size: 4px 80%, 8px 5%, 8px 5%;
 	background-position: center center, center 5%, center 95%;
 	background-repeat: no-repeat;
@@ -1641,7 +1468,6 @@
 {
 	width: 100%;
 	height: 20px;
-	background-image: url("s2r://panorama/images/custom_game/player_stats/title_bg_png.vtex");
 	background-size: 142px 14px;
 	background-position: left bottom;
 	background-repeat: no-repeat;
@@ -1658,7 +1484,6 @@
 .EOM_FolderContainer
 {
 	padding: 8px;
-	background-image: url("s2r://panorama/images/custom_game/player_stats/container_bg_png.vtex");
 	background-size: 100%;
 	background-repeat: no-repeat;
 	min-height: 60px;
@@ -1668,7 +1493,6 @@
 {
 	width: 100%;
 	height: 100%;
-	background-image: url("s2r://");
 	background-size: 100% 187px;
 	background-position: center;
 	background-repeat: no-repeat;
@@ -1683,7 +1507,6 @@
 	align: center center;
 	width: 100px;
 	height: 100px;
-	background-image: url("s2r://");
 	background-size: 100%;
 }
 
@@ -1724,7 +1547,6 @@
 
 .Combat .Notification
 {
-	background-image: url("s2r://");
 	background-size: 332px 35px;
 	background-position: left bottom;
 	background-repeat: no-repeat;
@@ -1736,43 +1558,12 @@
 	margin-left: 40px;
 }
 
-.CombatIconFish .Notification
-{
-	background-image: url("s2r://");
-}
-
-.CombatIconBase .Notification
-{
-	background-image: url("s2r://");
-}
-
-.CombatIconReward .Notification
-{
-	background-image: url("s2r://");
-}
-
 .CombatIcon
 {
 	align: left bottom;
 	width: 34px;
 	height: 31px;
-	background-image: url("s2r://");
 	background-size: 100%;
-}
-
-.CombatIconFish .CombatIcon
-{
-	background-image: url("s2r://");
-}
-
-.CombatIconBase .CombatIcon
-{
-	background-image: url("s2r://");
-}
-
-.CombatIconReward .CombatIcon
-{
-	background-image: url("s2r://");
 }
 
 .HUDFlipped .Notification
@@ -1846,7 +1637,6 @@
 	height: 20px;
 	margin-left: 2px;
 	margin-right: 2px;
-	background-image: url("s2r://panorama/images/custom_game/icon/gold_png.vtex");
 	background-size: 100%;
 }
 
@@ -1856,7 +1646,6 @@
 	height: 20px;
 	margin-left: 2px;
 	margin-right: 2px;
-	background-image: url("s2r://panorama/images/custom_game/icon/crystal_png.vtex");
 	background-size: 100%;
 }
 
@@ -1866,7 +1655,6 @@
 	height: 20px;
 	margin-left: 2px;
 	margin-right: 2px;
-	background-image: url("s2r://panorama/images/custom_game/icon/score_png.vtex");
 	background-size: 90%;
 }
 

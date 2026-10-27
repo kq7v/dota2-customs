@@ -25,6 +25,37 @@
 	background-size: 100%;
 }
 
+#CustomLoadingScreen #StartTips
+{
+	align: left center;
+	margin-left: 60px;
+	y: -100px;
+	width: 560px;
+	padding: 20px 24px;
+	flow-children: down;
+	background-color: gradient(linear, 0% 0%, 100% 100%, from(#101a28f2), color-stop(0.65, #15243bf2), to(#0a111cf2));
+	border: 2px solid #6686b080;
+	border-radius: 8px;
+	box-shadow: #000000cc 0px 0px 24px 0px;
+}
+
+#CustomLoadingScreen #StartTips Label
+{
+	width: 100%;
+	height: fit-children;
+	white-space: normal;
+	color: #dce6f2;
+	font-size: 22px;
+	text-shadow: 0px 1px 3px 2 #000000cc;
+}
+
+#CustomLoadingScreen #StartTips #StartTipsTitle
+{
+	color: #dfcf9e;
+	font-size: 26px;
+	margin-bottom: 14px;
+}
+
 #CustomLoadingScreen #LauncherGuide
 {
 	width: 380px;

@@ -81,7 +81,6 @@
 	width: 100%;
 	height: 55px;
 	margin-left: 20px;
-	background-image: url("s2r://");
 	background-repeat: no-repeat;
 	background-size: 100% 100%;
 }
@@ -91,7 +90,6 @@
 	width: 108px;
 	height: 48px;
 	margin-left: 12px;
-	background-image: url("s2r://");
 	background-repeat: no-repeat;
 	background-size: 100% 24px;
 	background-position: center center;
@@ -123,7 +121,6 @@
 	height: 35px;
 	horizontal-align: center;
 	y: 7px;
-	background-image: url("s2r://");
 	background-size: 100% 100%;
 	background-repeat: no-repeat;
 	transition-property: width, height, position;
@@ -143,11 +140,6 @@
 	transition-timing-function: ease-in-out;
 }
 
-.EOM_MenuButton:not(.IsActive):hover
-{
-	background-image: url("s2r://");
-}
-
 .EOM_MenuButton:not(.IsActive):hover Label
 {
 	color: #FFF9B5;
@@ -160,7 +152,6 @@
 
 .EOM_MenuButton.IsActive
 {
-	background-image: url("s2r://");
 	background-position: center top -6px;
 	background-size: 54px 72px;
 }

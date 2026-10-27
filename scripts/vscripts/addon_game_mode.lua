@@ -8,36 +8,32 @@
 ]]
 
 
-pcall(require, "encrypt")
-
-require("precache")
-require("precache_default")
-
--- Precache = require "Precache"
-function Precache(context)
-	-- PrecacheResource("particle", "particles/units/heroes/hero_rubick/rubick_attack_blur_left_to_right_01.vpcf", context)
-	-- PrecacheResource("particle", "particles/units/heroes/hero_rubick/rubick_attack_blur_right_to_left_01.vpcf", context)
-	-- PrecacheResource("particle", "particles/units/heroes/hero_rubick/rubick_attack_blur_right_to_left_02.vpcf", context)
-	-- PrecacheResource("soundfile", "soundevents/game_sounds_heroes/game_sounds_elder_titan.vsndevts", context)
-	-- PrecacheResource("model", "models/heroes/lycan/summon_wolves.vmdl", context)
-	for k, v in pairs(tPrecacheList) do
-		for _, vv in ipairs(v) do
-			PrecacheResource(k, vv, context)
+-- EOM SDK managed entry v1
+local map = (GetMapName() or ""):gsub("^maps/", ""):gsub("%.vpk$", "")
+if map == "platform_entry" or map == "platform_lobby" then
+	local sdk = require("eom_platform.server")
+	function Activate()
+		sdk.ActivatePlatform()
+	end
+	function Precache(context) end
+	function SpawnGroupPrecache(group, context) end
+else
+	local result = require("__eom_original_server")
+	local activate, precache, spawnGroupPrecache = Activate, Precache, SpawnGroupPrecache
+	function Activate(...)
+		if activate then
+			return activate(...)
 		end
 	end
-	for k, v in pairs(tDefaultPrecacheList) do
-		for _, vv in ipairs(v) do
-			PrecacheResource(k, vv, context)
+	function Precache(...)
+		if precache then
+			return precache(...)
 		end
 	end
-	_G.tPrecacheList = nil
-	_G.tDefaultPrecacheList = nil
-end
-
-function Activate()
-	ServerGameMode.Activate()
-end
-
-if IsServer() then
-	require("server_game_mode")
+	function SpawnGroupPrecache(...)
+		if spawnGroupPrecache then
+			return spawnGroupPrecache(...)
+		end
+	end
+	return result
 end

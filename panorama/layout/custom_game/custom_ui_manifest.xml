@@ -11,61 +11,61 @@
 <!-- xml reconstructed by Source 2 Viewer 20.1.0.0 - https://valveresourceformat.github.io -->
 <root>
 	<scripts>
-		<include src="s2r://panorama/scripts/custom_game/kv/econlistkv.vjs_c" />
-		<include src="s2r://panorama/scripts/custom_game/kv/reflectionabilitieskv.vjs_c" />
-		<include src="s2r://panorama/scripts/custom_game/kv/innateabilitieskv.vjs_c" />
-		<include src="s2r://panorama/scripts/custom_game/kv/sealingabilitieskv.vjs_c" />
-		<include src="s2r://panorama/scripts/custom_game/kv/infodrawpoolkv.vjs_c" />
-		<include src="s2r://panorama/scripts/custom_game/kv/nospellampkv.vjs_c" />
-		<include src="s2r://panorama/scripts/custom_game/kv/abilitiespool.vjs_c" />
-		<include src="s2r://panorama/scripts/custom_game/kv/subabilitykv.vjs_c" />
-		<include src="s2r://panorama/scripts/custom_game/kv/heroabilitykv.vjs_c" />
-		<include src="s2r://panorama/scripts/custom_game/kv/paymentwaykv.vjs_c" />
-		<include src="s2r://panorama/scripts/custom_game/kv/torturepipekv.vjs_c" />
-		<include src="s2r://panorama/scripts/custom_game/kv/unitskv.vjs_c" />
-		<include src="s2r://panorama/scripts/custom_game/kv/shopitemskv.vjs_c" />
-		<include src="s2r://panorama/scripts/custom_game/kv/itemskv.vjs_c" />
-		<include src="s2r://panorama/scripts/custom_game/kv/herolistkv.vjs_c" />
-		<include src="s2r://panorama/scripts/custom_game/kv/heroeskv.vjs_c" />
-		<include src="s2r://panorama/scripts/custom_game/kv/abilitieskv.vjs_c" />
-		<include src="s2r://panorama/layout/custom_game/manifest/manifest.vjs_c" />
+		<include src="s2r://panorama/scripts/custom_game/kv/econlistkv.vjs" />
+		<include src="s2r://panorama/scripts/custom_game/kv/reflectionabilitieskv.vjs" />
+		<include src="s2r://panorama/scripts/custom_game/kv/innateabilitieskv.vjs" />
+		<include src="s2r://panorama/scripts/custom_game/kv/sealingabilitieskv.vjs" />
+		<include src="s2r://panorama/scripts/custom_game/kv/infodrawpoolkv.vjs" />
+		<include src="s2r://panorama/scripts/custom_game/kv/nospellampkv.vjs" />
+		<include src="s2r://panorama/scripts/custom_game/kv/abilitiespool.vjs" />
+		<include src="s2r://panorama/scripts/custom_game/kv/subabilitykv.vjs" />
+		<include src="s2r://panorama/scripts/custom_game/kv/heroabilitykv.vjs" />
+		<include src="s2r://panorama/scripts/custom_game/kv/paymentwaykv.vjs" />
+		<include src="s2r://panorama/scripts/custom_game/kv/torturepipekv.vjs" />
+		<include src="s2r://panorama/scripts/custom_game/kv/unitskv.vjs" />
+		<include src="s2r://panorama/scripts/custom_game/kv/shopitemskv.vjs" />
+		<include src="s2r://panorama/scripts/custom_game/kv/itemskv.vjs" />
+		<include src="s2r://panorama/scripts/custom_game/kv/herolistkv.vjs" />
+		<include src="s2r://panorama/scripts/custom_game/kv/heroeskv.vjs" />
+		<include src="s2r://panorama/scripts/custom_game/kv/abilitieskv.vjs" />
+		<include src="s2r://panorama/layout/custom_game/manifest/manifest.vjs" />
 	</scripts>
 	<Panel>
-		<CustomUIElement type="FlyoutScoreboard" layoutfile="s2r://panorama/layout/custom_game/hud_scoreboard/layout.vxml_c" />
-		<CustomUIElement type="HeroSelection" layoutfile="s2r://panorama/layout/custom_game/hero_selection/layout.vxml_c" />
-		<CustomUIElement type="Hud" layoutfile="s2r://panorama/layout/custom_game/bottom_notifications/layout.vxml_c" />
-		<CustomUIElement type="Hud" layoutfile="s2r://panorama/layout/custom_game/debug_tool/layout.vxml_c" />
-		<CustomUIElement type="Hud" layoutfile="s2r://panorama/layout/custom_game/handbook/layout.vxml_c" />
-		<CustomUIElement type="Hud" layoutfile="s2r://panorama/layout/custom_game/hud_customer_service/layout.vxml_c" />
-		<CustomUIElement type="Hud" layoutfile="s2r://panorama/layout/custom_game/hud_damage_counter/layout.vxml_c" />
-		<CustomUIElement type="Hud" layoutfile="s2r://panorama/layout/custom_game/hud_dragonboat/layout.vxml_c" />
-		<CustomUIElement type="Hud" layoutfile="s2r://panorama/layout/custom_game/hud_draw/layout.vxml_c" />
-		<CustomUIElement type="Hud" layoutfile="s2r://panorama/layout/custom_game/hud_end_game/layout.vxml_c" />
-		<CustomUIElement type="Hud" layoutfile="s2r://panorama/layout/custom_game/hud_feedback/layout.vxml_c" />
-		<CustomUIElement type="Hud" layoutfile="s2r://panorama/layout/custom_game/hud_handbook/layout.vxml_c" />
-		<CustomUIElement type="Hud" layoutfile="s2r://panorama/layout/custom_game/hud_inventory/layout.vxml_c" />
-		<CustomUIElement type="Hud" layoutfile="s2r://panorama/layout/custom_game/hud_link/layout.vxml_c" />
-		<CustomUIElement type="Hud" layoutfile="s2r://panorama/layout/custom_game/hud_link_c4/layout.vxml_c" />
-		<CustomUIElement type="Hud" layoutfile="s2r://panorama/layout/custom_game/hud_login_activity/layout.vxml_c" />
-		<CustomUIElement type="Hud" layoutfile="s2r://panorama/layout/custom_game/hud_mail/layout.vxml_c" />
-		<CustomUIElement type="Hud" layoutfile="s2r://panorama/layout/custom_game/hud_main/layout.vxml_c" />
-		<CustomUIElement type="Hud" layoutfile="s2r://panorama/layout/custom_game/hud_pig/layout.vxml_c" />
-		<CustomUIElement type="Hud" layoutfile="s2r://panorama/layout/custom_game/hud_playerlose/layout.vxml_c" />
-		<CustomUIElement type="Hud" layoutfile="s2r://panorama/layout/custom_game/hud_popup/layout.vxml_c" />
-		<CustomUIElement type="Hud" layoutfile="s2r://panorama/layout/custom_game/hud_pvp_new/layout.vxml_c" />
-		<CustomUIElement type="Hud" layoutfile="s2r://panorama/layout/custom_game/hud_settings/layout.vxml_c" />
-		<CustomUIElement type="Hud" layoutfile="s2r://panorama/layout/custom_game/hud_shop/layout.vxml_c" />
-		<CustomUIElement type="Hud" layoutfile="s2r://panorama/layout/custom_game/hud_store/layout.vxml_c" />
-		<CustomUIElement type="Hud" layoutfile="s2r://panorama/layout/custom_game/menu_buttons/layout.vxml_c" />
-		<CustomUIElement type="Hud" layoutfile="s2r://panorama/layout/custom_game/notification/layout.vxml_c" />
-		<CustomUIElement type="Hud" layoutfile="s2r://panorama/layout/custom_game/rank_panel/layout.vxml_c" />
+		<CustomUIElement type="FlyoutScoreboard" layoutfile="s2r://panorama/layout/custom_game/hud_scoreboard/layout.vxml" />
+		<CustomUIElement type="HeroSelection" layoutfile="s2r://panorama/layout/custom_game/hero_selection/layout.vxml" />
+		<CustomUIElement type="Hud" layoutfile="s2r://panorama/layout/custom_game/bottom_notifications/layout.vxml" />
+		<CustomUIElement type="Hud" layoutfile="s2r://panorama/layout/custom_game/debug_tool/layout.vxml" />
+		<CustomUIElement type="Hud" layoutfile="s2r://panorama/layout/custom_game/handbook/layout.vxml" />
+		<CustomUIElement type="Hud" layoutfile="s2r://panorama/layout/custom_game/hud_customer_service/layout.vxml" />
+		<CustomUIElement type="Hud" layoutfile="s2r://panorama/layout/custom_game/hud_damage_counter/layout.vxml" />
+		<CustomUIElement type="Hud" layoutfile="s2r://panorama/layout/custom_game/hud_dragonboat/layout.vxml" />
+		<CustomUIElement type="Hud" layoutfile="s2r://panorama/layout/custom_game/hud_draw/layout.vxml" />
+		<CustomUIElement type="Hud" layoutfile="s2r://panorama/layout/custom_game/hud_end_game/layout.vxml" />
+		<CustomUIElement type="Hud" layoutfile="s2r://panorama/layout/custom_game/hud_feedback/layout.vxml" />
+		<CustomUIElement type="Hud" layoutfile="s2r://panorama/layout/custom_game/hud_handbook/layout.vxml" />
+		<CustomUIElement type="Hud" layoutfile="s2r://panorama/layout/custom_game/hud_inventory/layout.vxml" />
+		<CustomUIElement type="Hud" layoutfile="s2r://panorama/layout/custom_game/hud_link/layout.vxml" />
+		<CustomUIElement type="Hud" layoutfile="s2r://panorama/layout/custom_game/hud_link_c4/layout.vxml" />
+		<CustomUIElement type="Hud" layoutfile="s2r://panorama/layout/custom_game/hud_login_activity/layout.vxml" />
+		<CustomUIElement type="Hud" layoutfile="s2r://panorama/layout/custom_game/hud_mail/layout.vxml" />
+		<CustomUIElement type="Hud" layoutfile="s2r://panorama/layout/custom_game/hud_main/layout.vxml" />
+		<CustomUIElement type="Hud" layoutfile="s2r://panorama/layout/custom_game/hud_pig/layout.vxml" />
+		<CustomUIElement type="Hud" layoutfile="s2r://panorama/layout/custom_game/hud_playerlose/layout.vxml" />
+		<CustomUIElement type="Hud" layoutfile="s2r://panorama/layout/custom_game/hud_popup/layout.vxml" />
+		<CustomUIElement type="Hud" layoutfile="s2r://panorama/layout/custom_game/hud_pvp_new/layout.vxml" />
+		<CustomUIElement type="Hud" layoutfile="s2r://panorama/layout/custom_game/hud_settings/layout.vxml" />
+		<CustomUIElement type="Hud" layoutfile="s2r://panorama/layout/custom_game/hud_shop/layout.vxml" />
+		<CustomUIElement type="Hud" layoutfile="s2r://panorama/layout/custom_game/hud_store/layout.vxml" />
+		<CustomUIElement type="Hud" layoutfile="s2r://panorama/layout/custom_game/menu_buttons/layout.vxml" />
+		<CustomUIElement type="Hud" layoutfile="s2r://panorama/layout/custom_game/notification/layout.vxml" />
+		<CustomUIElement type="Hud" layoutfile="s2r://panorama/layout/custom_game/rank_panel/layout.vxml" />
 		<CustomUIElement type="Hud" layoutfile="s2r://panorama/layout/custom_game/multiteam_top_scoreboard.vxml_c" />
-		<CustomUIElement type="Hud" layoutfile="s2r://panorama/layout/custom_game/barrage.vxml_c" />
-		<CustomUIElement type="Hud" layoutfile="s2r://panorama/layout/custom_game/actor_confirm.vxml_c" />
-		<CustomUIElement type="Hud" layoutfile="s2r://panorama/layout/custom_game/swap_abilities.vxml_c" />
-		<CustomUIElement type="Hud" layoutfile="s2r://panorama/layout/custom_game/draggable_abilities.vxml_c" />
-		<CustomUIElement type="Hud" layoutfile="s2r://panorama/layout/custom_game/ability_note.vxml_c" />
-		<CustomUIElement type="Hud" layoutfile="s2r://panorama/layout/custom_game/cosmetic_abilities/cosmetic_abilities.vxml_c" />
-		<CustomUIElement type="Hud" layoutfile="s2r://panorama/layout/custom_game/wearable/wearable.vxml_c" />
+		<CustomUIElement type="Hud" layoutfile="s2r://panorama/layout/custom_game/barrage.vxml" />
+		<CustomUIElement type="Hud" layoutfile="s2r://panorama/layout/custom_game/actor_confirm.vxml" />
+		<CustomUIElement type="Hud" layoutfile="s2r://panorama/layout/custom_game/swap_abilities.vxml" />
+		<CustomUIElement type="Hud" layoutfile="s2r://panorama/layout/custom_game/draggable_abilities.vxml" />
+		<CustomUIElement type="Hud" layoutfile="s2r://panorama/layout/custom_game/ability_note.vxml" />
+		<CustomUIElement type="Hud" layoutfile="s2r://panorama/layout/custom_game/cosmetic_abilities/cosmetic_abilities.vxml" />
+		<CustomUIElement type="Hud" layoutfile="s2r://panorama/layout/custom_game/wearable/wearable.vxml" />
 	</Panel>
 </root>

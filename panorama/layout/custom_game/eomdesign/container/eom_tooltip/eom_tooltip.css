@@ -24,7 +24,6 @@
 .EOM_TooltipHeader
 {
 	width: 100%;
-	background-image: url("s2r://");
 	background-size: 100%;
 }
 
@@ -35,14 +34,12 @@
 
 .EOM_TooltipDivder.Horizontal
 {
-	background-image: url("s2r://");
 	width: 100%;
 	height: 6px;
 }
 
 .EOM_TooltipDivder.Vertical
 {
-	background-image: url("s2r://");
 	width: 6px;
 	height: 100%;
 }

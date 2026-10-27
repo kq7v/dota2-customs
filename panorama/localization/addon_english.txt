@@ -19,4 +19,4 @@
 	"LoadingScreen_launcher_copied"	"Download link copied"
 	"LoadingScreen_launcher_warning"	"Note: The Dota 2 browser does not support downloads or the web version. Copy the link and open it in an external browser!"
 	"LoadingScreen_launcher_play_step"	"2. Open the launcher, link Steam, create a lobby, and start playing!"
-}
+}

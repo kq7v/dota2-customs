@@ -7792,7 +7792,7 @@ function PassPage({ money, productData, canPay }) {
                 } },
                 react__WEBPACK_IMPORTED_MODULE_3__.createElement(Label, { id: "ItemPrice", text: $.Localize("#Goods_1100004_Buy_Coin") }))),
         product_cash.map((product_info, i) => {
-            return react__WEBPACK_IMPORTED_MODULE_3__.createElement(Panel, { id: "BuyPanel" + (i + 2), key: i, className: "BuyPanel" },
+            return react__WEBPACK_IMPORTED_MODULE_3__.createElement(Panel, { id: "BuyPanel" + (i + 2), key: i, className: "BuyPanel", style: { visibility: "collapse" } },
                 react__WEBPACK_IMPORTED_MODULE_3__.createElement(Label, { id: "ItemName", text: $.Localize("#Goods_" + product_info.id), html: true }),
                 react__WEBPACK_IMPORTED_MODULE_3__.createElement(Button, { id: "BuyBtn", onactivate: () => {
                         if (canPay) {

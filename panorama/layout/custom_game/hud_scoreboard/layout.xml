@@ -15,14 +15,14 @@
 		<include src="s2r://panorama/styles/hudstyles.vcss_c" />
 		<include src="s2r://panorama/styles/hud/hud_reborn.vcss_c" />
 		<include src="s2r://panorama/styles/custom_ui.vcss_c" />
-		<include src="s2r://panorama/layout/custom_game/hud_scoreboard/styles.vcss_c" />
-		<include src="s2r://panorama/layout/custom_game/eomdesign/container/eom_panel/eom_panel.vcss_c" />
-		<include src="s2r://panorama/layout/custom_game/eomdesign/container/eom_tooltip/eom_tooltip.vcss_c" />
+		<include src="s2r://panorama/layout/custom_game/hud_scoreboard/styles.vcss" />
+		<include src="s2r://panorama/layout/custom_game/eomdesign/container/eom_panel/eom_panel.vcss" />
+		<include src="s2r://panorama/layout/custom_game/eomdesign/container/eom_tooltip/eom_tooltip.vcss" />
 	</styles>
 	<scripts>
-		<include src="s2r://panorama/scripts/custom_game/common.vjs_c" />
+		<include src="s2r://panorama/scripts/custom_game/common.vjs" />
 		<include src="s2r://panorama/scripts/sequence_actions.vts_c" />
-		<include src="s2r://panorama/layout/custom_game/hud_scoreboard/script.vjs_c" />
+		<include src="s2r://panorama/layout/custom_game/hud_scoreboard/script.vjs" />
 	</scripts>
 	<Panel class="HudRoot" hittest="false" />
 </root>

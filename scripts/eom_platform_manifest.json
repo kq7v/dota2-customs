@@ -1,0 +1,184 @@
+--[[
+  ~ dumper · customs · dota2
+  ~ credits: rou (a.k.a internetenemy), qfun(a.k.a qfun_g9s)
+  ~ special for t.me/wildguild
+
+  ~ build 1a5b3bb 
+  ~ auto-generated — do not edit
+]]
+
+
+{
+  "version": "0.2.31",
+  "addon": "custom_chaos",
+  "files": [
+    {
+      "file": "content/dota_addons/custom_chaos/panorama/images/custom_game/eom_platform/launcher/english.png",
+      "sha256": "f6338e077fdf8be7de5fda1137af0de2fa9319c543835bdd48b7f921e8c76d46"
+    },
+    {
+      "file": "content/dota_addons/custom_chaos/panorama/images/custom_game/eom_platform/launcher/russian.png",
+      "sha256": "0809ef853f6123d4228f998fa5debb1ecf752ce1f0bc7f8a15b9d97683d761ed"
+    },
+    {
+      "file": "content/dota_addons/custom_chaos/panorama/images/custom_game/eom_platform/launcher/schinese.png",
+      "sha256": "9253190ea6724c587804f0352170e2960e92875ab462e030736a2e76e38a348b"
+    },
+    {
+      "file": "content/dota_addons/custom_chaos/panorama/layout/custom_game/eom_platform/hud_platform.xml",
+      "sha256": "9c73441b4f3d84c4a59e6e9cac28a159b54f4562f8e755ea5cb5aaae6d6d738a"
+    },
+    {
+      "file": "content/dota_addons/custom_chaos/panorama/layout/custom_game/eom_platform/loading.xml",
+      "sha256": "99ad2a789ec2df69b5e9cfcf2ef1c0cd1265ca4a31a92c12de610a95b51bbff6"
+    },
+    {
+      "file": "content/dota_addons/custom_chaos/panorama/layout/custom_game/eom_platform/setup.xml",
+      "sha256": "29bdefc610f74621a68324d662a2bedbfe84d61b31e62f280f6e9f34d023ee15"
+    },
+    {
+      "file": "content/dota_addons/custom_chaos/panorama/scripts/custom_game/eom_platform/entry_config.js",
+      "sha256": "90c76f8ab59fee8679a1556db6c2de3a4049909618759334d6e72fcb1a24d834"
+    },
+    {
+      "file": "content/dota_addons/custom_chaos/panorama/scripts/custom_game/eom_platform/hud_platform.js",
+      "sha256": "7d5c5d05608342d9f2f9e6f5919a0151bbe40c1c19eada3e8fe410938f603e87"
+    },
+    {
+      "file": "content/dota_addons/custom_chaos/panorama/scripts/custom_game/eom_platform/integration/loading.js",
+      "sha256": "0f0f417427bdab108f8845ed3ccd826390f6e5cffaa54c23cc220f8d83cd6519"
+    },
+    {
+      "file": "content/dota_addons/custom_chaos/panorama/scripts/custom_game/eom_platform/integration/route.js",
+      "sha256": "e9f9ee391183ebdb9a7fe5aa7d5489c890d875466bcdb42c130e73b56d2afe2f"
+    },
+    {
+      "file": "content/dota_addons/custom_chaos/panorama/scripts/custom_game/eom_platform/integration/setup.js",
+      "sha256": "61578fab53f19b71d04e72cc8cc0c647871c83e6ad1d32f587d6751717ee4cf8"
+    },
+    {
+      "file": "content/dota_addons/custom_chaos/panorama/scripts/custom_game/eom_platform/loading.js",
+      "sha256": "1cb13b722d9d102a34cd6f9560aa9a6a6ff5faf95f94c738bdcd3484a3b44bff"
+    },
+    {
+      "file": "content/dota_addons/custom_chaos/panorama/scripts/custom_game/eom_platform/polyfill.js",
+      "sha256": "6018944240f4a00d49acb4713b1d30802d188068adef87d3c977821266dec3c8"
+    },
+    {
+      "file": "content/dota_addons/custom_chaos/panorama/styles/custom_game/eom_platform/platform.css",
+      "sha256": "c22b6846ba723168280d06a088a5eead788f3e860f7b60031efbad5d73989f89"
+    },
+    {
+      "file": "game/dota_addons/custom_chaos/scripts/vscripts/eom_platform/client.lua",
+      "sha256": "3ab1dcd991f32842b889f182ba984a780bfde75d15d178b813793e9711765ceb"
+    },
+    {
+      "file": "game/dota_addons/custom_chaos/scripts/vscripts/eom_platform/connection_client.lua",
+      "sha256": "ac7cbd32b917def20bc22cc295dcd6d26e5a6b0c826b57d9f024203f7b9c61a3"
+    },
+    {
+      "file": "game/dota_addons/custom_chaos/scripts/vscripts/eom_platform/lobby_server.lua",
+      "sha256": "72a58e80ac577d0ba795d59e8f3f17f2b05df165a03d283ed08e70b9db85646a"
+    },
+    {
+      "file": "game/dota_addons/custom_chaos/scripts/vscripts/eom_platform/server.lua",
+      "sha256": "69511389432569e27853e7c6704155aebc5bc9978f15750973d6e336ac7c2b02"
+    },
+    {
+      "file": "content/dota_addons/custom_chaos/localization/schinese/eom_platform.vdf",
+      "sha256": "5e8f6af7c1fd65050bb10a5512b7eee63e32934a76e64034b3deb77473e27e80"
+    },
+    {
+      "file": "game/dota_addons/custom_chaos/resource/addon_schinese.txt",
+      "sha256": "3f812d0359af1c293174de768963a11be62d8791c73947506803d51dbdb47748"
+    },
+    {
+      "file": "content/dota_addons/custom_chaos/localization/english/eom_platform.vdf",
+      "sha256": "293a2bbfa67040dc7c19cc8e5ccc788c91efa42eb9b43bb68a60f07a82afab79"
+    },
+    {
+      "file": "game/dota_addons/custom_chaos/resource/addon_english.txt",
+      "sha256": "a48a055a3617221436c9aa963e32540effc9696135aae94b3106abdd7bcf3eab"
+    },
+    {
+      "file": "content/dota_addons/custom_chaos/localization/russian/eom_platform.vdf",
+      "sha256": "0179c821615f2098483408ff80c24435be7d418b7424d93750f27654272776c3"
+    },
+    {
+      "file": "game/dota_addons/custom_chaos/resource/addon_russian.txt",
+      "sha256": "3382fe7338039db1e11d12063bb754193c7b9ebf51dd32fe91791a750c4ae7d2"
+    },
+    {
+      "file": "content/dota_addons/custom_chaos/localization/tchinese/eom_platform.vdf",
+      "sha256": "55121c9bc4e6198b62361aae145c3839011002d24a2dfc88aa44a7f483b06ec6"
+    },
+    {
+      "file": "game/dota_addons/custom_chaos/resource/addon_tchinese.txt",
+      "sha256": "3f4feeb380d1df29ef72521a2164ecc6ec240fd5cc6bb05b8898f68ea679d318"
+    },
+    {
+      "file": "game/dota_addons/custom_chaos/scripts/platform_routing.txt",
+      "sha256": "9eba5e80a059c9debcf5ad12ac0a0803dfb3d6a945630306b9a3881b8f1435a1"
+    },
+    {
+      "file": "game/dota_addons/custom_chaos/scripts/eom_platform.txt",
+      "sha256": "f42fe6d17f0b2f30de7743894a1a2503d8e1a2a2b9d030e93823d046bc9ae903"
+    },
+    {
+      "file": "game/dota_addons/custom_chaos/scripts/eom_platform.gameevents",
+      "sha256": "32a60630645cfaa75ce85a348b0fdb55e965bae8159560e47bd32c713ee3792d"
+    },
+    {
+      "file": "game/dota_addons/custom_chaos/scripts/vscripts/__eom_original_server.lua",
+      "sha256": "b80b6710ba4f686d50cd1e88d859698a15e913e6bb0bb4b7f952076dfc860362"
+    },
+    {
+      "file": "game/dota_addons/custom_chaos/scripts/vscripts/__eom_original_client.lua",
+      "sha256": "be4e2c76207fa387b034e06a15875e14cdbbefb5d3c555ebbcfd19045bcec9ee"
+    },
+    {
+      "file": "game/dota_addons/custom_chaos/scripts/vscripts/addon_game_mode.lua",
+      "sha256": "0095cde5dddd0cd2f3fb881ae7deeca43c16ad7ae7f25338c1d9d60f38bd6232"
+    },
+    {
+      "file": "game/dota_addons/custom_chaos/scripts/vscripts/addon_game_mode_client.lua",
+      "sha256": "8af10faae11928b525f3bc85b44bf22d74380c6ccef64101a22fbf9ae369e87f"
+    },
+    {
+      "file": "content/dota_addons/custom_chaos/panorama/layout/custom_game/eom_platform/original_loading.xml",
+      "sha256": "17d35239d7d11f83ad181ccc7dbaf336c543029ed884deb843617e47930c0b4b"
+    },
+    {
+      "file": "content/dota_addons/custom_chaos/panorama/layout/custom_game/custom_loading_screen.xml",
+      "sha256": "2607a49392c207ee721dd313fd4c154a9cac70dcb0e249525a1dcfdcce35567c"
+    },
+    {
+      "file": "content/dota_addons/custom_chaos/panorama/scripts/custom_game/eom_platform/integration/loading_route.js",
+      "sha256": "9865cb64f4c87d2950d49f3d5037a9c3daa66dce20f8aaf88b4fc0d7e8578449"
+    },
+    {
+      "file": "content/dota_addons/custom_chaos/panorama/layout/custom_game/custom_ui_manifest.xml",
+      "sha256": "230cc0e8a6beb6635d7a7ad13f1428f32fc87a843357e17bda965bb6874ddc3e"
+    },
+    {
+      "file": "content/dota_addons/custom_chaos/panorama/layout/custom_game/eom_platform/original_team_select.xml",
+      "sha256": "acf80c7da29f8ee9bcd3c7d64ea249048c2b4968b4a4009c1981b38ec122700b"
+    },
+    {
+      "file": "content/dota_addons/custom_chaos/panorama/layout/custom_game/team_select.xml",
+      "sha256": "b40815a86c1ab089c92fde3a60ee317f173ddd28e13a76ecb1afbacf3be56955"
+    },
+    {
+      "file": "content/dota_addons/custom_chaos/panorama/scripts/custom_game/eom_platform/integration/team_select_route.js",
+      "sha256": "c9d89c13bd029b6ffb157c9c1dd8c092e9da78afbbf7bc983a95e14bcaec206c"
+    },
+    {
+      "file": "game/dota_addons/custom_chaos/scripts/custom.gameevents",
+      "sha256": "339c22f83356c022db622a29482963cf12d9f628a3f7ad01de97818739c9e362"
+    },
+    {
+      "file": "game/dota_addons/custom_chaos/addoninfo.txt",
+      "sha256": "3461d3b3b729fb910e46802ff9c22cd1f2a23d1ddf9116135cac0ae5a9577a6f"
+    }
+  ]
+}

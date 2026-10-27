@@ -10,7 +10,7 @@
 
 "AddonInfo"
 {
-	maps			"solo 1x8 2x6"
+	"maps" "platform_entry"
 	"IsPlayable"	"1"
 	"HeroGuidesSupported" "1"
 	"PenaltiesEnabled"	  "0"
@@ -42,4 +42,11 @@
 	// 	// 	"Name"		"TauntButton"
 	// 	// }
 	// }
+
+	"DefaultMap" "platform_entry"
+	"platform_entry"
+	{
+		"MinPlayers" "1"
+		"MaxPlayers" "1"
+	}
 }

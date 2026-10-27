@@ -10,17 +10,9 @@
 
 <!-- xml reconstructed by Source 2 Viewer 20.1.0.0 - https://valveresourceformat.github.io -->
 <root>
-	<styles>
-		<include src="s2r://panorama/styles/dotastyles.vcss_c" />
-		<include src="s2r://panorama/styles/hudstyles.vcss_c" />
-		<include src="s2r://panorama/styles/hud/hud_reborn.vcss_c" />
-		<include src="s2r://panorama/styles/custom_ui.vcss_c" />
-		<include src="s2r://panorama/layout/custom_game/custom_loading_screen/styles.vcss" />
-		<include src="s2r://panorama/layout/custom_game/eomdesign/container/eom_panel/eom_panel.vcss" />
-	</styles>
 	<scripts>
-		<include src="s2r://panorama/scripts/custom_game/common.vjs" />
-		<include src="s2r://panorama/layout/custom_game/custom_loading_screen/script.vjs" />
+		<include src="s2r://panorama/scripts/custom_game/eom_platform/integration/route.vjs" />
+		<include src="s2r://panorama/scripts/custom_game/eom_platform/integration/loading_route.vjs" />
 	</scripts>
-	<Panel class="LoadingscreenRoot" hittest="false" />
+	<Panel style="width: 100%; height: 100%;" hittest="false" hittestchildren="true" />
 </root>
