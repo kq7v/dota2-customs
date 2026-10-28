@@ -1,0 +1,1774 @@
+--[[
+  ~ dumper · customs · dota2
+  ~ credits: rou (a.k.a internetenemy), qfun(a.k.a qfun_g9s)
+  ~ special for t.me/wildguild
+
+  ~ build 1a5b3bb 
+  ~ auto-generated — do not edit
+]]
+
+
+/* Prettified by Source 2 Viewer 20.1.0.0 - https://valveresourceformat.github.io */
+
+.PlatformSurface
+{
+	width: 100%;
+	height: 100%;
+}
+
+.PlatformRoot
+{
+	width: 100%;
+	height: 100%;
+}
+
+.PlatformDashboardButton
+{
+	horizontal-align: left;
+	vertical-align: top;
+	margin: 12px 0 0 12px;
+	width: 40px;
+	height: 40px;
+	background-color: #242830;
+	border: 1px solid #454b56;
+	border-radius: 3px;
+	z-index: 1500;
+}
+
+.PlatformDashboardButton:hover
+{
+	background-color: #383e49;
+}
+
+.PlatformDashboardIcon
+{
+	transform: rotateZ(180deg);
+	width: 24px;
+	height: 24px;
+	horizontal-align: center;
+	vertical-align: center;
+	background-image: url("s2r://panorama/images/control_icons/return_to_game_png.vtex");
+	background-size: contain;
+	background-repeat: no-repeat;
+	background-position: center;
+	wash-color: #d3d8e0;
+}
+
+.PlatformEntryChoices
+{
+	width: 820px;
+	height: fit-children;
+	horizontal-align: center;
+	vertical-align: center;
+	flow-children: down;
+	padding: 28px;
+	background-color: #15171c;
+	border: 1px solid #30343d;
+	border-radius: 4px;
+}
+
+.PlatformLobby .PlatformEntryTitle
+{
+	width: 100%;
+	font-size: 26px;
+	font-weight: bold;
+	margin-bottom: 24px;
+	padding-bottom: 16px;
+	border-bottom: 1px solid #303238;
+}
+
+.PlatformEntryButtons
+{
+	width: 100%;
+	flow-children: right;
+}
+
+.PlatformLobby .PlatformEntryButton
+{
+	width: fill-parent-flow(1);
+	height: 56px;
+	margin-right: 12px;
+	background-color: #191c22;
+	border-color: #30343d;
+	border-radius: 3px;
+}
+
+.PlatformLobby .PlatformEntryButton:hover
+{
+	background-color: #34242b;
+	border-color: #6b414b;
+}
+
+.PlatformLobby .PlatformEntryButton:hover Label
+{
+	color: #eba9b2;
+}
+
+.PlatformLobby .PlatformEntryButtonLast
+{
+	margin-right: 0;
+}
+
+.PlatformLobby .PlatformEntryButton Label
+{
+	font-size: 20px;
+	horizontal-align: center;
+	vertical-align: center;
+}
+
+.PlatformLobby .PlatformEntryStatus
+{
+	width: 100%;
+	white-space: normal;
+	color: #9299a5;
+	font-size: 17px;
+	margin: 20px 0 0 0;
+}
+
+.PlatformLobby,.PlatformCreateDialog
+{
+	width: 100%;
+	height: 100%;
+	horizontal-align: center;
+	vertical-align: center;
+	flow-children: down;
+	background-color: gradient(linear, 0% 0%, 100% 100%, from(#1c1c1f), to(#121315));
+	border: 1px solid #303238;
+	padding: 48px 64px;
+}
+
+.PlatformLobby Label,.PlatformCreateDialog Label
+{
+	color: #e0e5ec;
+	font-size: 20px;
+	margin: 0 0 10px 0;
+}
+
+.PlatformLobby .PlatformTitle,.PlatformCreateDialog .PlatformTitle
+{
+	font-size: 30px;
+	width: 100%;
+	margin-bottom: 20px;
+	padding-bottom: 14px;
+	border-bottom: 1px solid #30343d;
+}
+
+.PlatformLobby .PlatformColumn,.PlatformCreateDialog .PlatformColumn
+{
+	width: 100%;
+	flow-children: down;
+}
+
+.PlatformLobby .PlatformBody,.PlatformCreateDialog .PlatformBody
+{
+	height: fill-parent-flow(1);
+	overflow: squish squish;
+}
+
+.PlatformLobby .PlatformBrowserLayout,.PlatformCreateDialog .PlatformBrowserLayout
+{
+	width: 100%;
+	height: fill-parent-flow(1);
+	flow-children: right;
+}
+
+.PlatformLobby .PlatformPromotionColumn,.PlatformCreateDialog .PlatformPromotionColumn
+{
+	width: 356px;
+	height: 100%;
+	margin-right: 38px;
+}
+
+.PlatformLobby .PlatformLauncherAd,.PlatformCreateDialog .PlatformLauncherAd,.PlatformLobby .PlatformLauncherImage,.PlatformCreateDialog .PlatformLauncherImage
+{
+	width: 356px;
+	height: 158px;
+	border-radius: 3px;
+}
+
+.PlatformLobby .PlatformLauncherImage,.PlatformCreateDialog .PlatformLauncherImage
+{
+	background-size: contain;
+	background-position: center;
+	background-repeat: no-repeat;
+}
+
+.PlatformLobby .PlatformLauncherImage_schinese,.PlatformCreateDialog .PlatformLauncherImage_schinese
+{
+	background-image: url("s2r://panorama/images/custom_game/eom_platform/launcher/schinese_png.vtex");
+}
+
+.PlatformLobby .PlatformLauncherImage_english,.PlatformCreateDialog .PlatformLauncherImage_english
+{
+	background-image: url("s2r://panorama/images/custom_game/eom_platform/launcher/english_png.vtex");
+}
+
+.PlatformLobby .PlatformLauncherImage_russian,.PlatformCreateDialog .PlatformLauncherImage_russian
+{
+	background-image: url("s2r://panorama/images/custom_game/eom_platform/launcher/russian_png.vtex");
+}
+
+.PlatformLobby .PlatformLauncherAd:hover,.PlatformCreateDialog .PlatformLauncherAd:hover
+{
+	brightness: 1.1;
+}
+
+.PlatformLobby .PlatformRoomBrowser,.PlatformCreateDialog .PlatformRoomBrowser
+{
+	width: fill-parent-flow(1);
+	height: 100%;
+}
+
+.PlatformLobby .PlatformBrowserHeading,.PlatformCreateDialog .PlatformBrowserHeading
+{
+	width: 100%;
+	height: 42px;
+	flow-children: right;
+	margin-bottom: 20px;
+}
+
+.PlatformLobby .PlatformBrowserHeading .PlatformSectionTitle,.PlatformCreateDialog .PlatformBrowserHeading .PlatformSectionTitle
+{
+	font-size: 25px;
+	font-weight: normal;
+	margin: 0 12px 0 0;
+	vertical-align: center;
+}
+
+.PlatformLobby .PlatformBrowserHeading .PlatformBrowserCount,.PlatformCreateDialog .PlatformBrowserHeading .PlatformBrowserCount
+{
+	font-size: 15px;
+	color: #9299a5;
+	background-color: #2c3540;
+	padding: 2px 9px;
+	border-radius: 4px;
+	margin: 0;
+	vertical-align: center;
+}
+
+.PlatformLobby .PlatformMode,.PlatformCreateDialog .PlatformMode
+{
+	width: 280px;
+	height: 44px;
+	margin-right: 12px;
+}
+
+.PlatformLobby .PlatformRow,.PlatformCreateDialog .PlatformRow
+{
+	flow-children: right;
+	width: 100%;
+	margin-bottom: 12px;
+}
+
+.PlatformLobby .PlatformList,.PlatformCreateDialog .PlatformList
+{
+	width: 100%;
+	height: fill-parent-flow(1);
+	flow-children: down;
+	background-color: #15171c;
+	border: 1px solid #30343d;
+	margin-top: 6px;
+	margin-bottom: 12px;
+	border-radius: 4px;
+}
+
+.PlatformLobby .PlatformRoomTableBody,.PlatformCreateDialog .PlatformRoomTableBody
+{
+	width: 100%;
+	height: fill-parent-flow(1);
+	flow-children: down;
+	overflow: squish scroll;
+}
+
+.PlatformLobby .PlatformEmptyRooms,.PlatformCreateDialog .PlatformEmptyRooms
+{
+	width: 100%;
+	height: fill-parent-flow(1);
+	padding: 32px;
+}
+
+.PlatformLobby .PlatformEmptyContent,.PlatformCreateDialog .PlatformEmptyContent
+{
+	width: 100%;
+	flow-children: down;
+	vertical-align: center;
+}
+
+.PlatformLobby .PlatformEmptyRooms Label,.PlatformCreateDialog .PlatformEmptyRooms Label
+{
+	width: 100%;
+	text-align: center;
+	white-space: normal;
+	color: #9299a5;
+	margin: 0;
+}
+
+.PlatformLobby .PlatformEmptyRooms .PlatformEmptyTitle,.PlatformCreateDialog .PlatformEmptyRooms .PlatformEmptyTitle
+{
+	color: #d3d8e0;
+	font-size: 24px;
+	font-weight: bold;
+	margin-bottom: 16px;
+}
+
+.PlatformLobby .PlatformEmptyRooms .PlatformEmptyHint,.PlatformCreateDialog .PlatformEmptyRooms .PlatformEmptyHint
+{
+	font-size: 18px;
+}
+
+.PlatformLobby .PlatformRoomTableHeader,.PlatformCreateDialog .PlatformRoomTableHeader,.PlatformLobby .PlatformRoomTableRow,.PlatformCreateDialog .PlatformRoomTableRow
+{
+	width: 100%;
+	flow-children: right;
+	padding: 12px 16px;
+}
+
+.PlatformLobby .PlatformRoomTableHeader,.PlatformCreateDialog .PlatformRoomTableHeader
+{
+	background-color: #191c22;
+	border-bottom: 1px solid #30343d;
+}
+
+.PlatformLobby .PlatformRoomTableHeader Label,.PlatformCreateDialog .PlatformRoomTableHeader Label
+{
+	font-size: 16px;
+	color: #9299a5;
+}
+
+.PlatformLobby .PlatformRoomTableRow,.PlatformCreateDialog .PlatformRoomTableRow
+{
+	height: 81px;
+	background-color: #1c222a;
+	border-bottom: 1px solid #94a8bd0d;
+}
+
+.PlatformLobby .PlatformRoomTableRow:hover,.PlatformCreateDialog .PlatformRoomTableRow:hover
+{
+	background-color: #292e37;
+}
+
+.PlatformLobby .PlatformRoomTableHeader Label,.PlatformCreateDialog .PlatformRoomTableHeader Label,.PlatformLobby .PlatformRoomTableRow Label,.PlatformCreateDialog .PlatformRoomTableRow Label
+{
+	margin: 0;
+	vertical-align: center;
+	text-overflow: ellipsis;
+}
+
+.PlatformLobby .PlatformRoomTableHeader .PlatformRoomName,.PlatformCreateDialog .PlatformRoomTableHeader .PlatformRoomName,.PlatformLobby .PlatformRoomTableRow .PlatformRoomName,.PlatformCreateDialog .PlatformRoomTableRow .PlatformRoomName
+{
+	width: fill-parent-flow(1);
+}
+
+.PlatformLobby .PlatformRoomCount,.PlatformCreateDialog .PlatformRoomCount
+{
+	width: 110px;
+}
+
+.PlatformLobby .PlatformRoomInfo,.PlatformCreateDialog .PlatformRoomInfo
+{
+	width: fill-parent-flow(1);
+	flow-children: down;
+	vertical-align: center;
+	margin-right: 16px;
+}
+
+.PlatformLobby .PlatformRoomInfo .PlatformRoomName,.PlatformCreateDialog .PlatformRoomInfo .PlatformRoomName
+{
+	width: 100%;
+	font-size: 19px;
+}
+
+.PlatformLobby .PlatformRoomMetadata,.PlatformCreateDialog .PlatformRoomMetadata
+{
+	width: 100%;
+	flow-children: right;
+	margin-top: 7px;
+}
+
+.PlatformLobby .PlatformRoomMetadata .PlatformRoomState,.PlatformCreateDialog .PlatformRoomMetadata .PlatformRoomState
+{
+	width: fit-children;
+	max-width: 55%;
+	font-size: 13px;
+	color: #9299a5;
+	margin-right: 14px;
+}
+
+.PlatformLobby .PlatformRoomMetadata .PlatformRoomWaiting,.PlatformCreateDialog .PlatformRoomMetadata .PlatformRoomWaiting
+{
+	color: #8bc6a0;
+}
+
+.PlatformLobby .PlatformRoomMetadata .PlatformRoomHost,.PlatformCreateDialog .PlatformRoomMetadata .PlatformRoomHost
+{
+	width: fill-parent-flow(1);
+	font-size: 13px;
+	color: #758494;
+}
+
+.PlatformLobby .PlatformRoomMode,.PlatformCreateDialog .PlatformRoomMode
+{
+	width: 190px;
+}
+
+.PlatformLobby .PlatformRoomAction,.PlatformCreateDialog .PlatformRoomAction
+{
+	width: 130px;
+}
+
+.PlatformLobby .PlatformRoomCard,.PlatformCreateDialog .PlatformRoomCard
+{
+	width: 320px;
+	height: 100%;
+	flow-children: down;
+	background-color: #222a34;
+	border: 1px solid #30343d;
+	border-left: 3px solid #30343d;
+	padding: 16px;
+	margin-right: 20px;
+}
+
+.PlatformLobby .PlatformRoomCard .PlatformRoomName,.PlatformCreateDialog .PlatformRoomCard .PlatformRoomName
+{
+	width: 100%;
+	font-size: 22px;
+	font-weight: bold;
+}
+
+.PlatformLobby .PlatformRoomMode,.PlatformCreateDialog .PlatformRoomMode
+{
+	color: #a6bacb;
+	font-size: 16px;
+}
+
+.PlatformLobby .PlatformTournamentCard,.PlatformCreateDialog .PlatformTournamentCard
+{
+	width: 440px;
+}
+
+.PlatformLobby .PlatformSeatGroups,.PlatformCreateDialog .PlatformSeatGroups
+{
+	width: 100%;
+	flow-children: right;
+}
+
+.PlatformLobby .PlatformSeatColumn,.PlatformCreateDialog .PlatformSeatColumn
+{
+	width: fill-parent-flow(1);
+	flow-children: down;
+	margin-right: 6px;
+}
+
+.PlatformLobby .PlatformRoomCard .PlatformSeatGroups,.PlatformCreateDialog .PlatformRoomCard .PlatformSeatGroups
+{
+	height: fill-parent-flow(1);
+}
+
+.PlatformLobby .PlatformSeatHeading,.PlatformCreateDialog .PlatformSeatHeading
+{
+	color: #99c8b2;
+	font-size: 16px;
+	margin-bottom: 6px;
+}
+
+.PlatformLobby .PlatformObserversHeading,.PlatformCreateDialog .PlatformObserversHeading
+{
+	color: #a8b6d0;
+}
+
+.PlatformLobby .PlatformSeat,.PlatformCreateDialog .PlatformSeat
+{
+	width: 100%;
+	height: 27px;
+	flow-children: right;
+	background-color: #131922;
+	border: 1px solid #3b4654;
+	margin-bottom: 3px;
+	padding: 3px 6px;
+}
+
+.PlatformLobby .PlatformSeat Label,.PlatformCreateDialog .PlatformSeat Label
+{
+	margin: 0;
+	font-size: 15px;
+	vertical-align: center;
+}
+
+.PlatformLobby .PlatformSeatNumber,.PlatformCreateDialog .PlatformSeatNumber
+{
+	width: 24px;
+	color: #8795a5;
+}
+
+.PlatformLobby .PlatformSeatName,.PlatformCreateDialog .PlatformSeatName
+{
+	width: fill-parent-flow(1);
+	text-overflow: ellipsis;
+}
+
+.PlatformLobby .PlatformOwner,.PlatformCreateDialog .PlatformOwner
+{
+	color: #c3a05c;
+	font-size: 12px;
+}
+
+.PlatformLobby .PlatformCurrentRoom,.PlatformCreateDialog .PlatformCurrentRoom
+{
+	width: 640px;
+	flow-children: down;
+}
+
+.PlatformLobby .PlatformRoomWorkspace,.PlatformCreateDialog .PlatformRoomWorkspace
+{
+	width: 100%;
+	height: fill-parent-flow(1);
+	flow-children: right;
+}
+
+.PlatformLobby .PlatformRoomDetails,.PlatformCreateDialog .PlatformRoomDetails
+{
+	width: fill-parent-flow(1);
+	flow-children: down;
+	padding-right: 24px;
+}
+
+.PlatformLobby .PlatformChat,.PlatformCreateDialog .PlatformChat
+{
+	width: 540px;
+	height: 100%;
+	flow-children: down;
+	background-color: #111419;
+	border: 1px solid #30343d;
+	padding: 16px;
+}
+
+.PlatformLobby .PlatformChatTitle,.PlatformCreateDialog .PlatformChatTitle
+{
+	color: #c3a05c;
+}
+
+.PlatformLobby .PlatformChatMessages,.PlatformCreateDialog .PlatformChatMessages
+{
+	width: 100%;
+	height: fill-parent-flow(1);
+	flow-children: down;
+	overflow: squish scroll;
+	margin-bottom: 16px;
+}
+
+.PlatformLobby .PlatformChatMessage,.PlatformCreateDialog .PlatformChatMessage
+{
+	width: 100%;
+	flow-children: right;
+	margin-bottom: 12px;
+}
+
+.PlatformLobby .PlatformChatAuthor,.PlatformCreateDialog .PlatformChatAuthor
+{
+	color: #a6bacb;
+	font-size: 16px;
+}
+
+.PlatformLobby .PlatformChatText,.PlatformCreateDialog .PlatformChatText
+{
+	width: fill-parent-flow(1);
+	white-space: normal;
+	font-size: 18px;
+}
+
+.PlatformLobby TextEntry.PlatformChatInput,.PlatformCreateDialog TextEntry.PlatformChatInput
+{
+	width: fill-parent-flow(1);
+}
+
+.PlatformLobby .PlatformRoomRow,.PlatformCreateDialog .PlatformRoomRow
+{
+	border-bottom: 1px solid #30343d;
+	padding: 6px;
+}
+
+.PlatformLobby .PlatformRoomName,.PlatformCreateDialog .PlatformRoomName
+{
+	width: fill-parent-flow(1);
+	vertical-align: center;
+	text-overflow: ellipsis;
+}
+
+.PlatformLobby .PlatformButton,.PlatformCreateDialog .PlatformButton
+{
+	min-width: 110px;
+	min-height: 44px;
+	padding: 8px 14px;
+	margin-right: 12px;
+	border: 1px solid #30343d;
+	background-color: #1e2229;
+}
+
+.PlatformLobby .PlatformButton Label,.PlatformCreateDialog .PlatformButton Label,.PlatformLobby .PlatformReturnButton Label,.PlatformCreateDialog .PlatformReturnButton Label
+{
+	margin: 0;
+	horizontal-align: center;
+	vertical-align: center;
+}
+
+.PlatformLobby .PlatformButton:disabled,.PlatformCreateDialog .PlatformButton:disabled
+{
+	opacity: 0.4;
+}
+
+.PlatformLobby .PlatformButton:hover,.PlatformCreateDialog .PlatformButton:hover
+{
+	background-color: #292e37;
+}
+
+.PlatformLobby .PlatformReturnButton,.PlatformCreateDialog .PlatformReturnButton
+{
+	padding: 8px 14px;
+	margin: 5px;
+	border: 1px solid #30343d;
+	background-color: #1e2229;
+}
+
+.PlatformLobby .PlatformError,.PlatformCreateDialog .PlatformError
+{
+	color: #f29e90;
+	width: 100%;
+	white-space: normal;
+	padding: 12px;
+	background-color: #302326;
+	border: 1px solid #80534e;
+	margin-bottom: 16px;
+}
+
+.PlatformLobby .PlatformNotificationSlot,.PlatformCreateDialog .PlatformNotificationSlot
+{
+	width: 100%;
+	height: fit-children;
+	overflow: squish squish;
+}
+
+.PlatformLobby .PlatformNotificationSlot Label,.PlatformCreateDialog .PlatformNotificationSlot Label
+{
+	margin: 0;
+	max-height: 60px;
+	text-overflow: ellipsis;
+}
+
+.PlatformLobby TextEntry,.PlatformCreateDialog TextEntry
+{
+	width: 280px;
+	height: 44px;
+	margin-right: 12px;
+	padding: 8px;
+	border: 1px solid #30343d;
+	background-color: #111419;
+	color: white;
+}
+
+.PlatformLobby TextEntry #PlaceholderText,.PlatformCreateDialog TextEntry #PlaceholderText
+{
+	margin: 0;
+	font-size: 18px;
+	vertical-align: center;
+	color: #9299a5;
+	text-overflow: ellipsis;
+}
+
+.PlatformLobby .PlatformBrowserFooter
+{
+	width: 100%;
+	flow-children: right;
+	margin-top: 10px;
+}
+
+.PlatformLobby .PlatformMatchToolbar
+{
+	flow-children: right;
+	width: fill-parent-flow(1);
+	height: 54px;
+}
+
+.PlatformLobby .PlatformMatchToolbar .PlatformMode
+{
+	width: 150px;
+	height: 54px;
+	margin-right: 10px;
+	margin-bottom: 0;
+}
+
+.PlatformLobby .PlatformBrowserFooter .PlatformMatchButton
+{
+	width: 280px;
+	height: 54px;
+}
+
+.PlatformLobby .PlatformBrowserFooter .PlatformCreateButton
+{
+	width: 210px;
+	height: 54px;
+}
+
+.PlatformLobby .PlatformMatchButton
+{
+	width: 100%;
+	background-color: #14834b;
+	border: 1px solid #30af6c;
+	border-radius: 3px;
+	margin-right: 0;
+}
+
+.PlatformLobby .PlatformMatchButton:hover
+{
+	background-color: #1c9b5a;
+}
+
+.PlatformLobby .PlatformMatchingButton
+{
+	background-color: #14834b;
+	border-color: #30af6c;
+}
+
+.PlatformLobby .PlatformSectionTitle
+{
+	font-size: 26px;
+	font-weight: bold;
+	margin-bottom: 16px;
+}
+
+.PlatformLobby .PlatformBrowserToolbar
+{
+	width: 100%;
+	flow-children: right;
+	margin-bottom: 16px;
+}
+
+.PlatformLobby .PlatformRegionLabel
+{
+	color: #9299a5;
+	vertical-align: center;
+	margin: 0 16px 0 0;
+	font-size: 17px;
+}
+
+.PlatformLobby .PlatformToolbarSpacer
+{
+	width: fill-parent-flow(1);
+}
+
+.PlatformLobby .PlatformRegionButton
+{
+	min-width: 90px;
+	background-color: #191c22;
+	border-color: #30343d;
+	border-radius: 3px;
+}
+
+.PlatformLobby .PlatformRegionSelected
+{
+	background-color: #34242b;
+	border-color: #6b414b;
+}
+
+.PlatformLobby .PlatformRegionSelected Label
+{
+	color: #eba9b2;
+}
+
+.PlatformLobby TextEntry.PlatformRoomSearch
+{
+	width: 360px;
+	border-radius: 4px;
+	background-color: #191c22;
+	border-color: #30343d;
+}
+
+.PlatformLobby .PlatformRefreshButton
+{
+	background-color: #191c22;
+	border-color: #30343d;
+	border-radius: 3px;
+}
+
+.PlatformLobby .PlatformCreateButton
+{
+	background-color: #c9485b;
+	border-color: #c9485b;
+	border-radius: 3px;
+	margin-right: 0;
+	min-width: 160px;
+}
+
+.PlatformLobby .PlatformCreateButton:hover
+{
+	background-color: #df5468;
+}
+
+.PlatformMatchPopover
+{
+	horizontal-align: center;
+	vertical-align: top;
+	margin-top: 18px;
+	min-height: 48px;
+	height: fit-children;
+	max-width: 1200px;
+	flow-children: right;
+	padding: 10px 16px;
+	background-color: #1b2c24;
+	border: 1px solid #365b46;
+	border-radius: 4px;
+	z-index: 1200;
+}
+
+.PlatformMatchPopover Label
+{
+	vertical-align: center;
+	margin: 0;
+	font-size: 17px;
+	color: #dcece2;
+}
+
+.PlatformMatchPopover .PlatformMatchPopoverStatus
+{
+	margin-right: 14px;
+	max-width: 750px;
+	white-space: normal;
+}
+
+.PlatformMatchPopover .PlatformMatchPopoverCount
+{
+	color: #a9d7b9;
+	margin-right: 16px;
+}
+
+.PlatformMatchPopover .PlatformMatchPopoverTime
+{
+	padding-left: 16px;
+	border-left: 1px solid #365b46;
+}
+
+.PlatformStatusLoading
+{
+	background-color: #202329;
+	border-color: #454b56;
+}
+
+.PlatformStatusLoading .PlatformMatchSpinner
+{
+	border-color: #454b56;
+	border-top-color: #9299a5;
+}
+
+.PlatformStatusError
+{
+	background-color: #392328;
+	border-color: #9b4a59;
+}
+
+.PlatformStatusError Label
+{
+	color: #f2b5b8;
+}
+
+.PlatformStatusWarning
+{
+	background-color: #352b1d;
+	border-color: #806239;
+}
+
+.PlatformStatusWarning Label
+{
+	color: #e8cc99;
+}
+
+.PlatformStatusIcon
+{
+	width: 20px;
+	text-align: center;
+	font-weight: bold;
+	margin-right: 12px;
+}
+
+.PlatformStatusRetry
+{
+	vertical-align: center;
+	padding: 3px 10px;
+	margin-left: 4px;
+	border: 1px solid #9b4a59;
+	border-radius: 3px;
+	background-color: #4b2c33;
+}
+
+.PlatformStatusRetry:hover
+{
+	background-color: #653b45;
+}
+
+.PlatformStatusRetry:disabled
+{
+	opacity: 0.4;
+}
+
+.PlatformMatchSpinner
+{
+	width: 18px;
+	height: 18px;
+	vertical-align: center;
+	margin-right: 12px;
+	border: 2px solid #365b46;
+	border-top-color: #75d8a4;
+	border-radius: 50%;
+	animation-name: PlatformMatchSpin;
+	animation-duration: 1s;
+	animation-iteration-count: infinite;
+	animation-timing-function: linear;
+}
+
+@keyframes 'PlatformMatchSpin'
+{
+	0%
+	{
+		transform: rotateZ(0deg);
+	}
+	
+	100%
+	{
+		transform: rotateZ(360deg);
+	}
+	
+}
+
+.PlatformModalOverlay
+{
+	width: 100%;
+	height: 100%;
+	background-color: #000000bb;
+	z-index: 1000;
+}
+
+.PlatformReconnectDescription
+{
+	width: 100%;
+	white-space: normal;
+	margin-bottom: 20px;
+}
+
+.PlatformLobby .PlatformChatError
+{
+	width: 100%;
+	height: 24px;
+	margin-top: 6px;
+	font-size: 15px;
+	color: #dc7786;
+	text-overflow: ellipsis;
+}
+
+.PlatformMemberConnection
+{
+	width: 220px;
+	height: 100%;
+	flow-children: right;
+	vertical-align: center;
+	margin-left: 12px;
+}
+
+.PlatformLobby .PlatformMemberStatus
+{
+	width: fill-parent-flow(1);
+	font-size: 15px;
+	color: #9299a5;
+	vertical-align: center;
+	text-overflow: ellipsis;
+}
+
+.PlatformLobby .PlatformMemberActive
+{
+	color: #6abb98;
+}
+
+.PlatformMemberLatency
+{
+	width: 90px;
+	height: 100%;
+	flow-children: right;
+	vertical-align: center;
+}
+
+.PlatformLobby .PlatformMemberLatency Label
+{
+	font-size: 15px;
+	vertical-align: center;
+	color: #9299a5;
+}
+
+.PlatformSignalBars
+{
+	width: 17px;
+	height: 16px;
+	flow-children: right;
+	vertical-align: center;
+	margin-right: 6px;
+}
+
+.PlatformSignalBar
+{
+	width: 3px;
+	margin-right: 2px;
+	vertical-align: bottom;
+	background-color: #626976;
+}
+
+.PlatformSignalBarOne
+{
+	height: 5px;
+}
+
+.PlatformSignalBarTwo
+{
+	height: 10px;
+}
+
+.PlatformSignalBarThree
+{
+	height: 15px;
+}
+
+.PlatformLobby .PlatformLatency_good Label
+{
+	color: #6abb98;
+}
+
+.PlatformLatency_good .PlatformSignalBar
+{
+	background-color: #6abb98;
+}
+
+.PlatformLobby .PlatformLatency_poor Label
+{
+	color: #d7b36a;
+}
+
+.PlatformLatency_poor .PlatformSignalBarOne,.PlatformLatency_poor .PlatformSignalBarTwo
+{
+	background-color: #d7b36a;
+}
+
+.PlatformLobby .PlatformLatency_bad Label
+{
+	color: #dc7786;
+}
+
+.PlatformLatency_bad .PlatformSignalBarOne
+{
+	background-color: #dc7786;
+}
+
+.PlatformLobby .PlatformRoomPage
+{
+	width: 100%;
+	height: fill-parent-flow(1);
+	flow-children: down;
+}
+
+.PlatformLobby .PlatformRoomHeader
+{
+	width: 100%;
+	height: 116px;
+	flow-children: right;
+	margin-bottom: 20px;
+}
+
+.PlatformLobby .PlatformRoomHeading
+{
+	width: fill-parent-flow(1);
+	flow-children: down;
+	vertical-align: center;
+}
+
+.PlatformLobby .PlatformRoomGameTitle
+{
+	font-size: 30px;
+	font-weight: bold;
+	margin-bottom: 18px;
+}
+
+.PlatformLobby .PlatformRoomIdentity
+{
+	width: 100%;
+	flow-children: right;
+}
+
+.PlatformLobby .PlatformRoomTitle
+{
+	font-size: 22px;
+	font-weight: bold;
+	margin: 0 24px 0 0;
+}
+
+.PlatformLobby .PlatformRoomStatus
+{
+	font-size: 17px;
+	color: #6abb98;
+	vertical-align: center;
+	margin: 0;
+}
+
+.PlatformLobby .PlatformRoomHeaderActions
+{
+	width: 240px;
+	height: 100%;
+	flow-children: down;
+}
+
+.PlatformLobby .PlatformRoomHeaderActions .PlatformButton
+{
+	width: 100%;
+	height: 48px;
+	margin: 0 0 8px 0;
+	border-radius: 3px;
+}
+
+.PlatformLobby .PlatformRoomStart
+{
+	background-color: #c9485b;
+	border-color: #c9485b;
+}
+
+.PlatformLobby .PlatformRoomStart:hover
+{
+	background-color: #df5468;
+}
+
+.PlatformLobby .PlatformRoomLeave
+{
+	background-color: #171a1f;
+	border-color: #6d3944;
+}
+
+.PlatformLobby .PlatformRoomLeave Label
+{
+	color: #db7786;
+}
+
+.PlatformLobby .PlatformRoomSettings
+{
+	width: 100%;
+	height: 110px;
+	flow-children: right;
+	padding: 16px;
+	margin-bottom: 24px;
+	background-color: #1d2026;
+	border: 1px solid #30343d;
+	border-radius: 4px;
+}
+
+.PlatformLobby .PlatformRoomSetting
+{
+	height: 100%;
+	flow-children: down;
+	padding: 0 16px;
+	border-right: 1px solid #30343d;
+}
+
+.PlatformLobby .PlatformSettingCaption
+{
+	color: #9299a5;
+	font-size: 16px;
+	margin: 0 0 10px 0;
+}
+
+.PlatformLobby .PlatformSettingValue
+{
+	color: #d3d8e0;
+	font-size: 19px;
+	margin: 0;
+	vertical-align: center;
+}
+
+.PlatformLobby .PlatformRoomModeSetting
+{
+	width: 30%;
+	padding-left: 0;
+}
+
+.PlatformLobby .PlatformRoomHostingSetting
+{
+	width: 20%;
+}
+
+.PlatformLobby .PlatformRoomAutoSetting
+{
+	width: 16%;
+}
+
+.PlatformLobby .PlatformRoomPasswordSetting
+{
+	width: fill-parent-flow(1);
+	padding-right: 0;
+	border-right: 0px;
+}
+
+.PlatformLobby .PlatformRoomSettings .PlatformMode
+{
+	width: 100%;
+	height: 42px;
+	margin: 0;
+}
+
+.PlatformLobby .PlatformRoomPasswordRow
+{
+	width: 100%;
+	flow-children: right;
+}
+
+.PlatformLobby TextEntry.PlatformRoomPasswordInput
+{
+	width: fill-parent-flow(1);
+	height: 42px;
+	margin: 0;
+	font-size: 18px;
+	border-color: #30343d;
+}
+
+.PlatformLobby .PlatformPasswordVisibility
+{
+	width: 56px;
+	height: 42px;
+	background-color: #171a1f;
+	border: 1px solid #30343d;
+}
+
+.PlatformLobby .PlatformPasswordVisibility Label
+{
+	font-size: 15px;
+	margin: 0;
+	horizontal-align: center;
+	vertical-align: center;
+}
+
+.PlatformLobby .PlatformAutoStartSwitch
+{
+	width: 48px;
+	height: 26px;
+	border-radius: 13px;
+	border: 1px solid #454b56;
+	background-color: #292e37;
+	margin-top: 6px;
+}
+
+.PlatformLobby .PlatformAutoStartSwitch:disabled
+{
+	opacity: 0.45;
+}
+
+.PlatformLobby .PlatformAutoStartHint
+{
+	width: 100%;
+	white-space: normal;
+	font-size: 13px;
+	color: #9299a5;
+	margin: 4px 0 0 0;
+}
+
+.PlatformLobby .PlatformAutoStartKnob
+{
+	width: 18px;
+	height: 18px;
+	margin-left: 3px;
+	border-radius: 9px;
+	vertical-align: center;
+	background-color: #9098a5;
+}
+
+.PlatformLobby .PlatformAutoStartEnabled
+{
+	background-color: #9e3d4e;
+	border-color: #c9485b;
+}
+
+.PlatformLobby .PlatformAutoStartEnabled .PlatformAutoStartKnob
+{
+	horizontal-align: right;
+	margin-left: 0;
+	margin-right: 3px;
+	background-color: #f4dde1;
+}
+
+.PlatformLobby .PlatformRoomWorkspace
+{
+	height: fill-parent-flow(1);
+}
+
+.PlatformLobby .PlatformRoomDetails,.PlatformLobby .PlatformChat
+{
+	width: fill-parent-flow(1);
+	height: 100%;
+	padding: 18px;
+	background-color: #16191e;
+	border: 1px solid #30343d;
+	border-radius: 4px;
+}
+
+.PlatformLobby .PlatformRoomDetails
+{
+	margin-right: 16px;
+}
+
+.PlatformLobby .PlatformRoomMembersTitle,.PlatformLobby .PlatformChatTitle
+{
+	width: 100%;
+	font-size: 22px;
+	font-weight: bold;
+	color: #e0e5ec;
+	padding-bottom: 14px;
+	border-bottom: 1px solid #30343d;
+	margin-bottom: 14px;
+}
+
+.PlatformLobby .PlatformSeatGroups
+{
+	height: fill-parent-flow(1);
+	overflow: squish scroll;
+}
+
+.PlatformLobby .PlatformSeatColumn
+{
+	margin: 0;
+}
+
+.PlatformLobby .PlatformSeatColumn .PlatformObserverBadge
+{
+	color: #a8b6d0;
+	font-size: 14px;
+	margin-left: 8px;
+}
+
+.PlatformLobby .PlatformSeat
+{
+	height: 48px;
+	padding: 6px 12px;
+	margin-bottom: 6px;
+	background-color: #1e2229;
+	border-color: #30343d;
+	border-radius: 3px;
+}
+
+.PlatformLobby .PlatformSeat Label
+{
+	font-size: 17px;
+}
+
+.PlatformLobby .PlatformSeatNumber
+{
+	width: 30px;
+}
+
+.PlatformLobby .PlatformSeatAvatar,.PlatformLobby .PlatformSeatAvatarPlaceholder
+{
+	width: 32px;
+	height: 32px;
+	vertical-align: center;
+	border-radius: 16px;
+	margin-right: 12px;
+	background-color: #303744;
+	border: 1px solid #4c5667;
+}
+
+.PlatformLobby .PlatformSeatVacant
+{
+	background-color: #16191e;
+	border-color: #455063;
+}
+
+.PlatformLobby .PlatformOwner
+{
+	font-size: 14px;
+	padding: 3px 6px;
+	border: 1px solid #735b30;
+	border-radius: 3px;
+	margin-left: 8px;
+}
+
+.PlatformLobby .PlatformSeatPresence
+{
+	color: #6abb98;
+	font-size: 14px;
+	margin-left: 12px;
+}
+
+.PlatformLobby .PlatformChatEmpty
+{
+	color: #9299a5;
+	font-size: 18px;
+}
+
+.PlatformLobby .PlatformChatTitle
+{
+	color: #e0e5ec;
+}
+
+.PlatformLobby .PlatformChatMessage
+{
+	margin-bottom: 12px;
+}
+
+.PlatformLobby .PlatformChatAvatar
+{
+	width: 28px;
+	height: 28px;
+	border-radius: 14px;
+	border: 1px solid #59616e;
+	margin-right: 10px;
+	vertical-align: top;
+}
+
+.PlatformLobby .PlatformChatAvatarPlaceholder
+{
+	background-color: #303744;
+}
+
+.PlatformLobby .PlatformChatText
+{
+	color: #b8c0cc;
+	font-size: 17px;
+	margin-top: 2px;
+}
+
+.PlatformLobby .PlatformChatComposer
+{
+	margin: 0;
+	height: 44px;
+}
+
+.PlatformLobby TextEntry.PlatformChatInput
+{
+	height: 44px;
+	margin-right: 8px;
+	border-color: #30343d;
+	font-size: 18px;
+}
+
+.PlatformLobby .PlatformChatComposer .PlatformButton
+{
+	min-width: 76px;
+	margin-right: 0;
+	border-color: #30343d;
+}
+
+.PlatformCreateDialog
+{
+	width: 640px;
+	height: fit-children;
+	horizontal-align: center;
+	vertical-align: center;
+	padding: 28px;
+	border: 1px solid #30343d;
+}
+
+.PlatformCreateDialog TextEntry
+{
+	width: 100%;
+	margin-right: 0;
+	margin-bottom: 18px;
+}
+
+.PlatformCreateDialog .PlatformMode
+{
+	width: 100%;
+	margin-right: 0;
+	margin-bottom: 18px;
+}
+
+.PlatformDialogActions
+{
+	width: fit-children;
+	horizontal-align: right;
+	margin-top: 16px;
+}
+
+.PlatformLobby .PlatformButton,.PlatformCreateDialog .PlatformButton,.PlatformLobby .PlatformReturnButton,.PlatformCreateDialog .PlatformReturnButton,.PlatformLobby TextEntry,.PlatformCreateDialog TextEntry
+{
+	border-radius: 3px;
+}
+
+.PlatformLobby .PlatformButton Label,.PlatformCreateDialog .PlatformButton Label,.PlatformLobby .PlatformReturnButton Label,.PlatformCreateDialog .PlatformReturnButton Label
+{
+	font-size: 18px;
+}
+
+.PlatformLobby .PlatformPrimaryButton,.PlatformCreateDialog .PlatformPrimaryButton
+{
+	background-color: #c9485b;
+	border-color: #c9485b;
+}
+
+.PlatformLobby .PlatformPrimaryButton:hover,.PlatformCreateDialog .PlatformPrimaryButton:hover
+{
+	background-color: #df5468;
+	border-color: #df5468;
+}
+
+.PlatformLobby TextEntry,.PlatformCreateDialog TextEntry
+{
+	font-size: 18px;
+	color: #e0e5ec;
+}
+
+.PlatformLobby TextEntry:focus,.PlatformCreateDialog TextEntry:focus
+{
+	border-color: #c9485b;
+}
+
+.PlatformLobby .PlatformMode,.PlatformCreateDialog .PlatformMode
+{
+	background-color: #1e2229;
+	border: 1px solid #30343d;
+	border-radius: 3px;
+	padding: 8px 12px;
+}
+
+.PlatformLobby .PlatformMode:hover,.PlatformCreateDialog .PlatformMode:hover
+{
+	background-color: #292e37;
+}
+
+.PlatformLobby .PlatformMode > Label,.PlatformCreateDialog .PlatformMode > Label
+{
+	font-size: 18px;
+	font-weight: normal;
+	color: #e0e5ec;
+	margin: 0 24px 0 0;
+}
+
+.PlatformLobby .PlatformMode.Disable,.PlatformCreateDialog .PlatformMode.Disable
+{
+	background-color: #1e2229;
+	opacity: 0.45;
+}
+
+.PlatformCreateDialog
+{
+	background-color: #15171c;
+	border-radius: 4px;
+}
+
+.PlatformCreateDialog Label
+{
+	font-size: 16px;
+	color: #9299a5;
+}
+
+.PlatformCreateDialog .PlatformTitle
+{
+	font-size: 26px;
+	font-weight: bold;
+	color: #e0e5ec;
+	margin-bottom: 24px;
+	padding-bottom: 16px;
+}
+
+.PlatformCreateDialog .PlatformReconnectDescription
+{
+	font-size: 18px;
+	line-height: 26px;
+}
+
+.PlatformCreateDialog .PlatformButton Label
+{
+	color: #e0e5ec;
+}
+
+.PlatformCreateDialog .PlatformPrimaryButton Label
+{
+	color: #ffffff;
+}
+
+.PlatformDialogActions .PlatformButton
+{
+	margin-right: 0;
+	margin-left: 12px;
+}
+
+.PlatformDropDownMenu
+{
+	background-color: #15171c;
+	border: 1px solid #30343d;
+	border-radius: 4px;
+	padding: 4px;
+}
+
+.PlatformDropDownMenu .PlatformSelectItem
+{
+	background-color: #15171c;
+	margin: 2px 0;
+	padding: 10px 12px;
+}
+
+.PlatformDropDownMenu .PlatformSelectItem > Label
+{
+	font-size: 18px;
+	color: #e0e5ec;
+}
+
+.PlatformDropDownMenu .PlatformSelectItem:hover
+{
+	background-color: #292e37;
+}
+
+.PlatformDropDownMenu .PlatformSelectItem:selected
+{
+	background-color: #34242b;
+}
+
+.PlatformRegionFailure
+{
+	color: #f2b5b8;
+	font-size: 18px;
+	margin-bottom: 12px;
+}
+
+.PlatformStatusClose
+{
+	width: 28px;
+	height: 28px;
+	vertical-align: center;
+	margin-left: 12px;
+	border-radius: 3px;
+	background-color: #ffffff08;
+}
+
+.PlatformStatusClose:hover
+{
+	background-color: #ffffff22;
+}
+
+.PlatformStatusCloseIcon
+{
+	width: 14px;
+	height: 14px;
+	horizontal-align: center;
+	vertical-align: center;
+	background-image: url("s2r://panorama/images/control_icons/x_close_png.vtex");
+	background-size: contain;
+	background-repeat: no-repeat;
+	background-position: center;
+	wash-color: #f2b5b8;
+}
+
+.PlatformLobby .PlatformHeader
+{
+	width: 100%;
+	flow-children: right;
+	margin-bottom: 20px;
+	padding-bottom: 14px;
+	border-bottom: 1px solid #30343d;
+}
+
+.PlatformLobby .PlatformBrowserHeader
+{
+	height: 108px;
+	margin-bottom: 0;
+	padding-bottom: 0;
+	border-bottom: 0;
+}
+
+.PlatformLobby .PlatformHeader .PlatformTitle
+{
+	width: fill-parent-flow(1);
+	border-bottom: 0;
+	margin-bottom: 0;
+	padding-bottom: 0;
+}
+
+.PlatformRegionToolbar
+{
+	flow-children: right;
+	horizontal-align: right;
+	vertical-align: center;
+}
+
+.PlatformBrowserHeader .PlatformRegionToolbar
+{
+	vertical-align: top;
+}
+
+.PlatformLobby .PlatformRegionCaption
+{
+	vertical-align: center;
+	margin: 0 12px 0 0;
+}
+
+.PlatformLobby .PlatformLobbyRegionButton
+{
+	min-width: 100px;
+	height: 40px;
+	margin: 0 0 0 8px;
+	padding: 6px 16px;
+}
+
+.PlatformLobby .PlatformLobbyRegionSelected,.PlatformLobby .PlatformLobbyRegionSelected:disabled
+{
+	background-color: #34242b;
+	border-color: #c9485b;
+	opacity: 1;
+}
+
+.PlatformLobby .PlatformLobbyRegionSelected Label
+{
+	color: #eba9b2;
+}
+
+.PlatformSelect > Label
+{
+	width: 100%;
+	vertical-align: center;
+	margin-right: 24px;
+}
+
+.PlatformSelectArrow
+{
+	width: 18px;
+	height: 18px;
+	align: right center;
+	background-image: url("s2r://panorama/images/control_icons/arrow_dropdown_png.vtex");
+	background-size: contain;
+	background-repeat: no-repeat;
+	wash-color: #e0e5ec;
+}
+
+.PlatformSelectOverlay
+{
+	width: 100%;
+	height: 100%;
+	z-index: 9999;
+}
+
+.PlatformSelectBackdrop
+{
+	width: 100%;
+	height: 100%;
+}
+
+.PlatformSelectMenu
+{
+	height: fit-children;
+	max-height: 500px;
+	overflow: squish scroll;
+	flow-children: down;
+}
+
+.PlatformSelectItem
+{
+	width: 100%;
+	height: fit-children;
+}
+
+.PlatformSelectItem > Label
+{
+	width: 100%;
+}
+
+.PlatformLoadingHost
+{
+	width: 100%;
+	height: 100%;
+}

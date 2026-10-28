@@ -12,13 +12,13 @@
 <root>
 	<styles>
 		<include src="s2r://panorama/styles/dotastyles.vcss_c" />
-		<include src="s2r://panorama/layout/custom_game/tooltips/long_text/styles.vcss_c" />
-		<include src="s2r://panorama/layout/custom_game/eomdesign/container/eom_panel/eom_panel.vcss_c" />
-		<include src="s2r://panorama/layout/custom_game/tooltips/long_text/styles.vcss_c" />
+		<include src="s2r://panorama/layout/custom_game/tooltips/long_text/styles.vcss" />
+		<include src="s2r://panorama/layout/custom_game/eomdesign/container/eom_panel/eom_panel.vcss" />
+		<include src="s2r://panorama/layout/custom_game/tooltips/long_text/styles.vcss" />
 	</styles>
 	<scripts>
 		<include src="s2r://panorama/scripts/sequence_actions.vts_c" />
-		<include src="s2r://panorama/layout/custom_game/tooltips/long_text/script.vjs_c" />
+		<include src="s2r://panorama/layout/custom_game/tooltips/long_text/script.vjs" />
 	</scripts>
 	<Panel class="TooltipContent" hittest="false" />
 </root>

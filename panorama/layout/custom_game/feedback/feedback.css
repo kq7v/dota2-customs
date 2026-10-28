@@ -1,0 +1,239 @@
+--[[
+  ~ dumper · customs · dota2
+  ~ credits: rou (a.k.a internetenemy), qfun(a.k.a qfun_g9s)
+  ~ special for t.me/wildguild
+
+  ~ build 1a5b3bb 
+  ~ auto-generated — do not edit
+]]
+
+
+/* Prettified by Source 2 Viewer 20.1.0.0 - https://valveresourceformat.github.io */
+
+.FeedbackRoot
+{
+	height: 340px;
+	flow-children: right;
+	margin-top: 55px;
+	margin-left: 170px;
+	box-shadow: black 0px 0px 10px 0px;
+	opacity: 0;
+	transition: opacity 0.15s ease-in-out 0s;
+}
+
+.FeedbackRoot.show
+{
+	opacity: 1;
+}
+
+.FeedbackReply.Block
+{
+	width: 240px;
+}
+
+.FeedbackReply
+{
+	width: 0px;
+	height: 340px;
+	background-image: url("s2r://panorama/images/custom_game/extract/ability_bg_png.vtex");
+	background-size: 100%;
+	flow-children: down;
+	box-shadow: black 0px 0px 10px 0px;
+	transition: opacity 0.15s ease-in-out 0s;
+}
+
+.FeedbackInput
+{
+	width: 260px;
+	height: 340px;
+	background-image: url("s2r://panorama/images/custom_game/extract/ability_bg_png.vtex");
+	background-size: 100%;
+	flow-children: down;
+	box-shadow: black 0px 0px 10px 0px;
+	transition: opacity 0.15s ease-in-out 0s;
+}
+
+#FeedbackReplyHeader
+{
+	width: 240px;
+	height: 35px;
+	flow-children: right;
+}
+
+#FeedbackInputHeader
+{
+	width: 260px;
+	height: 35px;
+	flow-children: right;
+}
+
+.FeedbackHeader
+{
+	margin-top: 2px;
+	height: 33px;
+	width: 230px;
+	font-size: 28px;
+	text-align: center;
+	text-overflow: shrink;
+	text-transform: uppercase;
+	font-weight: lighter;
+	text-shadow: black 0px 2px 2px 0;
+	color:white;
+}
+
+#CloseFeedback
+{
+	width: 18px;
+	height: 18px;
+	background-image: url("s2r://panorama/images/custom_game/extract/x_close_png.vtex");
+	background-size: 100%;
+	wash-color: #889be2;
+	align: right top;
+	margin: 5px 6px 0 0;
+	transition: brightness 0.15s ease-in-out 0s;
+}
+
+#CloseFeedback:hover
+{
+	brightness: 1.6;
+}
+
+#CloseFeedback:active
+{
+	brightness: 0.8;
+	sound: "General.ButtonClick";
+}
+
+#FeedbackReplyContainer
+{
+	width: 100%;
+	height: 240px;
+	padding: 8px 10px 4px 10px;
+	background-color: rgba(0, 0, 0, 0.6);
+	border: 0px solid transparent;
+	color: #a0b3e9;
+	text-overflow: shrink;
+	white-space: normal;
+	overflow: clip scroll;
+	font-size: 19px;
+	box-shadow: inset rgba(0, 0, 0, 0.75) -15px 6px 10px -50px;
+	flow-children: down;
+}
+
+#FeedbackText
+{
+	width: 100%;
+	height: 240px;
+	padding: 8px 10px 4px 10px;
+	background-color: rgba(0, 0, 0, 0.6);
+	border: 0px solid transparent;
+	color: #a0b3e9;
+	text-overflow: shrink;
+	white-space: normal;
+	overflow: clip scroll;
+	font-size: 19px;
+	box-shadow: inset rgba(0, 0, 0, 0.75) -15px 6px 10px -50px;
+}
+
+#FeedbackText #PlaceholderText
+{
+	text-align: center;
+	color: #7b7b7b;
+	margin-top: 15px;
+}
+
+#ScrollThumb
+{
+	background-color: #7588a5;
+}
+
+#VerticalScrollBar
+{
+	width: 6px;
+}
+
+#FeedbackSendButton
+{
+	width: 250px;
+	height: 34px;
+	transition-property: brightness;
+	transition-duration: 0.1s;
+	background-image: url("s2r://panorama/images/custom_game/extract/background_play_button_2x_png.vtex");
+	background-color:gradient( linear, 0% 0%, 0% 100%, from( #5Aa15E ), to( #87d69533 ) );
+	background-size: 100%;
+	box-shadow:fill #00000066 -4px -4px 8px 8px;
+	align: center center;
+	border-top:1px solid #ffffff44;
+	border-right:1px solid #00000088;
+	border-left:1px solid #ffffff44;
+	border-bottom:1px solid #00000088;
+}
+
+#FeedbackSendButton:hover:not(.Cooldown)
+{
+	brightness: 1.5;
+}
+
+#FeedbackSendButton:active:not(.Cooldown)
+{
+	brightness: 1.1;
+}
+
+#FeedbackSendButton.Cooldown,#FeedbackSendButton.Blocked
+{
+	saturation: 0;
+	wash-color: #d9d9d9;
+}
+
+#FeedbackSendButtonText
+{
+	align: center center;
+	text-align: center;
+	color: #fbf6ff;
+	text-transform: uppercase;
+	font-size: 20px;
+	height: 24px;
+	text-overflow: shrink;
+	text-shadow: black 0px 2px 0px 0px;
+}
+
+#MaxSymbols
+{
+	background-color: rgba(0, 0, 0, 0.6);
+	width: 100%;
+	text-align: right;
+	font-weight: lighter;
+	color: #dadada;
+}
+
+#MaxSymbols.max
+{
+	color: red;
+}
+
+.SeparatorLine
+{
+	height: 1px;
+	width: 100%;
+	background-color: #AAAAAA;
+	margin-top: 7px;
+	margin-bottom: 7px;
+}
+
+.PlayerMessage
+{
+	flow-children: down;
+	width: 100%;
+	margin-bottom: 8px;
+}
+
+.AuthorReply
+{
+	flow-children: down;
+	width: 100%;
+}
+
+#AuthorReplyText
+{
+	color: white;
+}

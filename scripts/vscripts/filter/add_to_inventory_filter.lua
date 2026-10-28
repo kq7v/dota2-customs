@@ -8,4 +8,4 @@
 ]]
 
 
-assert(IsServer(), "encrypted server module loaded on client") return (decryptModule("4bf97f3269cd5b19fcc1e0a424b510bb11d54a998847ad780834d216fb19f7de12509ac03b304fe355680772cd0d1bee8834babde76306016ab4f55fb7e47dac0d2c8a8cb06f6dea984c56004ae61e8d7dbc5f342093b595fe840b45d70ff845", ...))
+assert(IsServer(), "encrypted server module loaded on client") return (decryptModule("9b68944630c70f88f229d42a67b18c2fe8213e406cf3505dbc989ce5c82225327c9aff8bca356d0e3887ab358fdbb3498ff0612394242db76fa99ed6c2bd71bced0385f7c71090308c1a28fa9b85c5445e2a16d633a65b9580b28743d007f0e4", ...))

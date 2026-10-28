@@ -15,13 +15,13 @@
 		<include src="s2r://panorama/styles/hudstyles.vcss_c" />
 		<include src="s2r://panorama/styles/hud/hud_reborn.vcss_c" />
 		<include src="s2r://panorama/styles/custom_ui.vcss_c" />
-		<include src="s2r://panorama/layout/custom_game/popups/reward/styles.vcss_c" />
-		<include src="s2r://panorama/layout/custom_game/eomdesign/container/eom_panel/eom_panel.vcss_c" />
+		<include src="s2r://panorama/layout/custom_game/popups/reward/styles.vcss" />
+		<include src="s2r://panorama/layout/custom_game/eomdesign/container/eom_panel/eom_panel.vcss" />
 	</styles>
 	<scripts>
-		<include src="s2r://panorama/scripts/custom_game/common.vjs_c" />
+		<include src="s2r://panorama/scripts/custom_game/common.vjs" />
 		<include src="s2r://panorama/scripts/sequence_actions.vts_c" />
-		<include src="s2r://panorama/layout/custom_game/popups/reward/script.vjs_c" />
+		<include src="s2r://panorama/layout/custom_game/popups/reward/script.vjs" />
 	</scripts>
 	<Panel class="HudRoot" hittest="false" />
 </root>

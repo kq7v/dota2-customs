@@ -1,0 +1,267 @@
+--[[
+  ~ dumper · customs · dota2
+  ~ credits: rou (a.k.a internetenemy), qfun(a.k.a qfun_g9s)
+  ~ special for t.me/wildguild
+
+  ~ build 1a5b3bb 
+  ~ auto-generated — do not edit
+]]
+
+
+/* Prettified by Source 2 Viewer 20.1.0.0 - https://valveresourceformat.github.io */
+
+@define rarity_color_1: #b0c3d9;
+@define rarity_color_uncommon: #5e98d9;
+@define rarity_color_2: #4b69ff;
+@define rarity_color_3: #8847ff;
+@define rarity_color_0: #d32ce6;
+@define rarity_color_ancient: #eb4b4b;
+@define rarity_color_4: #e4ae39;
+@define rarity_color_arcana: #ade55c;
+@define rarity_color_seasonal: #fff34f;
+.CommonGoldNum
+{
+	font-size: 24px;
+	color: #FFCC34;
+}
+
+.CommonButtonBlue
+{
+	width: 197px;
+	height: 54px;
+	background-image: url("s2r://panorama/images/custom_game/common_resource/btnblue_png.vtex");
+}
+
+.CommonButtonBlue Label
+{
+	align: center center;
+	color: #E9E9E9;
+	font-size: 17px;
+	text-shadow: 0px 0px 1px 3 #000000;
+}
+
+.CommonButtonGrey
+{
+	width: 197px;
+	height: 54px;
+	background-image: url("s2r://panorama/images/custom_game/common_resource/btngrey_png.vtex");
+}
+
+.CommonButtonGrey Label
+{
+	align: center center;
+	color: #E9E9E9;
+	font-size: 17px;
+	text-shadow: 0px 0px 1px 3 #000000;
+}
+
+.OpenBoxResultItem
+{
+	width: 170px;
+	height: 500px;
+	margin: 6px;
+}
+
+.OpenBoxResultItem #BG
+{
+	width: 100%;
+	height: 100%;
+	opacity-mask: url("s2r://panorama/images/masks/rewardline_ground_plane_multiple_psd.vtex") 0.8;
+	transform: scaleY(-1);
+}
+
+.OpenBoxResultItem #BG.Rarity0
+{
+	background-color: gradient(linear, 0% 0%, 0% 100%, from(black), to(rarity_color_0));
+}
+
+.OpenBoxResultItem #BG.Rarity1
+{
+	background-color: gradient(linear, 0% 0%, 0% 100%, from(black), to(rarity_color_1));
+}
+
+.OpenBoxResultItem #BG.Rarity2
+{
+	background-color: gradient(linear, 0% 0%, 0% 100%, from(black), to(rarity_color_2));
+}
+
+.OpenBoxResultItem #BG.Rarity3
+{
+	background-color: gradient(linear, 0% 0%, 0% 100%, from(black), to(rarity_color_3));
+}
+
+.OpenBoxResultItem #BG.Rarity4
+{
+	background-color: gradient(linear, 0% 0%, 0% 100%, from(black), to(rarity_color_4));
+	animation-name: BrightnessBreath;
+	animation-duration: 3s;
+	animation-timing-function: ease-in-out;
+	animation-iteration-count: infinite;
+}
+
+.OpenBoxResultItem #receive
+{
+	width: 600px;
+	height: 600px;
+	align: center center;
+}
+
+.OpenBoxResultItem #receive.Rarity0
+{
+	wash-color: rarity_color_0;
+	opacity-mask: url("s2r://panorama/images/masks/softedge_circle_png.vtex") 0.5;
+}
+
+.OpenBoxResultItem #receive.Rarity1
+{
+	wash-color: rarity_color_1;
+	opacity-mask: url("s2r://panorama/images/masks/softedge_circle_png.vtex") 1;
+	opacity: 0.1;
+}
+
+.OpenBoxResultItem #receive.Rarity2
+{
+	wash-color: rarity_color_2;
+	opacity-mask: url("s2r://panorama/images/masks/softedge_circle_png.vtex") 0.8;
+	opacity: 0.3;
+}
+
+.OpenBoxResultItem #receive.Rarity3
+{
+	wash-color: rarity_color_3;
+	opacity-mask: url("s2r://panorama/images/masks/softedge_circle_png.vtex") 0.7;
+	opacity: 0.7;
+}
+
+.OpenBoxResultItem #receive.Rarity4
+{
+	wash-color: rarity_color_4;
+	opacity-mask: url("s2r://panorama/images/masks/softedge_circle_png.vtex") 0.5;
+}
+
+.OpenBoxResultItem .Container
+{
+	width: 160px;
+	height: 500px;
+	align: center center;
+}
+
+.OpenBoxResultItem .Container #itemRarity
+{
+	width: 150px;
+	height: 28px;
+	font-size: 26px;
+	align: center top;
+	text-align: center;
+	margin-top: 20px;
+	text-overflow: shrink;
+	text-shadow: 0px 0px 1px 3 #000000;
+}
+
+.OpenBoxResultItem .Container #itemRarity.Rarity0
+{
+	color: rarity_color_0;
+}
+
+.OpenBoxResultItem .Container #itemRarity.Rarity1
+{
+	color: rarity_color_1;
+}
+
+.OpenBoxResultItem .Container #itemRarity.Rarity2
+{
+	color: rarity_color_2;
+}
+
+.OpenBoxResultItem .Container #itemRarity.Rarity3
+{
+	color: rarity_color_3;
+}
+
+.OpenBoxResultItem .Container #itemRarity.Rarity4
+{
+	color: rarity_color_4;
+	animation-name: BrightnessBreath;
+	animation-duration: 3s;
+	animation-timing-function: ease-in-out;
+	animation-iteration-count: infinite;
+}
+
+.OpenBoxResultItem .Container #itemName
+{
+	width: 150px;
+	height: 28px;
+	font-size: 26px;
+	align: center bottom;
+	margin-bottom: 140px;
+	text-align: center;
+	text-overflow: shrink;
+	text-shadow: 0px 0px 1px 3 #000000;
+	color: white;
+}
+
+.OpenBoxResultItem .Container .Content
+{
+	width: 150px;
+	height: 150px;
+	background-color: #1b1e28f2;
+	box-shadow: inset 0 0 2px black;
+	align: center center;
+}
+
+.OpenBoxResultItem .Container .Content #itemImage
+{
+	align: center center;
+}
+
+.OpenBoxResultItem .Container .Content #itemBG
+{
+	width: 150px;
+	height: 150px;
+	align: center center;
+}
+
+.OpenBoxResultItem .Convert
+{
+	align: center bottom;
+	flow-children: right;
+}
+
+.OpenBoxResultItem .Convert #ConvertImage
+{
+	vertical-align: center;
+}
+
+.OpenBoxResultItem .Convert #ConvertLabel
+{
+	vertical-align: center;
+}
+
+@keyframes 'BrightnessBreath'
+{
+	0%
+	{
+		brightness: 0.7;
+	}
+	
+	25%
+	{
+		brightness: 1.2;
+	}
+	
+	50%
+	{
+		brightness: 1.8;
+	}
+	
+	75%
+	{
+		brightness: 1.2;
+	}
+	
+	100%
+	{
+		brightness: 0.7;
+	}
+	
+}

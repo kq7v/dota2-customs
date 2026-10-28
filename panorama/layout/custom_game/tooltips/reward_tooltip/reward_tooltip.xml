@@ -12,12 +12,12 @@
 <root>
 	<styles>
 		<include src="s2r://panorama/styles/dotastyles.vcss_c" />
-		<include src="s2r://panorama/layout/custom_game/tooltips/reward_tooltip/styles.vcss_c" />
-		<include src="s2r://panorama/layout/custom_game/tooltips/reward_tooltip/styles.vcss_c" />
+		<include src="s2r://panorama/layout/custom_game/tooltips/reward_tooltip/styles.vcss" />
+		<include src="s2r://panorama/layout/custom_game/tooltips/reward_tooltip/styles.vcss" />
 	</styles>
 	<scripts>
 		<include src="s2r://panorama/scripts/sequence_actions.vts_c" />
-		<include src="s2r://panorama/layout/custom_game/tooltips/reward_tooltip/script.vjs_c" />
+		<include src="s2r://panorama/layout/custom_game/tooltips/reward_tooltip/script.vjs" />
 	</scripts>
 	<Panel class="TooltipContent" hittest="false" />
 </root>
