@@ -933,10 +933,24 @@ function s.prototype.ProcessPropertyEventResponse(self, br, bs, V, W)
 	end
 	local I = (br .. "_") .. tostring(bs)
 	for D, E in ipairs(bt) do
-		local bu = self:GetPropertyValueEx(E.sourcePropertyId, V, W)
-		if bu > 0 then
-			self:AddStaticPropertyEx(E.targetPropertyId, I, bu, V, W)
+		do
+			local bu = self:GetPropertyValueEx(E.sourcePropertyId, V, W)
+			if bu > 0 then
+				local bv = self:GetConfig(E.targetPropertyId)
+				if bv == nil then
+					goto bw
+				end
+				local bx = self:AddStaticPropertyEx(E.targetPropertyId, I, bu, V, W)
+				if bx and bv.scope == PropertyScope.UNIT and W ~= nil then
+					local aZ = EntIndexToHScript(W)
+					local by = PROPERTY_MAP[E.targetPropertyId]
+					if IsValid(aZ) and by ~= nil then
+						Event:Fire("property_added", { unit = aZ, property = by, value = bu, source = I })
+					end
+				end
+			end
 		end
+		::bw::
 	end
 end
 function s.prototype.RegisterDebugCommands(self)
@@ -952,77 +966,77 @@ function s.prototype.RegisterDebugCommands(self)
 	end, "Reset performance statistics", 0)
 	Convars:RegisterCommand("property_list", function()
 		self:print("=== Registered Properties ===")
-		for bv, u in pairs(PropertyData.configs) do
-			local X = bv
+		for bz, u in pairs(PropertyData.configs) do
+			local X = bz
 			self:print((((X .. ": scope=") .. PropertyScope[u.scope]) .. ", type=") .. PropertyValueType[u.valueType])
 		end
 	end, "List all registered properties", 0)
 	Convars:RegisterCommand("property_cleanup", function()
-		local bw = self:CleanupInvalidModifiers()
-		local bx = self:CleanupEmptyStorages()
-		self:print(((("Cleaned: " .. tostring(bw)) .. " modifiers, ") .. tostring(bx)) .. " storages")
+		local bA = self:CleanupInvalidModifiers()
+		local bB = self:CleanupEmptyStorages()
+		self:print(((("Cleaned: " .. tostring(bA)) .. " modifiers, ") .. tostring(bB)) .. " storages")
 	end, "Force cleanup invalid modifiers", 0)
 	Convars:RegisterCommand("property_nettable_size", function()
-		local by = self:GetNetTableSizeStats()
+		local bC = self:GetNetTableSizeStats()
 		self:print("=== NetTable Size Stats ===")
-		self:print(("Total: " .. tostring(by.total)) .. " bytes")
-		self:print("Entities: " .. tostring(by.entities.size))
-		if #by.warnings > 0 then
+		self:print(("Total: " .. tostring(bC.total)) .. " bytes")
+		self:print("Entities: " .. tostring(bC.entities.size))
+		if #bC.warnings > 0 then
 			self:print("⚠️ WARNINGS:")
-			for D, bz in ipairs(by.warnings) do
-				self:print("  " .. bz)
+			for D, bD in ipairs(bC.warnings) do
+				self:print("  " .. bD)
 			end
 		end
-		local bA = {}
-		for bB, bC in pairs(by.entities) do
-			bA[#bA + 1] = { bB, bC }
+		local bE = {}
+		for bF, bG in pairs(bC.entities) do
+			bE[#bE + 1] = { bF, bG }
 		end
-		local bD = i(bA, function(D, ad, ae)
+		local bH = i(bE, function(D, ad, ae)
 			return ae[2] - ad[2]
 		end)
 		self:print("\nTop 10 largest entities:")
 		do
-			local bE = 0
-			while bE < math.min(10, #bD) do
-				self:print(((("  " .. bD[bE + 1][1]) .. ": ") .. tostring(bD[bE + 1][2])) .. " bytes")
-				bE = bE + 1
+			local bI = 0
+			while bI < math.min(10, #bH) do
+				self:print(((("  " .. bH[bI + 1][1]) .. ": ") .. tostring(bH[bI + 1][2])) .. " bytes")
+				bI = bI + 1
 			end
 		end
 	end, "Show NetTable size statistics", 0)
 	self:print("Debug commands registered")
 end
 function s.prototype.PrintSystemStatus(self)
-	local bF = 0
+	local bJ = 0
 	for aF in pairs(PropertyData.configs) do
-		bF = bF + 1
+		bJ = bJ + 1
 	end
-	local bG = 0
+	local bK = 0
 	for aF in pairs(PropertyData.playerStorage) do
-		bG = bG + 1
+		bK = bK + 1
 	end
-	local bH = 0
+	local bL = 0
 	for aF in pairs(PropertyData.unitStorage) do
-		bH = bH + 1
+		bL = bL + 1
 	end
 	local aE = 0
 	for aF in pairs(PropertyData.dirtyKeys) do
 		aE = aE + 1
 	end
 	self:print("=== Property System Status ===")
-	self:print("Registered Properties: " .. tostring(bF))
-	self:print("Player Storages: " .. tostring(bG))
-	self:print("Unit Storages: " .. tostring(bH))
+	self:print("Registered Properties: " .. tostring(bJ))
+	self:print("Player Storages: " .. tostring(bK))
+	self:print("Unit Storages: " .. tostring(bL))
 	self:print("Dirty Keys: " .. tostring(aE))
 	self:print(("Last Sync: " .. m(PropertyData.lastSyncTime, 2)) .. "s")
 end
 function s.prototype.PrintPerformanceStats(self)
-	local by = PropertyData.stats
-	local bI = by.totalReads > 0 and m(by.cacheHits / by.totalReads * 100, 2) or "0.00"
+	local bC = PropertyData.stats
+	local bM = bC.totalReads > 0 and m(bC.cacheHits / bC.totalReads * 100, 2) or "0.00"
 	self:print("=== Performance Stats ===")
-	self:print("Total Reads: " .. tostring(by.totalReads))
-	self:print(((("Cache Hits: " .. tostring(by.cacheHits)) .. " (") .. bI) .. "%)")
-	self:print("Total Writes: " .. tostring(by.totalWrites))
-	self:print("Sync Count: " .. tostring(by.syncCount))
+	self:print("Total Reads: " .. tostring(bC.totalReads))
+	self:print(((("Cache Hits: " .. tostring(bC.cacheHits)) .. " (") .. bM) .. "%)")
+	self:print("Total Writes: " .. tostring(bC.totalWrites))
+	self:print("Sync Count: " .. tostring(bC.syncCount))
 end
 function s.prototype.GetStorage(self, Z, G)
 	local b6 = Z == PropertyScope.PLAYER and PropertyData.playerStorage or PropertyData.unitStorage
@@ -1040,12 +1054,12 @@ function s.prototype.GetScopeOfProperty(self, H)
 	local u = self:GetConfig(H)
 	return u and u.scope or nil
 end
-function s.prototype.AggregatePropertyValues(self, H, bJ, J)
+function s.prototype.AggregatePropertyValues(self, H, bN, J)
 	local u = PropertyData.configs[H]
 	if u == nil then
-		return bJ + J
+		return bN + J
 	end
-	return self:AggregateValues(u.aggregation, bJ, J, u.customAggregator)
+	return self:AggregateValues(u.aggregation, bN, J, u.customAggregator)
 end
 function s.prototype.ValidateProperty(self, H)
 	if PropertyData.configs[H] == nil then
@@ -1067,62 +1081,62 @@ function s.prototype.GetEntityContext(self, bb)
 	end
 	return nil
 end
-function s.prototype.AggregateValues(self, bK, bJ, J, bL)
+function s.prototype.AggregateValues(self, bO, bN, J, bP)
 	repeat
-		local bM = bK
-		local bN = bM == AggregationStrategy.SUM
-		if bN then
-			return bJ + J
+		local bQ = bO
+		local bR = bQ == AggregationStrategy.SUM
+		if bR then
+			return bN + J
 		end
-		bN = bN or bM == AggregationStrategy.MULTIPLY
-		if bN then
-			return ((1 + bJ * 0.01) * (1 + J * 0.01) - 1) * 100
+		bR = bR or bQ == AggregationStrategy.MULTIPLY
+		if bR then
+			return ((1 + bN * 0.01) * (1 + J * 0.01) - 1) * 100
 		end
-		bN = bN or bM == AggregationStrategy.DECMUL
-		if bN then
-			return (1 - (1 - bJ * 0.01) * (1 - J * 0.01)) * 100
+		bR = bR or bQ == AggregationStrategy.DECMUL
+		if bR then
+			return (1 - (1 - bN * 0.01) * (1 - J * 0.01)) * 100
 		end
-		bN = bN or bM == AggregationStrategy.MAX
-		if bN then
-			return math.max(bJ, J)
+		bR = bR or bQ == AggregationStrategy.MAX
+		if bR then
+			return math.max(bN, J)
 		end
-		bN = bN or bM == AggregationStrategy.MIN
-		if bN then
-			return math.min(bJ, J)
+		bR = bR or bQ == AggregationStrategy.MIN
+		if bR then
+			return math.min(bN, J)
 		end
-		bN = bN or bM == AggregationStrategy.FIRST
-		if bN then
-			return bJ ~= 0 and bJ or J
+		bR = bR or bQ == AggregationStrategy.FIRST
+		if bR then
+			return bN ~= 0 and bN or J
 		end
-		bN = bN or bM == AggregationStrategy.LAST
-		if bN then
+		bR = bR or bQ == AggregationStrategy.LAST
+		if bR then
 			return J
 		end
-		bN = bN or bM == AggregationStrategy.CUSTOM
-		if bN then
-			if bL then
-				return bL(nil, bJ, J)
+		bR = bR or bQ == AggregationStrategy.CUSTOM
+		if bR then
+			if bP then
+				return bP(nil, bN, J)
 			end
-			return bJ + J
+			return bN + J
 		end
 		do
-			return bJ + J
+			return bN + J
 		end
 	until true
 end
-function s.prototype.GetAggregationInitialValue(self, bK, av)
+function s.prototype.GetAggregationInitialValue(self, bO, av)
 	repeat
-		local bO = bK
-		local bP = bO == AggregationStrategy.MAX
-		if bP then
+		local bS = bO
+		local bT = bS == AggregationStrategy.MAX
+		if bT then
 			return -math.huge
 		end
-		bP = bP or bO == AggregationStrategy.MIN
-		if bP then
+		bT = bT or bS == AggregationStrategy.MIN
+		if bT then
 			return math.huge
 		end
-		bP = bP or (bO == AggregationStrategy.FIRST or bO == AggregationStrategy.LAST)
-		if bP then
+		bT = bT or (bS == AggregationStrategy.FIRST or bS == AggregationStrategy.LAST)
+		if bT then
 			return av
 		end
 		do
@@ -1147,20 +1161,20 @@ function s.prototype.ForceSyncAllDirty(self)
 	if not IsServer() then
 		return
 	end
-	local bQ = 0
+	local bU = 0
 	for aF in pairs(PropertyData.dirtyKeys) do
-		bQ = bQ + 1
+		bU = bU + 1
 	end
-	if bQ == 0 then
+	if bU == 0 then
 		return
 	end
-	self:print(("[ForceSyncAllDirty] Syncing " .. tostring(bQ)) .. " dirty properties...")
+	self:print(("[ForceSyncAllDirty] Syncing " .. tostring(bU)) .. " dirty properties...")
 	self:SyncDirtyProperties()
-	local bR = 0
+	local bV = 0
 	for aF in pairs(PropertyData.dirtyKeys) do
-		bR = bR + 1
+		bV = bV + 1
 	end
-	self:print("[ForceSyncAllDirty] Sync completed, remaining: " .. tostring(bR))
+	self:print("[ForceSyncAllDirty] Sync completed, remaining: " .. tostring(bV))
 end
 s = n({ r }, s)
 if PropertySystem == nil then

@@ -25,4 +25,4 @@ const EOM_Tooltip = props => {
   })();
 };
 
-exports.EOM_Tooltip = EOM_Tooltip;
+exports.EOM_Tooltip = EOM_Tooltip;

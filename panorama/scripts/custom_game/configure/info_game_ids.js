@@ -8904,6 +8904,21 @@ GameUI.CustomUIConfig().info_game_ids = {
 		type: "item",
 		name: "S1巅峰季军"
 	},
+	"1790004": {
+		item_id: 1790004,
+		type: "item",
+		name: "S2巅峰冠军"
+	},
+	"1790005": {
+		item_id: 1790005,
+		type: "item",
+		name: "S2巅峰亚军"
+	},
+	"1790006": {
+		item_id: 1790006,
+		type: "item",
+		name: "S2巅峰季军"
+	},
 	"1800001": {
 		item_id: 1800001,
 		type: "item",

@@ -8966,6 +8966,21 @@ GameUI.CustomUIConfig().info_item_rarity = {
 		item_id: 1790003,
 		rarity: 5
 	},
+	"1790004": {
+		id: 2101,
+		item_id: 1790004,
+		rarity: 5
+	},
+	"1790005": {
+		id: 2102,
+		item_id: 1790005,
+		rarity: 5
+	},
+	"1790006": {
+		id: 2103,
+		item_id: 1790006,
+		rarity: 5
+	},
 	"1800001": {
 		id: 872,
 		item_id: 1800001,
