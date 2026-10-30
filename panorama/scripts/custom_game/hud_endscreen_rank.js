@@ -27,55 +27,6 @@ var netdata_utils = require('./netdata_utils.js');
 var game_utils = require('./game_utils.js');
 require('./Player.js');
 
-function ReturnToLobby(props) {
-  const [available, setAvailable] = libs.createSignal(false);
-  let retry;
-  const listener = GameEvents.Subscribe('client_side_event', event => {
-    if (event.event_name !== 'platform_route_status') return;
-    try {
-      setAvailable(JSON.parse(event.event_data).available === true);
-    } catch {
-      setAvailable(false);
-    }
-  });
-  libs.onMount(() => {
-    const initialize = () => {
-      if (available()) return;
-      GameEvents.SendEventClientSide('client_side_event', {
-        event_name: 'platform_route_query',
-        event_data: '{}'
-      });
-      retry = $.Schedule(0.5, initialize);
-    };
-    initialize();
-  });
-  libs.onCleanup(() => {
-    GameEvents.Unsubscribe(listener);
-    if (retry !== undefined) $.CancelScheduled(retry);
-  });
-  return libs.createComponent(libs.Show, {
-    get when() {
-      return available();
-    },
-    get children() {
-      const _el$ = libs.createElement("Button", {
-          "class": "PlatformReturnButton"
-        }, null),
-        _el$2 = libs.createElement("Label", {
-          get text() {
-            return props.retry ? '#platform_retry' : '#platform_return';
-          }
-        }, _el$);
-      libs.setProp(_el$, "onactivate", () => GameEvents.SendEventClientSide('client_side_event', {
-        event_name: 'platform_return',
-        event_data: '{}'
-      }));
-      libs.effect(_$p => libs.setProp(_el$2, "text", props.retry ? '#platform_retry' : '#platform_return', _$p));
-      return _el$;
-    }
-  });
-}
-
 $.GetContextPanel().AddClass("CosmeticPreviewLiveHidden");
 if (!isSpectator()) {
   const getHeroSkinID = (ornament_data, heroName) => {
@@ -409,14 +360,6 @@ if (!isSpectator()) {
     return (() => {
       const _el$ = libs.createElement("Panel", {}, null);
       libs.setProp(_el$, "onactivate", () => {});
-      libs.insert(_el$, libs.createComponent(libs.Show, {
-        get when() {
-          return libs.memo(() => !!show())() && end();
-        },
-        get children() {
-          return libs.createComponent(ReturnToLobby, {});
-        }
-      }), null);
       libs.insert(_el$, libs.createComponent(libs.Show, {
         get when() {
           return gradientShow();

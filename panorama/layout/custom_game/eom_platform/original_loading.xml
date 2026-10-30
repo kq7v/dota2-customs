@@ -11,17 +11,90 @@
 <!-- xml reconstructed by Source 2 Viewer 20.1.0.0 - https://valveresourceformat.github.io -->
 <root>
 	<styles>
+		<include src="s2r://panorama/styles/dotastyles.vcss_c" />
 		<include src="s2r://panorama/styles/custom_game/custom_loading_screen.vcss" />
 	</styles>
 	<scripts>
-		<include src="s2r://panorama/scripts/custom_game/common.vjs" />
 		<include src="s2r://panorama/scripts/custom_game/require.vjs" />
+		<include src="s2r://panorama/scripts/custom_game/panorama-polyfill.vjs" />
 		<include src="s2r://panorama/scripts/custom_game/custom_loading_screen.vjs" />
 	</scripts>
-	<Panel class="LoadingRoot" hittest="false" hittestchildren="true" acceptsfocus="true">
-		<Image class="Logo" hittest="false" />
-		<Image id="CompanyLogo" hittest="false" />
-		<Panel id="WorldVignetteLeft" hittest="false" />
-		<Panel id="WorldVignetteRight" hittest="false" />
+	<snippets>
+		<snippet name="T11ContainerRoot">
+			<Panel class="T11ContainerRoot">
+				<Panel id="T11Container" hittest="false">
+					<Image id="T11Img" hittest="false" />
+					<Panel id="T11Button" hittest="false">
+						<Image id="T11ButtonBG" hittest="false" />
+						<Label id="T11ButtonText" text="#T12Txt" hittest="false" />
+					</Panel>
+					<Label id="T11SearchTitle" text="#T12SearchTxt2" hittest="false" />
+					<Button id="T11SearchButton" onactivate="JumpT11Url()">
+						<Image id="T11SearchButtonBG" hittest="false" />
+						<Label id="T11SearchButtonText" text="#T11SearchTxt" hittest="false" />
+					</Button>
+				</Panel>
+			</Panel>
+		</snippet>
+		<snippet name="T12ContainerRoot">
+			<Panel class="T12ContainerRoot">
+				<Panel id="T12Container">
+					<Image id="T12Img" hittest="false" />
+					<Image id="T12TxtBg" />
+					<Label id="T12Txt" html="true" text="#T12Txt" />
+					<Label id="T12SearchTxt2" html="true" text="#T12SearchTxt2" />
+					<Image id="T12SearchBg" />
+					<Label id="T12SearchTxt" html="true" text="#T12SearchTxt" />
+				</Panel>
+			</Panel>
+		</snippet>
+	</snippets>
+	<Panel class="LoadingRoot" hittest="false">
+		<Image id="BlackBlock" />
+		<Image class="Logo" />
+		<Image id="CompanyLogo" />
+		<Panel id="VGLauncherNotice" hittest="true">
+			<Label id="VGLauncherTitle" text="#C4_TeamSelect_VGLauncher_Title" />
+			<Panel id="VGLauncherDivider" />
+			<Label class="VGLauncherStep" text="#C4_TeamSelect_VGLauncher_DownloadStep" />
+			<Button id="VGLauncherLink" onactivate="ExternalBrowserGoToURL(&apos;https://vgbattle.eomgames.net/&apos;)" oncontextmenu="CopyStringToClipboard(&apos;https://vgbattle.eomgames.net/&apos;, null)">
+				<Label text="#C4_TeamSelect_VGLauncher_Link" />
+			</Button>
+			<Label id="VGLauncherURL" text="https://vgbattle.eomgames.net/" />
+			<Label id="VGLauncherStartStep" class="VGLauncherStep" text="#C4_TeamSelect_VGLauncher_StartStep" />
+		</Panel>
+		<Panel id="StartTips" hittest="false">
+			<Label id="StartTipsLabel" html="true" text="#LoadingTips" />
+		</Panel>
+		<Panel id="WorldVignetteRight" />
+		<Panel id="RankBG">
+			<Panel id="RankInfo">
+				<Panel id="RankTitle">
+					<Label id="RankTitleLabel" text="#LadderHelp_Title" />
+				</Panel>
+				<Panel class="RankRow Black">
+					<Panel class="DownFlow">
+						<Label id="RankRowLabel" html="true" text="#LadderHelp_1_desc" />
+						<Panel id="ImageRow">
+							<Image id="RankImage1" />
+							<Image id="RankImage2" />
+							<Image id="RankImage3" />
+						</Panel>
+					</Panel>
+				</Panel>
+				<Panel class="RankRow">
+					<Label id="RankRowLabel" html="true" text="#LadderHelp_2_desc" />
+				</Panel>
+				<Panel class="RankRow Black">
+					<Label id="RankRowLabel" html="true" text="#LadderHelp_3_desc" />
+				</Panel>
+				<Panel class="RankRow">
+					<Label id="RankRowLabel" html="true" text="#LadderHelp_5_desc" />
+				</Panel>
+				<Panel class="RankRow Black">
+					<Label id="RankRowLabel" html="true" text="#LadderHelp_6_desc" />
+				</Panel>
+			</Panel>
+		</Panel>
 	</Panel>
 </root>

@@ -8,295 +8,270 @@
 ]]
 
 
---[[ Generated with https://github.com/TypeScriptToLua/TypeScriptToLua ]]
--- Lua Library inline imports
-local function __TS__ObjectKeys(obj)
-	local result = {}
-	local len = 0
-	for key in pairs(obj) do
-		len = len + 1
-		result[len] = key
+local function a(b)
+	local c = {}
+	local d = 0
+	for e in pairs(b) do
+		d = d + 1
+		c[d] = e
 	end
-	return result
+	return c
 end
-
-local function __TS__ArrayFilter(self, callbackfn, thisArg)
-	local result = {}
-	local len = 0
+local function f(self, g, h)
+	local c = {}
+	local d = 0
 	for i = 1, #self do
-		if callbackfn(thisArg, self[i], i - 1, self) then
-			len = len + 1
-			result[len] = self[i]
+		if g(h, self[i], i - 1, self) then
+			d = d + 1
+			c[d] = self[i]
 		end
 	end
-	return result
+	return c
 end
-
-local function __TS__ArraySort(self, compareFn)
-	if compareFn ~= nil then
-		table.sort(self, function(a, b)
-			return compareFn(nil, a, b) < 0
+local function j(self, k)
+	if k ~= nil then
+		table.sort(self, function(l, m)
+			return k(nil, l, m) < 0
 		end)
 	else
 		table.sort(self)
 	end
 	return self
 end
-
-local function __TS__ArrayFind(self, predicate, thisArg)
+local function n(self, o, h)
 	for i = 1, #self do
-		local elem = self[i]
-		if predicate(thisArg, elem, i - 1, self) then
-			return elem
+		local p = self[i]
+		if o(h, p, i - 1, self) then
+			return p
 		end
 	end
 	return nil
 end
--- End of Lua Library inline imports
-local ____exports = {}
-local state, publish
-function state()
+local q = {}
+local r, s
+function r()
 	return _G.EOMPlatformConnection
 end
-function publish()
-	local current = state()
-	if not current then
+function s()
+	local t = r()
+	if not t then
 		return
 	end
-	FireGameEventLocal("client_side_event", {
-		event_name = "platform_connection_status",
-		event_data = json.encode({
-			map = current.map,
-			phase = current.phase,
-			mode = "auto",
-			region = current.region,
-			language = current.language,
-			currentRegion = current.currentRegion,
-			serverAddress = current.serverAddress,
-		}),
-	})
+	FireGameEventLocal(
+		"client_side_event",
+		{
+			event_name = "platform_connection_status",
+			event_data = json.encode({
+				map = t.map,
+				phase = t.phase,
+				mode = "auto",
+				region = t.region,
+				language = t.language,
+				currentRegion = t.currentRegion,
+				serverAddress = t.serverAddress,
+			}),
+		}
+	)
 end
-function ____exports.Exit()
-	local current = state()
-	if not current then
+function q.Exit()
+	local t = r()
+	if not t then
 		return
 	end
-	current.phase = "exited"
-	publish()
-	if current.listener ~= nil then
-		StopListeningToGameEvent(current.listener)
+	t.phase = "exited"
+	s()
+	if t.listener ~= nil then
+		StopListeningToGameEvent(t.listener)
 	end
-	if current.spawnListener ~= nil then
-		StopListeningToGameEvent(current.spawnListener)
+	if t.spawnListener ~= nil then
+		StopListeningToGameEvent(t.spawnListener)
 	end
 	_G.EOMPlatformConnection = nil
 end
-local function validAddress(address)
-	if type(address) ~= "string" then
+local function u(v)
+	if type(v) ~= "string" then
 		return
 	end
-	local host, portText = string.match(address, "^([%w%.%-]+):(%d+)$")
-	local port = tonumber(portText)
-	if not host or not port or port < 1 or port > 65535 then
+	local w, x = string.match(v, "^([%w%.%-]+):(%d+)$")
+	local y = tonumber(x)
+	if not w or not y or y < 1 or y > 65535 then
 		return
 	end
-	return address
+	return v
 end
-local function address(region)
-	local routing = LoadKeyValues("scripts/platform_routing.txt")
-	local configured = validAddress(routing and routing[region])
-	if configured then
-		return configured
+local function v(z)
+	local A = LoadKeyValues("scripts/platform_routing.txt")
+	local B = u(A and A[z])
+	if B then
+		return B
 	end
-	if region == "china" then
-		return validAddress(routing and routing.lobby_address)
+	if z == "china" then
+		return u(A and A.lobby_address)
 	end
-	if region == "overseas" then
-		return validAddress(routing and routing.overseas_lobby_address)
+	if z == "overseas" then
+		return u(A and A.overseas_lobby_address)
 	end
-	if region == "overseas2" then
-		return validAddress(routing and routing.overseas2_lobby_address)
+	if z == "overseas2" then
+		return u(A and A.overseas2_lobby_address)
 	end
 end
-local function settings()
+local function C()
 	return LoadKeyValues("scripts/eom_platform.txt")
 end
-local function availableRegions()
-	local routing = LoadKeyValues("scripts/platform_routing.txt")
-	return __TS__ArraySort(__TS__ArrayFilter(__TS__ObjectKeys(routing or {}), function(____, key)
-		return validAddress(routing[key]) ~= nil
+local function D()
+	local A = LoadKeyValues("scripts/platform_routing.txt")
+	return j(f(a(A or {}), function(E, e)
+		return u(A[e]) ~= nil
 	end))
 end
-local function defaultRegion()
-	local ____opt_8 = settings()
-	local preferred = ____opt_8 and ____opt_8.connection_region
-	return preferred and address(preferred) and preferred or (availableRegions()[1] or "china")
+local function F()
+	local G = C()
+	local H = G and G.connection_region
+	return H and v(H) and H or (D()[1] or "china")
 end
-local function recordServer(host, port)
-	local current = state()
-	if
-		not current
-		or current.map ~= "platform_lobby"
-		or type(host) ~= "string"
-		or type(port) ~= "number"
-		or port % 1 ~= 0
-	then
+local function I(w, y)
+	local t = r()
+	if not t or t.map ~= "platform_lobby" or type(w) ~= "string" or type(y) ~= "number" or y % 1 ~= 0 then
 		return
 	end
-	local target = validAddress((host .. ":") .. tostring(port))
-	if not target then
+	local J = u((w .. ":") .. tostring(y))
+	if not J then
 		return
 	end
-	current.serverAddress = target
-	current.currentRegion = __TS__ArrayFind(availableRegions(), function(____, region)
-		return address(region) == target
+	t.serverAddress = J
+	t.currentRegion = n(D(), function(E, z)
+		return v(z) == J
 	end)
-	publish()
+	s()
 end
-local function submit(target, password, retry)
-	if password == nil then
-		password = ""
+local function K(J, L, M)
+	if L == nil then
+		L = ""
 	end
-	if retry == nil then
-		retry = false
+	if M == nil then
+		M = false
 	end
-	local current = state()
-	if not current or not target then
+	local t = r()
+	if not t or not J then
 		return
 	end
-	if
-		current.phase == "submitted" and (not retry or current.submittedAt ~= nil and Time() - current.submittedAt < 2)
-	then
+	if t.phase == "submitted" and (not M or t.submittedAt ~= nil and Time() - t.submittedAt < 2) then
 		return
 	end
-	current.phase = "submitted"
-	current.submittedAt = Time()
-	print((("[platform] Connection submitted: " .. current.map) .. " -> ") .. target)
-	publish()
-	SendToConsole(password == "" and 'password ""' or "password " .. password)
-	SendToConsole("connect " .. target)
+	t.phase = "submitted"
+	t.submittedAt = Time()
+	print((("[platform] Connection submitted: " .. t.map) .. " -> ") .. J)
+	s()
+	SendToConsole(L == "" and 'password ""' or "password " .. L)
+	SendToConsole("connect " .. J)
 end
-local function ready()
-	local customGameSetupPhase = 2
-	local phase = GameRules and GameRules.State_Get and GameRules:State_Get() or nil
-	return type(phase) == "number" and phase >= customGameSetupPhase
+local function N()
+	local O = 2
+	local P = GameRules and GameRules.State_Get and GameRules:State_Get() or nil
+	return type(P) == "number" and P >= O
 end
-local function autoConnect()
-	local current = state()
-	if not current or current.map ~= "platform_entry" or current.phase == "submitted" or not ready() then
+local function Q()
+	local t = r()
+	if not t or t.map ~= "platform_entry" or t.phase == "submitted" or not N() then
 		return
 	end
-	local available = availableRegions()
-	if #available ~= 1 and not current.language then
+	local R = D()
+	if #R ~= 1 and not t.language then
 		return
 	end
-	local preferred = current.language == "schinese" and "china"
-		or (current.language == "russian" and "overseas2" or "overseas")
-	current.region = #available == 1 and available[1] or (address(preferred) and preferred or defaultRegion())
-	current.automatic = true
-	submit(address(current.region))
+	local H = t.language == "schinese" and "china" or (t.language == "russian" and "overseas2" or "overseas")
+	t.region = #R == 1 and R[1] or (v(H) and H or F())
+	t.automatic = true
+	K(v(t.region))
 end
-function ____exports.Initialize(map)
-	local current = state()
-	if not current or current.map ~= map then
-		____exports.Exit()
-		current = {
-			map = map,
-			phase = "waiting",
-			automatic = false,
-			region = defaultRegion(),
-		}
-		_G.EOMPlatformConnection = current
-		current.listener = ListenToGameEvent("client_side_event", function(event)
-			local active = state()
-			if not active then
+function q.Initialize(S)
+	local t = r()
+	if not t or t.map ~= S then
+		q.Exit()
+		t = { map = S, phase = "waiting", automatic = false, region = F() }
+		_G.EOMPlatformConnection = t
+		t.listener = ListenToGameEvent("client_side_event", function(T)
+			local U = r()
+			if not U then
 				return
 			end
-			if event.event_name == "platform_connection_query" then
-				publish()
-			elseif event.event_name == "platform_server_endpoint" and active.map == "platform_lobby" then
-				local ok, decoded = pcall(function()
-					local value = json.decode(event.event_data)
-					return value
+			if T.event_name == "platform_connection_query" then
+				s()
+			elseif T.event_name == "platform_server_endpoint" and U.map == "platform_lobby" then
+				local V, W = pcall(function()
+					local X = json.decode(T.event_data)
+					return X
 				end)
-				if ok and type(decoded) == "table" then
-					local endpoint = decoded
-					if endpoint then
-						recordServer(endpoint.address, endpoint.port)
+				if V and type(W) == "table" then
+					local Y = W
+					if Y then
+						I(Y.address, Y.port)
 					end
 				end
-			elseif event.event_name == "platform_route_query" then
-				FireGameEventLocal("client_side_event", {
-					event_name = "platform_route_status",
-					event_data = json.encode({ available = address(defaultRegion()) ~= nil }),
-				})
-			elseif event.event_name == "platform_client_language" and active.map == "platform_entry" then
+			elseif T.event_name == "platform_route_query" then
+				FireGameEventLocal(
+					"client_side_event",
+					{ event_name = "platform_route_status", event_data = json.encode({ available = v(F()) ~= nil }) }
+				)
+			elseif T.event_name == "platform_client_language" and U.map == "platform_entry" then
 				if
-					type(event.event_data) ~= "string"
-					or not (string.match(event.event_data, "^[a-z]+$"))
-					or #event.event_data > 32
+					type(T.event_data) ~= "string"
+					or not string.match(T.event_data, "^[a-z]+$")
+					or #T.event_data > 32
 				then
 					return
 				end
-				active.language = event.event_data
-				autoConnect()
-				publish()
-			elseif event.event_name == "platform_region_select" and active.map == "platform_lobby" then
-				if address(event.event_data) and address(event.event_data) ~= active.serverAddress then
-					if
-						active.phase == "submitted"
-						and active.submittedAt ~= nil
-						and Time() - active.submittedAt < 2
-					then
+				U.language = T.event_data
+				Q()
+				s()
+			elseif T.event_name == "platform_region_select" and U.map == "platform_lobby" then
+				if v(T.event_data) and v(T.event_data) ~= U.serverAddress then
+					if U.phase == "submitted" and U.submittedAt ~= nil and Time() - U.submittedAt < 2 then
 						return
 					end
-					active.region = event.event_data
-					submit(address(active.region), "", true)
+					U.region = T.event_data
+					K(v(U.region), "", true)
 				end
 			elseif
-				event.event_name == "platform_entry_retry"
-				and active.map == "platform_entry"
-				and active.phase == "submitted"
-				and ready()
+				T.event_name == "platform_entry_retry"
+				and U.map == "platform_entry"
+				and U.phase == "submitted"
+				and N()
 			then
-				submit(address(active.region), "", true)
-			elseif
-				event.event_name == "platform_return"
-				and active.map ~= "platform_entry"
-				and active.map ~= "platform_lobby"
-			then
-				submit(address(defaultRegion()), "", true)
-			elseif event.event_name == "platform_connect" and active.map == "platform_lobby" then
-				local ok, decoded = pcall(function()
-					local value = json.decode(event.event_data)
-					return value
+				K(v(U.region), "", true)
+			elseif T.event_name == "platform_return" and U.map ~= "platform_entry" and U.map ~= "platform_lobby" then
+				K(v(F()), "", true)
+			elseif T.event_name == "platform_connect" and U.map == "platform_lobby" then
+				local V, W = pcall(function()
+					local X = json.decode(T.event_data)
+					return X
 				end)
-				if not ok then
+				if not V then
 					return
 				end
-				if type(decoded) ~= "table" then
+				if type(W) ~= "table" then
 					return
 				end
-				local request = decoded
-				if not request or type(request.password) ~= "string" or #request.password > 128 then
+				local Z = W
+				if not Z or type(Z.password) ~= "string" or #Z.password > 128 then
 					return
 				end
-				local password = string.match(request.password, "^[%w]+$")
-				if password then
-					submit(validAddress(request.address), password, true)
+				local L = string.match(Z.password, "^[%w]+$")
+				if L then
+					K(u(Z.address), L, true)
 				end
 			end
 		end, nil)
-		current.spawnListener = ListenToGameEvent("server_spawn", function(event)
-			if event.mapname == "platform_lobby" then
-				recordServer(event.address, event.port)
+		t.spawnListener = ListenToGameEvent("server_spawn", function(T)
+			if T.mapname == "platform_lobby" then
+				I(T.address, T.port)
 			end
 		end, nil)
 	end
-	if current.phase == "waiting" and ready() then
-		current.phase = "ready"
-		publish()
+	if t.phase == "waiting" and N() then
+		t.phase = "ready"
+		s()
 	end
-	autoConnect()
+	Q()
 end
-return ____exports
+return q

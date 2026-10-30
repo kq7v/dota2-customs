@@ -8,5 +8,4 @@
 ]]
 
 
--- EOM SDK managed entry v1
 return require("eom_platform.client").Initialize("__eom_original_client")

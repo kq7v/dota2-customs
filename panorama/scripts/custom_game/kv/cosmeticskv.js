@@ -788,7 +788,6 @@ GameUI.CustomUIConfig().CosmeticsKv = {
 		"resource": "models/eom/hero/zeus_3/zeus_3.vmdl",
 	},
 	"5100079": {
-		"tool": 1,
 		"name": "sell",
 		"Note": "26年10月梦幻卡池【棘酷玩仔】钢背兽金皮",
 		"rarity": 3,
@@ -1966,7 +1965,7 @@ GameUI.CustomUIConfig().CosmeticsKv = {
 		"access": "activity",
 		"hero": 3000018,
 		"resource": "models/heroes/sniper/sniper.vmdl",
-		"portrait": "npc_dota_hero_life_sniper",
+		"portrait": "npc_dota_hero_sniper",
 		"wearable1": 9092,
 		"wearable2": 9093,
 		"wearable3": 9095,
@@ -2697,7 +2696,6 @@ GameUI.CustomUIConfig().CosmeticsKv = {
 		"resource": "models/items/courier/mole_messenger/mole_messenger.vmdl",
 	},
 	"5203053": {
-		"tool": 1,
 		"name": "sell",
 		"Note": "26年10月金币卡池卡池投放【玄武龟】信使皮肤",
 		"rarity": 2,
@@ -2915,7 +2913,7 @@ GameUI.CustomUIConfig().CosmeticsKv = {
 	},
 	"5210016": {
 		"name": "sell",
-		"Note": "250724【】天涯墨客周身特效",
+		"Note": "250724【千嶂墨縠】天涯墨客周身特效",
 		"rarity": 3,
 		"StoreID": "Activity_dai",
 		"access": "activity",
@@ -3087,7 +3085,6 @@ GameUI.CustomUIConfig().CosmeticsKv = {
 		"resource": "models/eom/hero/zeus_3/particles/zeus_3_emblem_loadoute_fx.vpcf",
 	},
 	"5210036": {
-		"tool": 1,
 		"name": "sell",
 		"Note": "10月幻梦【刺头巡游】钢背兽周身特效",
 		"rarity": 3,
@@ -3546,7 +3543,6 @@ GameUI.CustomUIConfig().CosmeticsKv = {
 		"resource": "models/eom/hero/zeus_3/particles/zeus_3_base_attack_fx.vpcf",
 	},
 	"5230051": {
-		"tool": 1,
 		"name": "sell",
 		"Note": "10月幻梦钢背兽攻击特效【刺仔突击】",
 		"rarity": 3,
@@ -4820,7 +4816,6 @@ GameUI.CustomUIConfig().CosmeticsKv = {
 		"resource": "models/eom/hero/zeus_3/particles/zeus_3_portal_fx.vpcf",
 	},
 	"5410038": {
-		"tool": 1,
 		"name": "sell",
 		"Note": "10月幻梦【棘轮光柱】钢背兽传送特效",
 		"rarity": 3,
@@ -4976,7 +4971,7 @@ GameUI.CustomUIConfig().CosmeticsKv = {
 	},
 	"5420019": {
 		"name": "sell",
-		"Note": "250430【】天涯墨客击杀播报",
+		"Note": "250430【墨断枯荣】天涯墨客击杀播报",
 		"rarity": 2,
 		"StoreID": 9903007,
 		"access": "drawExchange",
@@ -5190,7 +5185,6 @@ GameUI.CustomUIConfig().CosmeticsKv = {
 		"mark": "tianxin",
 	},
 	"5420045": {
-		"tool": 1,
 		"name": "sell",
 		"Note": "10月幻梦【棘酷飞线】钢背兽击杀播报",
 		"rarity": 2,
@@ -5396,7 +5390,7 @@ GameUI.CustomUIConfig().CosmeticsKv = {
 	},
 	"5440019": {
 		"name": "sell",
-		"Note": "250430【】天涯墨客连胜播报",
+		"Note": "250430【龙游天下】天涯墨客连胜播报",
 		"rarity": 2,
 		"StoreID": 9903008,
 		"access": "drawExchange",
@@ -5625,7 +5619,6 @@ GameUI.CustomUIConfig().CosmeticsKv = {
 		"resource": "particles/eom/ui/ui_fx/ui_fx_zeus_winning_streak_fx.vpcf",
 	},
 	"5440045": {
-		"tool": 1,
 		"name": "sell",
 		"Note": "10月【棘酷狂飙】钢背兽连胜播报",
 		"rarity": 2,
@@ -9813,7 +9806,6 @@ GameUI.CustomUIConfig().CosmeticsKv = {
 		"hero": 3000045,
 	},
 	"5510621": {
-		"tool": 1,
 		"name": "sell",
 		"Note": "260130【准备】钢背兽表情",
 		"rarity": 1,
@@ -9822,7 +9814,6 @@ GameUI.CustomUIConfig().CosmeticsKv = {
 		"hero": 3000072,
 	},
 	"5510622": {
-		"tool": 1,
 		"name": "sell",
 		"Note": "260130【无语】钢背兽表情",
 		"rarity": 1,
@@ -9831,7 +9822,6 @@ GameUI.CustomUIConfig().CosmeticsKv = {
 		"hero": 3000072,
 	},
 	"5510623": {
-		"tool": 1,
 		"name": "sell",
 		"Note": "260130【难过】钢背兽表情",
 		"rarity": 1,
@@ -9840,7 +9830,6 @@ GameUI.CustomUIConfig().CosmeticsKv = {
 		"hero": 3000072,
 	},
 	"5510624": {
-		"tool": 1,
 		"name": "sell",
 		"Note": "260130【得意】钢背兽表情",
 		"rarity": 2,
@@ -9849,7 +9838,6 @@ GameUI.CustomUIConfig().CosmeticsKv = {
 		"hero": 3000072,
 	},
 	"5510625": {
-		"tool": 1,
 		"name": "sell",
 		"Note": "260130【嘲讽】钢背兽表情",
 		"rarity": 2,
@@ -9858,7 +9846,6 @@ GameUI.CustomUIConfig().CosmeticsKv = {
 		"hero": 3000072,
 	},
 	"5510626": {
-		"tool": 1,
 		"name": "sell",
 		"Note": "260130【不可阻挡】钢背兽表情",
 		"rarity": 3,
@@ -9867,7 +9854,6 @@ GameUI.CustomUIConfig().CosmeticsKv = {
 		"hero": 3000072,
 	},
 	"5510627": {
-		"tool": 1,
 		"name": "sell",
 		"Note": "260130【不过如此】钢背兽表情",
 		"rarity": 3,
@@ -10748,7 +10734,7 @@ GameUI.CustomUIConfig().CosmeticsKv = {
 	},
 	"5710056": {
 		"name": "sell",
-		"Note": "250430【】天涯墨客头像框",
+		"Note": "250430【玄渊】天涯墨客头像框",
 		"rarity": 2,
 		"StoreID": "Activity_dai",
 		"access": "activity",
@@ -11017,7 +11003,6 @@ GameUI.CustomUIConfig().CosmeticsKv = {
 		"mark": "tianxin",
 	},
 	"5710092": {
-		"tool": 1,
 		"name": "sell",
 		"Note": "10月幻梦【酷玩】玩仔头像框",
 		"rarity": 2,
@@ -11212,7 +11197,7 @@ GameUI.CustomUIConfig().CosmeticsKv = {
 	},
 	"5720022": {
 		"name": "sell",
-		"Note": "250430【--】天涯墨客名片背景",
+		"Note": "250430【浮墨山河图】天涯墨客名片背景",
 		"rarity": 2,
 		"StoreID": "Activity_dai",
 		"access": "activity",
@@ -11401,7 +11386,7 @@ GameUI.CustomUIConfig().CosmeticsKv = {
 	},
 	"5720046": {
 		"name": "sell",
-		"Note": "【】炎歌名片背景",
+		"Note": "【寒夜破晓】炎歌名片背景",
 		"rarity": 2,
 		"access": "drawExchange",
 		"mark": "tb",
@@ -11415,7 +11400,7 @@ GameUI.CustomUIConfig().CosmeticsKv = {
 	},
 	"5720048": {
 		"name": "sell",
-		"Note": "【】狂徒名片背景",
+		"Note": "【破碎之牙】狂徒名片背景",
 		"rarity": 2,
 		"access": "drawExchange",
 		"mark": "kuangtu",
@@ -11428,7 +11413,6 @@ GameUI.CustomUIConfig().CosmeticsKv = {
 		"mark": "tianxin",
 	},
 	"5720050": {
-		"tool": 1,
 		"name": "sell",
 		"Note": "【街头顽主】玩仔名片背景",
 		"rarity": 2,
@@ -11630,7 +11614,7 @@ GameUI.CustomUIConfig().CosmeticsKv = {
 	},
 	"5730023": {
 		"name": "sell",
-		"Note": "250430【】天涯墨客名片装饰",
+		"Note": "250430【水墨绘者】天涯墨客名片装饰",
 		"rarity": 2,
 		"StoreID": "Activity_dai",
 		"access": "activity",
@@ -11825,7 +11809,7 @@ GameUI.CustomUIConfig().CosmeticsKv = {
 	},
 	"5730048": {
 		"name": "sell",
-		"Note": "【】炎歌名片装饰",
+		"Note": "【墨羽遗音】炎歌名片装饰",
 		"rarity": 2,
 		"access": "drawExchange",
 		"mark": "tb",
@@ -11839,7 +11823,7 @@ GameUI.CustomUIConfig().CosmeticsKv = {
 	},
 	"5730050": {
 		"name": "sell",
-		"Note": "【】狂徒名片装饰",
+		"Note": "【赤羽獠牙】狂徒名片装饰",
 		"rarity": 2,
 		"access": "drawExchange",
 		"mark": "kuangtu",
@@ -11852,7 +11836,6 @@ GameUI.CustomUIConfig().CosmeticsKv = {
 		"mark": "tianxin",
 	},
 	"5730052": {
-		"tool": 1,
 		"name": "sell",
 		"Note": "【棘酷档案】玩仔名片装饰",
 		"rarity": 2,

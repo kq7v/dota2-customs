@@ -43,7 +43,7 @@ require('./profile_info.js');
 require('./StoreItemImage.js');
 require('./game_utils.js');
 
-const language$f = $.Language().toLowerCase();
+const language$g = $.Language().toLowerCase();
 const turntable_id = 1008;
 const turntable_token = 1100129;
 const Activity_26WuYiTurntable = props => {
@@ -457,10 +457,10 @@ const Activity_26WuYiTurntable = props => {
             }
           }), libs.createComponent(EOM_Image.EOM_Image, {
             id: "ActivityTitle",
-            className: language$f,
+            className: language$g,
             hittest: false
           }), libs.createComponent(InfoButton.InfoButton, {
-            className: language$f,
+            className: language$g,
             id: "ActivityInfo",
             info: "#SnowballInfo",
             tooltip: "#Activity_26WuYiTurntable_infodesc"
@@ -898,7 +898,7 @@ const TaskReward = props => {
   });
 };
 
-const language$e = $.Language().toLowerCase();
+const language$f = $.Language().toLowerCase();
 const Activity_arena = props => {
   const activityID = props.activity_id;
   const [ticketToken, setTicketToken] = libs.createSignal(1000001);
@@ -1679,7 +1679,7 @@ const Activity_arena = props => {
             paddingRight: "10px",
             get children() {
               return libs.createComponent(EOM_Label.EOM_Label, {
-                className: language$e,
+                className: language$f,
                 text: "#Activity_arena_infodesc",
                 html: true
               });
@@ -2111,26 +2111,26 @@ const RankRowMedal = props => {
   })();
 };
 
-let fFlipTime$4 = 0.5;
-const language$d = $.Language().toLowerCase();
+let fFlipTime$5 = 0.5;
+const language$e = $.Language().toLowerCase();
 const [singleCost$4] = libs.createSignal(6);
-const [rewardShow$4, setRewardShow$4] = libs.createSignal(false);
-const [rewardList$4, setRewardList$4] = libs.createSignal([]);
-const [drawButtonEnable$4, setDrawButtonEnable$4] = libs.createSignal(true);
-const [info_box_content$4, setInfoBoxContent$4] = libs.createSignal();
-const [drawSuccess$4, setDrawSuccess$4] = libs.createSignal(false);
-const [drawEnd$4, setDrawEnd$4] = libs.createSignal(false);
-const [drawSoundIndex$4, setDrawSoundIndex$4] = libs.createSignal(-1);
-libs.createEffect(libs.on(rewardList$4, _rewardList => {
-  if (_rewardList.length == 0 && rewardShow$4()) {
-    setRewardShow$4(false);
+const [rewardShow$5, setRewardShow$5] = libs.createSignal(false);
+const [rewardList$5, setRewardList$5] = libs.createSignal([]);
+const [drawButtonEnable$5, setDrawButtonEnable$5] = libs.createSignal(true);
+const [info_box_content$5, setInfoBoxContent$5] = libs.createSignal();
+const [drawSuccess$5, setDrawSuccess$5] = libs.createSignal(false);
+const [drawEnd$5, setDrawEnd$5] = libs.createSignal(false);
+const [drawSoundIndex$5, setDrawSoundIndex$5] = libs.createSignal(-1);
+libs.createEffect(libs.on(rewardList$5, _rewardList => {
+  if (_rewardList.length == 0 && rewardShow$5()) {
+    setRewardShow$5(false);
   }
 }));
-const getRarity$4 = (itemID, amount) => {
+const getRarity$5 = (itemID, amount) => {
   let rarity = 0;
   let gotten = false;
   let type = Number(itemID.toString().slice(0, 3));
-  let content = info_box_content$4();
+  let content = info_box_content$5();
   if (content) {
     for (const v of content) {
       if (v.item_id == itemID) {
@@ -2237,7 +2237,7 @@ const Activity_tutu1 = props => {
     if (info_box_pool_data && info_box_content) {
       const dropName = info_box_pool_data.find(v => v.pool == activityPool)?.drop_content;
       if (dropName && info_box_content[dropName]) {
-        setInfoBoxContent$4(info_box_content[dropName]);
+        setInfoBoxContent$5(info_box_content[dropName]);
       }
     }
   };
@@ -2302,7 +2302,7 @@ const Activity_tutu1 = props => {
   const handledRewardData = libs.createMemo(() => {
     const list = [];
     let resultType = 0;
-    const current_rewardList = rewardList$4();
+    const current_rewardList = rewardList$5();
     current_rewardList.forEach((data, index) => {
       let itemID = data.origin_item_id ?? data.itemId;
       let rarity = 0;
@@ -2312,7 +2312,7 @@ const Activity_tutu1 = props => {
         if (itemID == 9300006) {
           rarity = 2;
         } else {
-          rarity = getRarity$4(itemID, data.amounts);
+          rarity = getRarity$5(itemID, data.amounts);
         }
       }
       list.push({
@@ -2333,7 +2333,7 @@ const Activity_tutu1 = props => {
     };
   });
   libs.createEffect(libs.on(show, showed => {
-    if (showed && !rewardShow$4() && handledRewardData().list.length > 0) {
+    if (showed && !rewardShow$5() && handledRewardData().list.length > 0) {
       showDrawRewards(handledRewardData().list);
     }
   }));
@@ -2349,10 +2349,10 @@ const Activity_tutu1 = props => {
   };
   const endDrawAnimation = (soundIndex, clickSkip = false) => {
     if (soundIndex == -1) return;
-    if (soundIndex != drawSoundIndex$4()) return;
+    if (soundIndex != drawSoundIndex$5()) return;
     if (soundIndex != -1) {
       Game.StopSound(soundIndex);
-      setDrawSoundIndex$4(-1);
+      setDrawSoundIndex$5(-1);
     }
     if (show()) {
       let p1 = $("#Tutu1DrawPortal");
@@ -2374,10 +2374,10 @@ const Activity_tutu1 = props => {
       showDrawRewards(handledRewardData().list);
       if (clickSkip) {
         $.Schedule(0.2, () => {
-          if (rewardShow$4()) funcRewardShowContinue();
+          if (rewardShow$5()) funcRewardShowContinue();
         });
       }
-      if (!drawSuccess$4()) {
+      if (!drawSuccess$5()) {
         funcRewardShowContinue();
         showPopup("ErrorMessage", {
           msg: "#ErrorMessage_DrawFailure"
@@ -2386,12 +2386,12 @@ const Activity_tutu1 = props => {
     }
   };
   const Draw = count => {
-    setDrawEnd$4(false);
-    setDrawButtonEnable$4(false);
-    setRewardList$4([]);
+    setDrawEnd$5(false);
+    setDrawButtonEnable$5(false);
+    setRewardList$5([]);
     let seq = new RunSequentialActions();
-    if (rewardShow$4()) {
-      setRewardShow$4(false);
+    if (rewardShow$5()) {
+      setRewardShow$5(false);
     }
     let index = -1;
     seq.actions.push(new RunFunctionAction(() => {
@@ -2415,13 +2415,13 @@ const Activity_tutu1 = props => {
         $("#Tutu1DrawPortalGold").StartParticles();
         $("#Tutu1DrawPortalRed").StartParticles();
         index = Game.EmitSound("ui.portal_open");
-        setDrawSoundIndex$4(index);
+        setDrawSoundIndex$5(index);
       }
     }));
     if (willSkip()) {
       seq.actions.push(new WaitForConditionAction(() => {
-        if (index != drawSoundIndex$4()) return true;
-        if (handledRewardData().list.length > 0 || drawEnd$4()) {
+        if (index != drawSoundIndex$5()) return true;
+        if (handledRewardData().list.length > 0 || drawEnd$5()) {
           endDrawAnimation(index, true);
           return true;
         }
@@ -2430,8 +2430,8 @@ const Activity_tutu1 = props => {
     } else {
       seq.actions.push(new WaitAction(1.5));
       seq.actions.push(new WaitForConditionAction(() => {
-        if (index != drawSoundIndex$4()) return false;
-        if (handledRewardData().list.length > 0 || drawEnd$4()) {
+        if (index != drawSoundIndex$5()) return false;
+        if (handledRewardData().list.length > 0 || drawEnd$5()) {
           if (handledRewardData().resultType != 0) {
             $("#Tutu1DrawPortal").style.opacity = "0.01";
             if (handledRewardData().resultType == 2) {
@@ -2456,17 +2456,17 @@ const Activity_tutu1 = props => {
       amounts: count
     }, data => {
       if (data.status == 0 && data?.data != undefined) {
-        setRewardList$4(data.data.map(v => {
+        setRewardList$5(data.data.map(v => {
           if (v.orderby == undefined) {
             v.orderby = Round(Math.random() * 100);
           }
           return v;
         }).sort((a, b) => a.orderby - b.orderby));
-        setDrawSuccess$4(true);
+        setDrawSuccess$5(true);
       } else {
-        setDrawSuccess$4(false);
+        setDrawSuccess$5(false);
       }
-      setDrawEnd$4(true);
+      setDrawEnd$5(true);
     });
   };
   const showDrawRewards = items => {
@@ -2474,7 +2474,7 @@ const Activity_tutu1 = props => {
       let pRewardList = pDrawWindow.FindChildTraverse("RewardList");
       let seq = new RunSequentialActions();
       seq.actions.push(new RunFunctionAction(() => {
-        setRewardShow$4(true);
+        setRewardShow$5(true);
         pRewardList.RemoveAndDeleteChildren();
         const count = items.length;
         for (let i = 0; i < count; i++) {
@@ -2631,7 +2631,7 @@ const Activity_tutu1 = props => {
       seq.actions.push(new WaitAction(0.5));
       seq.actions.push(new RunFunctionAction(() => {
         if (pRewardList) {
-          let flipSeqList = new RunStaggeredActions(fFlipTime$4 / 2);
+          let flipSeqList = new RunStaggeredActions(fFlipTime$5 / 2);
           for (let i = 0; i < pRewardList.GetChildCount(); i++) {
             const p = pRewardList.GetChild(i);
             if (p) {
@@ -2651,7 +2651,7 @@ const Activity_tutu1 = props => {
               if (RedParticle2 && RedParticle2.IsValid()) {
                 RedParticle2.StopParticlesWithEndcaps();
               }
-              p.FindChildTraverse("AwardItemContainer").style.animationDuration = fFlipTime$4 + "s";
+              p.FindChildTraverse("AwardItemContainer").style.animationDuration = fFlipTime$5 + "s";
               let flipSeq = new RunSequentialActions();
               flipSeq.actions.push(new RunFunctionAction(() => {
                 if (p && p.IsValid()) {
@@ -2660,7 +2660,7 @@ const Activity_tutu1 = props => {
                   }
                 }
               }));
-              flipSeq.actions.push(new WaitAction(fFlipTime$4 / 2));
+              flipSeq.actions.push(new WaitAction(fFlipTime$5 / 2));
               flipSeq.actions.push(new RunFunctionAction(() => {
                 if (p?.IsValid() && p.FindChildTraverse("AwardItemContainer")?.IsValid()) {
                   p.FindChildTraverse("AwardItemContainer")?.AddClass("AwardShow");
@@ -2671,7 +2671,7 @@ const Activity_tutu1 = props => {
                   Game.EmitSound("playercard.flip");
                 }
               }));
-              flipSeq.actions.push(new WaitAction(fFlipTime$4 / 2));
+              flipSeq.actions.push(new WaitAction(fFlipTime$5 / 2));
               flipSeq.actions.push(new RunFunctionAction(() => {
                 if (p && p.IsValid() && LoadData(p, "Flipped") != "1") {
                   SaveData(p, "Flipped", "1");
@@ -2689,7 +2689,7 @@ const Activity_tutu1 = props => {
                   }
                 }
                 if (pRewardList?.IsValid() && i == pRewardList.GetChildCount() - 1) {
-                  setDrawButtonEnable$4(true);
+                  setDrawButtonEnable$5(true);
                 }
               }));
               flipSeqList.actions.push(flipSeq);
@@ -2703,7 +2703,7 @@ const Activity_tutu1 = props => {
   };
   const funcRewardShowContinue = () => {
     let bBack = true;
-    setDrawButtonEnable$4(true);
+    setDrawButtonEnable$5(true);
     if (pDrawWindow) {
       let pRewardList = pDrawWindow.FindChildTraverse("RewardList");
       if (pRewardList) {
@@ -2767,8 +2767,8 @@ const Activity_tutu1 = props => {
         }
       }
       if (bBack) {
-        setRewardShow$4(false);
-        setRewardList$4([]);
+        setRewardShow$5(false);
+        setRewardList$5([]);
         _removeHidden(BGButtonLists);
         _removeHidden(BGLayer);
         _removeHidden(BG2);
@@ -2905,17 +2905,17 @@ const Activity_tutu1 = props => {
             hittest: false,
             get children() {
               return [libs.createComponent(InfoButton.InfoButton, {
-                className: language$d,
+                className: language$e,
                 id: "MillionInfoButton",
                 info: "#SnowballInfo",
                 tooltip: "#Activity_tutu1_infodesc"
               }), libs.createComponent(EOM_Image.EOM_Image, {
                 id: "ActivityTitle",
-                className: language$d,
+                className: language$e,
                 hittest: false
               }), libs.createComponent(EOM_Panel.EOM_Panel, {
                 id: "ActivityCountdown",
-                className: language$d,
+                className: language$e,
                 get children() {
                   return libs.createComponent(EOM_Panel.EOM_Panel, {
                     align: "center center",
@@ -2937,7 +2937,7 @@ const Activity_tutu1 = props => {
                 }
               }), libs.createComponent(EOM_Icon.EOM_Icon, {
                 id: "PoolInfoIcon",
-                className: language$d,
+                className: language$e,
                 size: "24",
                 get src() {
                   return getSrcPath("icon/c_info.png");
@@ -3043,7 +3043,7 @@ const Activity_tutu1 = props => {
                 }
               }), libs.createComponent(EOM_Panel.EOM_Panel, {
                 id: "CurrentStackMiddle",
-                className: language$d,
+                className: language$e,
                 get children() {
                   return libs.createComponent(GenericPanel.CLabel, {
                     get text() {
@@ -3136,9 +3136,9 @@ const Activity_tutu1 = props => {
         },
         id: "DrawButtonList",
         get children() {
-          return [libs.createComponent(DrawButton$4, {
+          return [libs.createComponent(DrawButton$5, {
             get enable() {
-              return drawButtonEnable$4();
+              return drawButtonEnable$5();
             },
             get ticket() {
               return token_1100011();
@@ -3148,9 +3148,9 @@ const Activity_tutu1 = props => {
             },
             count: 1,
             drawCallback: Draw
-          }), libs.createComponent(DrawButton$4, {
+          }), libs.createComponent(DrawButton$5, {
             get enable() {
-              return drawButtonEnable$4();
+              return drawButtonEnable$5();
             },
             get ticket() {
               return token_1100011();
@@ -3188,7 +3188,7 @@ const Activity_tutu1 = props => {
       }), libs.createComponent(EOM_Panel.EOM_Panel, {
         get className() {
           return libs.classNames("DrawCardResultWindow", {
-            Show: rewardShow$4()
+            Show: rewardShow$5()
           });
         },
         ref(r$) {
@@ -3221,9 +3221,9 @@ const Activity_tutu1 = props => {
           }), libs.createComponent(EOM_Panel.EOM_Panel, {
             id: "DrawButtonList",
             get children() {
-              return [libs.createComponent(DrawButton$4, {
+              return [libs.createComponent(DrawButton$5, {
                 get enable() {
-                  return drawButtonEnable$4();
+                  return drawButtonEnable$5();
                 },
                 get ticket() {
                   return token_1100011();
@@ -3233,9 +3233,9 @@ const Activity_tutu1 = props => {
                 },
                 count: 1,
                 drawCallback: Draw
-              }), libs.createComponent(DrawButton$4, {
+              }), libs.createComponent(DrawButton$5, {
                 get enable() {
-                  return drawButtonEnable$4();
+                  return drawButtonEnable$5();
                 },
                 get ticket() {
                   return token_1100011();
@@ -3394,7 +3394,7 @@ const Activity_tutu1 = props => {
     }
   });
 };
-const DrawButton$4 = props => {
+const DrawButton$5 = props => {
   const costInfo = libs.createMemo(() => {
     const single = singleCost$4();
     let origin_cost = single * props.count;
@@ -3991,7 +3991,7 @@ const Activity_C4C1 = props => {
 
 const PAGE_SIZE = 7;
 const REWARD_COUNT = 14;
-const language$c = $.Language().toLowerCase();
+const language$d = $.Language().toLowerCase();
 const Activity_Carnival = props => {
   const activityID = props.activity_id;
   const localPlayerID = Players.GetLocalPlayer();
@@ -4057,7 +4057,7 @@ const Activity_Carnival = props => {
         get children() {
           return [libs.createComponent(EOM_Image.EOM_Image, {
             id: "ActivityTitle",
-            className: language$c,
+            className: language$d,
             hittest: false
           }), libs.createComponent(EOM_Panel.EOM_Panel, {
             id: "ActivityCountdown",
@@ -4093,7 +4093,7 @@ const Activity_Carnival = props => {
             allowrotation: false
           }), libs.createComponent(EOM_Panel.EOM_Panel, {
             id: "PreviewTextBoard",
-            className: language$c
+            className: language$d
           })];
         }
       }), libs.createComponent(EOM_Panel.EOM_Panel, {
@@ -4241,6 +4241,1247 @@ const CarnivalItem = props => {
         className: "ItemCount",
         get text() {
           return `×${props.amounts}`;
+        }
+      })];
+    }
+  });
+};
+
+let fFlipTime$4 = 0.5;
+const language$c = $.Language().toLowerCase();
+const [rewardShow$4, setRewardShow$4] = libs.createSignal(false);
+const [rewardList$4, setRewardList$4] = libs.createSignal([]);
+const [drawButtonEnable$4, setDrawButtonEnable$4] = libs.createSignal(true);
+const [info_box_content$4, setInfoBoxContent$4] = libs.createSignal();
+const [drawSuccess$4, setDrawSuccess$4] = libs.createSignal(false);
+const [drawEnd$4, setDrawEnd$4] = libs.createSignal(false);
+const [drawSoundIndex$4, setDrawSoundIndex$4] = libs.createSignal(-1);
+libs.createEffect(libs.on(rewardList$4, _rewardList => {
+  if (_rewardList.length == 0 && rewardShow$4()) {
+    setRewardShow$4(false);
+  }
+}));
+const getRarity$4 = (itemID, amount) => {
+  let rarity = 0;
+  let gotten = false;
+  let type = Number(itemID.toString().slice(0, 3));
+  let content = info_box_content$4();
+  if (content) {
+    for (const v of content) {
+      if (v.item_id == itemID) {
+        if (type == 110) {
+          if (amount >= v.amount_min && amount <= v.amount_max) {
+            if (v.rarity == "n") {
+              rarity = 0;
+              gotten = true;
+            } else if (v.rarity == "r") {
+              rarity = 1;
+              gotten = true;
+            } else if (v.rarity == "sr") {
+              rarity = 2;
+              gotten = true;
+            } else if (v.rarity == "ssr") {
+              rarity = 3;
+              gotten = true;
+            }
+          }
+        } else {
+          if (v.rarity == "n") {
+            rarity = 0;
+            gotten = true;
+          } else if (v.rarity == "r") {
+            rarity = 1;
+            gotten = true;
+          } else if (v.rarity == "sr") {
+            rarity = 2;
+            gotten = true;
+          } else if (v.rarity == "ssr") {
+            rarity = 3;
+            gotten = true;
+          }
+        }
+        if (gotten) break;
+      }
+    }
+  }
+  return rarity;
+};
+const activityPool$4 = 99100012;
+const boxID$4 = 2000095;
+const exchangeTokenID$4 = 1100064;
+const GuaranteedAmount = 180;
+const customBoxID = 9314007;
+const Activity_Dai = props => {
+  const show = () => props.show;
+  const activityToken = boxID$4;
+  const activityID = props.activity_id;
+  const [boxAmounts, setBoxAmounts] = libs.createSignal(0);
+  netdata_utils.createNetDataEffect("player_props_amounts", v => setBoxAmounts(v[customBoxID] ?? 0), Players.GetLocalPlayer());
+  const [endtime, setEndtime] = libs.createSignal(1753286400);
+  const [boxToken, setBoxToken] = libs.createSignal(0);
+  const [storeItemData, setStoreItemData] = libs.createSignal([]);
+  const [purchased_product, setPurchasedProduct] = libs.createSignal({});
+  const [playerOrnament, setPlayerOrnament] = libs.createSignal({});
+  const [playerHero, setPlayerHero] = libs.createSignal({});
+  const updateBoxContent = () => {
+    const info_box_pool_data = getNetDataCache("info_box_pool_data");
+    const info_box_content = getNetDataCache("info_box_content");
+    if (info_box_pool_data && info_box_content) {
+      const dropName = info_box_pool_data.find(v => v.pool == activityPool$4)?.drop_content;
+      if (dropName && info_box_content[dropName]) {
+        setInfoBoxContent$4(info_box_content[dropName]);
+      }
+    }
+  };
+  const [isToolMode, setIsToolMode] = libs.createSignal((CustomNetTables.GetTableValue("common", "settings")?.is_in_tools_mode ?? 0) == 1);
+  const [luck, setLuck] = libs.createSignal(0);
+  const nextUpNeedCount = libs.createMemo(() => {
+    if (luck() == 0) {
+      return GuaranteedAmount;
+    }
+    return Math.max(1, GuaranteedAmount - luck() + 1);
+  });
+  libs.onMount(() => {
+    callAction("box_luck", {
+      bid: boxID$4,
+      pool: activityPool$4
+    });
+    let gameEventIDList = [];
+    let NetTableIDList = [];
+    NetTableIDList.push(useNetTableKey("common", "settings", data => {
+      setIsToolMode(data.is_in_tools_mode == 1);
+    }));
+    gameEventIDList.push(useNetData("player_box_luck", data => {
+      if (data && data[activityPool$4]) {
+        setLuck(data[activityPool$4].luck);
+      }
+    }, Players.GetLocalPlayer()));
+    gameEventIDList.push(useNetData("info_activity_data", data => {
+      for (const activityInfo of data) {
+        if (activityInfo.activity_id == activityID && activityInfo.extra_information) {
+          const reward = JSON.parse(activityInfo.extra_information);
+          setEndtime(reward.activity_end_time);
+        }
+      }
+    }));
+    gameEventIDList.push(useNetData("info_box_content", data => {
+      updateBoxContent();
+    }));
+    gameEventIDList.push(useNetData("info_box_pool_data", data => {
+      updateBoxContent();
+    }));
+    gameEventIDList.push(useNetData("player_boxes", data => {
+      setBoxToken(data[boxID$4]?.amounts ?? 0);
+    }, Players.GetLocalPlayer()));
+    gameEventIDList.push(useNetData("info_shop_product_group_by_tag", data => {
+      const result = data?.["dai"] ?? [];
+      result.sort((a, b) => {
+        return a.order_by - b.order_by;
+      });
+      setStoreItemData(result);
+    }));
+    gameEventIDList.push(useNetData("player_purchased_products", data => {
+      setPurchasedProduct(data.purchased_products);
+    }, Players.GetLocalPlayer()));
+    gameEventIDList.push(useNetData('player_ornament', data => {
+      setPlayerOrnament(data);
+    }, Players.GetLocalPlayer()));
+    gameEventIDList.push(useNetData('player_hero', data => {
+      setPlayerHero(data);
+    }, Players.GetLocalPlayer()));
+    libs.onCleanup(() => {
+      gameEventIDList.forEach(id => GameEvents.Unsubscribe(id));
+      NetTableIDList.forEach(id => CustomNetTables.UnsubscribeNetTableListener(id));
+    });
+  });
+  const [willSkip, setWillSkip] = libs.createSignal(false);
+  let pDrawWindow;
+  let BGButtonLists;
+  let BGLayer;
+  let BG2;
+  let Content1;
+  let Content3;
+  let Content4;
+  const handledRewardData = libs.createMemo(() => {
+    const list = [];
+    let resultType = 0;
+    const current_rewardList = rewardList$4();
+    current_rewardList.forEach((data, index) => {
+      let itemID = data.origin_item_id ?? data.itemId;
+      let rarity = 0;
+      if (itemID.toString().startsWith("931") && KeyValues.BackpackKv[itemID]) {
+        rarity = KeyValues.BackpackKv[itemID].quality;
+      } else if (KeyValues.CosmeticsKv[itemID.toString()] != undefined) {
+        rarity = getCosmeticRarity(itemID);
+      } else {
+        rarity = getRarity$4(itemID, data.amounts);
+      }
+      list.push({
+        itemId: data.itemId,
+        rarity,
+        origin_item_id: data.origin_item_id,
+        amounts: data.amounts
+      });
+      if (rarity == 3) {
+        resultType = 1;
+      } else if (rarity == 4) {
+        resultType = 2;
+      }
+    });
+    return {
+      list,
+      resultType
+    };
+  });
+  libs.createEffect(libs.on(() => ({
+    _show: show(),
+    _selected: props.selected
+  }), v => {
+    if (v._show && !rewardShow$4() && handledRewardData().list.length > 0) {
+      showDrawRewards(handledRewardData().list);
+    }
+  }));
+  const _addHidden = p => {
+    if (p?.IsValid()) {
+      p.AddClass("Hidden");
+    }
+  };
+  const _removeHidden = p => {
+    if (p?.IsValid()) {
+      p.RemoveClass("Hidden");
+    }
+  };
+  const endDrawAnimation = (soundIndex, clickSkip = false) => {
+    if (soundIndex == -1) return;
+    if (soundIndex != drawSoundIndex$4()) return;
+    if (soundIndex != -1) {
+      Game.StopSound(soundIndex);
+      setDrawSoundIndex$4(-1);
+    }
+    if (show()) {
+      let p1 = $("#DaiDrawPortal");
+      let p2 = $("#DaiDrawPortalGold");
+      let p3 = $("#DaiDrawPortalRed");
+      if (p1?.IsValid()) {
+        p1.StopParticlesImmediately(false);
+        p1.style.opacity = "1";
+      }
+      if (p2?.IsValid()) {
+        p2.StopParticlesImmediately(false);
+        p2.style.opacity = "0";
+      }
+      if (p3?.IsValid()) {
+        p3.StopParticlesImmediately(false);
+        p3.style.opacity = "0";
+      }
+      Game.EmitSound("ui.portal_close");
+      showDrawRewards(handledRewardData().list);
+      if (clickSkip) {
+        $.Schedule(0.2, () => {
+          if (rewardShow$4()) funcRewardShowContinue();
+        });
+      }
+      if (!drawSuccess$4()) {
+        funcRewardShowContinue();
+        showPopup("ErrorMessage", {
+          msg: "#ErrorMessage_DrawFailure"
+        });
+      }
+    }
+  };
+  const Draw = count => {
+    setDrawEnd$4(false);
+    setDrawButtonEnable$4(false);
+    setRewardList$4([]);
+    let seq = new RunSequentialActions();
+    if (rewardShow$4()) {
+      setRewardShow$4(false);
+    }
+    let index = -1;
+    seq.actions.push(new RunFunctionAction(() => {
+      if (show()) {
+        _addHidden(BGButtonLists);
+        _addHidden(BGLayer);
+        _addHidden(BG2);
+        _addHidden(Content1);
+        _addHidden(Content3);
+        _addHidden(Content4);
+        _addHidden($("#DaiSkipButton"));
+        _addHidden($("#JianHaoExchangeRewardTooltip"));
+      }
+    }));
+    if (!BGButtonLists.BHasClass("Hidden")) {
+      seq.actions.push(new WaitAction(0.4));
+    }
+    seq.actions.push(new RunFunctionAction(() => {
+      if (show()) {
+        $("#DaiDrawPortal")?.StartParticles();
+        $("#DaiDrawPortalRed")?.StartParticles();
+        $("#DaiDrawPortalGold")?.StartParticles();
+        index = Game.EmitSound("ui.portal_open");
+        setDrawSoundIndex$4(index);
+      }
+    }));
+    if (willSkip()) {
+      seq.actions.push(new WaitForConditionAction(() => {
+        if (index != drawSoundIndex$4()) return true;
+        if (handledRewardData().list.length > 0 || drawEnd$4()) {
+          endDrawAnimation(index, true);
+          return true;
+        }
+        return false;
+      }));
+    } else {
+      seq.actions.push(new WaitAction(1.5));
+      seq.actions.push(new WaitForConditionAction(() => {
+        if (index != drawSoundIndex$4()) return false;
+        if (handledRewardData().list.length > 0 || drawEnd$4()) {
+          if (handledRewardData().resultType != 0) {
+            if ($("#DaiDrawPortal")?.IsValid()) {
+              $("#DaiDrawPortal").style.opacity = "0";
+            }
+            if (handledRewardData().resultType == 2) {
+              if ($("#DaiDrawPortalRed")?.IsValid()) {
+                $("#DaiDrawPortalRed").style.opacity = "1";
+              }
+            } else {
+              if ($("#DaiDrawPortalGold")?.IsValid()) {
+                $("#DaiDrawPortalGold").style.opacity = "1";
+              }
+            }
+          }
+          return true;
+        }
+        return false;
+      }));
+      seq.actions.push(new WaitAction(1));
+      seq.actions.push(new RunFunctionAction(() => {
+        endDrawAnimation(index);
+      }));
+    }
+    RunSingleAction(seq);
+    serverRequest("box_open", {
+      bid: boxID$4,
+      pool: activityPool$4,
+      amounts: count
+    }, data => {
+      if (data.status == 0 && data?.data != undefined) {
+        setRewardList$4(data.data.map(v => {
+          if (v.orderby == undefined) {
+            v.orderby = Round(Math.random() * 100);
+          }
+          return v;
+        }).sort((a, b) => a.orderby - b.orderby));
+        setDrawSuccess$4(true);
+      } else {
+        setDrawSuccess$4(false);
+      }
+      setDrawEnd$4(true);
+    });
+  };
+  const showDrawRewards = items => {
+    if (pDrawWindow) {
+      let pRewardList = pDrawWindow.FindChildTraverse("JianHaoRewardList");
+      let seq = new RunSequentialActions();
+      seq.actions.push(new RunFunctionAction(() => {
+        setRewardShow$4(true);
+        pRewardList.RemoveAndDeleteChildren();
+        const count = items.length;
+        for (let i = 0; i < count; i++) {
+          const data = items[i];
+          let itemID = data.origin_item_id ?? data.itemId;
+          let rarity = data.rarity;
+          let p = $.CreatePanel("Panel", pRewardList, "");
+          p.AddClass("AwardItem");
+          if (count == 1) {
+            p.AddClass("Single");
+          } else {
+            p.AddClass("Multi" + (i + 1));
+          }
+          p.AddClass("Rarity" + rarity);
+          SaveData(p, "iRarity", rarity);
+          libs.render(() => (() => {
+            const _el$ = libs.createElement("Panel", {
+                id: "AwardItemContainer"
+              }, null),
+              _el$2 = libs.createElement("Panel", {}, _el$),
+              _el$3 = libs.createElement("Panel", {}, _el$),
+              _el$4 = libs.createElement("Panel", {}, _el$),
+              _el$1 = libs.createElement("Panel", {}, _el$);
+            libs.setProp(_el$2, "className", "AwardBG");
+            libs.setProp(_el$3, "className", "New");
+            libs.setProp(_el$4, "className", "Mask");
+            libs.insert(_el$4, libs.createComponent(EOM_Panel.EOM_Panel, {
+              className: "MaskMain",
+              get children() {
+                return [libs.createComponent(ProductItem.ProductItem, {
+                  id: "StoreItemImage",
+                  itemid: itemID,
+                  rarity: rarity,
+                  get count() {
+                    return data.origin_item_id == undefined ? data.amounts : 1;
+                  }
+                }), libs.createComponent(CosmeticCard.CosmeticImage, {
+                  hittest: false,
+                  width: "200px",
+                  height: "200px",
+                  y: "-10px",
+                  align: "center center",
+                  get itemid() {
+                    return itemID.toString();
+                  }
+                })];
+              }
+            }), null);
+            libs.insert(_el$4, libs.createComponent(libs.Switch, {
+              get children() {
+                return [libs.createComponent(libs.Match, {
+                  when: rarity == 3,
+                  get children() {
+                    return [(() => {
+                      const _el$5 = libs.createElement("DOTAParticleScenePanel", {
+                        squarePixels: true,
+                        particleName: "particles/eom/ui/card_fx/card_star_fx.vpcf",
+                        lookAt: "0 0 0",
+                        cameraOrigin: "0 0 200",
+                        fov: 30
+                      }, null);
+                      libs.setProp(_el$5, "style", {
+                        width: "260px",
+                        height: "260px",
+                        align: "center center"
+                      });
+                      return _el$5;
+                    })(), libs.createElement("DOTAParticleScenePanel", {
+                      id: "GoldParticle",
+                      squarePixels: true,
+                      particleName: "particles/eom/events/draw_open/draw_open_ssrc.vpcf",
+                      lookAt: "0 0 0",
+                      cameraOrigin: "250 0 0",
+                      fov: 18
+                    }, null), libs.createElement("DOTAParticleScenePanel", {
+                      id: "GoldParticle2",
+                      squarePixels: true,
+                      particleName: "particles/eom/events/draw_open/draw_open_ssr.vpcf",
+                      lookAt: "0 0 0",
+                      cameraOrigin: "400 0 0",
+                      fov: 30
+                    }, null)];
+                  }
+                }), libs.createComponent(libs.Match, {
+                  when: rarity == 4,
+                  get children() {
+                    return [libs.createElement("DOTAParticleScenePanel", {
+                      id: "RedParticle3",
+                      squarePixels: true,
+                      particleName: "particles/eom/ui/card_fx/card_star_fx.vpcf",
+                      lookAt: "0 0 0",
+                      cameraOrigin: "0 0 200",
+                      fov: 30
+                    }, null), libs.createElement("DOTAParticleScenePanel", {
+                      id: "RedParticle",
+                      squarePixels: true,
+                      particleName: "particles/eom/events/draw_open/draw_open_ssrc.vpcf",
+                      lookAt: "0 0 0",
+                      cameraOrigin: "250 0 0",
+                      fov: 18
+                    }, null), libs.createElement("DOTAParticleScenePanel", {
+                      id: "RedParticle2",
+                      squarePixels: true,
+                      particleName: "particles/eom/events/draw_open/draw_open_ssr.vpcf",
+                      lookAt: "0 0 0",
+                      cameraOrigin: "400 0 0",
+                      fov: 30
+                    }, null)];
+                  }
+                })];
+              }
+            }), null);
+            libs.insert(_el$, libs.createComponent(libs.Show, {
+              get when() {
+                return data.origin_item_id != undefined;
+              },
+              get children() {
+                return libs.createComponent(EOM_Panel.EOM_Panel, {
+                  id: "Conversion",
+                  get children() {
+                    return [libs.createElement("Image", {
+                      id: "ConversionBG"
+                    }, null), libs.createComponent(EOM_Panel.EOM_Panel, {
+                      id: "ConversionInfo",
+                      get children() {
+                        return [libs.createComponent(GenericPanel.CLabel, {
+                          id: "TokenCount",
+                          get text() {
+                            return $.Localize("#Conversion");
+                          }
+                        }), libs.createComponent(EOM_Image.EOM_Image, {
+                          id: "TokenIcon",
+                          get src() {
+                            return getPayTypeIconPath(data.itemId);
+                          }
+                        }), libs.createComponent(GenericPanel.CLabel, {
+                          id: "TokenCount",
+                          get text() {
+                            return "×" + data.amounts;
+                          }
+                        })];
+                      }
+                    })];
+                  }
+                });
+              }
+            }), null);
+            libs.effect(_$p => libs.setProp(_el$1, "className", libs.classNames({
+              IsNew: true
+            }), _$p));
+            return _el$;
+          })(), p);
+        }
+      }));
+      seq.actions.push(new WaitAction(0.5));
+      seq.actions.push(new RunFunctionAction(() => {
+        if (pRewardList) {
+          let flipSeqList = new RunStaggeredActions(fFlipTime$4 / 2);
+          for (let i = 0; i < pRewardList.GetChildCount(); i++) {
+            const p = pRewardList.GetChild(i);
+            if (p && LoadData(p, "Flipped") != "1") {
+              let GoldParticle = p.FindChildTraverse("GoldParticle");
+              let GoldParticle2 = p.FindChildTraverse("GoldParticle2");
+              if (GoldParticle && GoldParticle.IsValid()) {
+                GoldParticle.StopParticlesWithEndcaps();
+              }
+              if (GoldParticle2 && GoldParticle2.IsValid()) {
+                GoldParticle2.StopParticlesWithEndcaps();
+              }
+              let RedParticle = p.FindChildTraverse("RedParticle");
+              let RedParticle2 = p.FindChildTraverse("RedParticle2");
+              if (RedParticle && RedParticle.IsValid()) {
+                RedParticle.StopParticlesWithEndcaps();
+              }
+              if (RedParticle2 && RedParticle2.IsValid()) {
+                RedParticle2.StopParticlesWithEndcaps();
+              }
+              p.FindChildTraverse("AwardItemContainer").style.animationDuration = fFlipTime$4 + "s";
+              let flipSeq = new RunSequentialActions();
+              flipSeq.actions.push(new RunFunctionAction(() => {
+                if (p && p.IsValid()) {
+                  if (!p.FindChildTraverse("AwardItemContainer").BHasClass("AwardShow")) {
+                    p.FindChildTraverse("AwardItemContainer").AddClass("AwardAnim");
+                  }
+                }
+              }));
+              flipSeq.actions.push(new WaitAction(fFlipTime$4 / 2));
+              flipSeq.actions.push(new RunFunctionAction(() => {
+                if (p?.IsValid() && p.FindChildTraverse("AwardItemContainer")?.IsValid()) {
+                  p.FindChildTraverse("AwardItemContainer")?.AddClass("AwardShow");
+                }
+              }));
+              flipSeq.actions.push(new RunFunctionAction(() => {
+                if (p && p.IsValid() && LoadData(p, "Flipped") != "1") {
+                  Game.EmitSound("playercard.flip");
+                }
+              }));
+              flipSeq.actions.push(new WaitAction(fFlipTime$4 / 2));
+              flipSeq.actions.push(new RunFunctionAction(() => {
+                if (p && p.IsValid() && LoadData(p, "Flipped") != "1") {
+                  SaveData(p, "Flipped", "1");
+                  if (GoldParticle && GoldParticle.IsValid()) {
+                    $.Schedule(0.2, () => {
+                      Game.EmitSound("ui.treasure_01");
+                    });
+                    GoldParticle.StartParticles();
+                  }
+                  if (GoldParticle2 && GoldParticle2.IsValid()) {
+                    GoldParticle2.StartParticles();
+                  }
+                  if (RedParticle && RedParticle.IsValid()) {
+                    $.Schedule(0.2, () => {
+                      Game.EmitSound("ui.treasure_01");
+                    });
+                    RedParticle.StartParticles();
+                  }
+                  if (RedParticle2 && RedParticle2.IsValid()) {
+                    RedParticle2.StartParticles();
+                  }
+                }
+                if (pRewardList?.IsValid() && i == pRewardList.GetChildCount() - 1) {
+                  setDrawButtonEnable$4(true);
+                }
+              }));
+              flipSeqList.actions.push(flipSeq);
+            }
+          }
+          RunSingleAction(flipSeqList);
+        }
+      }));
+      RunSingleAction(seq);
+    }
+  };
+  const funcRewardShowContinue = () => {
+    let bBack = true;
+    setDrawButtonEnable$4(true);
+    if (pDrawWindow) {
+      let pRewardList = pDrawWindow.FindChildTraverse("JianHaoRewardList");
+      if (pRewardList) {
+        for (let i = 0; i < pRewardList.GetChildCount(); i++) {
+          const p = pRewardList.GetChild(i);
+          if (p) {
+            if (p && p.IsValid() && LoadData(p, "Flipped") != "1") {
+              SaveData(p, "Flipped", "1");
+              let GoldParticle = p.FindChildTraverse("GoldParticle");
+              let GoldParticle2 = p.FindChildTraverse("GoldParticle2");
+              if (GoldParticle && GoldParticle.IsValid()) {
+                $.Schedule(0.2, () => {
+                  Game.EmitSound("ui.treasure_01");
+                });
+                GoldParticle.StartParticles();
+              }
+              if (GoldParticle2 && GoldParticle2.IsValid()) {
+                GoldParticle2.StartParticles();
+              }
+              let RedParticle = p.FindChildTraverse("RedParticle");
+              let RedParticle2 = p.FindChildTraverse("RedParticle2");
+              if (RedParticle && RedParticle.IsValid()) {
+                $.Schedule(0.2, () => {
+                  Game.EmitSound("ui.treasure_01");
+                });
+                RedParticle.StartParticles();
+              }
+              if (RedParticle2 && RedParticle2.IsValid()) {
+                RedParticle2.StartParticles();
+              }
+            }
+            if (!p.FindChildTraverse("AwardItemContainer").BHasClass("AwardShow")) {
+              bBack = false;
+              p.FindChildTraverse("AwardItemContainer").RemoveClass("AwardAnim");
+              p.FindChildTraverse("AwardItemContainer").AddClass("AwardShow");
+              {
+                let pNew = $.CreatePanel("Panel", p.FindChildTraverse("AwardItemContainer"), "");
+                pNew.AddClass("RewardNew");
+              }
+              let iRarity = p.iRarity;
+              if (iRarity != -1) {
+                let scene = $.CreatePanel("DOTAParticleScenePanel", p.FindChildTraverse("AwardItemContainer"), "", {
+                  particleName: `particles/ui/draw_reward_${iRarity}.vpcf`,
+                  cameraOrigin: "0 500 -50",
+                  lookAt: "0 0 -50",
+                  fov: 60,
+                  particleonly: true
+                });
+                scene.AddClass("RewardFX1");
+                scene = $.CreatePanel("DOTAParticleScenePanel", p.FindChildTraverse("AwardItemContainer"), "", {
+                  particleName: `particles/ui/draw_reward_${iRarity}.vpcf`,
+                  cameraOrigin: "0 500 -50",
+                  lookAt: "0 0 -50",
+                  fov: 60,
+                  particleonly: true
+                });
+                scene.AddClass("RewardFX2");
+              }
+            }
+          }
+        }
+      }
+      if (bBack) {
+        setRewardShow$4(false);
+        setRewardList$4([]);
+        _removeHidden(BGButtonLists);
+        _removeHidden(BGLayer);
+        _removeHidden(BG2);
+        _removeHidden(Content1);
+        _removeHidden(Content3);
+        _removeHidden(Content4);
+        _removeHidden($("#DaiSkipButton"));
+        _removeHidden($("#JianHaoExchangeRewardTooltip"));
+      }
+    }
+  };
+  const [exchangeShow, setExchangeShow] = libs.createSignal(false);
+  const [previewInfo, setPreviewInfo] = libs.createSignal({
+    cid: -1,
+    eid: -1
+  });
+  let previewTimer = -1;
+  libs.createEffect(libs.on(exchangeShow, _show => {
+    if (!_show) {
+      setPreviewInfo({
+        cid: -1,
+        eid: -1
+      });
+    } else {
+      for (const storeItem of storeItemData()) {
+        if (storeItem?.items?.[0]) {
+          const cid = storeItem.items[0].item_id.toString();
+          if (KeyValues.CosmeticsKv?.[cid] != undefined) {
+            setPreviewInfo({
+              cid: storeItem.items[0].item_id,
+              eid: -1
+            });
+            break;
+          }
+          if (cid.slice(0, 3) == "300" && cid.length == 7) {
+            setPreviewInfo({
+              cid: storeItem.items[0].item_id,
+              eid: -1
+            });
+            break;
+          }
+        }
+      }
+    }
+  }));
+  return libs.createComponent(EOM_Panel.EOM_Panel, {
+    get className() {
+      return libs.classNames({
+        Hidden: !props.selected
+      });
+    },
+    id: "Activity_Dai",
+    get children() {
+      return [libs.createComponent(EOM_Panel.EOM_Panel, {
+        id: "Currencies",
+        get children() {
+          return [libs.createComponent(Player.PlayerCurrency, {
+            type: "boxes",
+            tokenID: activityToken
+          }), libs.createComponent(Player.PlayerCurrency, {
+            type: "token",
+            tokenID: exchangeTokenID$4
+          })];
+        }
+      }), libs.createComponent(EOM_Panel.EOM_Panel, {
+        id: "MainContainer",
+        hittest: false,
+        get children() {
+          return [libs.createComponent(libs.Show, {
+            get when() {
+              return props.show;
+            },
+            get children() {
+              return [libs.createElement("DOTAParticleScenePanel", {
+                hittest: false,
+                id: "DaiDrawPortalGold",
+                startActive: false,
+                light: "light",
+                camera: "camera_top",
+                map: "scene/draw_open",
+                renderdeferred: false,
+                deferredalpha: true,
+                particleonly: false,
+                squarePixels: true,
+                particleName: "particles/eom/events/tunvlang_draw_portal/tunvlang_draw_portal_gold.vpcf",
+                fov: 80,
+                cameraOrigin: "0 0 900",
+                lookAt: "0 0 0"
+              }, null), libs.createElement("DOTAParticleScenePanel", {
+                hittest: false,
+                id: "DaiDrawPortal",
+                startActive: false,
+                light: "light",
+                camera: "camera_top",
+                map: "scene/draw_open",
+                particleonly: false,
+                squarePixels: true,
+                particleName: "particles/eom/events/tunvlang_draw_portal/tunvlang_draw_portal_2.vpcf",
+                fov: 80,
+                cameraOrigin: "0 0 900",
+                lookAt: "0 0 0"
+              }, null), libs.createElement("DOTAParticleScenePanel", {
+                hittest: false,
+                id: "DaiDrawPortalRed",
+                startActive: false,
+                light: "light",
+                camera: "camera_top",
+                map: "scene/draw_open",
+                renderdeferred: false,
+                deferredalpha: true,
+                particleonly: false,
+                squarePixels: true,
+                particleName: "particles/eom/events/tunvlang_draw_portal/tunvlang_draw_portal_red.vpcf",
+                fov: 80,
+                cameraOrigin: "0 0 900",
+                lookAt: "0 0 0"
+              }, null)];
+            }
+          }), libs.createComponent(EOM_Panel.EOM_Panel, {
+            id: "BGLayer",
+            ref(r$) {
+              const _ref$ = BGLayer;
+              typeof _ref$ === "function" ? _ref$(r$) : BGLayer = r$;
+            },
+            hittest: false,
+            get children() {
+              return [libs.createElement("DOTAScenePanel", {
+                hittest: false,
+                id: "ActivityPreview",
+                particleonly: false,
+                allowrotation: false,
+                light: "preview_light",
+                camera: "preview_camera",
+                map: "scene/dai_activity_hero",
+                renderwaterreflections: true,
+                deferredalpha: true,
+                renderdeferred: true,
+                rendershadows: true,
+                allowsuspendrepaint: true
+              }, null), libs.createComponent(EOM_Panel.EOM_Panel, {
+                id: "ActivityInfoButton",
+                onmouseover: self => {
+                  if (language$c != "schinese") {
+                    ShowCustomTooltip(self, "long_text", {
+                      text: "#Activity_dai_infodesc"
+                    });
+                  } else {
+                    $.DispatchEvent("DOTAShowTextTooltip", self, "#Activity_dai_infodesc");
+                  }
+                },
+                onmouseout: self => {
+                  if (language$c != "schinese") {
+                    HideCustomTooltip(self, "long_text");
+                  } else {
+                    $.DispatchEvent("DOTAHideTextTooltip", self);
+                  }
+                }
+              }), libs.createComponent(EOM_Image.EOM_Image, {
+                id: "ActivityTitle",
+                className: language$c,
+                hittest: false
+              }), libs.createComponent(EOM_Panel.EOM_Panel, {
+                id: "ActivityCountdown",
+                className: language$c,
+                get children() {
+                  return libs.createComponent(EOM_Panel.EOM_Panel, {
+                    align: "center center",
+                    flowChildren: "right",
+                    get children() {
+                      return [libs.createComponent(EOM_Image.EOM_Image, {
+                        id: "timeIcon"
+                      }), libs.createComponent(EOM_Countdown.EOM_Countdown, {
+                        get endTime() {
+                          return endtime();
+                        },
+                        text: "#countdown_time"
+                      })];
+                    }
+                  });
+                }
+              }), libs.createComponent(EOM_Icon.EOM_Icon, {
+                id: "PoolInfoIcon",
+                className: language$c,
+                size: "24",
+                get src() {
+                  return getSrcPath("icon/c_info.png");
+                },
+                customTooltip: {
+                  name: "custom_text",
+                  text: "#Activity_dai_poolchance"
+                }
+              }), libs.createComponent(libs.Show, {
+                get when() {
+                  return nextUpNeedCount() != undefined;
+                },
+                get children() {
+                  return libs.createComponent(EOM_Panel.EOM_Panel, {
+                    id: "DropBanner",
+                    hittest: false,
+                    get children() {
+                      return libs.createComponent(GenericPanel.CLabel, {
+                        text: "#Activity_nezha51_chanceup",
+                        get dialogVariables() {
+                          return {
+                            count: nextUpNeedCount()
+                          };
+                        },
+                        html: true
+                      });
+                    }
+                  });
+                }
+              }), libs.createComponent(libs.Show, {
+                get when() {
+                  return boxAmounts() > 0;
+                },
+                get children() {
+                  return libs.createComponent(EOM_Panel.EOM_Panel, {
+                    id: "CustomBoxFastAccess",
+                    get children() {
+                      return [libs.createComponent(EOM_Panel.EOM_Panel, {
+                        id: "CustomBoxImage",
+                        get children() {
+                          return [libs.createComponent(ProductImage.ProductImage, {
+                            itemid: customBoxID
+                          }), libs.createComponent(EOM_Label.EOM_Label, {
+                            get text() {
+                              return `x ${boxAmounts()}`;
+                            }
+                          })];
+                        }
+                      }), libs.createComponent(EOM_Button.EOM_Button, {
+                        color: "Gold",
+                        text: "#UseSelfPickBox",
+                        onactivate: () => {
+                          showPopup("BackpackItemUse", {
+                            id: customBoxID
+                          });
+                        }
+                      })];
+                    }
+                  });
+                }
+              })];
+            }
+          }), libs.createComponent(EOM_Button.EOM_Button, {
+            id: "ExchangeButton",
+            ref(r$) {
+              const _ref$2 = Content4;
+              typeof _ref$2 === "function" ? _ref$2(r$) : Content4 = r$;
+            },
+            get className() {
+              return $.Language().toLowerCase();
+            },
+            text: `#Store_Exchange_Button`,
+            onactivate: () => setExchangeShow(true)
+          })];
+        }
+      }), libs.createComponent(EOM_Panel.EOM_Panel, {
+        ref(r$) {
+          const _ref$3 = BGButtonLists;
+          typeof _ref$3 === "function" ? _ref$3(r$) : BGButtonLists = r$;
+        },
+        id: "DrawButtonList",
+        get children() {
+          return [libs.createComponent(DrawButton$4, {
+            get enable() {
+              return drawButtonEnable$4();
+            },
+            get ticket() {
+              return boxToken();
+            },
+            discountToken: 0,
+            count: 1,
+            drawCallback: Draw
+          }), libs.createComponent(DrawButton$4, {
+            get enable() {
+              return drawButtonEnable$4();
+            },
+            get ticket() {
+              return boxToken();
+            },
+            discountToken: 0,
+            count: 10,
+            drawCallback: Draw
+          })];
+        }
+      }), libs.createComponent(EOM_Button.EOM_BaseButton, {
+        id: "DaiSkipButton",
+        get ["class"]() {
+          return libs.classNames("SkipButton", {
+            Active: willSkip()
+          });
+        },
+        onactivate: () => setWillSkip(v => !v),
+        get children() {
+          return [libs.createComponent(EOM_Icon.EOM_Icon, {
+            id: "Square",
+            get src() {
+              return getSrcPath("draw/c_square.png");
+            }
+          }), libs.createComponent(EOM_Icon.EOM_Icon, {
+            id: "Hook",
+            get src() {
+              return getSrcPath("draw/c_hook.png");
+            }
+          }), libs.createComponent(GenericPanel.CLabel, {
+            text: "#Skip_Button"
+          })];
+        }
+      }), libs.createComponent(EOM_Panel.EOM_Panel, {
+        get className() {
+          return libs.classNames("DrawCardResultWindow", {
+            Show: rewardShow$4()
+          });
+        },
+        ref(r$) {
+          const _ref$4 = pDrawWindow;
+          typeof _ref$4 === "function" ? _ref$4(r$) : pDrawWindow = r$;
+        },
+        acceptsfocus: true,
+        get children() {
+          return [libs.createComponent(EOM_Panel.EOM_Panel, {
+            id: "ResultContainer",
+            get children() {
+              return [libs.createComponent(EOM_Panel.EOM_Panel, {
+                id: "JianHaoRewardList",
+                hittest: false
+              }), libs.createComponent(EOM_Button.EOM_CloseButton, {
+                id: "RewardClose",
+                onactivate: () => funcRewardShowContinue()
+              }), libs.createComponent(EOM_Panel.EOM_Panel, {
+                id: "Currencies",
+                get children() {
+                  return [libs.createComponent(Player.PlayerCurrency, {
+                    type: "boxes",
+                    tokenID: activityToken
+                  }), libs.createComponent(Player.PlayerCurrency, {
+                    type: "token",
+                    tokenID: exchangeTokenID$4
+                  })];
+                }
+              })];
+            }
+          }), libs.createComponent(EOM_Panel.EOM_Panel, {
+            id: "DrawButtonList",
+            get children() {
+              return [libs.createComponent(DrawButton$4, {
+                get enable() {
+                  return drawButtonEnable$4();
+                },
+                get ticket() {
+                  return boxToken();
+                },
+                discountToken: 0,
+                count: 1,
+                drawCallback: Draw
+              }), libs.createComponent(DrawButton$4, {
+                get enable() {
+                  return drawButtonEnable$4();
+                },
+                get ticket() {
+                  return boxToken();
+                },
+                discountToken: 0,
+                count: 10,
+                drawCallback: Draw
+              })];
+            }
+          })];
+        }
+      }), libs.createComponent(EOM_Panel.EOM_Panel, {
+        id: "ExchangePanel",
+        get className() {
+          return libs.classNames({
+            Show: exchangeShow()
+          });
+        },
+        onactivate: () => {},
+        get children() {
+          return [(() => {
+            const _el$15 = libs.createElement("Panel", {
+              id: "TopBarBG"
+            }, null);
+            libs.insert(_el$15, libs.createComponent(Player.CurrencyGroup, {
+              tokens: [exchangeTokenID$4]
+            }));
+            return _el$15;
+          })(), libs.createComponent(EOM_Panel.EOM_Panel, {
+            id: "ExchangeContainer",
+            onactivate: () => setExchangeShow(false),
+            get children() {
+              return [(() => {
+                const _el$16 = libs.createElement("Panel", {
+                  id: "ExchangeList"
+                }, null);
+                libs.setProp(_el$16, "onactivate", () => {});
+                libs.insert(_el$16, libs.createComponent(EOM_Panel.EOM_Panel, {
+                  id: "ExchangeListTitle",
+                  get children() {
+                    return [libs.createComponent(GenericPanel.CLabel, {
+                      id: "ExchangeListTitleLabel",
+                      text: `#${activityPool$4}_exchange`
+                    }), libs.createComponent(EOM_Button.EOM_CloseButton, {
+                      onactivate: () => {
+                        setExchangeShow(false);
+                      }
+                    })];
+                  }
+                }), null);
+                libs.insert(_el$16, libs.createComponent(EOM_Panel.EOM_Panel, {
+                  id: "ExchangeItemList",
+                  flowChildren: "right-wrap",
+                  scroll: "y",
+                  get children() {
+                    return libs.createComponent(libs.Show, {
+                      get when() {
+                        return exchangeShow();
+                      },
+                      get children() {
+                        return libs.createComponent(libs.Index, {
+                          get each() {
+                            return storeItemData();
+                          },
+                          children: (storeItem, index) => libs.createComponent(ExchangeItem.ExchangeItem, libs.mergeProps(() => ExchangeItem.getExchangeItemProps({
+                            storeItem: storeItem(),
+                            purchased_product: purchased_product(),
+                            player_hero: playerHero(),
+                            player_ornament: playerOrnament(),
+                            previewing_id: previewInfo().cid,
+                            onPreview: (cosmetic_id, exchange_id) => {
+                              previewTimer = $.Schedule(0.3, () => {
+                                previewTimer = -1;
+                                if (previewInfo().eid != exchange_id) {
+                                  setPreviewInfo({
+                                    cid: cosmetic_id,
+                                    eid: exchange_id
+                                  });
+                                }
+                              });
+                            },
+                            onCancelPreview: () => {
+                              if (previewTimer != -1) {
+                                $.CancelScheduled(previewTimer);
+                                previewTimer = -1;
+                              }
+                            }
+                          })))
+                        });
+                      }
+                    });
+                  }
+                }), null);
+                return _el$16;
+              })(), (() => {
+                const _el$17 = libs.createElement("Panel", {
+                  id: "ExchangePreview"
+                }, null);
+                libs.insert(_el$17, libs.createComponent(libs.Show, {
+                  get when() {
+                    return previewInfo().cid != -1;
+                  },
+                  get children() {
+                    return [libs.createComponent(EOM_Panel.EOM_Panel, {
+                      id: "ExchangePreviewMain",
+                      get children() {
+                        return libs.createComponent(libs.Show, {
+                          get when() {
+                            return KeyValues.CosmeticsKv[previewInfo().cid];
+                          },
+                          get fallback() {
+                            return libs.createComponent(ProductImage.ProductImage, {
+                              get itemid() {
+                                return previewInfo().cid;
+                              }
+                            });
+                          },
+                          get children() {
+                            return libs.createComponent(CosmeticPreview.CosmeticPreview, {
+                              get cosmetic_id() {
+                                return previewInfo().cid;
+                              }
+                            });
+                          }
+                        });
+                      }
+                    }), (() => {
+                      const _el$18 = libs.createElement("Panel", {
+                        id: "CosmeticDesc"
+                      }, null);
+                      libs.insert(_el$18, libs.createComponent(GenericPanel.CLabel, {
+                        id: "CosmeticName",
+                        get text() {
+                          return '#' + previewInfo().cid;
+                        }
+                      }), null);
+                      libs.insert(_el$18, libs.createComponent(EOM_Separator.EOM_Separator, {
+                        size: "short"
+                      }), null);
+                      libs.insert(_el$18, libs.createComponent(GenericPanel.CLabel, {
+                        id: "CosmeticAccess",
+                        get text() {
+                          return GetCosmeticAccessDescription(previewInfo().cid);
+                        }
+                      }), null);
+                      return _el$18;
+                    })(), libs.createComponent(libs.Show, {
+                      get when() {
+                        return previewInfo().cid.toString().slice(0, 3) == "531";
+                      },
+                      get children() {
+                        return libs.createComponent(EOM_Button.EOM_Button, {
+                          text: "#CosmeticToEquip",
+                          align: "center bottom",
+                          color: "Blue",
+                          marginBottom: "68px",
+                          x: "175px",
+                          onactivate: () => {
+                            ToggleWindows('MenuButton_cosmetics', true);
+                            clientSideEvent("jump_to_bunny_cosmetic", {});
+                          }
+                        });
+                      }
+                    })];
+                  }
+                }));
+                return _el$17;
+              })()];
+            }
+          })];
+        }
+      })];
+    }
+  });
+};
+const DrawButton$4 = props => {
+  const costInfo = libs.createMemo(() => {
+    const single = 1;
+    let origin_cost = single * props.count;
+    let real_cost = origin_cost;
+    if (props.discountToken > 0) {
+      real_cost -= Math.min(props.count, props.discountToken) * single * 0.5;
+    }
+    return {
+      origin_cost,
+      real_cost,
+      discount: origin_cost != real_cost
+    };
+  });
+  return libs.createComponent(EOM_Button.EOM_BaseButton, {
+    get className() {
+      return libs.classNames("DaiDrawButton", "Count" + props.count);
+    },
+    get enabled() {
+      return props.enable;
+    },
+    onactivate: () => {
+      if (props.ticket >= costInfo().real_cost) {
+        props.drawCallback(props.count);
+      } else {
+        let count = costInfo().real_cost - props.ticket;
+        clientSideEvent("directly_purchase", {
+          itemid: 9900280,
+          count
+        });
+      }
+    },
+    get children() {
+      return [libs.createComponent(EOM_Label.EOM_Label, {
+        id: "DrawLabel",
+        get text() {
+          return "#Draw_Acitivity_Action_" + props.count;
+        }
+      }), libs.createComponent(EOM_Panel.EOM_Panel, {
+        id: "cost",
+        get children() {
+          return [libs.createComponent(EOM_Icon.EOM_Icon, {
+            width: "40px",
+            height: "40px",
+            get src() {
+              return getSrcPath("tokens/" + boxID$4 + ".png");
+            }
+          }), libs.createComponent(EOM_Panel.EOM_Panel, {
+            width: "100%",
+            height: "100%",
+            flowChildren: "right",
+            get children() {
+              return libs.createComponent(EOM_Label.EOM_Label, {
+                className: "TicketLabel",
+                verticalAlign: "center",
+                get text() {
+                  return costInfo().real_cost;
+                }
+              });
+            }
+          })];
         }
       })];
     }
@@ -17645,7 +18886,7 @@ if (!isSpectator()) {
     ["5001"]: "Activity_MillionSubscription",
     ["6007"]: "Activity_tutu1",
     ["7015"]: "Activity_LuckyTurntable",
-    ["7027"]: "Activity_LuckCheck",
+    ["7028"]: "Activity_LuckCheck",
     ["7018"]: "Activity_XinChunTurntable",
     ["7019"]: "Activity_YuanXiaoTurntable",
     ["7026"]: "Activity_26WuYiTurntable",
@@ -17661,7 +18902,7 @@ if (!isSpectator()) {
     ["17001"]: "Activity_nezha51",
     ["18001"]: "Activity_duanwu",
     ["19001"]: "Activity_jianhao",
-    ["19002"]: "Activity_Dai",
+    ["19013"]: "Activity_Dai",
     ["19003"]: "Activity_Alchemist",
     ["19004"]: "Activity_meiji",
     ["19005"]: "Activity_nianshou",
@@ -17692,7 +18933,7 @@ if (!isSpectator()) {
     ["Activity_Doctor"]: 56,
     ["Activity_LuckyTurntable"]: 60,
     ["Activity_nezha51"]: 76,
-    ["Activity_Dai"]: 77,
+    ["Activity_Dai"]: 133,
     ["Activity_meiji"]: 78,
     ["Activity_nianshou"]: 79,
     ["Activity_NewPlayer2"]: 84,
@@ -18077,13 +19318,13 @@ if (!isSpectator()) {
               }
             }), libs.createComponent(ActivityMenuContent, {
               menu_name: "Activity_LuckCheck",
-              activity_id: 7027,
+              activity_id: 7028,
               get children() {
                 return libs.createComponent(Activity_LuckCheck, {
                   get selected() {
                     return seleted_menu() == "Activity_LuckCheck";
                   },
-                  activity_id: 7027,
+                  activity_id: 7028,
                   season: 15
                 });
               }
@@ -18210,6 +19451,20 @@ if (!isSpectator()) {
                     return show();
                   },
                   activity_id: 19012
+                });
+              }
+            }), libs.createComponent(ActivityMenuContent, {
+              menu_name: "Activity_Dai",
+              activity_id: 19013,
+              get children() {
+                return libs.createComponent(Activity_Dai, {
+                  get selected() {
+                    return seleted_menu() == "Activity_Dai";
+                  },
+                  get show() {
+                    return show();
+                  },
+                  activity_id: 19013
                 });
               }
             }), libs.createComponent(ActivityMenuContent, {

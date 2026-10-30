@@ -1,0 +1,44 @@
+--[[
+  ~ dumper · customs · dota2
+  ~ credits: rou (a.k.a internetenemy), qfun(a.k.a qfun_g9s)
+  ~ special for t.me/wildguild
+
+  ~ build 1a5b3bb 
+  ~ auto-generated — do not edit
+]]
+
+
+<!-- kv3 encoding:text:version{e21c7f3c-8a33-41c5-9977-a76d3a32aa0d} format:generic:version{7412167c-06e9-4698-aff2-e63eb59037e7} -->
+{
+	stream_data = 
+	{
+		num_values = 12
+		streams = 
+		[
+			{
+				name = "position"
+				type = "position_3d"
+				values = 
+				[
+					[ -24.435946, 15.813108, 77.881798 ],
+					[ -26.168711, 16.28977, 80.494072 ],
+					[ -27.131247, 17.042459, 82.700188 ],
+					[ -27.087454, 18.27738, 84.998466 ],
+					[ -25.976645, 19.417685, 87.313957 ],
+					[ -24.270079, 19.977489, 88.793991 ],
+					[ -21.972153, 20.483055, 90.031776 ],
+					[ -19.481468, 20.441017, 90.147713 ],
+					[ -16.917034, 19.994656, 89.859421 ],
+					[ -14.598369, 18.584278, 88.956482 ],
+					[ -12.657633, 16.741215, 87.809387 ],
+					[ -11.805345, 14.63984, 86.709038 ],
+				]
+			},
+			{
+				name = "skinning"
+				type = "bone_index_and_weight"
+				values = [  ]
+			},
+		]
+	}
+}

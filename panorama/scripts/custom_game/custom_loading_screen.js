@@ -9,6 +9,10 @@
 
 
 'use strict';
+function JumpT11Url() {
+  $.DispatchEvent('DOTAShowCustomGamePage', 3591915450);
+  $.DispatchEvent('DOTASubscribeToCustomGame', 3591915450);
+}
 
 function PanelVisible(p, visible) {
   if (p?.IsValid()) {
@@ -59,3 +63,4 @@ function PanelVisible(p, visible) {
   };
   Update();
 })();
+

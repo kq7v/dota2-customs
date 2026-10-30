@@ -8,32 +8,31 @@
 ]]
 
 
--- EOM SDK managed entry v1
-local map = (GetMapName() or ""):gsub("^maps/", ""):gsub("%.vpk$", "")
-if map == "platform_entry" or map == "platform_lobby" then
-	local sdk = require("eom_platform.server")
+local a = (GetMapName() or ""):gsub("^maps/", ""):gsub("%.vpk$", "")
+if a == "platform_entry" or a == "platform_lobby" then
+	local b = require("eom_platform.server")
 	function Activate()
-		sdk.ActivatePlatform()
+		b.ActivatePlatform()
 	end
-	function Precache(context) end
-	function SpawnGroupPrecache(group, context) end
+	function Precache(c) end
+	function SpawnGroupPrecache(d, c) end
 else
-	local result = require("__eom_original_server")
-	local activate, precache, spawnGroupPrecache = Activate, Precache, SpawnGroupPrecache
+	local e = require("__eom_original_server")
+	local f, g, h = Activate, Precache, SpawnGroupPrecache
 	function Activate(...)
-		if activate then
-			return activate(...)
+		if f then
+			return f(...)
 		end
 	end
 	function Precache(...)
-		if precache then
-			return precache(...)
+		if g then
+			return g(...)
 		end
 	end
 	function SpawnGroupPrecache(...)
-		if spawnGroupPrecache then
-			return spawnGroupPrecache(...)
+		if h then
+			return h(...)
 		end
 	end
-	return result
+	return e
 end

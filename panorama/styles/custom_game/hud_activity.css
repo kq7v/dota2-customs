@@ -8987,6 +8987,1915 @@
 	background-size: 100%;
 }
 
+.AspectRatio4x3 #Activity_Dai #MainContainer
+{
+	width: 100%;
+	height: width-percentage(56.25%);
+	vertical-align: center;
+	ui-scale: 66%;
+}
+
+.AspectRatio4x3 #Activity_Dai #AwardItemContainer
+{
+	ui-scale: 75%;
+}
+
+.AspectRatio16x10 #Activity_Dai #MainContainer
+{
+	width: 100%;
+	height: width-percentage(62.5%);
+	vertical-align: center;
+	ui-scale: 84%;
+}
+
+.AspectRatio16x10 #Activity_Dai #AwardItemContainer
+{
+	ui-scale: 75%;
+}
+
+#Activity_Dai
+{
+	margin-left: -220px;
+	padding-left: 220px;
+	width: 100%;
+	height: 100%;
+}
+
+#Activity_Dai #TopBarBg
+{
+	height: 70px;
+	width: 100%;
+	background-color: #00000088;
+}
+
+#Activity_Dai #DaiDrawPortal
+{
+	z-index: -1;
+	width: 1920px;
+	height: 1920px;
+	align: center center;
+	transition-property: opacity;
+	transition-duration: 0.4s;
+}
+
+#Activity_Dai #DaiDrawPortalGold
+{
+	z-index: -1;
+	width: 1920px;
+	height: 1920px;
+	align: center center;
+	opacity: 0;
+	transition-property: opacity;
+	transition-duration: 0.4s;
+}
+
+#Activity_Dai #DaiDrawPortalRed
+{
+	z-index: -1;
+	width: 1920px;
+	height: 1920px;
+	align: center center;
+	opacity: 0;
+	transition-property: opacity;
+	transition-duration: 0.4s;
+}
+
+#Activity_Dai #Portal
+{
+	width: 1000px;
+	height: 1000px;
+	overflow: noclip;
+	align: center center;
+}
+
+#Activity_Dai #PortalCircle
+{
+	width: 1400px;
+	height: 1000px;
+	overflow: noclip;
+	align: center center;
+	opacity: 1;
+}
+
+#Activity_Dai #PortalCircle.Hidden
+{
+	opacity: 0;
+}
+
+#Activity_Dai.DrawCardHideUI #DrawButtonList
+{
+	opacity: 0;
+}
+
+#Activity_Dai #MainContainer
+{
+	width: 100%;
+	height: 100%;
+}
+
+#Activity_Dai #DrawButtonList
+{
+	align: center bottom;
+	margin-bottom: 86px;
+	flow-children: right;
+}
+
+#Activity_Dai .DrawCardResultWindow #DrawButtonList
+{
+	x: 110px;
+}
+
+#Activity_Dai #Currencies
+{
+	flow-children: right;
+	align: right top;
+	margin-top: -4px;
+	margin-right: 80px;
+}
+
+#Activity_Dai #Banner
+{
+	width: 845px;
+	height: 40px;
+	align: center bottom;
+	margin-bottom: 226px;
+	x: -100px;
+	background-image: url("s2r://panorama/images/custom_game/activity/tutu/t3_board_04_png.vtex");
+	background-size: 100%;
+}
+
+#Activity_Dai #Banner Label
+{
+	align: center center;
+	text-align: center;
+	text-overflow: shrink;
+	font-size: 26px;
+	color: #FFFFFF;
+	text-shadow: 0px 1px 1px 1px #241838;
+}
+
+#Activity_Dai #ActivityInfoButton
+{
+	x: -499px;
+	y: -154px;
+	width: 54px;
+	height: 48px;
+	align: center center;
+	background-image: url("s2r://panorama/images/custom_game/activity/dai/xd_btn_png.vtex");
+	background-size: 100%;
+}
+
+#Activity_Dai #ActivityInfoButton #InfoButtonLabel
+{
+	align: center bottom;
+	margin-bottom: 8px;
+	height: 26px;
+	text-align: center;
+	text-overflow: shrink;
+	font-size: 22px;
+	color: gradient(linear, 0 0, 0 100%, from(#4fffea), to(#9DFFF3));
+	text-shadow: 0px 0px 2px 1 #000000cc;
+}
+
+#Activity_Dai #BGLayer
+{
+	width: 100%;
+	height: 100%;
+	transition-property: opacity;
+	transition-duration: 0.4s;
+}
+
+#Activity_Dai #BGLayer #ActivityPreview
+{
+	width: 100%;
+	height: 100%;
+	z-index: -1;
+	opacity-brush: gradient(linear, 0 0, 0 100%, from(#ffffff), color-stop(0.8, #ffffff), color-stop(0.85, #ffffff00), to(#ffffff00));
+	transform: scaleX(-1);
+}
+
+#Activity_Dai #BGLayer #ActivityTitle
+{
+	x: -473px;
+	y: -293px;
+	width: 768px;
+	height: 206px;
+	align: center center;
+	background-image: url("s2r://panorama/images/custom_game/activity/jianhao/c1_title_en_png.vtex");
+	background-size: 100%;
+}
+
+#Activity_Dai #BGLayer #ActivityTitle.english
+{
+	x: -473px;
+	y: -293px;
+	width: 768px;
+	height: 206px;
+	align: center center;
+	background-image: url("s2r://panorama/images/custom_game/activity/dai/xd_slogan_en_png.vtex");
+}
+
+#Activity_Dai #BGLayer #ActivityTitle.russian
+{
+	x: -534px;
+	y: -293px;
+	width: 690px;
+	height: 172px;
+	align: center center;
+	background-image: url("s2r://panorama/images/custom_game/activity/dai/xd_slogan_ru_png.vtex");
+}
+
+#Activity_Dai #BGLayer #ActivityTitle.schinese
+{
+	x: -537px;
+	y: -294px;
+	width: 646px;
+	height: 276px;
+	align: center center;
+	background-image: url("s2r://panorama/images/custom_game/activity/dai/xd_slogan_ch_png.vtex");
+}
+
+#Activity_Dai #BGLayer #PoolInfoIcon
+{
+	align: center bottom;
+	margin-bottom: 206px;
+	x: 252px;
+	wash-color: #005148;
+	opacity-brush: #f0f0f0;
+}
+
+#Activity_Dai #BGLayer #PoolInfoIcon:hover
+{
+	brightness: 1.5;
+}
+
+#Activity_Dai #BGLayer #ActivityCountdown
+{
+	x: -644px;
+	y: -152px;
+	width: 208px;
+	height: 48px;
+	align: center center;
+	background-image: url("s2r://panorama/images/custom_game/activity/dai/xd_panel_time_png.vtex");
+	background-size: 100%;
+}
+
+#Activity_Dai #BGLayer #ActivityCountdown Label
+{
+	vertical-align: center;
+	font-size: 24px;
+	color: #F1F7FF;
+	text-shadow: 0px 0px 2px 2 #000000;
+	color: #DFDFDF;
+	text-overflow: shrink;
+}
+
+#Activity_Dai #BGLayer #ActivityCountdown #timeIcon
+{
+	vertical-align: center;
+	margin-right: 6px;
+	width: 28px;
+	height: 28px;
+	opacity-brush: #f0f0f0;
+	wash-color: #cafff9;
+	background-image: url("s2r://panorama/images/custom_game/activity/starry_treasure/x3_icon_time_png.vtex");
+	background-size: 100%;
+	img-shadow: 0 0 3px 3px #000000;
+}
+
+#Activity_Dai #BGLayer #ActivityExtraInfoContainer
+{
+	x: 575px;
+	y: -45px;
+	align: center center;
+	width: 344px;
+	height: 118px;
+	background-size: 100%;
+	background-image: url("s2r://panorama/images/custom_game/activity/new_year25/x10_board_07_png.vtex");
+}
+
+#Activity_Dai #BGLayer #ActivityExtraInfo
+{
+	horizontal-align: center;
+	margin-top: 6px;
+	width: 344px;
+	height: 44px;
+	flow-children: down;
+}
+
+#Activity_Dai #BGLayer #ActivityExtraInfo Label
+{
+	width: 100%;
+	height: 22px;
+	text-overflow: shrink;
+	text-align: center;
+	font-size: 20px;
+	color: #F1F7FF;
+	text-shadow: 0px 0px 2px 2 #3B0492;
+}
+
+#Activity_Dai #BGLayer #CustomBoxFastAccess
+{
+	align: right bottom;
+	margin-bottom: 74px;
+	margin-right: 65px;
+}
+
+#Activity_Dai #BGLayer #CustomBoxFastAccess #CustomBoxImage
+{
+	width: 100px;
+	height: 100px;
+}
+
+#Activity_Dai #BGLayer #CustomBoxFastAccess #CustomBoxImage .ProductImage
+{
+	width: 100%;
+	height: 100%;
+	background-size: 100%;
+	background-position: center;
+	background-repeat: no-repeat;
+	img-shadow: 0 0 3px 3px #000;
+}
+
+#Activity_Dai #BGLayer #CustomBoxFastAccess #CustomBoxImage .EOM_Label
+{
+	align: right bottom;
+	margin: 10px;
+	color: #fff;
+	font-size: 20px;
+	text-shadow: 0 0 3px 2 #000;
+}
+
+#Activity_Dai #BGLayer #CustomBoxFastAccess .EOM_Button
+{
+	vertical-align: center;
+	margin-left: 100px;
+	ui-scale: 80%;
+}
+
+#Activity_Dai #BGLayer #ActivityLimitCount
+{
+	margin-top: 56px;
+	width: 328px;
+	height: 24px;
+}
+
+#Activity_Dai #BGLayer #ActivityLimitCount Label
+{
+	align: center center;
+	text-align: center;
+	text-overflow: shrink;
+	font-size: 22px;
+	color: #FFE9C3;
+	text-shadow: 0px 0px 4px #30070C;
+}
+
+#Activity_Dai #BGLayer #ActivityDropEndLabel
+{
+	align: center bottom;
+	margin-bottom: 10px;
+	text-align: center;
+	text-overflow: shrink;
+	font-size: 22px;
+	color: #ff6f6f;
+	text-shadow: 0px 0px 4px #30070C;
+}
+
+#Activity_Dai #DropBanner
+{
+	width: 845px;
+	height: 40px;
+	align: center bottom;
+	margin-bottom: 196px;
+	x: -130px;
+	z-index: 10;
+	background-image: url("s2r://panorama/images/custom_game/activity/tutu/t3_board_04_png.vtex");
+	background-size: 100%;
+}
+
+#Activity_Dai #DropBanner Label
+{
+	align: center center;
+	text-align: center;
+	text-overflow: shrink;
+	font-size: 26px;
+	color: #FFFFFF;
+	text-shadow: 0px 1px 1px 1px #241838;
+}
+
+#Activity_Dai #BGScene
+{
+	width: 100%;
+	height: width-percentage(100%);
+}
+
+#Activity_Dai #CenterCircle
+{
+	width: 100%;
+	height: 100%;
+	transition-property: opacity;
+	transition-duration: 0.4s;
+}
+
+#Activity_Dai #CenterCircle #MainCircle
+{
+	x: -297.5px;
+	y: 12px;
+	width: 985px;
+	height: 674px;
+	align: center center;
+	background-image: url("s2r://panorama/images/custom_game/activity/nezha/w_frame_01_png.vtex");
+	background-size: 100%;
+}
+
+#Activity_Dai #CenterCircle #Round1
+{
+	x: -338px;
+	y: -147px;
+	width: 590px;
+	height: 716px;
+	align: center center;
+	background-image: url("s2r://panorama/images/custom_game/activity/nezha/w_draw_01_png.vtex");
+	background-size: 100%;
+}
+
+#Activity_Dai #CenterCircle #Round2
+{
+	x: -408px;
+	y: 104px;
+	width: 288px;
+	height: 404px;
+	align: center center;
+	background-image: url("s2r://panorama/images/custom_game/activity/nezha/w_draw_02_png.vtex");
+	background-size: 100%;
+	z-index: 1;
+}
+
+#Activity_Dai #CenterCircle #SecRound1
+{
+	x: 30.35px;
+	y: 160.35px;
+	width: 115.7px;
+	height: 115.7px;
+	align: center center;
+	background-image: url("s2r://panorama/images/custom_game/activity/nezha/01_png.vtex");
+	background-size: 100%;
+	z-index: -1;
+}
+
+#Activity_Dai #CenterCircle #SecRound2
+{
+	x: 108.5px;
+	y: -170.5px;
+	width: 133px;
+	height: 133px;
+	align: center center;
+	background-image: url("s2r://panorama/images/custom_game/activity/nezha/02_png.vtex");
+	background-size: 100%;
+	z-index: 1;
+}
+
+#Activity_Dai #CenterCircle #SecRound3
+{
+	x: -687.55px;
+	y: 124.25px;
+	width: 159.1px;
+	height: 159.1px;
+	align: center center;
+	background-image: url("s2r://panorama/images/custom_game/activity/nezha/03_png.vtex");
+	background-size: 100%;
+	z-index: 1;
+}
+
+#Activity_Dai #RewardsContainer
+{
+	align: center bottom;
+	width: 100%;
+	padding: 0px 70px;
+	margin-bottom: 78px;
+	overflow: noclip;
+}
+
+#Activity_Dai #ActivityBannerParticle
+{
+	width: 130%;
+	height: width-percentage(100%);
+	align: center center;
+	overflow: noclip;
+}
+
+#Activity_Dai #ActivityBannerParticle1
+{
+	width: 130%;
+	height: width-percentage(100%);
+	align: center center;
+	overflow: noclip;
+}
+
+#Activity_Dai #ExchangeButton
+{
+	x: 668px;
+	y: 227px;
+	width: 192px;
+	height: 202px;
+	align: center center;
+	padding-bottom: 30px;
+	background-image: url("s2r://panorama/images/custom_game/activity/dai/xd_btn_exchange_png.vtex");
+	background-size: 100%;
+}
+
+#Activity_Dai #ExchangeButton Label
+{
+	vertical-align: top;
+	margin-top: 50px;
+	font-size: 36px;
+	color: gradient(linear, 0 0, 0 100%, from(#DAB474), to(#FFFFA9));
+	text-shadow: 0 0 2px 2 #182C3B;
+}
+
+#Activity_Dai #ExchangeButton.russian Label
+{
+	font-size: 26px;
+}
+
+#Activity_Dai #ExchangeButton.english Label
+{
+	font-size: 26px;
+}
+
+#Activity_Dai .ExchangeRewardTooltip
+{
+	x: 505px;
+	y: 95px;
+	width: 168px;
+	height: 146px;
+	align: center center;
+	background-image: url("s2r://panorama/images/custom_game/activity/new_year25/x10_frame_png.vtex");
+	background-size: 100%;
+	padding-right: 30px;
+	animation-name: RewardTooltipAnim;
+	animation-timing-function: linear;
+	animation-iteration-count: infinite;
+	animation-duration: 1.5s;
+}
+
+#Activity_Dai .ExchangeRewardTooltip .CosmeticImage
+{
+	align: center center;
+	width: 80%;
+	height: 80%;
+}
+
+#Activity_Dai #LayoutCards
+{
+	width: 100%;
+	height: 100%;
+}
+
+#Activity_Dai .CardLayout
+{
+	width: 400px;
+	height: 400px;
+	align: center center;
+	animation-iteration-count: infinite;
+}
+
+#Activity_Dai .CardLayout #CardLayoutCard
+{
+	align: center center;
+	width: 400px;
+	height: 400px;
+}
+
+#Activity_Dai .CardLayout .EOM_Image
+{
+	align: center center;
+	width: 336px;
+	height: 350px;
+	background-size: 100%;
+}
+
+#Activity_Dai .CardLayout #CardLayoutParticle
+{
+	width: 100%;
+	height: 100%;
+}
+
+#Activity_Dai .CardLayout.1
+{
+	x: -565px;
+	y: 217px;
+	width: 234px;
+	height: 216px;
+	align: center center;
+	width: 400px;
+	height: 400px;
+}
+
+#Activity_Dai .CardLayout.1.ShowAnim
+{
+	animation-duration: 0.3s;
+	animation-name: AroundCardShow1;
+}
+
+#Activity_Dai .CardLayout.1.Idle
+{
+	animation-duration: 3s;
+	animation-name: AroundIdleAnim1;
+}
+
+#Activity_Dai .CardLayout.1.Idle.DrawCardAnim
+{
+	opacity: 1;
+	animation-name: AroundCardShow1;
+	animation-duration: 0.5s;
+	animation-timing-function: ease-out;
+	animation-iteration-count: 1;
+	animation-direction: reverse;
+	animation-fill-mode: forwards;
+}
+
+#Activity_Dai .CardLayout.1 #CardLayoutCard
+{
+	ui-scale: 55%;
+	transform: rotateX(20deg) rotateY(20deg) rotateZ(-32deg);
+}
+
+#Activity_Dai .CardLayout.2
+{
+	x: -681.5px;
+	y: 0.5px;
+	width: 173px;
+	height: 175px;
+	align: center center;
+	width: 400px;
+	height: 400px;
+}
+
+#Activity_Dai .CardLayout.2.ShowAnim
+{
+	animation-duration: 0.3s;
+	animation-name: AroundCardShow2;
+}
+
+#Activity_Dai .CardLayout.2.Idle
+{
+	animation-duration: 3.5s;
+	animation-name: AroundIdleAnim2;
+}
+
+#Activity_Dai .CardLayout.2.Idle.DrawCardAnim
+{
+	opacity: 1;
+	animation-name: AroundCardShow2;
+	animation-duration: 0.5s;
+	animation-timing-function: ease-out;
+	animation-iteration-count: 1;
+	animation-direction: reverse;
+	animation-fill-mode: forwards;
+}
+
+#Activity_Dai .CardLayout.2 #CardLayoutCard
+{
+	ui-scale: 55%;
+	transform: rotateX(5deg) rotateY(25deg) rotateZ(-3deg) scaleY(0.9);
+}
+
+#Activity_Dai .CardLayout.3
+{
+	x: -536.5px;
+	y: -231px;
+	width: 191px;
+	height: 202px;
+	align: center center;
+	width: 400px;
+	height: 400px;
+}
+
+#Activity_Dai .CardLayout.3.ShowAnim
+{
+	animation-duration: 0.3s;
+	animation-name: AroundCardShow3;
+}
+
+#Activity_Dai .CardLayout.3.Idle
+{
+	animation-name: AroundIdleAnim1;
+	animation-duration: 3s;
+}
+
+#Activity_Dai .CardLayout.3.Idle.DrawCardAnim
+{
+	opacity: 1;
+	animation-name: AroundCardShow3;
+	animation-duration: 0.5s;
+	animation-timing-function: ease-out;
+	animation-iteration-count: 1;
+	animation-direction: reverse;
+	animation-fill-mode: forwards;
+}
+
+#Activity_Dai .CardLayout.3 #CardLayoutCard
+{
+	ui-scale: 50%;
+	transform: rotateX(-15deg) rotateY(25deg) rotateZ(-20deg) scaleY(1);
+}
+
+#Activity_Dai .CardLayout.4
+{
+	x: -142.5px;
+	y: -339.5px;
+	width: 147px;
+	height: 147px;
+	align: center center;
+	width: 400px;
+	height: 400px;
+}
+
+#Activity_Dai .CardLayout.4.ShowAnim
+{
+	animation-duration: 0.3s;
+	animation-name: AroundCardShow4;
+}
+
+#Activity_Dai .CardLayout.4.Idle
+{
+	animation-name: AroundIdleAnim2;
+	animation-duration: 3.5s;
+}
+
+#Activity_Dai .CardLayout.4.Idle.DrawCardAnim
+{
+	opacity: 1;
+	animation-name: AroundCardShow4;
+	animation-duration: 0.5s;
+	animation-timing-function: ease-out;
+	animation-iteration-count: 1;
+	animation-direction: reverse;
+	animation-fill-mode: forwards;
+}
+
+#Activity_Dai .CardLayout.4 #CardLayoutCard
+{
+	ui-scale: 43%;
+	transform: rotateX(-30deg) rotateY(-10deg) rotateZ(5deg) scaleY(1.2);
+}
+
+#Activity_Dai .CardLayout.5
+{
+	x: 136.5px;
+	y: -285px;
+	width: 229px;
+	height: 228px;
+	align: center center;
+	width: 400px;
+	height: 400px;
+}
+
+#Activity_Dai .CardLayout.5.ShowAnim
+{
+	animation-duration: 0.3s;
+	animation-name: AroundCardShow5;
+}
+
+#Activity_Dai .CardLayout.5.Idle
+{
+	animation-name: AroundIdleAnim1;
+	animation-duration: 3s;
+}
+
+#Activity_Dai .CardLayout.5.Idle.DrawCardAnim
+{
+	opacity: 1;
+	animation-name: AroundCardShow5;
+	animation-duration: 0.5s;
+	animation-timing-function: ease-out;
+	animation-iteration-count: 1;
+	animation-direction: reverse;
+	animation-fill-mode: forwards;
+}
+
+#Activity_Dai .CardLayout.5 #CardLayoutCard
+{
+	ui-scale: 48%;
+	transform: rotateX(0deg) rotateY(-20deg) rotateZ(30deg) scaleY(1);
+}
+
+#Activity_Dai .CardLayout.6
+{
+	x: 279px;
+	y: -82.5px;
+	width: 138px;
+	height: 139px;
+	align: center center;
+	width: 400px;
+	height: 400px;
+}
+
+#Activity_Dai .CardLayout.6.ShowAnim
+{
+	animation-duration: 0.3s;
+	animation-name: AroundCardShow6;
+}
+
+#Activity_Dai .CardLayout.6.Idle
+{
+	animation-name: AroundIdleAnim2;
+	animation-duration: 3.5s;
+}
+
+#Activity_Dai .CardLayout.6.Idle.DrawCardAnim
+{
+	opacity: 1;
+	animation-name: AroundCardShow6;
+	animation-duration: 0.5s;
+	animation-timing-function: ease-out;
+	animation-iteration-count: 1;
+	animation-direction: reverse;
+	animation-fill-mode: forwards;
+}
+
+#Activity_Dai .CardLayout.6 #CardLayoutCard
+{
+	ui-scale: 50%;
+	transform: rotateX(5deg) rotateY(-25deg) rotateZ(-3deg) scaleY(0.8);
+}
+
+#Activity_Dai .CardLayout.7
+{
+	x: 158px;
+	y: 160px;
+	width: 204px;
+	height: 206px;
+	align: center center;
+	width: 400px;
+	height: 400px;
+}
+
+#Activity_Dai .CardLayout.7.ShowAnim
+{
+	animation-duration: 0.3s;
+	animation-name: AroundCardShow7;
+}
+
+#Activity_Dai .CardLayout.7.Idle
+{
+	animation-name: AroundIdleAnim1;
+	animation-duration: 3s;
+}
+
+#Activity_Dai .CardLayout.7.Idle.DrawCardAnim
+{
+	opacity: 1;
+	animation-name: AroundCardShow7;
+	animation-duration: 0.5s;
+	animation-timing-function: ease-out;
+	animation-iteration-count: 1;
+	animation-direction: reverse;
+	animation-fill-mode: forwards;
+}
+
+#Activity_Dai .CardLayout.7 #CardLayoutCard
+{
+	ui-scale: 55%;
+	transform: rotateX(20deg) rotateY(-15deg) rotateZ(20deg) scaleY(1);
+}
+
+@keyframes 'AroundIdleAnim1'
+{
+	0%
+	{
+		transform: rotateX(0deg) rotateY(0deg) rotateZ(0deg);
+	}
+	
+	50%
+	{
+		transform: translateY(-10px) translateX(10px) rotateX(-1.5deg) rotateY(-1.5deg) rotateZ(-1.5deg);
+	}
+	
+	100%
+	{
+		transform: rotateX(0deg) rotateY(0deg) rotateZ(0deg);
+	}
+	
+}
+
+@keyframes 'AroundIdleAnim2'
+{
+	0%
+	{
+		transform: rotateX(0deg) rotateY(0deg) rotateZ(0deg);
+	}
+	
+	50%
+	{
+		transform: translateY(10px) translateX(10px) rotateX(-1.5deg) rotateY(-1.5deg) rotateZ(-1.5deg);
+	}
+	
+	100%
+	{
+		transform: rotateX(0deg) rotateY(0deg) rotateZ(0deg);
+	}
+	
+}
+
+@keyframes 'AroundCardShow1'
+{
+	0%
+	{
+		pre-transform-scale2d: 0;
+		transform: translateX(359px) translateY(-267px);
+	}
+	
+	100%
+	{
+		pre-transform-scale2d: 1;
+		transform: translateX(0px) translateY(0px);
+	}
+	
+}
+
+@keyframes 'AroundCardShow2'
+{
+	0%
+	{
+		pre-transform-scale2d: 0;
+		transform: translateX(475.5px) translateY(-50.5px);
+	}
+	
+	100%
+	{
+		pre-transform-scale2d: 1;
+		transform: translateX(0px) translateY(0px);
+	}
+	
+}
+
+@keyframes 'AroundCardShow3'
+{
+	0%
+	{
+		pre-transform-scale2d: 0;
+		transform: translateX(330.5px) translateY(181px);
+	}
+	
+	100%
+	{
+		pre-transform-scale2d: 1;
+		transform: translateX(0px) translateY(0px);
+	}
+	
+}
+
+@keyframes 'AroundCardShow4'
+{
+	0%
+	{
+		pre-transform-scale2d: 0;
+		transform: translateX(-63.5px) translateY(289.5px);
+	}
+	
+	100%
+	{
+		pre-transform-scale2d: 1;
+		transform: translateX(0px) translateY(0px);
+	}
+	
+}
+
+@keyframes 'AroundCardShow5'
+{
+	0%
+	{
+		pre-transform-scale2d: 0;
+		transform: translateX(-342.5px) translateY(235px);
+	}
+	
+	100%
+	{
+		pre-transform-scale2d: 1;
+		transform: translateX(0px) translateY(0px);
+	}
+	
+}
+
+@keyframes 'AroundCardShow6'
+{
+	0%
+	{
+		pre-transform-scale2d: 0;
+		transform: translateX(-485px) translateY(32.5px);
+	}
+	
+	100%
+	{
+		pre-transform-scale2d: 1;
+		transform: translateX(0px) translateY(0px);
+	}
+	
+}
+
+@keyframes 'AroundCardShow7'
+{
+	0%
+	{
+		pre-transform-scale2d: 0;
+		transform: translateX(-364px) translateY(-210px);
+	}
+	
+	100%
+	{
+		pre-transform-scale2d: 1;
+		transform: translateX(0px) translateY(0px);
+	}
+	
+}
+
+@keyframes 'RewardTooltipAnim'
+{
+	0%
+	{
+		img-shadow: 0 0 4px 0 #ffffff00;
+		brightness: 1;
+		pre-transform-scale2d: 0.99;
+	}
+	
+	50%
+	{
+		img-shadow: 0 0 4px 0 #ffffff88;
+		brightness: 1.5;
+		pre-transform-scale2d: 1;
+	}
+	
+	100%
+	{
+		img-shadow: 0 0 4px 0 #ffffff00;
+		brightness: 1;
+		pre-transform-scale2d: 0.99;
+	}
+	
+}
+
+#DiscountTokens
+{
+	width: 250px;
+	height: 52px;
+	padding-left: 40px;
+	align: center bottom;
+	x: 610px;
+	margin-bottom: 174px;
+	background-image: url("s2r://panorama/images/custom_game/activity/tutu/t3_board_02_png.vtex");
+	background-size: 100%;
+}
+
+#DiscountTokens .EOM_Icon
+{
+	vertical-align: center;
+}
+
+#DiscountTokens Label
+{
+	align: center center;
+	text-overflow: shrink;
+	font-size: 24px;
+	color: #FFFFFF;
+	margin-left: 40px;
+}
+
+.DaiDrawButton
+{
+	padding-left: 120px;
+	padding-right: 90px;
+	x: -286px;
+	y: 429px;
+	width: 484px;
+	height: 80px;
+	align: center center;
+	background-image: url("s2r://panorama/images/custom_game/activity/dai/xd_btn_blue_png.vtex");
+	background-size: 100%;
+	flow-children: right;
+}
+
+.DaiDrawButton:not(:enabled)
+{
+	brightness: 0.75;
+	saturation: 0.25;
+}
+
+.DaiDrawButton.Count10
+{
+	margin-left: 109px;
+	background-image: url("s2r://panorama/images/custom_game/activity/dai/xd_btn_yellow_png.vtex");
+}
+
+.DaiDrawButton #DrawLabel
+{
+	align: center center;
+	vertical-align: center;
+	text-align: center;
+	width: fill-parent-flow(1.1);
+	max-height: 34px;
+	font-size: 28px;
+	color: #FFFFFF;
+	text-shadow: 0px 0px 2px 2 #241838;
+	text-overflow: shrink;
+}
+
+.DaiDrawButton #cost
+{
+	margin-right: 45px;
+	horizontal-align: right;
+	width: fill-parent-flow(0.9);
+	height: 100%;
+	flow-children: right;
+	padding-left: 30px;
+}
+
+.DaiDrawButton #cost .EOM_Icon
+{
+	vertical-align: center;
+}
+
+.DaiDrawButton #cost .TicketLabel
+{
+	text-align: center;
+	max-height: 30px;
+	font-size: 26px;
+	color: #FFFFFF;
+	text-shadow: 0px 0px 2px 2 #241838;
+	text-overflow: shrink;
+}
+
+.DaiDrawButton #cost .TicketLabelDiscount
+{
+	margin-left: 10px;
+	max-height: 30px;
+	font-size: 26px;
+	color: #E54A4A;
+	text-shadow: 0px 0px 2px 2 #241838;
+	text-decoration: line-through;
+}
+
+.DrawCardResultWindow
+{
+	width: 100%;
+	height: 100%;
+	margin-left: -220px;
+	opacity: 0;
+	background-image: url("s2r://panorama/images/custom_game/draw/c_result_bg_png.vtex");
+	background-size: 100%;
+	z-index: 100;
+	transition-property: opacity;
+	transition-duration: 0.2s;
+}
+
+.DrawCardResultWindow #ResultContainer
+{
+	width: 100%;
+	height: 100%;
+}
+
+.DrawCardResultWindow.Show
+{
+	opacity: 1;
+}
+
+.DrawCardResultWindow.Show #ResultContainer
+{
+	animation-name: PopupUp;
+	animation-duration: 0.5s;
+}
+
+.DrawCardResultWindow #JianHaoRewardList
+{
+	align: center center;
+	width: 100%;
+	height: 100%;
+}
+
+.DrawCardResultWindow #RewardClose
+{
+	align: right top;
+	margin-top: 20px;
+	margin-right: 26px;
+	z-index: 102;
+}
+
+.DrawCardResultWindow #ConversionMessageList
+{
+	flow-children: down;
+}
+
+.DrawCardResultWindow #Currencies
+{
+	align: right top;
+	margin-top: 100px;
+	margin-right: 260px;
+}
+
+@keyframes 'PopupUp'
+{
+	0%
+	{
+		opacity: 0;
+	}
+	
+	50%
+	{
+		opacity: 0.25;
+	}
+	
+	100%
+	{
+		pre-transform-scale2d: 1;
+	}
+	
+}
+
+#AwardItemContainer
+{
+	transform: scaleX(-1);
+	width: 500px;
+	height: 500px;
+}
+
+#AwardItemContainer.AwardAnim
+{
+	animation-name: flip;
+	animation-timing-function: linear;
+}
+
+#AwardItemContainer.AwardShow
+{
+	transform: rotateY(0deg);
+}
+
+#AwardItemContainer.AwardShow .AwardBG
+{
+	opacity: 1;
+}
+
+#AwardItemContainer.AwardShow .AwardInfo,#AwardItemContainer.AwardShow .Frame,#AwardItemContainer.AwardShow .AwardRarityBG,#AwardItemContainer.AwardShow .Mask
+{
+	opacity: 1;
+}
+
+#AwardItemContainer.AwardShow #Conversion
+{
+	opacity: 1;
+}
+
+#AwardItemContainer #GoldParticle
+{
+	align: center center;
+	width: 202px;
+	height: 280px;
+	y: -10px;
+}
+
+#AwardItemContainer #GoldParticle2
+{
+	align: center center;
+	width: 500px;
+	height: 500px;
+	y: -10px;
+	overflow: noclip;
+}
+
+#AwardItemContainer #RedParticle3
+{
+	align: center center;
+	width: 260px;
+	height: 260px;
+	hue-rotation: -45deg;
+}
+
+#AwardItemContainer #RedParticle
+{
+	align: center center;
+	width: 202px;
+	height: 280px;
+	y: -10px;
+	hue-rotation: -45deg;
+}
+
+#AwardItemContainer #RedParticle2
+{
+	align: center center;
+	width: 500px;
+	height: 500px;
+	y: -10px;
+	overflow: noclip;
+	hue-rotation: -45deg;
+}
+
+#AwardItemContainer #StoreItemImage
+{
+	align: center center;
+	width: 220px;
+	height: 300px;
+	y: -10px;
+}
+
+#AwardItemContainer #StoreItemImage .StoreItemIcon
+{
+	transition-property: pre-transform-scale2d, brightness;
+	transition-duration: 0.3s;
+	transition-timing-function: ease-in-out;
+}
+
+#AwardItemContainer #StoreItemImage .StoreItemIcon:hover
+{
+	pre-transform-scale2d: 1.08;
+	brightness: 2;
+}
+
+#AwardItemContainer #AwardName
+{
+	flow-children: down;
+}
+
+#AwardItemContainer #ShowToken
+{
+	flow-children: right;
+}
+
+#AwardItemContainer .AwardInfo,#AwardItemContainer .Frame,#AwardItemContainer .AwardRarityBG,#AwardItemContainer .IsNew,#AwardItemContainer .Mask
+{
+	opacity: 0;
+}
+
+#AwardItemContainer #Conversion
+{
+	opacity: 0;
+	width: 260px;
+	align: center center;
+	y: 100px;
+}
+
+#AwardItemContainer #ConversionBG
+{
+	vertical-align: center;
+	background-color: #000000CC;
+	width: 100%;
+	height: 40px;
+	margin: 26px;
+}
+
+#AwardItemContainer #ConversionInfo
+{
+	align: center center;
+	flow-children: right;
+}
+
+#AwardItemContainer #TokenIcon
+{
+	width: 40px;
+	height: 40px;
+}
+
+#AwardItemContainer #TokenCount
+{
+	vertical-align: center;
+	font-size: 22px;
+	color: #EDEDED;
+	text-shadow: 0px 0px 2px 2 #316999;
+}
+
+@keyframes 'flip'
+{
+	0%
+	{
+		transform: rotateY(-180deg);
+	}
+	
+	50%
+	{
+		transform: rotateY(-90deg);
+	}
+	
+	100%
+	{
+		transform: rotateY(0deg);
+	}
+	
+}
+
+#ExchangePanel
+{
+	height: 100%;
+	width: 100%;
+	z-index: 1000;
+	transition-property: opacity;
+	opacity: 0;
+	transition-duration: 0.15s;
+	background-image: url("s2r://panorama/images/custom_game/eom_design/layout/c4/main_background_png.vtex");
+	background-size: 100%;
+	flow-children: down;
+}
+
+#ExchangePanel #TopBarBG
+{
+	width: 100%;
+	height: 72px;
+	background-image: url("s2r://panorama/images/custom_game/hud/top_bottom_png.vtex");
+	opacity: 0.9;
+	z-index: 2;
+}
+
+#ExchangePanel #ExchangeContainer
+{
+	flow-children: left;
+	vertical-align: center;
+	width: 100%;
+	height: 100%;
+}
+
+#ExchangePanel.Show
+{
+	opacity: 1;
+}
+
+#ExchangePanel.Show #ExchangeList
+{
+	transform: translateX(0px);
+	opacity: 1;
+}
+
+#ExchangePanel #ExchangePreview
+{
+	width: 100%;
+	height: 100%;
+	align: center center;
+}
+
+#ExchangePanel #ExchangePreview #ExchangePreviewMain
+{
+	align: center center;
+	width: 100%;
+	height: 100%;
+}
+
+#ExchangePanel #ExchangePreview #ExchangePreviewMain .ProductImage
+{
+	align: center center;
+}
+
+#ExchangePanel #ExchangePreview #CosmeticDesc
+{
+	margin-left: 72px;
+	margin-bottom: 92px;
+	flow-children: down;
+	vertical-align: bottom;
+}
+
+#ExchangePanel #ExchangePreview #CosmeticDesc #CosmeticName
+{
+	font-size: 36px;
+	color: #FFFFFF;
+	text-shadow: 0px 0px 4px 2 #000000;
+	margin-left: 14px;
+	margin-bottom: 4px;
+	text-overflow: shrink;
+}
+
+#ExchangePanel #ExchangePreview #CosmeticDesc #CosmeticAccess
+{
+	font-size: 20px;
+	color: #CBCBCB;
+	margin-top: 4px;
+	margin-left: 16px;
+	text-shadow: 0px 0px 4px 2 #000000;
+	width: 450px;
+}
+
+#ExchangePanel #ExchangePreview .CosmeticPreview
+{
+	align: center center;
+	width: 90%;
+	height: width-percentage(100%);
+}
+
+#ExchangePanel #ExchangePreview .PreviewInfoContainer
+{
+	align: center center;
+	margin-top: 130px;
+	flow-children: down;
+}
+
+#ExchangePanel #ExchangePreview .PreviewInfoContainer #CosmeticPreviewTitle
+{
+	horizontal-align: center;
+	width: 504px;
+	height: 94px;
+	background-image: url("s2r://panorama/images/custom_game/draw/c_exchange_ribbon_png.vtex");
+	background-size: 100%;
+	padding: 20px 100px 10px 100px;
+}
+
+#ExchangePanel #ExchangePreview .PreviewInfoContainer #CosmeticPreviewTitle Label
+{
+	font-size: 28px;
+	color: #DFDFDF;
+	text-shadow: 0px 0px 2px 2 #000000;
+	align: center center;
+	text-align: center;
+	width: 100%;
+	max-height: 80%;
+	text-overflow: shrink;
+}
+
+#ExchangePanel #ExchangePreview .PreviewInfoContainer #CosmeticPreviewDescription
+{
+	margin-top: 20px;
+	width: 564px;
+	padding: 0 10px;
+	color: #cbcbcb;
+	font-size: 20px;
+	text-align: center;
+}
+
+#ExchangePanel #ExchangeList
+{
+	width: 60%;
+	height: 100%;
+	horizontal-align: right;
+	background-color: #232b4466;
+	box-shadow: hollow 0px 0px 16px 0px #000000aa;
+	background-size: 100%;
+	background-position: center;
+	transform: translateX(100px);
+	transition-property: transform, opacity;
+	opacity: 0;
+	transition-duration: 0.15s;
+}
+
+#ExchangePanel #ExchangeListTitle
+{
+	width: 100%;
+	height: 70px;
+	background-color: #2c406a;
+	border-bottom-left-radius: 4px;
+	box-shadow: hollow 0px 0px 16px 0px #00000055;
+}
+
+#ExchangePanel #ExchangeListTitle .EOM_CloseButton
+{
+	align: right center;
+	margin: 0;
+	margin-right: 20px;
+}
+
+#ExchangePanel #ExchangeListTitle #ExchangeListTitleLabel
+{
+	align: center center;
+	width: 80%;
+	max-height: 36px;
+	text-align: center;
+	text-overflow: shrink;
+	font-weight: normal;
+	font-size: 28px;
+	color: #C4DEFB;
+}
+
+#ExchangePanel #ExchangeItemList
+{
+	horizontal-align: center;
+	min-width: 800px;
+	height: 100%;
+	margin: 20px;
+	margin-top: 100px;
+	opacity-mask: url("s2r://panorama/images/masks/vertical_scroll_mask_down_png.vtex");
+}
+
+#ExchangePanel #ExchangeItemList .ExchangeItem
+{
+	flow-children: down;
+	margin: 26px;
+}
+
+#ExchangePanel #ExchangeItemList .ExchangeItem .ProductImage
+{
+	ui-scale: 100%;
+	transition-property: brightness, pre-transform-scale2d;
+	pre-transform-scale2d: 1;
+	transition-duration: 0.4s;
+}
+
+#ExchangePanel #ExchangeItemList .ExchangeItem.CanPreview:hover .ProductImage
+{
+	pre-transform-scale2d: 1.05;
+	brightness: 1.5;
+}
+
+#ExchangePanel #ExchangeItemList .ExchangeItem.Previewing #HoverBorder
+{
+	opacity: 1;
+}
+
+#ExchangePanel #ExchangeItemList .ExchangeItem #ProductItemContainer
+{
+	width: 212px;
+	height: 293px;
+}
+
+#ExchangePanel #ExchangeItemList .ExchangeItem #ProductItemContainer .ProductItem
+{
+	width: 100%;
+	height: 100%;
+}
+
+#ExchangePanel #ExchangeItemList .ExchangeItem #HoverBorder
+{
+	width: 100%;
+	height: 100%;
+	background-image: url("s2r://panorama/images/custom_game/ladder/pass/z3_select_png.vtex");
+	background-size: 103%;
+	background-position: center center;
+	opacity: 0;
+	transition-property: opacity;
+	transition-duration: 0.1s;
+}
+
+#ExchangePanel #ExchangeItemList .ExchangeItem.Disabled .ProductItem
+{
+	brightness: 0.5;
+}
+
+#ExchangePanel #ExchangeItemList #ToolMode
+{
+	width: 100%;
+	ignore-parent-flow: true;
+}
+
+#ExchangePanel .StoreLimit
+{
+	align: center bottom;
+	width: 100%;
+	height: 22px;
+	margin: 0px 10px 40px 10px;
+	background-image: url("s2r://panorama/images/custom_game/activity/celebration/y3_mask_02_png.vtex");
+	background-size: 100%;
+	z-index: 100;
+}
+
+#ExchangePanel .StoreLimit .LimitLabel
+{
+	width: 100%;
+	text-align: center;
+	font-size: 16px;
+	line-height: 20px;
+	color: #FFFFFF;
+	text-overflow: shrink;
+}
+
+#ExchangePanel .StoreLimit .LimitLabel.english
+{
+	font-size: 11px;
+}
+
+#ExchangePanel .StoreLimit .LimitCount
+{
+	margin-top: 37px;
+	width: 100%;
+	font-size: 16px;
+	color: #FFFFFF;
+	text-overflow: shrink;
+	text-align: center;
+	text-shadow: 0px 0px 4px 2 #000000;
+}
+
+#ExchangePanel .StoreLimit .LimitCount.english
+{
+	margin-top: 40px;
+}
+
+#ExchangePanel .Owned
+{
+	width: 130px;
+	z-index: 1;
+	y: -50px;
+	height: 78px;
+	align: center center;
+	background-image: url("s2r://panorama/images/custom_game/store/new/sold_out_png.vtex");
+	background-size: 100%;
+	ignore-parent-flow: true;
+}
+
+#ExchangePanel .Owned .OwnedLabel
+{
+	color: white;
+	width: 100%;
+	text-align: center;
+	margin-top: 4px;
+	font-size: 20px;
+}
+
+@keyframes 'Shining'
+{
+	0%
+	{
+		brightness: 1;
+	}
+	
+	50%
+	{
+		brightness: 1.5;
+	}
+	
+	100%
+	{
+		brightness: 1;
+	}
+	
+}
+
+.AspectRatio4x3 #ExchangePanel #ExchangeContainer
+{
+	ui-scale: 70%;
+}
+
+.AspectRatio16x10 #ExchangePanel #ExchangeContainer
+{
+	ui-scale: 90%;
+}
+
+.AspectRatio21x9 #ExchangePanel #ExchangeContainer
+{
+	ui-scale: 100%;
+}
+
+#Activity_Dai .EOM_Button.SkipButton
+{
+	z-index: 101;
+	align: center bottom;
+	margin-bottom: 204px;
+	x: 422px;
+	transition-property: opacity;
+	transition-duration: 0.2s;
+	transition-timing-function: linear;
+	opacity: 1;
+}
+
+#Activity_Dai .EOM_Button.SkipButton.Hidden
+{
+	opacity: 0;
+}
+
+#Activity_Dai .EOM_Button.SkipButton.Active #Hook
+{
+	opacity: 1;
+}
+
+#Activity_Dai .EOM_Button.SkipButton:disabled
+{
+	brightness: 1;
+	saturation: 1;
+}
+
+#Activity_Dai .EOM_Button.SkipButton Label
+{
+	margin-left: 28px;
+	vertical-align: center;
+	font-weight: bold;
+	color: gradient(linear, 0% 0%, 0% 100%, from(#b9c1d5), to(#b6c4df));
+	text-shadow: 0 0 3px 3 #000000;
+	font-size: 24px;
+	text-align: center;
+}
+
+#Activity_Dai .EOM_Button.SkipButton #Square
+{
+	vertical-align: center;
+	width: 20px;
+	height: 20px;
+	opacity: 0.65;
+}
+
+#Activity_Dai .EOM_Button.SkipButton #Hook
+{
+	vertical-align: center;
+	width: 22px;
+	height: 20px;
+	opacity: 0;
+}
+
+#Activity_Dai .NewYear25DrawStackCount
+{
+	align: center center;
+	x: 557px;
+	y: 400px;
+}
+
+#Activity_Dai .NewYear25DrawStackCount #CurrentStackCount
+{
+	width: 100px;
+	height: 98px;
+	background-image: url("s2r://panorama/images/custom_game/activity/new_year25/x10_board_05_png.vtex");
+	background-size: 100%;
+	padding-left: 12px;
+	margin-bottom: 8px;
+}
+
+#Activity_Dai .NewYear25DrawStackCount #CurrentStackCount Label
+{
+	align: center center;
+	y: 2px;
+	font-weight: bold;
+	font-size: 32px;
+	color: gradient(linear, 0% 0%, 0% 100%, from(#FFDAA5), to(#FFFCF0));
+	text-shadow: 0px 1px 1px 1 #110623;
+}
+
+#Activity_Dai .NewYear25DrawStackCount #CurrentStackCount .MenuMarkIcon
+{
+	margin-top: 10px;
+	margin-right: -6px;
+	ui-scale: 80%;
+	animation-name: Shining;
+	animation-iteration-count: infinite;
+	animation-duration: 1s;
+}
+
+#Activity_Dai .NewYear25DrawStackCount #CurrentStackCountTitle
+{
+	width: 65px;
+	height: 22px;
+	vertical-align: bottom;
+	margin-left: 20px;
+	background-image: url("s2r://panorama/images/custom_game/activity/tutu/t3_board_05_png.vtex");
+	background-size: 100%;
+}
+
+#Activity_Dai .NewYear25DrawStackCount #CurrentStackCountTitle Label
+{
+	align: center center;
+	text-align: center;
+	text-overflow: shrink;
+	font-size: 16px;
+	color: #FFF5DB;
+	text-shadow: 0px 0px 2px 2 #316999;
+}
+
+#Activity_Dai .NewYear25DrawStackCount #CurrentStackMiddle
+{
+	width: 269px;
+	height: 64px;
+	vertical-align: center;
+	margin-left: 54px;
+	margin-right: 34px;
+	y: -4px;
+	background-image: url("s2r://panorama/images/custom_game/activity/new_year25/x10_board_04_png.vtex");
+	background-size: 100%;
+	z-index: -1;
+	padding: 0px 70px 0px 70px;
+}
+
+#Activity_Dai .NewYear25DrawStackCount #CurrentStackMiddle Label
+{
+	align: center center;
+	font-size: 24px;
+	color: #FFFFFF;
+	text-shadow: 0px 1px 1px 1px #241838;
+}
+
+#Activity_Dai .NewYear25DrawStackCount #CurrentStackMiddle.english
+{
+	font-size: 16px;
+}
+
+#Activity_Dai .NewYear25DrawStackCount #CurrentStackMiddle.russian
+{
+	font-size: 16px;
+}
+
+#Activity_Dai .NewYear25DrawStackCount #CurrentStackNextReward
+{
+	align: right center;
+	y: -2px;
+	width: 80px;
+	height: 80px;
+	background-image: url("s2r://panorama/images/custom_game/activity/new_year25/x10_board_06_png.vtex");
+	background-size: 100%;
+}
+
+#Activity_Dai .NewYear25DrawStackCount #CurrentStackNextReward Image
+{
+	align: center center;
+	width: 80%;
+	height: 80%;
+	background-size: 100%;
+}
+
+#Activity_Dai .NewYear25DrawStackCount #CurrentStackNextReward Label
+{
+	align: center bottom;
+	margin-bottom: 8px;
+	font-size: 22px;
+	color: #FFFFFF;
+	text-shadow: 0px 0px 3px 3 #000000;
+}
+
 .AspectRatio4x3 #Activity_DragonBoat #ActivityMainContent
 {
 	width: 100%;
@@ -24363,7 +26272,7 @@
 	ui-scale: 100%;
 }
 
-#EOM_DropDownMenu_Container,#EOM_DropDownContainer
+#EOM_DropDownMenu_Container
 {
 	width: 100%;
 	height: 100%;

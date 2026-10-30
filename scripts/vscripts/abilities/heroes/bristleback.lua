@@ -240,429 +240,441 @@ g(
 		["254"] = 172,
 		["256"] = 172,
 		["257"] = 210,
-		["258"] = 221,
+		["258"] = 219,
 		["259"] = 210,
-		["260"] = 221,
-		["261"] = 224,
-		["262"] = 225,
-		["263"] = 224,
-		["264"] = 227,
-		["265"] = 228,
-		["266"] = 229,
-		["267"] = 231,
-		["268"] = 232,
-		["269"] = 233,
-		["270"] = 234,
-		["271"] = 235,
-		["273"] = 237,
-		["274"] = 227,
-		["275"] = 239,
-		["276"] = 240,
-		["277"] = 241,
-		["279"] = 239,
-		["280"] = 244,
-		["281"] = 245,
-		["282"] = 246,
-		["284"] = 244,
-		["285"] = 249,
-		["286"] = 250,
-		["287"] = 249,
-		["288"] = 255,
-		["289"] = 256,
-		["290"] = 255,
-		["291"] = 258,
-		["292"] = 259,
-		["293"] = 258,
-		["294"] = 221,
-		["295"] = 210,
-		["296"] = 210,
-		["297"] = 210,
-		["298"] = 210,
-		["299"] = 210,
-		["300"] = 210,
-		["301"] = 210,
-		["302"] = 210,
-		["303"] = 210,
-		["304"] = 210,
-		["305"] = 210,
-		["306"] = 221,
-		["308"] = 221,
-		["310"] = 265,
-		["311"] = 266,
-		["312"] = 265,
-		["313"] = 266,
-		["314"] = 267,
-		["315"] = 268,
-		["316"] = 267,
-		["317"] = 266,
-		["318"] = 265,
-		["319"] = 266,
-		["321"] = 266,
-		["322"] = 271,
-		["323"] = 279,
-		["324"] = 271,
-		["325"] = 279,
-		["326"] = 280,
-		["327"] = 281,
-		["328"] = 280,
-		["329"] = 285,
-		["330"] = 286,
-		["331"] = 287,
-		["332"] = 287,
-		["333"] = 287,
-		["334"] = 287,
-		["335"] = 287,
-		["336"] = 287,
-		["338"] = 285,
-		["339"] = 290,
-		["340"] = 291,
-		["341"] = 290,
-		["342"] = 279,
-		["343"] = 271,
-		["344"] = 271,
-		["345"] = 271,
-		["346"] = 271,
-		["347"] = 271,
-		["348"] = 271,
-		["349"] = 271,
-		["350"] = 271,
-		["351"] = 279,
-		["353"] = 279,
-		["354"] = 295,
-		["355"] = 303,
-		["356"] = 295,
-		["357"] = 303,
-		["359"] = 303,
-		["360"] = 306,
-		["361"] = 307,
-		["362"] = 308,
-		["363"] = 295,
-		["364"] = 309,
-		["365"] = 310,
-		["366"] = 312,
-		["367"] = 309,
-		["368"] = 314,
-		["369"] = 315,
-		["370"] = 316,
-		["371"] = 317,
-		["372"] = 318,
-		["374"] = 314,
-		["375"] = 321,
-		["376"] = 322,
-		["377"] = 323,
-		["379"] = 321,
-		["380"] = 326,
-		["381"] = 327,
-		["382"] = 328,
-		["383"] = 328,
-		["384"] = 328,
-		["385"] = 327,
-		["386"] = 329,
-		["387"] = 329,
-		["388"] = 329,
-		["389"] = 327,
-		["390"] = 327,
-		["391"] = 326,
-		["392"] = 332,
-		["393"] = 334,
-		["394"] = 335,
-		["395"] = 336,
-		["396"] = 336,
-		["397"] = 336,
-		["398"] = 336,
-		["399"] = 336,
-		["400"] = 337,
-		["401"] = 337,
-		["402"] = 337,
-		["403"] = 337,
-		["404"] = 337,
-		["405"] = 337,
-		["406"] = 338,
-		["407"] = 338,
-		["408"] = 338,
-		["409"] = 338,
-		["410"] = 338,
-		["411"] = 338,
-		["412"] = 338,
+		["260"] = 219,
+		["261"] = 222,
+		["262"] = 223,
+		["263"] = 222,
+		["264"] = 225,
+		["265"] = 226,
+		["266"] = 227,
+		["267"] = 229,
+		["268"] = 230,
+		["269"] = 231,
+		["270"] = 232,
+		["271"] = 233,
+		["273"] = 235,
+		["274"] = 225,
+		["275"] = 237,
+		["276"] = 238,
+		["277"] = 239,
+		["279"] = 241,
+		["280"] = 241,
+		["281"] = 241,
+		["282"] = 241,
+		["283"] = 241,
+		["284"] = 241,
+		["285"] = 242,
+		["286"] = 242,
+		["287"] = 242,
+		["288"] = 242,
+		["289"] = 242,
+		["290"] = 242,
+		["291"] = 242,
+		["292"] = 242,
+		["294"] = 237,
+		["295"] = 245,
+		["296"] = 246,
+		["297"] = 247,
+		["299"] = 245,
+		["300"] = 250,
+		["301"] = 251,
+		["302"] = 250,
+		["303"] = 256,
+		["304"] = 257,
+		["305"] = 256,
+		["306"] = 259,
+		["307"] = 260,
+		["308"] = 259,
+		["309"] = 219,
+		["310"] = 210,
+		["311"] = 210,
+		["312"] = 210,
+		["313"] = 210,
+		["314"] = 210,
+		["315"] = 210,
+		["316"] = 210,
+		["317"] = 210,
+		["318"] = 210,
+		["319"] = 219,
+		["321"] = 219,
+		["323"] = 266,
+		["324"] = 267,
+		["325"] = 266,
+		["326"] = 267,
+		["327"] = 268,
+		["328"] = 269,
+		["329"] = 268,
+		["330"] = 267,
+		["331"] = 266,
+		["332"] = 267,
+		["334"] = 267,
+		["335"] = 272,
+		["336"] = 280,
+		["337"] = 272,
+		["338"] = 280,
+		["339"] = 281,
+		["340"] = 282,
+		["341"] = 281,
+		["342"] = 286,
+		["343"] = 287,
+		["344"] = 288,
+		["345"] = 288,
+		["346"] = 288,
+		["347"] = 288,
+		["348"] = 288,
+		["349"] = 288,
+		["351"] = 286,
+		["352"] = 291,
+		["353"] = 292,
+		["354"] = 291,
+		["355"] = 280,
+		["356"] = 272,
+		["357"] = 272,
+		["358"] = 272,
+		["359"] = 272,
+		["360"] = 272,
+		["361"] = 272,
+		["362"] = 272,
+		["363"] = 272,
+		["364"] = 280,
+		["366"] = 280,
+		["367"] = 296,
+		["368"] = 304,
+		["369"] = 296,
+		["370"] = 304,
+		["372"] = 304,
+		["373"] = 307,
+		["374"] = 308,
+		["375"] = 309,
+		["376"] = 296,
+		["377"] = 310,
+		["378"] = 311,
+		["379"] = 313,
+		["380"] = 310,
+		["381"] = 315,
+		["382"] = 316,
+		["383"] = 317,
+		["384"] = 318,
+		["385"] = 319,
+		["387"] = 315,
+		["388"] = 322,
+		["389"] = 323,
+		["390"] = 324,
+		["392"] = 322,
+		["393"] = 327,
+		["394"] = 328,
+		["395"] = 329,
+		["396"] = 329,
+		["397"] = 329,
+		["398"] = 328,
+		["399"] = 330,
+		["400"] = 330,
+		["401"] = 330,
+		["402"] = 328,
+		["403"] = 328,
+		["404"] = 327,
+		["405"] = 333,
+		["406"] = 335,
+		["407"] = 336,
+		["408"] = 337,
+		["409"] = 337,
+		["410"] = 337,
+		["411"] = 337,
+		["412"] = 337,
 		["413"] = 338,
 		["414"] = 338,
-		["415"] = 339,
-		["417"] = 341,
-		["418"] = 342,
-		["419"] = 343,
-		["420"] = 344,
-		["423"] = 345,
-		["424"] = 346,
-		["425"] = 347,
-		["428"] = 332,
-		["429"] = 351,
-		["430"] = 352,
-		["431"] = 351,
-		["432"] = 354,
-		["433"] = 355,
-		["434"] = 354,
-		["435"] = 303,
-		["436"] = 295,
-		["437"] = 295,
-		["438"] = 295,
-		["439"] = 295,
-		["440"] = 295,
-		["441"] = 295,
-		["442"] = 295,
-		["443"] = 295,
-		["444"] = 303,
-		["446"] = 303,
-		["447"] = 362,
-		["448"] = 363,
-		["449"] = 362,
-		["450"] = 363,
-		["451"] = 364,
-		["452"] = 365,
-		["453"] = 366,
-		["454"] = 367,
-		["457"] = 370,
-		["458"] = 372,
-		["459"] = 373,
-		["460"] = 374,
-		["461"] = 375,
-		["462"] = 376,
-		["463"] = 377,
-		["464"] = 377,
-		["465"] = 377,
-		["466"] = 377,
-		["467"] = 378,
-		["468"] = 379,
-		["469"] = 380,
-		["470"] = 381,
-		["471"] = 382,
-		["472"] = 383,
-		["473"] = 384,
+		["415"] = 338,
+		["416"] = 338,
+		["417"] = 338,
+		["418"] = 338,
+		["419"] = 339,
+		["420"] = 339,
+		["421"] = 339,
+		["422"] = 339,
+		["423"] = 339,
+		["424"] = 339,
+		["425"] = 339,
+		["426"] = 339,
+		["427"] = 339,
+		["428"] = 340,
+		["430"] = 342,
+		["431"] = 343,
+		["432"] = 344,
+		["433"] = 345,
+		["436"] = 346,
+		["437"] = 347,
+		["438"] = 348,
+		["441"] = 333,
+		["442"] = 352,
+		["443"] = 353,
+		["444"] = 352,
+		["445"] = 355,
+		["446"] = 356,
+		["447"] = 355,
+		["448"] = 304,
+		["449"] = 296,
+		["450"] = 296,
+		["451"] = 296,
+		["452"] = 296,
+		["453"] = 296,
+		["454"] = 296,
+		["455"] = 296,
+		["456"] = 296,
+		["457"] = 304,
+		["459"] = 304,
+		["460"] = 363,
+		["461"] = 364,
+		["462"] = 363,
+		["463"] = 364,
+		["464"] = 365,
+		["465"] = 366,
+		["466"] = 367,
+		["467"] = 368,
+		["470"] = 371,
+		["471"] = 373,
+		["472"] = 374,
+		["473"] = 375,
+		["474"] = 376,
 		["475"] = 377,
-		["476"] = 377,
-		["477"] = 364,
-		["478"] = 389,
-		["479"] = 390,
-		["480"] = 391,
-		["481"] = 392,
-		["482"] = 393,
-		["483"] = 394,
-		["484"] = 395,
-		["485"] = 396,
-		["486"] = 397,
-		["487"] = 397,
-		["488"] = 397,
-		["489"] = 398,
-		["490"] = 399,
-		["492"] = 397,
-		["493"] = 397,
-		["494"] = 402,
-		["495"] = 403,
-		["496"] = 403,
-		["497"] = 403,
-		["498"] = 404,
-		["499"] = 405,
-		["501"] = 403,
-		["502"] = 403,
-		["506"] = 389,
-		["507"] = 363,
-		["508"] = 362,
-		["509"] = 363,
-		["511"] = 363,
-		["512"] = 413,
-		["513"] = 423,
-		["514"] = 413,
-		["515"] = 423,
-		["516"] = 424,
-		["517"] = 425,
-		["518"] = 424,
-		["519"] = 427,
-		["520"] = 428,
-		["521"] = 429,
-		["523"] = 427,
-		["524"] = 432,
-		["525"] = 433,
-		["526"] = 434,
-		["528"] = 432,
-		["529"] = 423,
-		["530"] = 413,
-		["531"] = 413,
-		["532"] = 413,
-		["533"] = 413,
-		["534"] = 413,
-		["535"] = 413,
-		["536"] = 413,
-		["537"] = 413,
-		["538"] = 413,
-		["539"] = 413,
-		["540"] = 423,
-		["542"] = 423,
-		["543"] = 441,
-		["544"] = 450,
-		["545"] = 441,
-		["546"] = 450,
-		["547"] = 451,
-		["548"] = 452,
-		["549"] = 453,
-		["550"] = 454,
-		["551"] = 455,
-		["552"] = 456,
-		["553"] = 457,
-		["554"] = 458,
-		["556"] = 460,
+		["476"] = 378,
+		["477"] = 378,
+		["478"] = 378,
+		["479"] = 378,
+		["480"] = 379,
+		["481"] = 380,
+		["482"] = 381,
+		["483"] = 382,
+		["484"] = 383,
+		["485"] = 384,
+		["486"] = 385,
+		["488"] = 378,
+		["489"] = 378,
+		["490"] = 365,
+		["491"] = 390,
+		["492"] = 391,
+		["493"] = 392,
+		["494"] = 393,
+		["495"] = 394,
+		["496"] = 395,
+		["497"] = 396,
+		["498"] = 397,
+		["499"] = 398,
+		["500"] = 398,
+		["501"] = 398,
+		["502"] = 399,
+		["503"] = 400,
+		["505"] = 398,
+		["506"] = 398,
+		["507"] = 403,
+		["508"] = 404,
+		["509"] = 404,
+		["510"] = 404,
+		["511"] = 405,
+		["512"] = 406,
+		["514"] = 404,
+		["515"] = 404,
+		["519"] = 390,
+		["520"] = 364,
+		["521"] = 363,
+		["522"] = 364,
+		["524"] = 364,
+		["525"] = 414,
+		["526"] = 424,
+		["527"] = 414,
+		["528"] = 424,
+		["529"] = 425,
+		["530"] = 426,
+		["531"] = 425,
+		["532"] = 428,
+		["533"] = 429,
+		["534"] = 430,
+		["536"] = 428,
+		["537"] = 433,
+		["538"] = 434,
+		["539"] = 435,
+		["541"] = 433,
+		["542"] = 424,
+		["543"] = 414,
+		["544"] = 414,
+		["545"] = 414,
+		["546"] = 414,
+		["547"] = 414,
+		["548"] = 414,
+		["549"] = 414,
+		["550"] = 414,
+		["551"] = 414,
+		["552"] = 414,
+		["553"] = 424,
+		["555"] = 424,
+		["556"] = 442,
+		["557"] = 451,
+		["558"] = 442,
 		["559"] = 451,
-		["560"] = 450,
-		["561"] = 441,
-		["562"] = 441,
-		["563"] = 441,
-		["564"] = 441,
-		["565"] = 441,
-		["566"] = 441,
-		["567"] = 441,
-		["568"] = 441,
-		["569"] = 450,
-		["571"] = 450,
-		["572"] = 465,
-		["573"] = 473,
-		["574"] = 465,
-		["575"] = 473,
-		["577"] = 473,
-		["578"] = 474,
-		["579"] = 465,
-		["580"] = 476,
-		["581"] = 477,
-		["582"] = 478,
-		["583"] = 479,
-		["585"] = 476,
-		["586"] = 482,
-		["587"] = 483,
-		["588"] = 482,
-		["589"] = 488,
-		["590"] = 489,
-		["591"] = 490,
-		["592"] = 491,
-		["593"] = 492,
-		["594"] = 493,
-		["596"] = 495,
-		["598"] = 488,
-		["599"] = 498,
-		["600"] = 499,
-		["601"] = 500,
-		["602"] = 502,
-		["604"] = 498,
-		["605"] = 505,
-		["606"] = 506,
-		["609"] = 507,
-		["610"] = 508,
-		["611"] = 509,
-		["614"] = 510,
-		["615"] = 511,
-		["616"] = 512,
-		["617"] = 513,
-		["618"] = 514,
-		["619"] = 515,
-		["620"] = 516,
-		["621"] = 505,
-		["622"] = 518,
-		["623"] = 519,
-		["624"] = 518,
-		["625"] = 526,
-		["626"] = 527,
-		["627"] = 526,
-		["628"] = 529,
-		["629"] = 530,
-		["630"] = 529,
-		["631"] = 532,
-		["632"] = 533,
-		["633"] = 534,
-		["635"] = 532,
-		["636"] = 537,
-		["637"] = 538,
-		["638"] = 539,
-		["640"] = 537,
-		["641"] = 542,
-		["642"] = 543,
-		["643"] = 542,
-		["644"] = 473,
-		["645"] = 465,
-		["646"] = 465,
-		["647"] = 465,
-		["648"] = 465,
-		["649"] = 465,
-		["650"] = 465,
-		["651"] = 465,
-		["652"] = 465,
-		["653"] = 473,
-		["655"] = 473,
-		["656"] = 548,
-		["657"] = 556,
-		["658"] = 548,
-		["659"] = 556,
-		["660"] = 559,
-		["661"] = 560,
-		["662"] = 560,
-		["663"] = 560,
-		["664"] = 560,
-		["665"] = 561,
-		["666"] = 562,
-		["667"] = 559,
-		["668"] = 564,
-		["669"] = 565,
-		["670"] = 564,
-		["671"] = 569,
-		["672"] = 570,
-		["673"] = 569,
-		["674"] = 573,
-		["675"] = 574,
-		["676"] = 573,
-		["677"] = 578,
-		["678"] = 579,
-		["679"] = 578,
-		["680"] = 556,
-		["681"] = 548,
-		["682"] = 548,
-		["683"] = 548,
-		["684"] = 548,
-		["685"] = 548,
-		["686"] = 548,
-		["687"] = 548,
-		["688"] = 548,
-		["689"] = 556,
-		["691"] = 556,
-		["693"] = 585,
-		["694"] = 586,
-		["695"] = 585,
-		["696"] = 586,
-		["697"] = 587,
-		["698"] = 588,
-		["699"] = 587,
-		["700"] = 586,
-		["701"] = 585,
-		["702"] = 586,
-		["704"] = 586,
-		["705"] = 600,
-		["706"] = 608,
-		["707"] = 600,
-		["708"] = 608,
-		["709"] = 611,
-		["710"] = 612,
-		["711"] = 611,
-		["712"] = 615,
-		["713"] = 616,
-		["714"] = 615,
-		["715"] = 621,
-		["716"] = 622,
-		["717"] = 621,
-		["718"] = 608,
-		["719"] = 600,
-		["720"] = 600,
-		["721"] = 600,
-		["722"] = 600,
-		["723"] = 600,
-		["724"] = 600,
-		["725"] = 600,
-		["726"] = 600,
-		["727"] = 608,
-		["729"] = 608,
+		["560"] = 452,
+		["561"] = 453,
+		["562"] = 454,
+		["563"] = 455,
+		["564"] = 456,
+		["565"] = 457,
+		["566"] = 458,
+		["567"] = 459,
+		["569"] = 461,
+		["572"] = 452,
+		["573"] = 451,
+		["574"] = 442,
+		["575"] = 442,
+		["576"] = 442,
+		["577"] = 442,
+		["578"] = 442,
+		["579"] = 442,
+		["580"] = 442,
+		["581"] = 442,
+		["582"] = 451,
+		["584"] = 451,
+		["585"] = 466,
+		["586"] = 474,
+		["587"] = 466,
+		["588"] = 474,
+		["590"] = 474,
+		["591"] = 475,
+		["592"] = 466,
+		["593"] = 477,
+		["594"] = 478,
+		["595"] = 479,
+		["596"] = 480,
+		["598"] = 477,
+		["599"] = 483,
+		["600"] = 484,
+		["601"] = 483,
+		["602"] = 489,
+		["603"] = 490,
+		["604"] = 491,
+		["605"] = 492,
+		["606"] = 493,
+		["607"] = 494,
+		["609"] = 496,
+		["611"] = 489,
+		["612"] = 499,
+		["613"] = 500,
+		["614"] = 501,
+		["615"] = 503,
+		["617"] = 499,
+		["618"] = 506,
+		["619"] = 507,
+		["622"] = 508,
+		["623"] = 509,
+		["624"] = 510,
+		["627"] = 511,
+		["628"] = 512,
+		["629"] = 513,
+		["630"] = 514,
+		["631"] = 515,
+		["632"] = 516,
+		["633"] = 517,
+		["634"] = 506,
+		["635"] = 519,
+		["636"] = 520,
+		["637"] = 519,
+		["638"] = 527,
+		["639"] = 528,
+		["640"] = 527,
+		["641"] = 530,
+		["642"] = 531,
+		["643"] = 530,
+		["644"] = 533,
+		["645"] = 534,
+		["646"] = 535,
+		["648"] = 533,
+		["649"] = 538,
+		["650"] = 539,
+		["651"] = 540,
+		["653"] = 538,
+		["654"] = 543,
+		["655"] = 544,
+		["656"] = 543,
+		["657"] = 474,
+		["658"] = 466,
+		["659"] = 466,
+		["660"] = 466,
+		["661"] = 466,
+		["662"] = 466,
+		["663"] = 466,
+		["664"] = 466,
+		["665"] = 466,
+		["666"] = 474,
+		["668"] = 474,
+		["669"] = 549,
+		["670"] = 557,
+		["671"] = 549,
+		["672"] = 557,
+		["673"] = 560,
+		["674"] = 561,
+		["675"] = 561,
+		["676"] = 561,
+		["677"] = 561,
+		["678"] = 562,
+		["679"] = 563,
+		["680"] = 560,
+		["681"] = 565,
+		["682"] = 566,
+		["683"] = 565,
+		["684"] = 570,
+		["685"] = 571,
+		["686"] = 570,
+		["687"] = 574,
+		["688"] = 575,
+		["689"] = 574,
+		["690"] = 579,
+		["691"] = 580,
+		["692"] = 579,
+		["693"] = 557,
+		["694"] = 549,
+		["695"] = 549,
+		["696"] = 549,
+		["697"] = 549,
+		["698"] = 549,
+		["699"] = 549,
+		["700"] = 549,
+		["701"] = 549,
+		["702"] = 557,
+		["704"] = 557,
+		["706"] = 586,
+		["707"] = 587,
+		["708"] = 586,
+		["709"] = 587,
+		["710"] = 588,
+		["711"] = 589,
+		["712"] = 588,
+		["713"] = 587,
+		["714"] = 586,
+		["715"] = 587,
+		["717"] = 587,
+		["718"] = 601,
+		["719"] = 609,
+		["720"] = 601,
+		["721"] = 609,
+		["722"] = 612,
+		["723"] = 613,
+		["724"] = 612,
+		["725"] = 616,
+		["726"] = 617,
+		["727"] = 616,
+		["728"] = 622,
+		["729"] = 623,
+		["730"] = 622,
+		["731"] = 609,
+		["732"] = 601,
+		["733"] = 601,
+		["734"] = 601,
+		["735"] = 601,
+		["736"] = 601,
+		["737"] = 601,
+		["738"] = 601,
+		["739"] = 601,
+		["740"] = 609,
+		["742"] = 609,
 	}
 )
 local h = {}
@@ -923,6 +935,14 @@ end
 function P.prototype.OnCreated(self, v)
 	if IsServer() then
 		self:IncrementStackCount()
+	else
+		local S = ParticleManager:CreateParticle(
+			"particles/units/heroes/hero_bristleback/bristleback_viscous_nasal_goo_debuff.vpcf",
+			PATTACH_ABSORIGIN_FOLLOW,
+			self:GetParent(),
+			self:GetCaster()
+		)
+		self:AddParticle(S, false, false, -1, false, false)
 	end
 end
 function P.prototype.OnRefresh(self, v)
@@ -953,8 +973,6 @@ P = e(
 				IsPurgeException = false,
 				AllowIllusionDuplicate = false,
 				GetPriority = MODIFIER_PRIORITY_LOW,
-				GetEffectName = "particles/units/heroes/hero_bristleback/bristleback_viscous_nasal_goo_debuff.vpcf",
-				GetEffectAttachType = PATTACH_ABSORIGIN_FOLLOW,
 				IsIndependent = true,
 			}
 		),
@@ -963,126 +981,29 @@ P = e(
 )
 h.modifier_bristleback_ult = P
 h.bristleback_talent_s = c()
-local S = h.bristleback_talent_s
-S.name = "bristleback_talent_s"
-d(S, q)
-function S.prototype.GetIntrinsicModifierName(self)
+local T = h.bristleback_talent_s
+T.name = "bristleback_talent_s"
+d(T, q)
+function T.prototype.GetIntrinsicModifierName(self)
 	return "modifier_bristleback_talent_s"
 end
-S = e({ s(nil) }, S)
-h.bristleback_talent_s = S
+T = e({ s(nil) }, T)
+h.bristleback_talent_s = T
 h.modifier_bristleback_talent_s = c()
-local T = h.modifier_bristleback_talent_s
-T.name = "modifier_bristleback_talent_s"
-d(T, m)
-function T.prototype.EDeclareEvents(self)
+local U = h.modifier_bristleback_talent_s
+U.name = "modifier_bristleback_talent_s"
+d(U, m)
+function U.prototype.EDeclareEvents(self)
 	return { [EOMModifierEvents.MODIFIER_EVENT_ON_BATTLE_START_BEFORE] = { -1, -1 } }
 end
-function T.prototype.OnBattleStartBefore(self, v)
+function U.prototype.OnBattleStartBefore(self, v)
 	if self:IsActivated() then
 		self:GetParent()
 			:AddNewModifier(self:GetParent(), self:GetAbility(), "modifier_bristleback_talent_s_effect", nil)
 	end
 end
-function T.prototype.IsActivated(self)
+function U.prototype.IsActivated(self)
 	return self:GetAbility():GetToggleState()
-end
-T = e(
-	{
-		n(
-			a,
-			{
-				IsHidden = true,
-				IsDebuff = false,
-				IsPurgable = false,
-				IsPurgeException = false,
-				AllowIllusionDuplicate = false,
-				GetPriority = MODIFIER_PRIORITY_LOW,
-			}
-		),
-	},
-	T
-)
-h.modifier_bristleback_talent_s = T
-h.modifier_bristleback_talent_s_effect = c()
-local U = h.modifier_bristleback_talent_s_effect
-U.name = "modifier_bristleback_talent_s_effect"
-d(U, m)
-function U.prototype.____constructor(self, ...)
-	m.prototype.____constructor(self, ...)
-	self.record = 0
-	self.cal_threshold = 0
-	self.ptclTimer = 0
-end
-function U.prototype.GetAbilitySpecialValue(self)
-	self.damage_reduce = self:GetAbilitySpecialValueFor("damage_reduce")
-	self.threshold = self:GetAbilitySpecialValueFor("threshold")
-		- self:GetAbilityTalentValue("bristleback_talent_4", "threshold_reduce")
-end
-function U.prototype.OnCreated(self, v)
-	if IsServer() then
-		self.record = 0
-		self:OnIntervalThink()
-		self:StartIntervalThink(1)
-	end
-end
-function U.prototype.OnIntervalThink(self)
-	if IsServer() then
-		self.cal_threshold = self:GetParent():GetMaxHealth() * self.threshold * 0.01
-	end
-end
-function U.prototype.EDeclareEvents(self)
-	return {
-		[EOMModifierEvents.MODIFIER_EVENT_ON_TAKEDAMAGE] = { -1, self:GetParent() },
-		[EOMModifierEvents.MODIFIER_EVENT_ON_BATTLE_END] = { self:GetParent(), self:GetParent() },
-	}
-end
-function U.prototype.OnCustomTakeDamage(self, V)
-	self.record = self.record + V.damage
-	if GameRules:GetGameTime() - self.ptclTimer >= 0.2 then
-		local W = ParticleManager:CreateParticle(
-			"particles/units/heroes/hero_bristleback/bristleback_back_dmg.vpcf",
-			PATTACH_CUSTOMORIGIN,
-			self:GetParent()
-		)
-		ParticleManager:SetParticleControlTransform(
-			W,
-			0,
-			self:GetParent():GetAbsOrigin(),
-			VectorAngles(self:GetParent():GetForwardVector() * -1)
-		)
-		ParticleManager:SetParticleControlEnt(
-			W,
-			1,
-			self:GetParent(),
-			PATTACH_POINT_FOLLOW,
-			"attach_hitloc",
-			self:GetParent():GetAbsOrigin(),
-			true
-		)
-		ParticleManager:ReleaseParticleIndex(W)
-	end
-	V.target:EmitSound("Hero_Bristleback.Bristleback")
-	if self.record >= self.cal_threshold then
-		self.record = self.record - self.cal_threshold
-		if self:GetParent():PassivesDisabled() then
-			return
-		end
-		local X = self:GetParent():FindAbilityByName("bristleback_ult_s")
-		if IsValid(X) then
-			X:OnSpellStart()
-		end
-	end
-end
-function U.prototype.OnBattleEnd(self, v)
-	self:Destroy()
-end
-function U.prototype.EFunctionValues(self)
-	return {
-		[EOMModifierFunction.EOM_MODIFIER_PROPERTY_INCOMING_DAMAGE_PERCENTAGE] = self:GetParent():PassivesDisabled()
-				and 0
-			or -self.damage_reduce,
-	}
 end
 U = e(
 	{
@@ -1100,7 +1021,104 @@ U = e(
 	},
 	U
 )
-h.modifier_bristleback_talent_s_effect = U
+h.modifier_bristleback_talent_s = U
+h.modifier_bristleback_talent_s_effect = c()
+local V = h.modifier_bristleback_talent_s_effect
+V.name = "modifier_bristleback_talent_s_effect"
+d(V, m)
+function V.prototype.____constructor(self, ...)
+	m.prototype.____constructor(self, ...)
+	self.record = 0
+	self.cal_threshold = 0
+	self.ptclTimer = 0
+end
+function V.prototype.GetAbilitySpecialValue(self)
+	self.damage_reduce = self:GetAbilitySpecialValueFor("damage_reduce")
+	self.threshold = self:GetAbilitySpecialValueFor("threshold")
+		- self:GetAbilityTalentValue("bristleback_talent_4", "threshold_reduce")
+end
+function V.prototype.OnCreated(self, v)
+	if IsServer() then
+		self.record = 0
+		self:OnIntervalThink()
+		self:StartIntervalThink(1)
+	end
+end
+function V.prototype.OnIntervalThink(self)
+	if IsServer() then
+		self.cal_threshold = self:GetParent():GetMaxHealth() * self.threshold * 0.01
+	end
+end
+function V.prototype.EDeclareEvents(self)
+	return {
+		[EOMModifierEvents.MODIFIER_EVENT_ON_TAKEDAMAGE] = { -1, self:GetParent() },
+		[EOMModifierEvents.MODIFIER_EVENT_ON_BATTLE_END] = { self:GetParent(), self:GetParent() },
+	}
+end
+function V.prototype.OnCustomTakeDamage(self, W)
+	self.record = self.record + W.damage
+	if GameRules:GetGameTime() - self.ptclTimer >= 0.2 then
+		local S = ParticleManager:CreateParticle(
+			"particles/units/heroes/hero_bristleback/bristleback_back_dmg.vpcf",
+			PATTACH_CUSTOMORIGIN,
+			self:GetParent()
+		)
+		ParticleManager:SetParticleControlTransform(
+			S,
+			0,
+			self:GetParent():GetAbsOrigin(),
+			VectorAngles(self:GetParent():GetForwardVector() * -1)
+		)
+		ParticleManager:SetParticleControlEnt(
+			S,
+			1,
+			self:GetParent(),
+			PATTACH_POINT_FOLLOW,
+			"attach_hitloc",
+			self:GetParent():GetAbsOrigin(),
+			true
+		)
+		ParticleManager:ReleaseParticleIndex(S)
+	end
+	W.target:EmitSound("Hero_Bristleback.Bristleback")
+	if self.record >= self.cal_threshold then
+		self.record = self.record - self.cal_threshold
+		if self:GetParent():PassivesDisabled() then
+			return
+		end
+		local X = self:GetParent():FindAbilityByName("bristleback_ult_s")
+		if IsValid(X) then
+			X:OnSpellStart()
+		end
+	end
+end
+function V.prototype.OnBattleEnd(self, v)
+	self:Destroy()
+end
+function V.prototype.EFunctionValues(self)
+	return {
+		[EOMModifierFunction.EOM_MODIFIER_PROPERTY_INCOMING_DAMAGE_PERCENTAGE] = self:GetParent():PassivesDisabled()
+				and 0
+			or -self.damage_reduce,
+	}
+end
+V = e(
+	{
+		n(
+			a,
+			{
+				IsHidden = true,
+				IsDebuff = false,
+				IsPurgable = false,
+				IsPurgeException = false,
+				AllowIllusionDuplicate = false,
+				GetPriority = MODIFIER_PRIORITY_LOW,
+			}
+		),
+	},
+	V
+)
+h.modifier_bristleback_talent_s_effect = V
 h.bristleback_ult_s = c()
 local Y = h.bristleback_ult_s
 Y.name = "bristleback_ult_s"
@@ -1120,12 +1138,12 @@ function Y.prototype.OnSpellStart(self, Z)
 	ForWithInterval(0.1, _, function()
 		if IsInjurable(w, J) then
 			J:EmitSound("Hero_Bristleback.QuillSpray.Target")
-			local W = ParticleManager:CreateParticle(
+			local S = ParticleManager:CreateParticle(
 				"particles/units/heroes/hero_bristleback/bristleback_quill_spray.vpcf",
 				PATTACH_ABSORIGIN_FOLLOW,
 				w
 			)
-			ParticleManager:ReleaseParticleIndex(W)
+			ParticleManager:ReleaseParticleIndex(S)
 			local a2 = a1 + J:GetModifierStackCount("modifier_bristleback_ult_s_debuff", w) * a0
 			w:DealDamage(J, self, a2, EOM_DAMAGE_TYPES.DAMAGE_TYPE_PHYSICAL)
 			J:AddNewModifier(w, self, "modifier_bristleback_ult_s_debuff", nil)

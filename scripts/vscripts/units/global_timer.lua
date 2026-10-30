@@ -11,11 +11,9 @@
 local a = "units/global_timer"
 local b = require("lualib_bundle")
 local c = b.__TS__SourceMapTraceBack
-c(debug.getinfo(1).short_src, { ["4"] = 2, ["5"] = 3, ["6"] = 4, ["9"] = 5, ["10"] = 2 })
+c(debug.getinfo(1).short_src, { ["4"] = 2, ["5"] = 3, ["6"] = 4, ["8"] = 2 })
 function OnTimer(self)
-	local d = GetMapName()
-	if d == "platform_entry" or d == "platform_lobby" then
-		return
+	if TimerManager ~= nil then
+		TimerManager:Think()
 	end
-	TimerManager:Think()
 end

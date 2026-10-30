@@ -1346,6 +1346,9 @@ if (!isSpectator()) {
       });
     });
     const cardPool = () => cardPoolList()[selectedIndex()];
+    libs.createEffect(() => {
+      console.log("isTiedPrizePool(cardPool())", isTiedPrizePool(cardPool()), cardPool());
+    });
     const selectedCardPoolType = () => cardPool()?.type ?? "none";
     let centerContentRef;
     let PoolListRef;
@@ -1951,12 +1954,6 @@ if (!isSpectator()) {
                                       get src() {
                                         return getSrcPath("draw/" + cardPool().pool + "/frame_01.png");
                                       }
-                                    }, _el$1),
-                                    _el$11 = libs.createElement("Image", {
-                                      id: "Back",
-                                      get src() {
-                                        return getSrcPath("draw/" + cardPool().pool + "/frame_02.png");
-                                      }
                                     }, _el$1);
                                   libs.setProp(_el$10, "onload", self => {
                                     let delay;
@@ -1992,23 +1989,29 @@ if (!isSpectator()) {
                                       })];
                                     }
                                   }));
-                                  libs.setProp(_el$11, "onload", self => {
-                                    let delay;
-                                    if (GoldCourierPoolList.includes(cardPool().pool)) {
-                                      delay = 0.3;
+                                  libs.insert(_el$1, libs.createComponent(libs.Show, {
+                                    get when() {
+                                      return isTiedPrizePool(cardPool());
+                                    },
+                                    get children() {
+                                      const _el$11 = libs.createElement("Image", {
+                                        id: "Back",
+                                        get src() {
+                                          return getSrcPath("draw/" + cardPool().pool + "/frame_02.png");
+                                        }
+                                      }, null);
+                                      libs.setProp(_el$11, "onload", self => {
+                                        let delay;
+                                        if (GoldCourierPoolList.includes(cardPool().pool)) {
+                                          delay = 0.3;
+                                        }
+                                        CenterCardPopup(self, delay);
+                                      });
+                                      libs.effect(_$p => libs.setProp(_el$11, "src", getSrcPath("draw/" + cardPool().pool + "/frame_02.png"), _$p));
+                                      return _el$11;
                                     }
-                                    CenterCardPopup(self, delay);
-                                  });
-                                  libs.effect(_p$ => {
-                                    const _v$ = getSrcPath("draw/" + cardPool().pool + "/frame_01.png"),
-                                      _v$2 = getSrcPath("draw/" + cardPool().pool + "/frame_02.png");
-                                    _v$ !== _p$._v$ && (_p$._v$ = libs.setProp(_el$10, "src", _v$, _p$._v$));
-                                    _v$2 !== _p$._v$2 && (_p$._v$2 = libs.setProp(_el$11, "src", _v$2, _p$._v$2));
-                                    return _p$;
-                                  }, {
-                                    _v$: undefined,
-                                    _v$2: undefined
-                                  });
+                                  }), null);
+                                  libs.effect(_$p => libs.setProp(_el$10, "src", getSrcPath("draw/" + cardPool().pool + "/frame_01.png"), _$p));
                                   return _el$1;
                                 })(), (() => {
                                   const _el$12 = libs.createElement("Panel", {
@@ -2218,40 +2221,40 @@ if (!isSpectator()) {
                                 SideCardPopup(self, delay);
                               });
                               libs.effect(_p$ => {
-                                const _v$3 = (() => {
+                                const _v$ = (() => {
                                     if (GoldCourierPoolList.includes(cardPool().pool)) {
                                       return getSrcPath("draw/courier_common/frame_06.png");
                                     }
                                     return getSrcPath("draw/" + cardPool().pool + "/frame_06.png");
                                   })(),
-                                  _v$4 = (() => {
+                                  _v$2 = (() => {
                                     if (GoldCourierPoolList.includes(cardPool().pool)) {
                                       return getSrcPath("draw/courier_common/frame_07.png");
                                     }
                                     return getSrcPath("draw/" + cardPool().pool + "/frame_07.png");
                                   })(),
-                                  _v$5 = (() => {
+                                  _v$3 = (() => {
                                     if (GoldCourierPoolList.includes(cardPool().pool)) {
                                       return getSrcPath("draw/courier_common/frame_08.png");
                                     }
                                     return getSrcPath("draw/" + cardPool().pool + "/frame_08.png");
                                   })(),
-                                  _v$6 = (() => {
+                                  _v$4 = (() => {
                                     if (GoldCourierPoolList.includes(cardPool().pool)) {
                                       return getSrcPath("draw/courier_common/frame_09.png");
                                     }
                                     return getSrcPath("draw/" + cardPool().pool + "/frame_09.png");
                                   })();
-                                _v$3 !== _p$._v$3 && (_p$._v$3 = libs.setProp(_el$22, "src", _v$3, _p$._v$3));
-                                _v$4 !== _p$._v$4 && (_p$._v$4 = libs.setProp(_el$24, "src", _v$4, _p$._v$4));
-                                _v$5 !== _p$._v$5 && (_p$._v$5 = libs.setProp(_el$26, "src", _v$5, _p$._v$5));
-                                _v$6 !== _p$._v$6 && (_p$._v$6 = libs.setProp(_el$28, "src", _v$6, _p$._v$6));
+                                _v$ !== _p$._v$ && (_p$._v$ = libs.setProp(_el$22, "src", _v$, _p$._v$));
+                                _v$2 !== _p$._v$2 && (_p$._v$2 = libs.setProp(_el$24, "src", _v$2, _p$._v$2));
+                                _v$3 !== _p$._v$3 && (_p$._v$3 = libs.setProp(_el$26, "src", _v$3, _p$._v$3));
+                                _v$4 !== _p$._v$4 && (_p$._v$4 = libs.setProp(_el$28, "src", _v$4, _p$._v$4));
                                 return _p$;
                               }, {
+                                _v$: undefined,
+                                _v$2: undefined,
                                 _v$3: undefined,
-                                _v$4: undefined,
-                                _v$5: undefined,
-                                _v$6: undefined
+                                _v$4: undefined
                               });
                               return _el$20;
                             })(), libs.createComponent(GenericPanel.CLabel, {

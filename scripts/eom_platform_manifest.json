@@ -9,7 +9,7 @@
 
 
 {
-  "version": "0.2.31",
+  "version": "0.2.35",
   "addon": "c4",
   "files": [
     {
@@ -38,7 +38,7 @@
     },
     {
       "file": "content/c4/panorama/scripts/custom_game/eom_platform/entry_config.js",
-      "sha256": "6013855e45ee1a45e557deaa0b55bd2e480840d4fe426520f7797f06d78b288c"
+      "sha256": "b64039a18c311cf383ef4454a23f0b705ad74dd7508d358d854536271ec7fb27"
     },
     {
       "file": "content/c4/panorama/scripts/custom_game/eom_platform/hud_platform.js",
@@ -102,27 +102,27 @@
     },
     {
       "file": "content/c4/localization/schinese/eom_platform.vdf",
-      "sha256": "e67355c1a3050a5a28e13384835a8f7ec4822349056c3b7d14a1ef64f212df00"
+      "sha256": "ef1acb60ae598b9806090869dc1d07d45cc6f6a1cf9091f782db33b026b67e16"
     },
     {
       "file": "game/c4/resource/addon_schinese.txt",
-      "sha256": "6e00f5ec3ee6656739494324c8c2b94e9280ebf925ca8574af7033f276d02979"
+      "sha256": "c1272b5db8f15cce28c2e8445c8637c9a1af096be524e272009bbe82601db539"
     },
     {
       "file": "content/c4/localization/english/eom_platform.vdf",
-      "sha256": "4a797c79bbbdeb7c9fafbb27e4b3848ada782fa316b2c3bbf77e05e8e2f04122"
+      "sha256": "018ab0b04ae0097597463fbc5476c7e7f1d8ee9ab261f818c7474d8c926e4289"
     },
     {
       "file": "game/c4/resource/addon_english.txt",
-      "sha256": "b3b053c20c42b44d30d24df8293d274f5f06969ba89bb27194a75272909d1ce1"
+      "sha256": "946264dd3a7175980f66f0fa82b569dd8b3f3838391b3ff09dd7a976d479cddc"
     },
     {
       "file": "content/c4/localization/russian/eom_platform.vdf",
-      "sha256": "34c6a5bb6f823d58662006625efaafd625a5d2fa667c4e0eb40b1f37527ffe3a"
+      "sha256": "3eb42dc95de216a856ab3d62da4e2fd9495c751377b45c1ee25fb46b710d0877"
     },
     {
       "file": "game/c4/resource/addon_russian.txt",
-      "sha256": "6bb6988c33dbbda34b92502c54c19d1b2f3d3e6d7a1b0ce46b989216e500d38e"
+      "sha256": "72d653b6af6bda7b4f9b574c215e57f72e4e1efbf3a4d25d05fe5ddf59617901"
     },
     {
       "file": "game/c4/scripts/platform_routing.txt",
@@ -138,11 +138,11 @@
     },
     {
       "file": "game/c4/scripts/vscripts/__eom_original_server.lua",
-      "sha256": "542069ff2d26e0d1d2276c1566089599079c29aedb1dee8cd9f70e2be8616f39"
+      "sha256": "f8d2a48c939105c220fd7469ab87bd04ae6a3a71a4a1f850bd40c5504e3685d1"
     },
     {
       "file": "game/c4/scripts/vscripts/__eom_original_client.lua",
-      "sha256": "b9f1c341071d0522981e29fd06e860843baf8a5e7369b2e849be1f2946e78cd4"
+      "sha256": "cf5b1fd049671a5cae89b5c22ac791bcd177fdc1140bfa2561bfabd8e8e42099"
     },
     {
       "file": "game/c4/scripts/vscripts/addon_game_mode.lua",
@@ -154,7 +154,7 @@
     },
     {
       "file": "content/c4/panorama/layout/custom_game/eom_platform/original_loading.xml",
-      "sha256": "45e00430dd96fa11e96ad820881a2c17a3191815cf390e9a49ac86b72adcb486"
+      "sha256": "73f844c25c8f7562331ac78b0ccf8346c0c4706cc65102441fb3a2b877811326"
     },
     {
       "file": "content/c4/panorama/layout/custom_game/custom_loading_screen.xml",
@@ -186,7 +186,7 @@
     },
     {
       "file": "game/c4/addoninfo.txt",
-      "sha256": "23fa481afa6f7598e32ba083521d66284b2ce8d52ac7298d2ad3bc6013d27801"
+      "sha256": "2212f6598caa8bedfbed5ec3005abb629faf5e5f9d3fcb9258628f18778af346"
     }
   ]
 }
