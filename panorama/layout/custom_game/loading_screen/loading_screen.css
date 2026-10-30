@@ -10,6 +10,275 @@
 
 /* Prettified by Source 2 Viewer 20.1.0.0 - https://valveresourceformat.github.io */
 
+.ShowcaseRoot
+{
+	width: 100%;
+	height: 100%;
+	z-index: 9999;
+	background-color: #080d16;
+}
+
+.ShowcaseRoot Label
+{
+	font-family: defaultFont;
+}
+
+.ShowcaseBackground
+{
+	width: 100%;
+	height: 100%;
+	background-image: url("s2r://panorama/images/custom_game/platform_showcase/loading_png.vtex");
+	background-size: cover;
+	background-position: center;
+}
+
+.ShowcaseRoot .ShowcaseDashboardReturn
+{
+	visibility: visible;
+	horizontal-align: left;
+	vertical-align: top;
+	opacity: 1;
+	transform: translateY(0px);
+	transition-duration: 0s;
+	z-index: 10000;
+}
+
+.ShowcaseShade
+{
+	width: 100%;
+	height: 100%;
+	background-color: gradient(linear, 0% 0%, 0% 100%, from(#0c0b0810), color-stop(0.45, #090c1510), to(#08090be8));
+}
+
+.ShowcaseCard
+{
+	width: 640px;
+	horizontal-align: center;
+	vertical-align: center;
+	margin-top: 80px;
+	padding: 24px 36px;
+	flow-children: down;
+	background-color: gradient(linear, 0% 0%, 100% 100%, from(#171b24f5), to(#0a0e16f5));
+	border: 1px solid #e5bd714f;
+	border-top: 3px solid #e5b45f;
+	border-radius: 14px;
+	box-shadow: #000000a0 0px 8px 28px 4px;
+}
+
+.ShowcaseIntro
+{
+	width: 100%;
+	vertical-align: center;
+	flow-children: down;
+}
+
+.ShowcaseHeading
+{
+	width: 100%;
+	flow-children: right;
+}
+
+.ShowcaseTitleIcon
+{
+	width: 64px;
+	height: 64px;
+	vertical-align: center;
+	margin-right: 16px;
+	img-shadow: 0px 2px 12px 1 #e79b3940;
+}
+
+.ShowcaseHeadingCopy
+{
+	width: fill-parent-flow(1);
+	vertical-align: center;
+	flow-children: down;
+}
+
+.ShowcaseTitle
+{
+	width: 100%;
+	color: #fff3da;
+	font-size: 44px;
+	font-weight: bold;
+	line-height: 52px;
+	white-space: normal;
+}
+
+.ShowcaseSteps
+{
+	width: 100%;
+	margin-top: 24px;
+	flow-children: right;
+}
+
+.ShowcaseStepCard
+{
+	width: fill-parent-flow(1);
+	height: 58px;
+	margin-right: 10px;
+	padding: 10px;
+	flow-children: right;
+	background-color: #ffffff07;
+	border: 1px solid #d7b77c25;
+	border-radius: 6px;
+}
+
+.ShowcaseStepNumber
+{
+	width: 24px;
+	vertical-align: center;
+	margin-right: 8px;
+	color: #e6b970;
+	font-size: 19px;
+	font-weight: bold;
+}
+
+.ShowcaseStepReady
+{
+	margin-right: 0px;
+	background-color: gradient(linear, 0% 0%, 100% 0%, from(#e5b45f18), to(#e5b45f08));
+	border-color: #e5b45f60;
+}
+
+.ShowcaseStepReady .ShowcaseStepText
+{
+	color: #ffe3ae;
+}
+
+.ShowcaseStepText
+{
+	width: fill-parent-flow(1);
+	vertical-align: center;
+	color: #e3e6ec;
+	font-size: 18px;
+	line-height: 22px;
+	white-space: normal;
+}
+
+.ShowcaseActions
+{
+	width: 566px;
+	vertical-align: center;
+	margin-top: 20px;
+	flow-children: down;
+	overflow: noclip;
+}
+
+.ShowcaseSlogan
+{
+	width: 100%;
+	margin-top: 4px;
+	color: #e5c896;
+	font-size: 21px;
+	white-space: normal;
+}
+
+.ShowcaseLink
+{
+	width: 420px;
+	horizontal-align: center;
+	min-height: 68px;
+	padding: 16px 12px;
+	background-color: gradient(linear, 0% 0%, 100% 100%, from(#ffe3a3), to(#dc9a43));
+	border: 1px solid #ffe8b6;
+	border-radius: 6px;
+	box-shadow: #e5a13d30 0px 2px 18px 1px;
+	transition-property: brightness, transform, box-shadow;
+	transition-duration: 0.15s;
+}
+
+.ShowcaseLink Label
+{
+	vertical-align: center;
+	color: #251a0d;
+	font-size: 25px;
+	font-weight: bold;
+	text-align: center;
+	white-space: normal;
+}
+
+.ShowcaseLink:hover
+{
+	brightness: 1.15;
+	transform: translateY(-2px);
+	box-shadow: #e5a13d55 0px 3px 24px 2px;
+}
+
+.ShowcaseLink:active
+{
+	brightness: 0.9;
+	transform: translateY(0px);
+}
+
+.ShowcaseLinkContent
+{
+	horizontal-align: center;
+	vertical-align: center;
+	flow-children: right;
+}
+
+.ShowcaseLinkText
+{
+	max-width: 310px;
+}
+
+.ShowcaseLinkArrow
+{
+	width: 32px;
+	height: 32px;
+	vertical-align: center;
+	margin-left: 12px;
+}
+
+.ShowcaseUrl
+{
+	width: 100%;
+	text-align: center;
+	margin-top: 14px;
+	color: #c5aa7f;
+	font-size: 17px;
+	line-height: 24px;
+	white-space: normal;
+}
+
+.ShowcaseBrowserHint
+{
+	horizontal-align: center;
+	margin-top: 8px;
+	color: #8f99a8;
+	font-size: 16px;
+}
+
+.ShowcaseBrand
+{
+	horizontal-align: center;
+	vertical-align: bottom;
+	margin-bottom: 36px;
+	flow-children: right;
+}
+
+.ShowcaseBrandIcon
+{
+	width: 68px;
+	height: 68px;
+	margin-right: 16px;
+}
+
+.ShowcaseBrandCopy
+{
+	vertical-align: center;
+	flow-children: down;
+}
+
+.ShowcaseBrandName
+{
+	color: #fff3da;
+	font-size: 25px;
+	font-weight: bold;
+	letter-spacing: 2px;
+	text-shadow: 0px 2px 6px 2 #000000;
+}
+
 .LoadingErrorRoot
 {
 	width: 100%;

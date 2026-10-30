@@ -25,7 +25,7 @@
         }
     }
     "1003" {
-        "weight" "10"
+        "weight" "50"
         "special_values" {
             "pct" "300"
         }
@@ -36,37 +36,13 @@
             "pct" "200"
         }
     }
-    "1005" {
-        "weight" "0"
-        "special_values" {
-            "time" "3"
-            "cd" "30"
-        }
-    }
-    "1006" {
-        "weight" "0"
-        "special_values" {
-            "cd" "2"
-            "interval" "0.1"
-            "range" "1000"
-            "hp_pct" "1"
-            "dur" "3"
-        }
-    }
     "1007" {
-        "weight" "10"
+        "weight" "5"
         "special_values" {
-        }
-    }
-    "1008" {
-        "weight" "0"
-        "special_values" {
-            "count" "1"
-            "time" "3"
         }
     }
     "1009" {
-        "weight" "50"
+        "weight" "100"
         "special_values" {
             "count" "1"
             "time" "10"
@@ -86,16 +62,8 @@
             "pct" "500"
         }
     }
-    "1012" {
-        "special_values" {
-        }
-    }
     "1013" {
-        "weight" "10"
-        "special_values" {
-        }
-    }
-    "1015" {
+        "weight" "100"
         "special_values" {
         }
     }
@@ -107,7 +75,7 @@
         }
     }
     "1020" {
-        "weight" "10"
+        "weight" "5"
         "special_values" {
         }
     }
@@ -117,7 +85,7 @@
         }
     }
     "1022" {
-        "weight" "0"
+        "weight" "10"
         "special_values" {
             "range" "1200"
             "pct" "20"
@@ -126,7 +94,7 @@
         }
     }
     "1023" {
-        "weight" "0"
+        "weight" "10"
         "special_values" {
             "damage_pct" "20"
             "gold" "500"
@@ -134,16 +102,32 @@
         }
     }
     "1024" {
-        "weight" "0"
+        "weight" "10"
         "special_values" {
         }
     }
     "1025" {
-        "weight" "0"
+        "weight" "10"
         "special_values" {
             "range" "1200"
             "shI" "20"
             "csshI" "20"
+        }
+    }
+    "1026" {
+        "weight" "100"
+        "special_values" {
+            "time" "5"
+        }
+    }
+    "1027" {
+        "weight" "100"
+        "special_values" {
+        }
+    }
+    "1028" {
+        "weight" "100"
+        "special_values" {
         }
     }
 }

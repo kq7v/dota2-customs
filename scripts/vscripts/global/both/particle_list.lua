@@ -161,6 +161,22 @@ ____debugRuntime.register(
 		["150"] = "142:6",
 		["151"] = "142:6",
 		["152"] = "142:6",
+		["153"] = "142:6",
+		["154"] = "142:6",
+		["155"] = "142:6",
+		["156"] = "142:6",
+		["157"] = "142:6",
+		["158"] = "142:6",
+		["159"] = "142:6",
+		["160"] = "142:6",
+		["161"] = "142:6",
+		["162"] = "142:6",
+		["163"] = "142:6",
+		["164"] = "142:6",
+		["165"] = "142:6",
+		["166"] = "142:6",
+		["167"] = "142:6",
+		["168"] = "142:6",
 	}
 )
 --- 道具特效
@@ -312,3 +328,19 @@ BLESS_PARTICLES.bless_10206_spell_dodge =
 BLESS_PARTICLES.bless_10206_lightning = "particles/units/heroes/hero_zuus/zuus_lightning_bolt.vpcf"
 BLESS_PARTICLES.bless_10208_shadow_realm = "particles/status_fx/status_effect_dark_willow_shadow_realm.vpcf"
 BLESS_PARTICLES.bless_10214_silver_edge = "particles/items3_fx/silver_edge.vpcf"
+BLESS_PARTICLES.bless_10223_sword_spin = "particles/bless/10223_sword_spin.vpcf"
+BLESS_PARTICLES.bless_10223_sword_proj_0 = "particles/bless/10223_tracking_proj_sword.vpcf"
+BLESS_PARTICLES.bless_10223_sword_proj_1 = "particles/bless/10223_tracking_proj_sword_1.vpcf"
+BLESS_PARTICLES.bless_10228_sword_linear = "particles/bless/new/sword_linear.vpcf"
+BLESS_PARTICLES.bless_10228_sword_hit = "particles/spell/sword/base_sword_hit_dmg.vpcf"
+BLESS_PARTICLES.bless_10230_mark = "particles/bless/new/cause_mark.vpcf"
+BLESS_PARTICLES.bless_10230_explosion = "particles/bless/new/cause_explosion.vpcf"
+BLESS_PARTICLES.bless_10233_model_conti = "particles/bless/10233_illu_pos.vpcf"
+BLESS_PARTICLES.bless_10233_proc_pos = "particles/bless/10233_proc_hero.vpcf"
+BLESS_PARTICLES.bless_10233_proc = "particles/bless/10233_proc.vpcf"
+BLESS_PARTICLES.bless_10234_blink_start = "particles/bless/hero_blink_start.vpcf"
+BLESS_PARTICLES.bless_10234_blink_end = "particles/bless/hero_blink_end.vpcf"
+BLESS_PARTICLES.bless_10234_aoe_warning = "particles/bless/aoe_warning.vpcf"
+BLESS_PARTICLES.bless_10234_aoe = "particles/bless/10234_lightning.vpcf"
+BLESS_PARTICLES.bless_10235_aoe_conti = "particles/bless/10235_conti_aoe.vpcf"
+BLESS_PARTICLES.bless_10236_wings = "particles/bless/10236_wings.vpcf"

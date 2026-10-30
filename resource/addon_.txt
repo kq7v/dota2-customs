@@ -721,6 +721,14 @@
 		"loading_error_steam_unknown" "暂时无法确认 Steam 认证状态，请稍后重试。"
 		"loading_auth_retry_note" "正在继续检查，认证成功后此提示将自动关闭。"
 		"loading_auth_exit" "退出并重试"
+		"DOTA_Tooltip_sl_modifier_bless_10221_display" "新福佑状态"
+		"DOTA_Tooltip_sl_modifier_bless_10221_display_Description" "新福佑状态"
+		"DOTA_Tooltip_sl_modifier_bless_10228_cd" "新福佑状态"
+		"DOTA_Tooltip_sl_modifier_bless_10228_cd_Description" "新福佑状态"
+		"DOTA_Tooltip_sl_modifier_bless_10231_heal" "新福佑状态"
+		"DOTA_Tooltip_sl_modifier_bless_10231_heal_Description" "新福佑状态"
+		"DOTA_Tooltip_sl_modifier_bless_10232_resistance" "新福佑状态"
+		"DOTA_Tooltip_sl_modifier_bless_10232_resistance_Description" "新福佑状态"
 
 	}
 

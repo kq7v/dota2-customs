@@ -52,55 +52,90 @@ if not _G.__CUSTOM_SERVER_KEY_OK then
 		local HUD_ID = "custom_loading_screen"
 		local HUD_LAYOUT = "file://{resources}/layout/custom_game/custom_loading_screen.xml"
 		local THINK_NAME = "custom_server_required_notify"
+		local hud_created = false
+		local last_state = nil
 
 		local function notify_clients()
+			if GameRules:State_Get() ~= DOTA_GAMERULES_STATE_GAME_IN_PROGRESS then
+				return
+			end
+			if not hud_created then
+				CustomUI:DynamicHud_Create(-1, HUD_ID, HUD_LAYOUT, {})
+				hud_created = true
+				print("[CustomServerGate] IN_PROGRESS: showing notice")
+			end
 			CustomGameEventManager:Send_ServerToAllClients(EVENT_NAME, {})
 		end
 
-		local function ensure_loading_hud()
-			CustomUI:DynamicHud_Create(-1, HUD_ID, HUD_LAYOUT, {})
-		end
-
-		local function on_state_change()
-			if GameRules:State_Get() == DOTA_GAMERULES_STATE_CUSTOM_GAME_SETUP then
-				GameRules:SetCustomGameSetupRemainingTime(-1)
-				GameRules:EnableCustomGameSetupAutoLaunch(false)
-				ensure_loading_hud()
-				notify_clients()
+		local function advance_to_game()
+			local state = GameRules:State_Get()
+			if state ~= last_state then
+				last_state = state
+				print("[CustomServerGate] Native state: " .. tostring(state))
 			end
+			if state == DOTA_GAMERULES_STATE_CUSTOM_GAME_SETUP then
+				-- 阻断分支没有业务分队逻辑，替未分队的本地主机完成分队。
+				local has_player = false
+				local teams_ready = true
+				for player_id = 0, DOTA_MAX_TEAM_PLAYERS - 1 do
+					if PlayerResource:IsValidPlayerID(player_id) and PlayerResource:GetPlayer(player_id) ~= nil then
+						local team = PlayerResource:GetTeam(player_id)
+						if team ~= DOTA_TEAM_SPECTATOR then
+							has_player = true
+							if team ~= DOTA_TEAM_GOODGUYS and team ~= DOTA_TEAM_BADGUYS then
+								PlayerResource:SetCustomTeamAssignment(player_id, DOTA_TEAM_GOODGUYS)
+								if PlayerResource:GetTeam(player_id) ~= DOTA_TEAM_GOODGUYS then
+									teams_ready = false
+								end
+							end
+						end
+					end
+				end
+				if has_player and teams_ready then
+					GameRules:SetCustomGameSetupRemainingTime(0)
+					GameRules:FinishCustomGameSetup()
+				end
+			end
+			notify_clients()
 		end
 
 		function Activate()
 			print("[CustomServerGate] Activate blocked: missing scripts_dedicated/xiuxian_server_key.kv")
-			-- Activate 时可能已在 CUSTOM_GAME_SETUP，状态事件不会再发，立即挂载并通知。
-			pcall(function()
-				GameRules:SetCustomGameSetupRemainingTime(-1)
-				GameRules:EnableCustomGameSetupAutoLaunch(false)
-				ensure_loading_hud()
-				notify_clients()
-			end)
-
-			ListenToGameEvent("game_rules_state_change", on_state_change, nil)
-			ListenToGameEvent("player_connect_full", function()
-				ensure_loading_hud()
-				notify_clients()
-			end, nil)
+			-- 无需玩家操作原生选队、选人或等待赛前倒计时。
+			-- 由下方 think 完成分队后结束设置，避免与原生自动开局同时推进。
+			GameRules:EnableCustomGameSetupAutoLaunch(false)
+			GameRules:SetCustomGameSetupAutoLaunchDelay(0)
+			GameRules:SetCustomGameTeamMaxPlayers(DOTA_TEAM_GOODGUYS, DOTA_MAX_TEAM_PLAYERS)
+			GameRules:SetHeroSelectionTime(0)
+			GameRules:SetHeroSelectPenaltyTime(0)
+			GameRules:SetSameHeroSelectionEnabled(true)
+			GameRules:SetStrategyTime(0)
+			GameRules:SetShowcaseTime(0)
+			GameRules:SetPreGameTime(0)
 
 			local mode = GameRules:GetGameModeEntity()
 			if mode ~= nil then
+				if GameRules:State_Get() < DOTA_GAMERULES_STATE_HERO_SELECTION then
+					mode:SetCustomGameForceHero("npc_dota_hero_axe")
+				end
 				mode:SetContextThink(THINK_NAME, function()
-					ensure_loading_hud()
-					notify_clients()
-					return 2.0
-				end, 0.5)
+					-- 不在状态事件内嵌套切换阶段；PRE_GAME 由引擎按零秒配置自然结束。
+					advance_to_game()
+					local state = GameRules:State_Get()
+					if state > DOTA_GAMERULES_STATE_GAME_IN_PROGRESS then
+						return nil
+					end
+					return state == DOTA_GAMERULES_STATE_GAME_IN_PROGRESS and 2.0 or 0.25
+				end, 0.25)
 			end
+			-- 首次、重连与迟到客户端均由 think 处理，不依赖客户端收到首次通知。
 		end
 
 		function Precache(context) end
 	end
 else
 	local loader, err = loadstring(
-		[=[_G.ONLINE_TEST_MODE = false; _G.PUBLISH_TIMESTAMP = "2026-10-19 16:14"; print('loading addon dota_super_mid compiled@2026-10-19 16:13:21'); -- addon_game_mode.lua
+		[=[_G.ONLINE_TEST_MODE = false; _G.PUBLISH_TIMESTAMP = "2026-10-30 17:3"; print('loading addon dota_super_mid compiled@2026-10-30 17:3:28'); -- addon_game_mode.lua
 local ____debugRuntime = require("utils.debug_runtime")
 local debug = ____debugRuntime.safe_debug
 local ____lualib = require("lualib_bundle")

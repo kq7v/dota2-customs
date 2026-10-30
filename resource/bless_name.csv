@@ -267,6 +267,23 @@ bless_10211,遗计,Last Will,Последняя воля
 bless_10212,不屈,Unyielding,Непреклонность
 bless_10213,好施,Generosity,Щедрость
 bless_10214,破军,Devastate,Опустошение
+bless_10221,焚诀,Flame Mantra,Мантра пламени
+bless_10222,莫欺少年穷,Never Underestimate a Poor Youth,Не презирай бедного юношу
+bless_10223,养剑术,Sword Nurturing Art,Искусство взращивания мечей
+bless_10224,藏锋诀,Hidden Edge Mantra,Мантра скрытого клинка
+bless_10225,剑心诀,Sword Heart Mantra,Мантра сердца меча
+bless_10226,御剑术,Sword Command Art,Искусство управления мечами
+bless_10227,万剑诀,Myriad Swords Mantra,Мантра мириада мечей
+bless_10228,剑来,"Swords, Come!","Мечи, ко мне!"
+bless_10229,至尊骨,Supreme Bone,Кость верховного
+bless_10230,因果印,Karmic Seal,Печать кармы
+bless_10231,吞天魔功,Heaven-Devouring Demonic Art,Демоническое искусство пожирания небес
+bless_10232,大衍诀,Grand Expansion Mantra,Мантра великого расширения
+bless_10233,春秋蝉,Spring Autumn Cicada,Цикада весны и осени
+bless_10234,三千雷动,Three Thousand Thundersteps,Три тысячи громовых шагов
+bless_10235,陨落心炎,Fallen Heart Flame,Пламя падшего сердца
+bless_10236,鲲鹏宝术,Kunpeng Sacred Art,Священное искусство Куньпэна
+bless_10237,神象镇狱劲,Divine Elephant's Hell-Suppressing Might,"Мощь божественного слона, усмиряющего ад"
 bless_20001,海妖外壳,Kraken Shell,Kraken Shell
 bless_20002,肉钩,Meat Hook,Meat Hook
 bless_20003,腐蚀皮肤,Corrosive Skin,Corrosive Skin
@@ -394,11 +411,11 @@ bless_100105,黑洞冷却,Black Hole Amp,Улучш. Black Hole
 bless_100106,时间膨胀强化,Dilation Amp,Улучш. Dilation
 bless_100107,时间漫游强化,Time Walk Amp,Улучш. Time Walk
 bless_100108,时间锁定强化,Time Lock Amp,Улучш. Time Lock
-bless_100109,自然之怒强化,Teleport Amp,Улучш. Teleport
-bless_100110,丛林之魂(先天)强化,Forest Soul Amp,Улучш. Forest Soul
-bless_100111,自然的呼唤强化,Wrath Amp,Улучш. Wrath
+bless_100109,自然之怒强化,Wrath of Nature Amp,Улучш. Teleport
+bless_100110,丛林之魂(先天)强化,Spirit of the Forest Amp,Улучш. Wrath of Nature
+bless_100111,自然的呼唤强化,Nature's Call Amp,Улучш. Nature's Call
 bless_100112,戾影强化,Scurry Amp,Улучш. Scurry
-bless_100113,绝笔强化,Sharpshooter Amp,Улучш. Sharpshooter
+bless_100113,绝笔强化,Sharpshooter Amp,Улучш. Spirit of the Forest
 bless_100114,缚魂强化,Soulbind Amp,Улучш. Soulbind
 bless_100115,高射火炮攻击,Flak Cannon Attack,Атака Flak Cannon
 bless_100116,坠机,Crash,Крушение
@@ -690,4 +707,97 @@ bless_100381,动人之舐强化,Tongue Lash Upgrade,Улучшение Tongue La
 bless_100383,腐烂之核,Omnislash Upgrade,Улучшение Omnislash
 bless_100384,超级榴霰弹,Omnislash Upgrade,Улучшение Omnislash
 bless_100388,贪狼,Omnislash Upgrade,Улучшение Omnislash
-bless_100389,腐化虫群,Omnislash Upgrade,Улучшение Omnislash
+bless_100389,腐化虫群,Omnislash Upgrade,Улучшение Omnislash
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,

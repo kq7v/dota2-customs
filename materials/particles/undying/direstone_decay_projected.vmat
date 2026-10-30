@@ -1,0 +1,64 @@
+--[[
+  ~ dumper · customs · dota2
+  ~ credits: rou (a.k.a internetenemy), qfun(a.k.a qfun_g9s)
+  ~ special for t.me/wildguild
+
+  ~ build 1a5b3bb 
+  ~ auto-generated — do not edit
+]]
+
+
+"Layer0"
+{
+	"shader"	"projected_dota.vfx"
+	"F_FALLOFF"	"1"
+	"F_FLOW_EFFECT"	"1"
+	"F_FOG"	"1"
+	"F_HEIGHT_FADE"	"1"
+	"F_HEIGHT_MAP"	"1"
+	"F_NORMAL_MAP"	"1"
+	"g_flBumpStrength"	"1"
+	"g_flErodeAlpha"	"1"
+	"g_flFalloffFinal"	"1"
+	"g_flFalloffRange"	"1"
+	"g_flFlowAdditiveStrength"	"100"
+	"g_flFlowFallOff"	"5"
+	"g_flFlowFrequency"	"1"
+	"g_flFlowOffset"	"0"
+	"g_flFlowPhaseDetailStrength"	"2.5"
+	"g_flFlowPhaseDetailTexCoordRotation"	"0"
+	"g_flHeightColorStrength"	"0"
+	"g_flHeightFadeSharpness"	"20"
+	"g_flOverbrightFactor"	"0.5"
+	"g_flParallaxCenterValue"	"0.678"
+	"g_flParallaxStrength"	"2.154"
+	"g_vFlowColor"	"[1.000000 0.737255 0.207843 1.000000]"
+	"g_vFlowPhaseDetailTexCoordOffset"	"[0.000000 0.000000 0.000000 0.000000]"
+	"g_vFlowPhaseDetailTexCoordScale"	"[3.000000 3.000000 0.000000 0.000000]"
+	"g_vHeightColor"	"[1.000000 0.823529 0.415686 0.000000]"
+	"TextureColor"	"materials/particles/undying/direstone_decay_color.png"
+	"TextureFlowPhase"	"materials/particles/undying/direstone_decay_flow.png"
+	"TextureFlowPhaseDetail"	"materials/particles/undying/tile_clouds_02.png"
+	"TextureFlowWaveform"	"materials/particles/undying/compendium_points_fresnelwarpspec.png"
+	"TextureHeight"	"materials/particles/undying/direstone_decay_height.png"
+	"TextureNormal"	"materials/default/default_normal.tga"
+	"Compiled Textures"
+	{
+		"g_tColor"	"materials/particles/undying/direstone_decay_color_png_6c525283.vtex"
+		"g_tFlowPhase"	"materials/particles/undying/direstone_decay_flow_png_27e21c22.vtex"
+		"g_tFlowPhaseDetail"	"materials/particles/undying/tile_clouds_02_png_bb05f5fc.vtex"
+		"g_tFlowWaveform"	"materials/particles/undying/compendium_points_fresnelwarpspec_png_3c6ec986.vtex"
+		"g_tHeight"	"materials/particles/undying/direstone_decay_height_png_208725c0.vtex"
+		"g_tNormal"	"materials/default/default_normal_tga_7652cb.vtex"
+	}
+	"DynamicParams"
+	{
+		"g_flFalloffFinal"	"return $FL_FALLOFF_FINAL;"
+		"g_flFalloffRange"	"return $FL_FALLOFF_RANGE;"
+		"g_flFlowAdditiveStrength"	"return $FL_FLOW_STRENGTH;"
+		"g_flFlowFallOff"	"return $FL_FLOW_FALL_OFF;"
+		"g_flFlowOffset"	"return frac(time/3);"
+		"g_flParallaxStrength"	"return $P_STRENGTH;"
+		"g_vFlowColor"	"return $FLOW_COLOR;"
+	}
+}

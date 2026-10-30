@@ -198,17 +198,17 @@
             "hp_per_str" "23"
             "batk_per_str_agi" "0.36"
             "wolf_atk_pct" "10"
-            "wolf_hp_pct" "12"
+            "wolf_hp_pct" "10"
         }
     }
     "rune_lycan_body" {
         "primaryKey" "rune_lycan_body"
         "special_values" {
             "hp_per_str" "23"
-            "batk_per_str_agi" "0.36"
+            "batk_per_str_agi" "0.38"
             "move_speed_baseline" "450"
             "move_speed_per_as" "3"
-            "atk_speed_cap" "150"
+            "atk_speed_cap" "180"
         }
     }
     "rune_warlock_golem" {
@@ -235,8 +235,8 @@
             "amp_per_int" "0.33"
             "hp_per_int_str" "10"
             "explosion_delay" "0.5"
-            "explosion_radius" "500"
-            "explosion" "25"
+            "explosion_radius" "400"
+            "explosion" "23"
         }
     }
     "rune_furion_full" {

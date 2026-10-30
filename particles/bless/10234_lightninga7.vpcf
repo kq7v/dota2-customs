@@ -1,0 +1,44 @@
+--[[
+  ~ dumper · customs · dota2
+  ~ credits: rou (a.k.a internetenemy), qfun(a.k.a qfun_g9s)
+  ~ special for t.me/wildguild
+
+  ~ build 1a5b3bb 
+  ~ auto-generated — do not edit
+]]
+
+
+<!-- kv3 encoding:text:version{e21c7f3c-8a33-41c5-9977-a76d3a32aa0d} format:vpcf66:version{dd571be4-586e-4f41-8b2d-5bbc969e1c53} -->
+{
+	_class = "CParticleSystemDefinition"
+	m_bShouldHitboxesFallbackToRenderBounds = false
+	m_nMaxParticles = 64
+	m_nBehaviorVersion = 12
+	m_controlPointConfigurations = 
+	[
+		{
+			m_name = "preview"
+			m_previewState = 
+			{
+				m_previewModel = "models/creeps/lane_creeps/creep_radiant_melee/radiant_melee.vmdl"
+				m_sequenceName = "idle"
+				m_hitboxSetName = "default"
+			}
+		},
+	]
+	m_Children = 
+	[
+		{
+			m_ChildRef = resource:"particles/bless/10234_lightninga7d.vpcf"
+		},
+		{
+			m_ChildRef = resource:"particles/bless/10234_lightninga7b.vpcf"
+		},
+		{
+			m_ChildRef = resource:"particles/bless/10234_lightninga7c.vpcf"
+		},
+		{
+			m_ChildRef = resource:"particles/bless/10234_lightninga7a.vpcf"
+		},
+	]
+}

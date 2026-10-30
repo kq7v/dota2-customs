@@ -95,4 +95,7 @@ player_center_claim_quarterly,季卡可领,Season Pass Claimable,Доступн�
 need_170002,月卡可领,Monthly Pass Claimable,Доступно (Месячный),
 need_170003,季卡可领,Season Pass Claimable,Доступно (Сезонный),
 need_170002_desc,需拥有月卡特权且未过期,Requires active Monthly Pass,Требуется активный месячный пропуск,
-need_170003_desc,需拥有季卡特权且未过期,Requires active Season Pass,Требуется активный сезонный пропуск,
+need_170003_desc,需拥有季卡特权且未过期,Requires active Season Pass,Требуется активный сезонный пропуск,
+bless_task_completed,[已完成],[Completed],[Выполнено]
+bless_task_active,[当前生效 {progress}/{target}],[Active {progress}/{target}],[Действует {progress}/{target}]
+bless_task_progress,[{progress}/{target}],[{progress}/{target}],[{progress}/{target}]
